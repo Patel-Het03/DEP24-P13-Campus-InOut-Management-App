@@ -1,0 +1,1 @@
+ /Users/chavdajayrajsinhharisinh/StudioProjects/gate2/my_gate_app/.dart_tool/flutter_build/e9a81b061af440c3662a485699cdd84a/native_assets.yaml: 

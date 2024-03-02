@@ -3,7 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:my_gate_app/splash.dart';
-import 'firebase_options.dart';
+
 import 'package:my_gate_app/get_email.dart';
 import 'package:my_gate_app/screens/admin/home_admin.dart';
 import 'package:my_gate_app/screens/authorities/authority_main.dart';
@@ -14,7 +14,7 @@ import 'package:flutter/services.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+
 
   WidgetsFlutterBinding.ensureInitialized();
   SystemChrome.setPreferredOrientations(

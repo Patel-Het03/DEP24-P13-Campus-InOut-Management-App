@@ -1,7 +1,7 @@
 // ignore_for_file: prefer_const_constructors
 
 import 'package:flutter/material.dart';
-import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
+import 'package:flutter_datetime_picker_plus/flutter_datetime_picker_plus.dart';
 import 'package:intl/intl.dart';
 import 'package:my_gate_app/screens/admin/utils/dropdown.dart';
 
@@ -249,7 +249,7 @@ class _FilterPageState extends State<FilterPage> {
                   ),
                   style: ElevatedButton.styleFrom(
                       textStyle: const TextStyle(fontSize: 20),
-                      primary: Colors.red),
+                      backgroundColor: Colors.red),
                   onPressed: () {
                     if (this.chosen_ticket_type == "Entry") {
                       widget.isSelected[0] = true;

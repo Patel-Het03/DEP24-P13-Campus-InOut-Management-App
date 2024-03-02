@@ -57,7 +57,7 @@ class _RaiseTicketForGuardOrAuthoritiesState
               SizedBox(
                 height: 100,
               ),
-              RaisedButton(
+              MaterialButton(
                 onPressed: () {
                   Navigator.push(
                     context,
@@ -98,7 +98,7 @@ class _RaiseTicketForGuardOrAuthoritiesState
               ),
 
               SizedBox(height: 50),
-              RaisedButton(
+              MaterialButton(
                 onPressed: () {
                   Navigator.push(
                     context,

@@ -37,7 +37,7 @@ class SnackBarPage extends StatelessWidget {
     return Scaffold(
       body: Center(
         // Raised button
-        child: RaisedButton(
+        child: MaterialButton(
           color: Colors.green,
           onPressed: () {
             // when raised button is pressed

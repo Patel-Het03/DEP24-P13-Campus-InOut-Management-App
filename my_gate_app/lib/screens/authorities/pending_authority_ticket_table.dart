@@ -244,7 +244,7 @@ class _PendingAuthorityTicketTableState
                                   ),
                                   style: ElevatedButton.styleFrom(
                                       textStyle: const TextStyle(fontSize: 20),
-                                      primary: Color.fromARGB(255, 9, 216, 9)),
+                                      backgroundColor: Color.fromARGB(255, 9, 216, 9)),
                                   onPressed: () async {
                                     accept_selected_tickets_authorities();
                                   },
@@ -276,7 +276,7 @@ class _PendingAuthorityTicketTableState
                                   ),
                                   style: ElevatedButton.styleFrom(
                                       textStyle: const TextStyle(fontSize: 20),
-                                      primary: Colors.red),
+                                      backgroundColor: Colors.red),
                                   onPressed: () {
                                     reject_selected_tickets_authorities();
                                   },

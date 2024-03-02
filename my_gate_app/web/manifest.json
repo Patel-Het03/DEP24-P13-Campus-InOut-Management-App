@@ -1,6 +1,6 @@
 {
-    "name": "my_gate_app",
-    "short_name": "my_gate_app",
+    "name": "gate2",
+    "short_name": "gate2",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",

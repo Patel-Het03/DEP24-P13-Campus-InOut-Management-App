@@ -89,7 +89,7 @@ class _StudentStatusState extends State<StudentStatus> {
               ),
             ),
             child: Center(
-              child: QrImage(
+              child: QrImageView(
                 data: qrData,
                 backgroundColor: Colors.white,
                 size: 200,
@@ -331,7 +331,7 @@ class _StudentStatusState extends State<StudentStatus> {
               enter_message: this.ticket_raised_message,
             ),
             Center(
-              child: RaisedButton(
+              child: MaterialButton(
                 onPressed: () {
                   /*generate QR*/
                   generateQRButton(
@@ -378,7 +378,7 @@ class _StudentStatusState extends State<StudentStatus> {
               exit_message: this.exit_ticket_raised_message,
             ),
             Center(
-              child: RaisedButton(
+              child: MaterialButton(
                 onPressed: () {
                   /*generate QR*/
                   generateQRButton(
@@ -453,7 +453,7 @@ class _StudentStatusState extends State<StudentStatus> {
           ),
           actions: [
             // If one press the Yes button of the popup
-            new FlatButton(
+            new TextButton(
               child: new Text('Yes'),
               onPressed: () async {
                 int statusCode;
@@ -469,7 +469,7 @@ class _StudentStatusState extends State<StudentStatus> {
               },
             ),
             // If one press the No button of the popup
-            new FlatButton(
+            new TextButton(
               child: new Text('No'),
               onPressed: () {
                 Navigator.of(context).pop();

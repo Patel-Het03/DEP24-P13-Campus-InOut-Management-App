@@ -486,7 +486,7 @@ class _AuthFormState extends State<AuthForm> {
                       //   borderRadius: BorderRadius.circular(10),
                       // ),
 
-                      child: RaisedButton(
+                      child: MaterialButton(
                         child: Text(
                           'Login',
                           style: GoogleFonts.roboto(fontSize: 16),
