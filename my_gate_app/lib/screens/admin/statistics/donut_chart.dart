@@ -1,4 +1,5 @@
 /// Donut chart example. This is a simple pie chart with a hole in the middle.
+library;
 import 'package:charts_flutter/flutter.dart' as charts;
 import 'package:flutter/material.dart';
 
@@ -6,12 +7,12 @@ class DonutPieChart extends StatelessWidget {
   final List<charts.Series<LinearSales, String>> seriesList;
   final bool? animate;
 
-  DonutPieChart(this.seriesList, {this.animate});
+  const DonutPieChart(this.seriesList, {super.key, this.animate});
 
   /// Creates a [PieChart] with sample data and no transition.
   /// 
   factory DonutPieChart.withSampleData(var data) {
-    return new DonutPieChart(
+    return DonutPieChart(
       _createSampleData(data),
       // Disable animations for image tests.
       animate: true,
@@ -30,16 +31,16 @@ class DonutPieChart extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return new charts.PieChart<String>(
+    return charts.PieChart<String>(
       seriesList,
       animate: animate,
-      animationDuration: Duration(seconds: 2),
+      animationDuration: const Duration(seconds: 2),
       behaviors: [
-        new charts.DatumLegend(
+        charts.DatumLegend(
           outsideJustification: charts.OutsideJustification.endDrawArea,
           horizontalFirst: false,
           desiredMaxRows: 2,
-          cellPadding: new EdgeInsets.only(right: 4.0, bottom: 4.0),
+          cellPadding: const EdgeInsets.only(right: 4.0, bottom: 4.0),
           entryTextStyle: charts.TextStyleSpec(
               color: charts.MaterialPalette.purple.shadeDefault,
               fontFamily: 'Georgia',
@@ -48,12 +49,12 @@ class DonutPieChart extends StatelessWidget {
       ],
       // Configure the width of the pie slices to 60px. The remaining space in
       // the chart will be left as a hole in the center.
-      defaultRenderer: new charts.ArcRendererConfig(
+      defaultRenderer: charts.ArcRendererConfig(
         arcWidth: 100,
         arcRendererDecorators: [
-          new charts.ArcLabelDecorator(
+          charts.ArcLabelDecorator(
             labelPosition: charts.ArcLabelPosition.inside,
-            insideLabelStyleSpec: charts.TextStyleSpec(
+            insideLabelStyleSpec: const charts.TextStyleSpec(
               color: charts.Color.white,
               fontSize: 20,
             ),
@@ -73,7 +74,7 @@ class DonutPieChart extends StatelessWidget {
     // ];
 
     return [
-      new charts.Series<LinearSales, String>(
+      charts.Series<LinearSales, String>(
         id: 'Sales',
         domainFn: (LinearSales sales, _) => sales.sector_name,
         measureFn: (LinearSales sales, _) => sales.sales,

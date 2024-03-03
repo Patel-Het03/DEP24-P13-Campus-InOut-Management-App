@@ -1,9 +1,7 @@
 // ignore_for_file: prefer_const_constructors
 
 import 'package:flutter/material.dart';
-import 'package:my_gate_app/auth/authscreen.dart';
 import 'package:my_gate_app/database/database_objects.dart';
-import 'package:my_gate_app/get_email.dart';
 import 'package:my_gate_app/screens/authorities/visitor/past_authority_visitor_ticket_table.dart';
 import 'package:my_gate_app/screens/authorities/visitor/pending_authority_visitor_ticket_table.dart';
 // import 'package:my_gate_app/screens/authorities/pending_authority_ticket_table.dart';
@@ -14,7 +12,7 @@ import 'package:my_gate_app/screens/authorities/visitor/pending_authority_visito
 // import 'package:my_gate_app/screens/profile2/utils/menu_items.dart';
 
 class AuthorityVisitor extends StatefulWidget {
-  const AuthorityVisitor({Key? key}) : super(key: key);
+  const AuthorityVisitor({super.key});
 
   @override
   State<AuthorityVisitor> createState() => _AuthorityVisitorState();

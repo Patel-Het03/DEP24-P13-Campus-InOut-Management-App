@@ -7,7 +7,7 @@ import 'package:my_gate_app/get_email.dart';
 import 'package:my_gate_app/screens/student/student_guard_side/student_ticket_table.dart';
 
 class StreamStudentTicketTable extends StatefulWidget {
-  const StreamStudentTicketTable({ Key? key, required this.location, required this.pre_approval_required,}) : super(key: key);
+  const StreamStudentTicketTable({ super.key, required this.location, required this.pre_approval_required,});
   final String location;
   final bool pre_approval_required;  
 

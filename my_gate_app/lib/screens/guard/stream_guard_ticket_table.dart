@@ -3,17 +3,16 @@
 import 'package:flutter/material.dart';
 import 'package:my_gate_app/database/database_interface.dart';
 import 'package:my_gate_app/database/database_objects.dart';
-import 'package:my_gate_app/get_email.dart';
 import 'package:my_gate_app/screens/guard/guard_ticket_table.dart';
 
 class StreamGuardTicketTable extends StatefulWidget {
   const StreamGuardTicketTable({
-    Key? key,
+    super.key,
     required this.location,
     required this.is_approved,
     required this.enter_exit,
     required this.image_path
-  }) : super(key: key);
+  });
   final String location;
   final String is_approved;
   final String enter_exit;

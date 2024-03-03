@@ -1,6 +1,4 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:my_gate_app/database/database_interface.dart';
 import 'package:my_gate_app/screens/admin/home_admin.dart';
@@ -9,7 +7,7 @@ import 'package:my_gate_app/screens/student/home_student.dart';
 import 'package:my_gate_app/get_email.dart';
 
 class ChooseUser extends StatefulWidget {
-  const ChooseUser({Key? key}) : super(key: key);
+  const ChooseUser({super.key});
 
   @override
   _ChooseUserState createState() => _ChooseUserState();
@@ -21,8 +19,8 @@ class _ChooseUserState extends State<ChooseUser> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Choose User Type'),
-        actions: [IconButton(onPressed: () {}, icon: Icon(Icons.logout))],
+        title: const Text('Choose User Type'),
+        actions: [IconButton(onPressed: () {}, icon: const Icon(Icons.logout))],
       ),
       body: Container(
         color: Colors.black38,
@@ -58,19 +56,19 @@ class _ChooseUserState extends State<ChooseUser> {
                               HomeStudent(email: LoggedInDetails.getEmail())));
                 } else if (entries[index].toLowerCase() == 'guard') {
                   Navigator.push(context,
-                      MaterialPageRoute(builder: (context) => HomeGuard()));
+                      MaterialPageRoute(builder: (context) => const HomeGuard()));
                   // MaterialPageRoute(builder: (context) => ProfileController()));
                   // MaterialPageRoute(builder: (context) => StudentTicketTable()));
                 } else if (entries[index].toLowerCase() == 'admin') {
                   Navigator.push(context,
-                      MaterialPageRoute(builder: (context) => HomeAdmin()));
+                      MaterialPageRoute(builder: (context) => const HomeAdmin()));
                 }
               },
               child: Container(
                 height: 50,
                 width: 30,
                 //margin: EdgeInsets.only(bottom: 20),
-                margin: EdgeInsets.all(20),
+                margin: const EdgeInsets.all(20),
                 decoration: BoxDecoration(
                   shape: BoxShape.rectangle,
                   color: Colors.blue[100 * (index % 3 + 1)],
@@ -79,7 +77,7 @@ class _ChooseUserState extends State<ChooseUser> {
                 //color: Colors.amber[colorCodes[index]],
                 child: Center(
                     child: Text(
-                  '${entries[index]}',
+                  entries[index],
                   style: GoogleFonts.roboto(
                       fontSize: 20, fontWeight: FontWeight.bold),
                 )),

@@ -7,11 +7,11 @@ import 'package:my_gate_app/screens/guard/visitors/oldVisitorsSearchStudents.dar
 
 class VisitorsTabs extends StatefulWidget {
   const VisitorsTabs({
-    Key? key,
+    super.key,
     required this.username,
     required this.phonenumber,
     this.userid,
-  }) : super(key: key);
+  });
   final String username;
   final String phonenumber;
   final int? userid;
@@ -53,7 +53,7 @@ class _VisitorsTabsState extends State<VisitorsTabs>
                   gradient: LinearGradient(
                       begin: Alignment.topLeft,
                       end: Alignment.bottomRight,
-                      colors: <Color>[Colors.purple, Colors.blue])),
+                      colors: const <Color>[Colors.purple, Colors.blue])),
             ),
             title: Text("Choose the Person",style: TextStyle(color: Colors.black,fontWeight: FontWeight.bold)),
             leading: IconButton(

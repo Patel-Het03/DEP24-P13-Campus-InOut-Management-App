@@ -7,7 +7,7 @@ import 'package:my_gate_app/screens/admin/utils/submit_button.dart';
 import 'package:my_gate_app/screens/admin/utils/textbox.dart';
 
 class AddGuards extends StatefulWidget {
-  const AddGuards({Key? key}) : super(key: key);
+  const AddGuards({super.key});
 
   @override
   _AddGuardsState createState() => _AddGuardsState();
@@ -146,7 +146,7 @@ class _AddGuardsState extends State<AddGuards> {
                       this.new_guard_name,
                       this.new_guard_email,
                       this.chosen_guard_location);
-                  print("Response: " + response);
+                  print("Response: $response");
                 }
                 add_new_guard();
               },

@@ -4,11 +4,10 @@ import 'package:flutter/material.dart';
 import 'package:my_gate_app/database/database_interface.dart';
 import 'package:my_gate_app/screens/admin/utils/dropdown.dart';
 import 'package:my_gate_app/screens/admin/utils/submit_button.dart';
-import 'package:my_gate_app/screens/admin/utils/textbox.dart';
 import 'package:my_gate_app/screens/utils/custom_snack_bar.dart';
 
 class DeleteLocations extends StatefulWidget {
-  const DeleteLocations({Key? key}) : super(key: key);
+  const DeleteLocations({super.key});
 
   @override
   _DeleteLocationsState createState() => _DeleteLocationsState();
@@ -89,12 +88,12 @@ class _DeleteLocationsState extends State<DeleteLocations> {
               ),
               dropdown(
                 context,
-                this.parent_locations,
+                parent_locations,
                 (String? s) {
                   if (s != null) {
-                    print("inside funciton:" + this.chosen_delete_location);
-                    this.chosen_delete_location = s;
-                    print(this.chosen_delete_location);
+                    print("inside funciton:$chosen_delete_location");
+                    chosen_delete_location = s;
+                    print(chosen_delete_location);
                   }
                 },
                 "Delete Location",

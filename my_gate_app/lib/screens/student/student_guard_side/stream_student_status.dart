@@ -8,10 +8,10 @@ import 'package:my_gate_app/screens/student/student_guard_side/student_status.da
 
 class StreamStudentStatus extends StatefulWidget {
   const StreamStudentStatus({
-    Key? key,
+    super.key,
     required this.location,
     required this.pre_approval_required,
-  }) : super(key: key);
+  });
   final String location;
   final bool pre_approval_required;
 

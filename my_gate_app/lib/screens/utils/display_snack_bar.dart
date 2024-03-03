@@ -32,6 +32,8 @@ import 'package:my_gate_app/screens/utils/custom_snack_bar.dart';
 // }
 
 class SnackBarPage extends StatelessWidget {
+  const SnackBarPage({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -45,7 +47,7 @@ class SnackBarPage extends StatelessWidget {
             final snackBar = get_snack_bar("this is a snackbar", Colors.red);
             ScaffoldMessenger.of(context).showSnackBar(snackBar);
           },
-          child: Text('Display SnackBar'),
+          child: const Text('Display SnackBar'),
         ),
       ),
     );

@@ -5,7 +5,7 @@ import 'package:my_gate_app/get_email.dart';
 class NotificationsPage extends StatefulWidget {
   int notificationCount;
 
-  NotificationsPage({required this.notificationCount});
+  NotificationsPage({super.key, required this.notificationCount});
 
   @override
   _NotificationsPageState createState() => _NotificationsPageState();
@@ -13,7 +13,7 @@ class NotificationsPage extends StatefulWidget {
 
 class _NotificationsPageState extends State<NotificationsPage> {
   List<List<String>> notifications = [];
-  final Set<int> _selectedIndices = Set<int>();
+  final Set<int> _selectedIndices = <int>{};
   String noti = "";
 
   @override
@@ -34,7 +34,7 @@ class _NotificationsPageState extends State<NotificationsPage> {
     String date = datetime.split('T')[0];
     String time = datetime.split('T')[1];
     time = time.split('.')[0];
-    return ("Date = " + date + " , " + "Time = " + time);
+    return ("Date = $date , Time = $time");
   }
 
   @override
@@ -42,24 +42,24 @@ class _NotificationsPageState extends State<NotificationsPage> {
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
-          icon: Icon(Icons.arrow_back),
+          icon: const Icon(Icons.arrow_back),
           onPressed: () {
             Navigator.pop(context,widget.notificationCount);
           },
         ),
-        iconTheme: IconThemeData(
+        iconTheme: const IconThemeData(
           color: Colors.black, // change the color of the back button here
         ),
         centerTitle: true,
         flexibleSpace: Container(
-          decoration: BoxDecoration(
+          decoration: const BoxDecoration(
               gradient: LinearGradient(
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
                   colors: <Color>[Colors.purple, Colors.blue])),
         ),
         // backgroundColor: Color.fromARGB(255, 180, 180, 180),
-        title: Text(
+        title: const Text(
           'Notifications',
           style: TextStyle(
             fontSize: 24,
@@ -75,18 +75,11 @@ class _NotificationsPageState extends State<NotificationsPage> {
           itemBuilder: (BuildContext context, int index) {
             final List<String> notification = notifications[index];
             return ListTile(
-              leading: CircleAvatar(
+              leading: const CircleAvatar(
                 child: Icon(Icons.notifications),
               ),
               title: Text(
-                "From = " +
-                    notification[1] +
-                    "\nLocation = " +
-                    notification[2] +
-                    "\nMessage = " +
-                    notification[3] +
-                    "\nTicket Type = " +
-                    notification[5],
+                "From = ${notification[1]}\nLocation = ${notification[2]}\nMessage = ${notification[3]}\nTicket Type = ${notification[5]}",
                 style: TextStyle(
                   color: _selectedIndices.contains(index)
                       ? Colors.grey
@@ -101,7 +94,7 @@ class _NotificationsPageState extends State<NotificationsPage> {
                       : Colors.black,
                 ),
               ),
-              trailing: Icon(Icons.more_vert),
+              trailing: const Icon(Icons.more_vert),
               onTap: () async {
                 await databaseInterface.mark_individual_notification(
                     notification[0], LoggedInDetails.getEmail());

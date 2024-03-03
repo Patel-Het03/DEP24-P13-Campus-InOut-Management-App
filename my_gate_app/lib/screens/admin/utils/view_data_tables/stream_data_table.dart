@@ -7,10 +7,10 @@ import 'package:my_gate_app/screens/admin/utils/view_data_tables/data_table.dart
 
 class StreamAdminDataTable extends StatefulWidget {
   const StreamAdminDataTable({
-    Key? key,
+    super.key,
     required this.data_entity,
     required this.column_names,
-  }) : super(key: key);
+  });
   final String data_entity;
   final List<String> column_names;
 

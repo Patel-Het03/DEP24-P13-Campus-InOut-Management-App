@@ -13,12 +13,11 @@ import 'package:my_gate_app/screens/profile2/utils/menu_items.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:my_gate_app/screens/notificationPage/notification.dart';
 import 'package:my_gate_app/database/database_interface.dart';
-import 'package:my_gate_app/screens/profile2/model/user.dart';
 
 import 'package:my_gate_app/screens/profile2/utils/user_preferences.dart';
 
 class AuthorityMain extends StatefulWidget {
-  const AuthorityMain({Key? key}) : super(key: key);
+  const AuthorityMain({super.key});
   // final StriK pre_approval_required;
 
   @override
@@ -38,8 +37,8 @@ class _AuthorityMainState extends State<AuthorityMain> {
 
   Future<void> init() async {
     String? curr_email = LoggedInDetails.getEmail();
-    print("Current Email: " + curr_email.toString());
-    databaseInterface db = new databaseInterface();
+    print("Current Email: $curr_email");
+    databaseInterface db = databaseInterface();
     // User result = await db.get_student_by_email(curr_email);
     // // print("result obj image path" + result.imagePath);
     // setState(() {
@@ -58,7 +57,7 @@ class _AuthorityMainState extends State<AuthorityMain> {
     String welcome_message_local =
         await databaseInterface.get_welcome_message(LoggedInDetails.getEmail());
 
-    print("welcome_message_local: " + welcome_message_local);
+    print("welcome_message_local: $welcome_message_local");
     print("studentStatusDB:");
     notificationCount = await databaseInterface
         .return_total_notification_count_guard(LoggedInDetails.getEmail());
@@ -87,7 +86,7 @@ class _AuthorityMainState extends State<AuthorityMain> {
         backgroundColor: Color.fromARGB(255, 0, 0, 0),
         title: Row(
           children: [
-            Container(
+            SizedBox(
               width: 40,
               height: 40,
               child: ClipOval(
@@ -112,7 +111,7 @@ class _AuthorityMainState extends State<AuthorityMain> {
                     ),
                   ),
                   Text(
-                    '${welcome_message}',
+                    welcome_message,
                     style: TextStyle(
                       color: Color.fromARGB(221, 247, 247, 247),
                       fontWeight: FontWeight.bold,
@@ -188,11 +187,11 @@ class _AuthorityMainState extends State<AuthorityMain> {
             icon: Icon(Icons.more_vert,
                 color: Color.fromARGB(255, 255, 255, 255)),
             itemBuilder: (context) => [
-              ...MenuItems.itemsFirst.map(buildItem).toList(),
+              ...MenuItems.itemsFirst.map(buildItem),
               PopupMenuDivider(),
-              ...MenuItems.itemsThird.map(buildItem).toList(),
+              ...MenuItems.itemsThird.map(buildItem),
               PopupMenuDivider(),
-              ...MenuItems.itemsSecond.map(buildItem).toList(),
+              ...MenuItems.itemsSecond.map(buildItem),
             ],
           ),
         ],

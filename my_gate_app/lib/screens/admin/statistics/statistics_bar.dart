@@ -5,7 +5,6 @@ import 'package:flutter_datetime_picker_plus/flutter_datetime_picker_plus.dart';
 import 'package:intl/intl.dart';
 import 'package:my_gate_app/database/database_interface.dart';
 import 'package:my_gate_app/database/database_objects.dart';
-import 'package:my_gate_app/screens/admin/utils/date_picker_button.dart';
 import 'package:my_gate_app/screens/admin/utils/dropdown.dart';
 import 'package:my_gate_app/screens/admin/utils/submit_button.dart';
 import 'package:my_gate_app/screens/utils/custom_snack_bar.dart';
@@ -13,7 +12,7 @@ import 'bar_chart.dart';
 // import 'package:date_range_picker/date_range_picker.dart' as DateRagePicker;
 
 class StatisticsBar extends StatefulWidget {
-  const StatisticsBar({Key? key}) : super(key: key);
+  const StatisticsBar({super.key});
 
   @override
   _StatisticsBarState createState() => _StatisticsBarState();
@@ -47,7 +46,7 @@ class _StatisticsBarState extends State<StatisticsBar> {
     int index = 0;
     for (StatisticsResultObj each_object in res) {
       if (each_object.count != 0) {
-        new_data.add(new OrdinalSales(each_object.category, each_object.count));
+        new_data.add(OrdinalSales(each_object.category, each_object.count));
       }
       index++;
     }
@@ -147,7 +146,7 @@ class _StatisticsBarState extends State<StatisticsBar> {
                           setState(() {
                             var chosen_date =
                                 DateFormat('yyyy-MM-dd').format(date);
-                            this.chosen_start_date = '$chosen_date';
+                            this.chosen_start_date = chosen_date;
                           });
                           print('confirm $date');
                         }, currentTime: DateTime.now(), locale: LocaleType.en);
@@ -183,7 +182,7 @@ class _StatisticsBarState extends State<StatisticsBar> {
                           setState(() {
                             var chosen_date =
                                 DateFormat('yyyy-MM-dd').format(date);
-                            this.chosen_end_date = '$chosen_date';
+                            this.chosen_end_date = chosen_date;
                           });
                           print('confirm $date');
                         }, currentTime: DateTime.now(), locale: LocaleType.en);

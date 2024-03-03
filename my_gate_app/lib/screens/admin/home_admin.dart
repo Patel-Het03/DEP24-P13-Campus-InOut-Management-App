@@ -17,7 +17,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:my_gate_app/screens/notificationPage/notification.dart';
 
 class HomeAdmin extends StatefulWidget {
-  const HomeAdmin({Key? key}) : super(key: key);
+  const HomeAdmin({super.key});
 
   @override
   _HomeAdminState createState() => _HomeAdminState();
@@ -65,7 +65,7 @@ class _HomeAdminState extends State<HomeAdmin> {
                   ),
                 ),
                 Text(
-                  '${welcome_message}',
+                  welcome_message,
                   style: TextStyle(
                     fontSize: 15,
                     color: Colors.black,
@@ -122,9 +122,9 @@ class _HomeAdminState extends State<HomeAdmin> {
               PopupMenuButton<MenuItem>(
                 onSelected: (item) => onSelected(context, item),
                 itemBuilder: (context) => [
-                  ...MenuItems.itemsFirst.map(buildItem).toList(),
+                  ...MenuItems.itemsFirst.map(buildItem),
                   PopupMenuDivider(),
-                  ...MenuItems.itemsSecond.map(buildItem).toList(),
+                  ...MenuItems.itemsSecond.map(buildItem),
                 ],
               ),
             ],

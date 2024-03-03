@@ -9,9 +9,9 @@ import 'package:my_gate_app/screens/utils/scrollable_widget.dart';
 
 class VisitorForm extends StatefulWidget {
   const VisitorForm({
-    Key? key,
+    super.key,
     required this.location,
-  }) : super(key: key);
+  });
   final String location;
 
   @override

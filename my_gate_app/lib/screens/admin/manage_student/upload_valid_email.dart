@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:my_gate_app/screens/admin/utils/file_upload_button.dart';
 
 class UploadValidEmail extends StatefulWidget {
-  const UploadValidEmail({Key? key}) : super(key: key);
+  const UploadValidEmail({super.key});
 
   @override
   _UploadValidEmailState createState() => _UploadValidEmailState();

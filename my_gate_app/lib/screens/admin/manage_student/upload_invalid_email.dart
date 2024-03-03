@@ -1,9 +1,8 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:my_gate_app/screens/admin/utils/file_upload_button.dart';
 
 class UploadInvalidEmail extends StatefulWidget {
-  const UploadInvalidEmail({Key? key}) : super(key: key);
+  const UploadInvalidEmail({super.key});
 
   @override
   _UploadInvalidEmailState createState() => _UploadInvalidEmailState();
@@ -21,7 +20,7 @@ class _UploadInvalidEmailState extends State<UploadInvalidEmail> {
             height: MediaQuery.of(context).size.height,
             width: MediaQuery.of(context).size.width,
             color: Colors.amber,
-            child:Column(
+            child:const Column(
               children: [
                 SizedBox(
                   height: 50,

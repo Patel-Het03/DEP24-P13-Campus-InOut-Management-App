@@ -1,23 +1,16 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:my_gate_app/database/database_interface.dart';
-import 'package:my_gate_app/screens/profile2/edit_profile_page.dart';
 import 'package:my_gate_app/screens/profile2/model/user.dart';
 import 'package:my_gate_app/screens/profile2/utils/user_preferences.dart';
 import 'package:my_gate_app/screens/profile2/widget/appbar_widget.dart';
-import 'package:my_gate_app/screens/profile2/widget/button_widget.dart';
-import 'package:my_gate_app/screens/profile2/widget/profile_widget.dart';
 // import 'package:my_gate_app/screens/profile2/edit_profile_page.dart';
 // import 'package:animated_theme_switcher/animated_theme_switcher.dart';
-import 'package:my_gate_app/screens/profile2/widget/textfield_widget.dart';
-import 'package:my_gate_app/get_email.dart';
-import 'package:my_gate_app/screens/profile2/model/user.dart';
 
 class ProfilePage2 extends StatefulWidget {
   final String? email;
   final bool isEditable;
-  const ProfilePage2({Key? key, required this.email, required this.isEditable}) : super(key: key);
+  const ProfilePage2({super.key, required this.email, required this.isEditable});
   @override
   _ProfilePage2State createState() => _ProfilePage2State();
 }
@@ -36,11 +29,11 @@ class _ProfilePage2State extends State<ProfilePage2> {
   var pic;
 
   Future<void> init() async {
-    String? curr_email = widget.email;
-    print("Current Email: " + curr_email.toString());
-    databaseInterface db = new databaseInterface();
-    User result = await db.get_student_by_email(curr_email);
-    print("result obj image path" + result.imagePath);
+    String? currEmail = widget.email;
+    print("Current Email: $currEmail");
+    databaseInterface db = databaseInterface();
+    User result = await db.get_student_by_email(currEmail);
+    print("result obj image path${result.imagePath}");
     setState(() {
       user = result;
       controller_phone.text = result.phone;
@@ -48,11 +41,11 @@ class _ProfilePage2State extends State<ProfilePage2> {
       controller_year_of_entry.text = result.year_of_entry;
       controller_degree.text = result.degree;
       imagePath = result.imagePath;
-      print("image path inside setstate: " + imagePath);
+      print("image path inside setstate: $imagePath");
     });
 
     setState(() {
-      pic = NetworkImage(this.imagePath);
+      pic = NetworkImage(imagePath);
     });
   }
 
@@ -65,8 +58,8 @@ class _ProfilePage2State extends State<ProfilePage2> {
     controller_degree = TextEditingController();
 
     imagePath = UserPreferences.myUser.imagePath;
-    pic = NetworkImage(this.imagePath);
-    imagePicker = new ImagePicker();
+    pic = NetworkImage(imagePath);
+    imagePicker = ImagePicker();
     // print("image path in image widget: " + this.imagePath);
     init();
   }
@@ -80,8 +73,8 @@ class _ProfilePage2State extends State<ProfilePage2> {
       appBar: buildAppBar(context),
       body: ListView(
           
-          padding: EdgeInsets.symmetric(horizontal: 32),
-          physics: BouncingScrollPhysics(),
+          padding: const EdgeInsets.symmetric(horizontal: 32),
+          physics: const BouncingScrollPhysics(),
           children: [
             ImageWidget(),
             const SizedBox(height: 24),
@@ -145,7 +138,7 @@ class _ProfilePage2State extends State<ProfilePage2> {
               
               disabledBorder: OutlineInputBorder(
                 // borderSide: BorderSide(color: Color(int.parse("0xFF344953")), width: 1.0),
-                borderSide: BorderSide(color: Colors.black, width: 1.0),
+                borderSide: const BorderSide(color: Colors.black, width: 1.0),
                 borderRadius: BorderRadius.circular(12),
               ),
             
@@ -164,18 +157,18 @@ class _ProfilePage2State extends State<ProfilePage2> {
     print("edit profile page image clicked 2");
     var source = ImageSource.gallery;
     XFile image = await imagePicker.pickImage(source: source);
-    var widget_email = widget.email;
-    if (widget_email!= null){
+    var widgetEmail = widget.email;
+    if (widgetEmail!= null){
       await databaseInterface.send_image(image,
-          "/students/change_profile_picture_of_student", widget_email);
+          "/students/change_profile_picture_of_student", widgetEmail);
     }
 
-    databaseInterface db = new databaseInterface();
+    databaseInterface db = databaseInterface();
     User result = await db.get_student_by_email(widget.email);
     
-    var pic_local = await NetworkImage(result.imagePath);
+    var picLocal = NetworkImage(result.imagePath);
     setState(() {
-      pic = pic_local;
+      pic = picLocal;
     });
   }
 
@@ -252,7 +245,7 @@ class _ProfilePage2State extends State<ProfilePage2> {
         child: buildCircle(
           color: color,
           all: 8,
-          child: Icon(
+          child: const Icon(
             Icons.add_a_photo,
             color: Colors.white,
             size: 20,

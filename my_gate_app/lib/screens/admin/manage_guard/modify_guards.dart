@@ -4,7 +4,7 @@ import 'package:my_gate_app/screens/admin/utils/dropdown.dart';
 import 'package:my_gate_app/screens/admin/utils/submit_button.dart';
 
 class ModifyGuards extends StatefulWidget {
-  const ModifyGuards({Key? key}) : super(key: key);
+  const ModifyGuards({super.key});
 
   @override
   _ModifyGuardsState createState() => _ModifyGuardsState();
@@ -56,10 +56,10 @@ class _ModifyGuardsState extends State<ModifyGuards> {
         ),
         child: Column(
           children: [
-            SizedBox(
+            const SizedBox(
               height: 50,
             ),
-            Text(
+            const Text(
               "Modify Guard",
               style: TextStyle(
                   fontWeight: FontWeight.bold,
@@ -87,55 +87,55 @@ class _ModifyGuardsState extends State<ModifyGuards> {
               ),
             ), */
 
-            SizedBox(
+            const SizedBox(
               height: 50,
             ),
             dropdown(
               context,
-              this.guard_emails,
+              guard_emails,
               (String? s) {
                 if (s != null) {
-                  print("inside funciton:" + this.chosen_modify_guard_email);
-                  this.chosen_modify_guard_email = s;
-                  print(this.chosen_modify_guard_email);
+                  print("inside funciton:$chosen_modify_guard_email");
+                  chosen_modify_guard_email = s;
+                  print(chosen_modify_guard_email);
                 }
               },
               "Guard Email",
-              Icon(
+              const Icon(
                 Icons.email_outlined,
                 color: Colors.black,
               ),
             ),
-            SizedBox(
+            const SizedBox(
               height: 50,
             ),
             dropdown(
               context,
-              this.locations,
+              locations,
               (String? s) {
                 if (s != null) {
                   // print("inside funciton:" + this.chosen_parent_location);
-                  this.chosen_modify_guard_location = s;
+                  chosen_modify_guard_location = s;
                   // print(this.chosen_parent_location);
                 }
               },
               "Guard Location",
-              Icon(
+              const Icon(
                 Icons.corporate_fare,
                 color: Colors.black,
               ),
             ),
-            SizedBox(
+            const SizedBox(
               height: 50,
             ),
             SubmitButton(
                 submit_function: () async {
-                  if (this.chosen_modify_guard_email != "None" &&
-                      this.chosen_modify_guard_location != "None") {
+                  if (chosen_modify_guard_email != "None" &&
+                      chosen_modify_guard_location != "None") {
                     String response = await databaseInterface.modify_guard(
-                        this.chosen_modify_guard_email,
-                        this.chosen_modify_guard_location);
-                    print("Response: " + response);
+                        chosen_modify_guard_email,
+                        chosen_modify_guard_location);
+                    print("Response: $response");
                   }
                 },
                 button_text: "Update")

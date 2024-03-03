@@ -6,7 +6,7 @@ import 'package:my_gate_app/screens/admin/manage_student/upload_invalid_email.da
 import 'package:my_gate_app/screens/admin/manage_student/upload_valid_email.dart';
 
 class ManageStudentsTabs extends StatefulWidget {
-  const ManageStudentsTabs({Key? key}): super(key: key);
+  const ManageStudentsTabs({super.key});
 
   @override
   State<ManageStudentsTabs> createState() => _ManageStudentsTabsState();
@@ -42,7 +42,7 @@ class _ManageStudentsTabsState extends State<ManageStudentsTabs>
         centerTitle: true,
         bottom: TabBar(
           controller: controller,
-          tabs: [
+          tabs: const [
             Tab(text: 'Add', icon: Icon(Icons.add)),
             Tab(text: 'Delete', icon: Icon(Icons.delete)),
           ],
@@ -50,7 +50,7 @@ class _ManageStudentsTabsState extends State<ManageStudentsTabs>
       ),
       body: TabBarView(
         controller: controller,
-        children: [
+        children: const [
           UploadValidEmail(),
           UploadInvalidEmail(),
         ],

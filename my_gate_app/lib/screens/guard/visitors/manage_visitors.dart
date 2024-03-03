@@ -13,7 +13,7 @@ import 'package:my_gate_app/screens/profile2/utils/menu_items.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class ManageVisitors extends StatefulWidget {
-  const ManageVisitors({Key? key}) : super(key: key);
+  const ManageVisitors({super.key});
 
   @override
   _ManageVisitorsState createState() => _ManageVisitorsState();
@@ -46,7 +46,7 @@ class _ManageVisitorsState extends State<ManageVisitors> {
             children: [
               Text('Manage Visitors'),
               Text(
-                '${welcome_message}',
+                welcome_message,
                 style: TextStyle(fontSize: 15),
               ),
             ],
@@ -55,9 +55,9 @@ class _ManageVisitorsState extends State<ManageVisitors> {
             PopupMenuButton<MenuItem>(
               onSelected: (item) => onSelected(context, item),
               itemBuilder: (context) => [
-                ...MenuItems.itemsFirst.map(buildItem).toList(),
+                ...MenuItems.itemsFirst.map(buildItem),
                 PopupMenuDivider(),
-                ...MenuItems.itemsSecond.map(buildItem).toList(),
+                ...MenuItems.itemsSecond.map(buildItem),
               ],
             ),
           ],

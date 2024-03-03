@@ -1,11 +1,8 @@
 // ignore_for_file: prefer_const_literals_to_create_immutables, prefer_const_constructors, unnecessary_new, deprecated_member_use, non_constant_identifier_names, dead_code
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:intl/intl.dart';
 import 'package:my_gate_app/database/database_interface.dart';
 import 'package:my_gate_app/database/database_objects.dart';
-import 'package:my_gate_app/screens/guard/utils/filter_page.dart';
-import 'package:my_gate_app/screens/guard/utils/search_dropdown.dart';
 import 'package:my_gate_app/screens/profile2/profile_page.dart';
 import 'package:my_gate_app/screens/utils/scrollable_widget.dart';
 import 'package:my_gate_app/get_email.dart';
@@ -14,11 +11,11 @@ import 'package:my_gate_app/get_email.dart';
 
 class AuthorityTicketTable extends StatefulWidget {
   AuthorityTicketTable({
-    Key? key,
+    super.key,
     required this.is_approved,
     required this.tickets,
     required this.image_path,
-  }) : super(key: key);
+  });
   final String is_approved;
   List<ResultObj2> tickets;
   final String image_path;
@@ -74,7 +71,7 @@ class _AuthorityTicketTableState extends State<AuthorityTicketTable> {
       if (query.isEmpty) {
         ticketsFiltered = widget.tickets
             .where((ticket) => DateTime.parse(ticket.date_time).isBefore(
-                DateTime.parse(chosen_end_date!).add(Duration(days: 1))))
+                DateTime.parse(chosen_end_date).add(Duration(days: 1))))
             .toList();
       } else {
         ticketsFiltered = widget.tickets
@@ -83,9 +80,9 @@ class _AuthorityTicketTableState extends State<AuthorityTicketTable> {
                     .toLowerCase()
                     .contains(query.toLowerCase()) &&
                 DateTime.parse(ticket.date_time)
-                    .isAfter(DateTime.parse(chosen_start_date!)) &&
+                    .isAfter(DateTime.parse(chosen_start_date)) &&
                 DateTime.parse(ticket.date_time).isBefore(
-                    DateTime.parse(chosen_end_date!).add(Duration(days: 1))))
+                    DateTime.parse(chosen_end_date).add(Duration(days: 1))))
             .toList();
         print(chosen_end_date);
       }
@@ -456,14 +453,11 @@ class _AuthorityTicketTableState extends State<AuthorityTicketTable> {
             style: TextStyle(color: Color.fromARGB(255, 0, 0, 0)),
           )),
           DataCell(Text(
-            "    " +
-                ((ticket.date_time.split("T").last)
+            "    ${((ticket.date_time.split("T").last)
                         .split(".")[0]
                         .split(":")
                         .sublist(0, 2))
-                    .join(":") +
-                "\n" +
-                ticket.date_time.split("T")[0],
+                    .join(":")}\n${ticket.date_time.split("T")[0]}",
             style: TextStyle(color: Color.fromARGB(255, 0, 0, 0)),
           )),
           DataCell(Text(

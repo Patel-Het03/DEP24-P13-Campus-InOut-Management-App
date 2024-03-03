@@ -3,13 +3,11 @@
 import 'package:flutter/material.dart';
 import 'package:my_gate_app/database/database_objects.dart';
 import 'package:my_gate_app/screens/admin/statistics/statistics_bar.dart';
-import 'package:my_gate_app/screens/admin/statistics/statistics_line.dart';
 import 'package:my_gate_app/screens/admin/statistics/statistics_pie.dart';
 
-import '../manage_locations/add_locations.dart';
 
 class StatisticsTabs extends StatefulWidget {
-  const StatisticsTabs({Key? key}): super(key: key);
+  const StatisticsTabs({super.key});
 
   @override
   State<StatisticsTabs> createState() => _StatisticsTabsTabsState();
@@ -45,7 +43,7 @@ class _StatisticsTabsTabsState extends State<StatisticsTabs>
         centerTitle: true,
         bottom: TabBar(
           controller: controller,
-          tabs: [
+          tabs: const [
             Tab(icon: Icon(Icons.pie_chart_outline_outlined)),
             Tab(icon: Icon(Icons.bar_chart)),
             // Tab(icon: Icon(Icons.stacked_line_chart)),
@@ -54,7 +52,7 @@ class _StatisticsTabsTabsState extends State<StatisticsTabs>
       ),
       body: TabBarView(
         controller: controller,
-        children: [
+        children: const [
           StatisticsPie(),
           StatisticsBar(),
           // StatisticsLine(),

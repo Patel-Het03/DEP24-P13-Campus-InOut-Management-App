@@ -1,29 +1,23 @@
 // ignore_for_file: prefer_const_literals_to_create_immutables, prefer_const_constructors, unnecessary_new, deprecated_member_use, non_constant_identifier_names, dead_code
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:intl/intl.dart';
 import 'package:my_gate_app/database/database_interface.dart';
 import 'package:my_gate_app/database/database_objects.dart';
 import 'package:my_gate_app/screens/guard/utils/authority_message.dart';
-import 'package:my_gate_app/screens/guard/utils/filter_page.dart';
-import 'package:my_gate_app/screens/guard/utils/search_dropdown.dart';
 import 'package:my_gate_app/screens/profile2/profile_page.dart';
 import 'package:my_gate_app/screens/utils/scrollable_widget.dart';
-import 'guard_ticket_popup.dart';
-import 'package:table_sticky_headers/table_sticky_headers.dart';
 
 // We pass to this class the value of "is_approved" which takes the value "Accepted"|"Rejected"
 
 class GuardTicketTable extends StatefulWidget {
   GuardTicketTable({
-    Key? key,
+    super.key,
     required this.location,
     required this.is_approved,
     required this.tickets,
     required this.image_path,
     required this.enter_exit,
-  }) : super(key: key);
+  });
   final String location;
   final String is_approved;
   final String image_path;
@@ -58,7 +52,7 @@ class _GuardTicketTableState extends State<GuardTicketTable> {
       if (query.isEmpty) {
         ticketsFiltered = tickets
             .where((ticket) => DateTime.parse(ticket.date_time).isBefore(
-                DateTime.parse(chosen_end_date!).add(Duration(days: 1))))
+                DateTime.parse(chosen_end_date).add(Duration(days: 1))))
             .toList();
       } else {
         ticketsFiltered = tickets
@@ -67,9 +61,9 @@ class _GuardTicketTableState extends State<GuardTicketTable> {
                     .toLowerCase()
                     .contains(query.toLowerCase()) &&
                 DateTime.parse(ticket.date_time)
-                    .isAfter(DateTime.parse(chosen_start_date!)) &&
+                    .isAfter(DateTime.parse(chosen_start_date)) &&
                 DateTime.parse(ticket.date_time).isBefore(
-                    DateTime.parse(chosen_end_date!).add(Duration(days: 1))))
+                    DateTime.parse(chosen_end_date).add(Duration(days: 1))))
             .toList();
         print(chosen_end_date);
       }
@@ -135,18 +129,19 @@ class _GuardTicketTableState extends State<GuardTicketTable> {
 
   Future init() async {
     // tickets = await get_tickets_for_guard();
-    var tickets_local;
+    late List<ResultObj> tickets_local;
+    late List<ResultObj4> tickets_local_2;
     if (Person == 'Students') {
       tickets_local = await get_tickets_for_guard();
     } else {
-      tickets_local = await get_approved_tickets_for_visitors();
+      tickets_local_2 = await get_approved_tickets_for_visitors();
     }
 
     setState(() {
       if (Person == 'Students') {
         tickets = tickets_local;
       } else {
-        tickets_visitors = tickets_local;
+        tickets_visitors = tickets_local_2;
       }
       // int len = tickets.length;
       // if(len == 0){
@@ -162,7 +157,7 @@ class _GuardTicketTableState extends State<GuardTicketTable> {
   }
 
   @override
-  Widget build(BuildContext context) => Container(
+  Widget build(BuildContext context) => SizedBox(
         width: MediaQuery.of(context).size.width,
         child: Scaffold(
           backgroundColor: Color.fromARGB(255, 255, 255, 255),
@@ -189,7 +184,7 @@ class _GuardTicketTableState extends State<GuardTicketTable> {
                   data: ThemeData.light(),
                   child: Row(
                     children: <Widget>[
-                      Container(
+                      SizedBox(
                         width: MediaQuery.of(context).size.width / 2,
                         child: RadioListTile<SingingCharacter>(
                           title: const Text(
@@ -212,7 +207,7 @@ class _GuardTicketTableState extends State<GuardTicketTable> {
                           },
                         ),
                       ),
-                      Container(
+                      SizedBox(
                         width: MediaQuery.of(context).size.width / 2,
                         child: RadioListTile<SingingCharacter>(
                           title: const Text(
@@ -398,7 +393,7 @@ class _GuardTicketTableState extends State<GuardTicketTable> {
                 SizedBox(height: 20),
                 SingleChildScrollView(
                   scrollDirection: Axis.horizontal,
-                  child: Container(
+                  child: SizedBox(
                     width: MediaQuery.of(context).size.width,
                     child: SingleChildScrollView(
                       scrollDirection: Axis.horizontal,
@@ -414,7 +409,7 @@ class _GuardTicketTableState extends State<GuardTicketTable> {
       );
 
   Widget buildDataTable() {
-    var columns;
+    late List<String> columns;
     if (Person == 'Students') {
       columns = ['Name', 'Time', 'Destination Address', 'Vehicle Number'];
     } else if (Person == 'Visitors') {
@@ -555,14 +550,11 @@ class _GuardTicketTableState extends State<GuardTicketTable> {
           // ),
           // Text(ticket.student_name.toString())),
           DataCell(Text(
-            "    " +
-                ((ticket.date_time.split("T").last)
+            "    ${((ticket.date_time.split("T").last)
                         .split(".")[0]
                         .split(":")
                         .sublist(0, 2))
-                    .join(":") +
-                "\n" +
-                ticket.date_time.split("T")[0],
+                    .join(":")}\n${ticket.date_time.split("T")[0]}",
             style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
           )),
           DataCell(Text(
@@ -666,14 +658,11 @@ class _GuardTicketTableState extends State<GuardTicketTable> {
             style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
           )),
           DataCell(Text(
-            "    " +
-                ((ticket.date_time_guard.split("T").last)
+            "    ${((ticket.date_time_guard.split("T").last)
                         .split(".")[0]
                         .split(":")
                         .sublist(0, 2))
-                    .join(":") +
-                "\n" +
-                ticket.date_time_guard.split("T")[0],
+                    .join(":")}\n${ticket.date_time_guard.split("T")[0]}",
             style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
           )),
           DataCell(Text(

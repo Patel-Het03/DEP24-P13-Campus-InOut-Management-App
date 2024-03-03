@@ -7,7 +7,7 @@ import 'package:my_gate_app/database/database_objects.dart';
 import 'package:my_gate_app/database/database_interface.dart';
 
 class ResetPassword extends StatefulWidget {
-  const ResetPassword({Key? key, required this.email}) : super(key: key);
+  const ResetPassword({super.key, required this.email});
   final String email;
 
   @override
@@ -168,10 +168,6 @@ class _ResetPasswordState extends State<ResetPassword> {
                         //   borderRadius: BorderRadius.circular(10),
                         // ),
                         child: MaterialButton(
-                          child: Text(
-                            'Reset Password',
-                            style: GoogleFonts.roboto(fontSize: 16),
-                          ),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(10),
                           ),
@@ -193,6 +189,10 @@ class _ResetPasswordState extends State<ResetPassword> {
                               // );
                             }
                           },
+                          child: Text(
+                            'Reset Password',
+                            style: GoogleFonts.roboto(fontSize: 16),
+                          ),
                         ),
                       ),
                     ],

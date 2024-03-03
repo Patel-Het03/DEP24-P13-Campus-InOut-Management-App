@@ -2,12 +2,11 @@
 
 import 'package:flutter/material.dart';
 import 'package:my_gate_app/database/database_interface.dart';
-import 'package:my_gate_app/screens/admin/utils/dropdown.dart';
 import 'package:my_gate_app/screens/admin/utils/submit_button.dart';
 import 'package:my_gate_app/screens/admin/utils/textbox.dart';
 
 class AddAdmins extends StatefulWidget {
-  const AddAdmins({Key? key}) : super(key: key);
+  const AddAdmins({super.key});
 
   @override
   _AddAdminsState createState() => _AddAdminsState();
@@ -103,11 +102,11 @@ class _AddAdminsState extends State<AddAdmins> {
                     this.new_admin_email != "None") {
                   String response = await databaseInterface.add_admin_form(
                       this.new_admin_name, this.new_admin_email);
-                  print("Response: " + response);
+                  print("Response: $response");
                 } else {
                   print("One of the fields in None");
-                  print("value of new_admin_name: " + new_admin_name);
-                  print("value of new_admin_email: " + new_admin_email);
+                  print("value of new_admin_name: $new_admin_name");
+                  print("value of new_admin_email: $new_admin_email");
                 }
               },
             )

@@ -1,13 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:my_gate_app/screens/student/student_authorities_side/generate_preapproval_ticket.dart';
 import 'package:my_gate_app/screens/student/student_authorities_side/stream_student_authorities_ticket_table.dart';
-import 'package:my_gate_app/screens/student/student_authorities_side/stream_student_authority_status.dart';
 
 // This file calls EnterLocation in the first tab and GeneralStudentTicketPage in the second tab
 
 class StudentAuthoritiesTabs extends StatefulWidget {
-  const StudentAuthoritiesTabs({Key? key, required this.location})
-      : super(key: key);
+  const StudentAuthoritiesTabs({super.key, required this.location});
   final String location;
 
   @override
@@ -38,28 +36,33 @@ class _StudentAuthoritiesTabsState extends State<StudentAuthoritiesTabs>
         length: 2,
         child: Scaffold(
           appBar: AppBar(
-            backgroundColor:
-                Colors.black, // Set the app bar background color to black
+
+            backgroundColor: Colors.white, // Set the app bar background color to black
             title: Text(
               widget.location,
-              style: TextStyle(
-                  color: Colors.white), // Set the title text color to white
+              style: const TextStyle( color: Colors.black , fontWeight: FontWeight.w800), // Set the title text color to white
             ),
             centerTitle: true,
+            iconTheme: IconThemeData(color: Colors.black),
             bottom: TabBar(
+              // padding: EdgeInsets.symmetric(vertical: 7),
               controller: controller,
+              indicatorSize: TabBarIndicatorSize.tab,
               indicator: BoxDecoration(
-                color: Colors.white.withOpacity(0.5),
+                color: Colors.grey.withOpacity(0.5),
                 borderRadius: BorderRadius.circular(
                     10.0), // Set the border radius for rounded corners
               ), // Set the indicator color to white with opacity
-              tabs: [
+              labelStyle: TextStyle(fontSize: 16,color: Colors.black,fontWeight: FontWeight.w900),
+              unselectedLabelStyle: TextStyle(fontSize: 12,color: Colors.black),
+              tabs: const [
                 Tab(
-                  text: 'Generate\nTicket',
+
+                  text: 'Generate\n  Ticket',
                   icon: Icon(Icons.add),
                 ),
                 Tab(
-                  text: 'Past\nTickets',
+                  text: '  Past\nTickets',
                   icon: Icon(Icons.history),
                 ),
               ],

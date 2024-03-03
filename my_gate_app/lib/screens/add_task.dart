@@ -6,7 +6,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
 class AddTask extends StatefulWidget {
-  const AddTask({Key? key}) : super(key: key);
+  const AddTask({super.key});
 
   @override
   _AddTaskState createState() => _AddTaskState();
@@ -18,7 +18,7 @@ class _AddTaskState extends State<AddTask> {
 
   addtasktofirebase() async {
     FirebaseAuth auth = FirebaseAuth.instance;
-    final User user = await auth.currentUser!;
+    final User user = auth.currentUser!;
     String uid = user.uid;
     var time = DateTime.now();
     await FirebaseFirestore.instance
@@ -39,34 +39,34 @@ class _AddTaskState extends State<AddTask> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('New Task'),
+        title: const Text('New Task'),
       ),
       body: Container(
-        padding: EdgeInsets.all(20),
+        padding: const EdgeInsets.all(20),
         child: Column(
           children: [
             Container(
               child: TextField(
                 controller: titleController,
-                decoration: InputDecoration(
+                decoration: const InputDecoration(
                     labelText: 'Enter Title', border: OutlineInputBorder()),
               ),
             ),
-            SizedBox(
+            const SizedBox(
               height: 10,
             ),
             Container(
               child: TextField(
                 controller: descriptionController,
-                decoration: InputDecoration(
+                decoration: const InputDecoration(
                     labelText: 'Enter Description',
                     border: OutlineInputBorder()),
               ),
             ),
-            SizedBox(
+            const SizedBox(
               height: 10,
             ),
-            Container(
+            SizedBox(
               width: double.infinity,
               height: 50,
               child: ElevatedButton(

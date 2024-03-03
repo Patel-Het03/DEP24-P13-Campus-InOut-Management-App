@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
 class ImageFromGalleryEx extends StatefulWidget {
+  const ImageFromGalleryEx({super.key});
+
   @override
   ImageFromGalleryExState createState() => ImageFromGalleryExState();
 }
@@ -17,17 +19,17 @@ class ImageFromGalleryExState extends State<ImageFromGalleryEx> {
   @override
   void initState() {
     super.initState();
-    imagePicker = new ImagePicker();
+    imagePicker = ImagePicker();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-          title: Text("Image from Gallery")),
+          title: const Text("Image from Gallery")),
       body: Column(
         children: <Widget>[
-          SizedBox(
+          const SizedBox(
             height: 52,
           ),
           Center(

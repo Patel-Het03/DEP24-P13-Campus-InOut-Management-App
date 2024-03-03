@@ -8,7 +8,7 @@ import 'package:my_gate_app/screens/admin/utils/textbox.dart';
 import 'package:my_gate_app/screens/utils/custom_snack_bar.dart';
 
 class AddLocations extends StatefulWidget {
-  const AddLocations({Key? key}) : super(key: key);
+  const AddLocations({super.key});
 
   @override
   _AddLocationsState createState() => _AddLocationsState();
@@ -75,7 +75,7 @@ class _AddLocationsState extends State<AddLocations> {
       return;
     } else {
       print("Display snackbar: Failed to add new location");
-      print("Display snackbar: " + response);
+      print("Display snackbar: $response");
       final snackBar = get_snack_bar("Failed to add new location", Colors.red);
       ScaffoldMessenger.of(context).showSnackBar(snackBar);
       return;
@@ -118,7 +118,7 @@ class _AddLocationsState extends State<AddLocations> {
                 labelText: "Enter New Location",
                 onSavedFunction: (value) {
                   this.new_location_name = value!;
-                  print("text form : " + this.new_location_name);
+                  print("text form : ${this.new_location_name}");
                 },
                 icon: const Icon(
                   Icons.add_location,

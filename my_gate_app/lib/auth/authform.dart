@@ -1,7 +1,5 @@
 // ignore_for_file: unnecessary_new, sized_box_for_whitespace, deprecated_member_use, prefer_const_constructors, avoid_print, non_constant_identifier_names, unused_field
 
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:my_gate_app/auth/forgot_password.dart';
@@ -10,33 +8,19 @@ import 'package:my_gate_app/database/database_objects.dart';
 import 'package:my_gate_app/get_email.dart';
 import 'package:my_gate_app/screens/admin/home_admin.dart';
 import 'package:my_gate_app/screens/authorities/authority_main.dart';
-import 'package:my_gate_app/screens/authorities/authority_tabs.dart';
-import 'package:my_gate_app/screens/choose_user_type.dart';
 import 'package:my_gate_app/screens/guard/enter_exit.dart';
-import 'package:my_gate_app/screens/guard/guard_tabs.dart';
-import 'package:my_gate_app/screens/guard/home_guard.dart';
 import 'package:my_gate_app/screens/profile2/model/user.dart';
-import 'package:my_gate_app/screens/profile2/profile_page.dart';
-import 'package:my_gate_app/screens/profile2/profile_page_2.dart';
 import 'package:my_gate_app/screens/student/home_student.dart';
-import 'package:my_gate_app/screens/student/raise_ticket_for_guard_or_authorities.dart';
-import 'package:my_gate_app/screens/student/student_guard_side/student_tabs.dart';
-import 'package:my_gate_app/screens/utils/custom_snack_bar.dart';
-import 'package:my_gate_app/screens/utils/display_snack_bar.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:my_gate_app/screens/admin/utils/submit_button.dart';
-import 'package:my_gate_app/auth/otp_timer.dart';
-import 'package:otp_text_field/otp_text_field.dart';
 import 'package:flutter_otp_text_field/flutter_otp_text_field.dart';
 import 'package:flutter/services.dart';
 
 import 'dart:async';
 
-import 'package:otp_text_field/otp_field.dart';
-import 'package:otp_text_field/style.dart';
 
 class AuthForm extends StatefulWidget {
-  const AuthForm({Key? key}) : super(key: key);
+  const AuthForm({super.key});
 
   @override
   _AuthFormState createState() => _AuthFormState();
@@ -65,7 +49,7 @@ class _AuthFormState extends State<AuthForm> {
   // bool isLoginPage = false;
   bool _obscureText = true;
   startTimeout() {
-    final interval = const Duration(seconds: 1);
+    const interval = Duration(seconds: 1);
     var duration = interval;
     int currentSeconds = 0;
     int timerMaxSeconds = 120;
@@ -86,15 +70,15 @@ class _AuthFormState extends State<AuthForm> {
   }
 
   Future<bool> forgot_password(int op) async {
-    print("forgot password 1:" + this.fetchedemail);
+    print("forgot password 1:$fetchedemail");
     final scaffoldMessenger = ScaffoldMessenger.of(context);
     String message =
         await databaseInterface.forgot_password(fetchedemail, op, entered_otp);
-    print("forgot password 2:" + this.fetchedemail);
+    print("forgot password 2:$fetchedemail");
     if (message == 'User email not found in database') {
       setState(() {
-        this.snackbar_message = message;
-        this.snackbar_message_color = Colors.red;
+        snackbar_message = message;
+        snackbar_message_color = Colors.red;
       });
       scaffoldMessenger.showSnackBar(
         SnackBar(
@@ -126,8 +110,8 @@ class _AuthFormState extends State<AuthForm> {
       return true;
     } else if (message == 'OTP Matched') {
       setState(() {
-        this.snackbar_message = message;
-        this.snackbar_message_color = Colors.green;
+        snackbar_message = message;
+        snackbar_message_color = Colors.green;
       });
 
       /* print("Redirect to reset password");
@@ -137,8 +121,8 @@ class _AuthFormState extends State<AuthForm> {
       return true;
     } else if (message == 'OTP Did not Match') {
       setState(() {
-        this.snackbar_message = message;
-        this.snackbar_message_color = Colors.red;
+        snackbar_message = message;
+        snackbar_message_color = Colors.red;
       });
       scaffoldMessenger.showSnackBar(
         SnackBar(
@@ -155,8 +139,8 @@ class _AuthFormState extends State<AuthForm> {
       return false;
     } else {
       setState(() {
-        this.snackbar_message = message;
-        this.snackbar_message_color = Colors.red;
+        snackbar_message = message;
+        snackbar_message_color = Colors.red;
       });
       scaffoldMessenger.showSnackBar(
         SnackBar(
@@ -204,7 +188,7 @@ class _AuthFormState extends State<AuthForm> {
     await db.get_guard_by_email(_email).then((GuardUser result) {
       setState(() {
         _guard_location = result.location;
-        print("Result Location in Auth form" + result.location);
+        print("Result Location in Auth form${result.location}");
       });
     });
   }
@@ -399,14 +383,14 @@ class _AuthFormState extends State<AuthForm> {
                         FocusScope.of(context).unfocus();
                         if (/* email_validity != null && email_validity */ true) {
                           print("Sending otp");
-                          this.email_form_key.currentState?.save();
+                          email_form_key.currentState?.save();
 
                           forgot_password(1);
-                          print("Fetched Email=   " + this.fetchedemail);
+                          print("Fetched Email=   $fetchedemail");
                           /* print("Fetched Email=   "+_email); */
-                          print("otp sent to " + this.fetchedemail);
+                          print("otp sent to $fetchedemail");
                           setState(() {
-                            this.otp_op = 2;
+                            otp_op = 2;
                             showOtpField = true;
                             startTimeout();
                             print("timer started");
@@ -443,9 +427,8 @@ class _AuthFormState extends State<AuthForm> {
                         keyboardType: TextInputType.number,
                         onSubmit: (String code) {
                           if (code.length == 6) {
-                            this.entered_otp = int.parse(code);
-                            print("entered otp set to: " +
-                                this.entered_otp.toString());
+                            entered_otp = int.parse(code);
+                            print("entered otp set to: $entered_otp");
                           }
                         },
                       ),
@@ -487,10 +470,6 @@ class _AuthFormState extends State<AuthForm> {
                       // ),
 
                       child: MaterialButton(
-                        child: Text(
-                          'Login',
-                          style: GoogleFonts.roboto(fontSize: 16),
-                        ),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(10),
                         ),
@@ -538,6 +517,10 @@ class _AuthFormState extends State<AuthForm> {
                             // print(is_authenticated.message);
                           }
                         },
+                        child: Text(
+                          'Login',
+                          style: GoogleFonts.roboto(fontSize: 16),
+                        ),
                       ),
                     ),
                   ],

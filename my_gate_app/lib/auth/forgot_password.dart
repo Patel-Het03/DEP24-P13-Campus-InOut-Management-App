@@ -7,13 +7,11 @@ import 'package:my_gate_app/auth/resest_password.dart';
 import 'package:my_gate_app/database/database_interface.dart';
 import 'package:my_gate_app/screens/admin/utils/submit_button.dart';
 import 'package:my_gate_app/screens/admin/utils/textbox.dart';
-import 'package:otp_text_field/otp_field.dart';
-import 'package:otp_text_field/style.dart';
 import 'package:flutter_otp_text_field/flutter_otp_text_field.dart';
 import 'package:flutter/services.dart';
 
 class ForgotPassword extends StatefulWidget {
-  const ForgotPassword({Key? key}) : super(key: key);
+  const ForgotPassword({super.key});
 
   @override
   State<ForgotPassword> createState() => _ForgotPasswordState();
@@ -30,10 +28,10 @@ class _ForgotPasswordState extends State<ForgotPassword> {
   Color snackbar_message_color = Colors.white;
 
   Future<void> forgot_password(int op) async {
-    print("forgot password 1:" + this.email);
+    print("forgot password 1:${this.email}");
     String message =
         await databaseInterface.forgot_password(email, op, entered_otp);
-    print("forgot password 2:" + this.email);
+    print("forgot password 2:${this.email}");
     if (message == 'User email not found in database') {
       setState(() {
         this.snackbar_message = message;
@@ -63,7 +61,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
   }
 
   startTimeout() {
-    final interval = const Duration(seconds: 1);
+    const interval = Duration(seconds: 1);
     var duration = interval;
     int currentSeconds = 0;
     int timerMaxSeconds = 120;
@@ -129,7 +127,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                     print("Sending otp");
                     this.email_form_key.currentState?.save();
                     forgot_password(1);
-                    print("otp sent to " + this.email);
+                    print("otp sent to ${this.email}");
                     setState(() {
                       this.otp_op = 2;
                       startTimeout();
@@ -159,7 +157,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                 onSubmit: (String code) {
                   if (code.length == 6) {
                     this.entered_otp = int.parse(code);
-                    print("entered otp set to: " + this.entered_otp.toString());
+                    print("entered otp set to: ${this.entered_otp}");
                   }
                 },
               ),

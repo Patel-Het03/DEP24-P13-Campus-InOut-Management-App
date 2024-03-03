@@ -5,8 +5,7 @@ import 'package:my_gate_app/get_email.dart';
 import 'package:my_gate_app/screens/student/student_authorities_side/student_authorities_ticket_table.dart';
 
 class StreamStudentAuthoritiesTicketTable extends StatefulWidget {
-  const StreamStudentAuthoritiesTicketTable({Key? key, required this.location})
-      : super(key: key);
+  const StreamStudentAuthoritiesTicketTable({super.key, required this.location});
   final String location;
 
   @override

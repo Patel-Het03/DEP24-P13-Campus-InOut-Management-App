@@ -4,11 +4,10 @@ import 'package:flutter/material.dart';
 import 'package:my_gate_app/database/database_interface.dart';
 import 'package:my_gate_app/screens/admin/utils/dropdown.dart';
 import 'package:my_gate_app/screens/admin/utils/submit_button.dart';
-import 'package:my_gate_app/screens/admin/utils/textbox.dart';
 import 'package:my_gate_app/screens/utils/custom_snack_bar.dart';
 
 class ModifyLocations extends StatefulWidget {
-  const ModifyLocations({Key? key}) : super(key: key);
+  const ModifyLocations({super.key});
 
   @override
   _ModifyLocationsState createState() => _ModifyLocationsState();
@@ -67,7 +66,7 @@ class _ModifyLocationsState extends State<ModifyLocations> {
       return;
     } else {
       print("Display snackbar: Failed to update location");
-      print("Display snackbar: " + response);
+      print("Display snackbar: $response");
       final snackBar = get_snack_bar("Failed to update location", Colors.red);
       ScaffoldMessenger.of(context).showSnackBar(snackBar);
       return;
@@ -108,12 +107,12 @@ class _ModifyLocationsState extends State<ModifyLocations> {
               ),
               dropdown(
                 context,
-                this.parent_locations,
+                parent_locations,
                 (String? s) {
                   if (s != null) {
-                    print("inside funciton:" + this.chosen_modify_location);
-                    this.chosen_modify_location = s;
-                    print(this.chosen_modify_location);
+                    print("inside funciton:$chosen_modify_location");
+                    chosen_modify_location = s;
+                    print(chosen_modify_location);
                   }
                 },
                 "Location To Modify",
@@ -127,12 +126,12 @@ class _ModifyLocationsState extends State<ModifyLocations> {
               ),
               dropdown(
                 context,
-                this.parent_locations,
+                parent_locations,
                 (String? s) {
                   if (s != null) {
-                    print("inside funciton:" + this.chosen_parent_location);
-                    this.chosen_parent_location = s;
-                    print(this.chosen_parent_location);
+                    print("inside funciton:$chosen_parent_location");
+                    chosen_parent_location = s;
+                    print(chosen_parent_location);
                   }
                 },
                 "Parent Location",
@@ -149,7 +148,7 @@ class _ModifyLocationsState extends State<ModifyLocations> {
                 ["Yes", "No"],
                 (String? s) {
                   if (s != null) {
-                    this.chosen_pre_approval_needed = s;
+                    chosen_pre_approval_needed = s;
                   }
                 },
                 "Pre Approval Required",
@@ -163,7 +162,7 @@ class _ModifyLocationsState extends State<ModifyLocations> {
                 ["Yes", "No"],
                     (String? s) {
                   if (s != null) {
-                    this.automatic_exit_required = s;
+                    automatic_exit_required = s;
                   }
                 },
                 "Automatic Exit Required",

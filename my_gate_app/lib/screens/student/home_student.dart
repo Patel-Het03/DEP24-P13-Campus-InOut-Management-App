@@ -2,15 +2,12 @@
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
-import 'dart:math';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:my_gate_app/aboutus.dart';
 import 'package:my_gate_app/auth/authscreen.dart';
 import 'package:my_gate_app/database/database_interface.dart';
 import 'package:my_gate_app/get_email.dart';
 import 'package:my_gate_app/screens/profile2/profile_page.dart';
-import 'package:my_gate_app/screens/profile2/profile_page_2.dart';
 import 'package:my_gate_app/screens/student/raise_ticket_for_guard_or_authorities.dart';
 import 'package:my_gate_app/screens/profile2/model/menu_item.dart';
 import 'package:my_gate_app/screens/profile2/utils/menu_items.dart';
@@ -27,7 +24,7 @@ import 'package:my_gate_app/screens/notificationPage/notification.dart';
 
 class HomeStudent extends StatefulWidget {
   final String? email;
-  const HomeStudent({Key? key, required this.email}) : super(key: key);
+  const HomeStudent({super.key, required this.email});
 
   @override
   _HomeStudentState createState() => _HomeStudentState();
@@ -36,7 +33,7 @@ class HomeStudent extends StatefulWidget {
 Color getColorFromHex(String hexColor) {
   hexColor = hexColor.replaceAll("#", "");
   if (hexColor.length == 6) {
-    hexColor = "FF" + hexColor;
+    hexColor = "FF$hexColor";
   }
   if (hexColor.length == 8) {
     return Color(int.parse("0x$hexColor"));
@@ -57,8 +54,8 @@ class _HomeStudentState extends State<HomeStudent> {
 
   Future<void> init() async {
     String? curr_email = widget.email;
-    print("Current Email: " + curr_email.toString());
-    databaseInterface db = new databaseInterface();
+    print("Current Email: $curr_email");
+    databaseInterface db = databaseInterface();
     User result = await db.get_student_by_email(curr_email);
     // print("result obj image path" + result.imagePath);
     setState(() {
@@ -107,7 +104,7 @@ class _HomeStudentState extends State<HomeStudent> {
     List<String> studentStatusDB =
         await databaseInterface.get_student_status_for_all_locations_2(
             LoggedInDetails.getEmail(), location_id);
-    print("welcome_message_local: " + welcome_message_local);
+    print("welcome_message_local: $welcome_message_local");
     print("studentStatusDB:${studentStatusDB}");
     // print(studentStatusDB);
     notificationCount = await databaseInterface
@@ -180,151 +177,189 @@ class _HomeStudentState extends State<HomeStudent> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Color.fromARGB(255, 0, 0, 0),
-        elevation: 0,
-        shape: RoundedRectangleBorder(),
-        centerTitle: true,
-        title: Row(
-          children: [
-            Container(
-              width: MediaQuery.of(context).size.width * 0.1,
-              height: MediaQuery.of(context).size.width * 0.1,
-              child: ValueListenableBuilder<bool>(
-                valueListenable: updateColor,
-                builder: (context, newPic, child) {
-                  return ClipOval(
-                    child: Image(
-                      image: pic,
-                      fit: BoxFit.cover,
+      backgroundColor:  Colors.white,
+
+      appBar: PreferredSize(
+        preferredSize: Size.fromHeight(70.0),
+        child: AppBar(
+          shadowColor: Colors.grey.shade300,
+
+          // backgroundColor: Color.fromARGB(255, 0, 0, 0),
+          backgroundColor: Colors.white,
+          // surfaceTintColor: Colors.green,
+          // shadowColor: Colors.green,
+
+          elevation: 0,
+          shape: RoundedRectangleBorder(
+            // borderRadius: BorderRadius.vertical(
+            //   bottom: Radius.circular(30.0),
+            // )
+          ),
+          centerTitle: true,
+          title: Padding(
+            padding: EdgeInsets.only(top: 35.0, bottom: 35.0),
+            child: Row(
+              children: [
+                Padding(
+                  padding: EdgeInsets.only(top: 40.0, bottom: 30.0),
+                  child: SizedBox(
+                    width: MediaQuery.of(context).size.width * 0.07,
+                    height: MediaQuery.of(context).size.width * 0.07,
+                    child: ValueListenableBuilder<bool>(
+                      valueListenable: updateColor,
+                      builder: (context, newPic, child) {
+                        return ClipOval(
+                          child: Image(
+                            image: pic,
+                            fit: BoxFit.cover,
+                          ),
+                        );
+                      },
                     ),
-                  );
-                },
-              ),
-            ),
-            SizedBox(width: MediaQuery.of(context).size.width * 0.03),
-            Expanded(
-              child: Container(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    SizedBox(height: MediaQuery.of(context).size.width * 0.022),
-                    Text(
-                      'Welcome Back,',
-                      style: GoogleFonts.poppins(
-                        color: Color.fromARGB(221, 255, 255, 255),
-                        fontWeight: FontWeight.w900,
-                        fontSize: MediaQuery.of(context).size.width * 0.025,
-                      ),
-                    ),
-                    Text(
-                      '${welcome_message}',
-                      overflow: TextOverflow.fade,
-                      maxLines: 1,
-                      style: GoogleFonts.poppins(
-                        color: Color.fromARGB(221, 255, 255, 255),
-                        fontWeight: FontWeight.bold,
-                        fontSize: MediaQuery.of(context).size.width * 0.045,
-                      ),
-                    ),
-                  ],
+                  ),
                 ),
+                SizedBox(
+                    width: MediaQuery.of(context).size.width * 0.03),
+                Expanded(
+                  child: Container(
+
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        SizedBox(height: MediaQuery.of(context).size.width * 0.022),
+                        Text(
+                          'Welcome Back,',
+                          style: GoogleFonts.poppins(
+                            // color: Color.fromARGB(221, 255, 255, 255),
+                            color: Colors.black,
+                            fontWeight: FontWeight.w600,
+                            fontSize: MediaQuery.of(context).size.width * 0.025,
+                          ),
+                        ),
+                        Text(
+                          '${welcome_message}',
+                          overflow: TextOverflow.fade,
+                          maxLines: 1,
+                          style: GoogleFonts.poppins(
+                            // color: Color.fromARGB(221, 255, 255, 255),
+                            color: Colors.black,
+                            fontWeight: FontWeight.w700,
+                            fontSize: MediaQuery.of(context).size.width * 0.045,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          actions: [
+            Stack(
+              children: [
+                SizedBox(
+                  height: kToolbarHeight,
+                  child: IconButton(
+                    icon: Icon(
+                      Icons.notifications,
+                      // color: Color.fromARGB(225, 255, 255, 255),
+                      color: Colors.black,
+                    ),
+                    onPressed: () async {
+                      print("Student notification=${notificationCount}");
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => NotificationsPage(
+                            notificationCount: notificationCount,
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+                ),
+                StreamBuilder<int>(
+                  stream: databaseInterface.get_notification_count_stream(
+                    LoggedInDetails.getEmail(),
+                  ),
+                  builder: (context, snapshot) {
+                    if (snapshot.hasData) {
+                      int notificationCount = snapshot.data ?? 0;
+                      return Positioned(
+                        right: 0,
+                        top: 10,
+                        child: notificationCount > 0
+                            ? Container(
+                                padding: EdgeInsets.all(1),
+                                decoration: BoxDecoration(
+                                  color: Colors.red,
+                                  borderRadius: BorderRadius.circular(8),
+                                ),
+                                constraints: BoxConstraints(
+                                  minWidth: 16,
+                                  minHeight: 16,
+                                ),
+                                child: Text(
+                                  '$notificationCount',
+                                  style: TextStyle(
+                                    // color: Color.fromARGB(225, 255, 255, 255),
+                                    color: Colors.black,
+                                    fontSize: 10,
+                                  ),
+                                  textAlign: TextAlign.center,
+                                ),
+                              )
+                            : Container(),
+                      );
+                    } else {
+                      return Container();
+                    }
+                  },
+                ),
+              ],
+            ),
+            PopupMenuButton<MenuItem>(
+              onSelected: (item) => onSelected(context, item),
+              icon: Icon(
+                Icons.more_vert,
+                // color: Color.fromARGB(221, 255, 255, 255),
+                color: Colors.black,
               ),
+              itemBuilder: (context) => [
+                ...MenuItems.itemsFirst.map(buildItem),
+                PopupMenuDivider(),
+                ...MenuItems.itemsThird.map(buildItem),
+                PopupMenuDivider(),
+                ...MenuItems.itemsSecond.map(buildItem),
+              ],
             ),
           ],
         ),
-        actions: [
-          Stack(
-            children: [
-              SizedBox(
-                height: kToolbarHeight,
-                child: IconButton(
-                  icon: Icon(
-                    Icons.notifications,
-                    color: Color.fromARGB(255, 255, 255, 255),
-                  ),
-                  onPressed: () async {
-                    print("Student notification=${notificationCount}");
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => NotificationsPage(
-                          notificationCount: notificationCount,
-                        ),
-                      ),
-                    );
-                  },
-                ),
-              ),
-              StreamBuilder<int>(
-                stream: databaseInterface.get_notification_count_stream(
-                  LoggedInDetails.getEmail(),
-                ),
-                builder: (context, snapshot) {
-                  if (snapshot.hasData) {
-                    int notificationCount = snapshot.data ?? 0;
-                    return Positioned(
-                      right: 0,
-                      top: 10,
-                      child: notificationCount > 0
-                          ? Container(
-                              padding: EdgeInsets.all(1),
-                              decoration: BoxDecoration(
-                                color: Colors.red,
-                                borderRadius: BorderRadius.circular(8),
-                              ),
-                              constraints: BoxConstraints(
-                                minWidth: 16,
-                                minHeight: 16,
-                              ),
-                              child: Text(
-                                '$notificationCount',
-                                style: TextStyle(
-                                  color: Color.fromARGB(255, 255, 255, 255),
-                                  fontSize: 10,
-                                ),
-                                textAlign: TextAlign.center,
-                              ),
-                            )
-                          : Container(),
-                    );
-                  } else {
-                    return Container();
-                  }
-                },
-              ),
-            ],
-          ),
-          PopupMenuButton<MenuItem>(
-            onSelected: (item) => onSelected(context, item),
-            icon: Icon(
-              Icons.more_vert,
-              color: Color.fromARGB(255, 255, 255, 255),
-            ),
-            itemBuilder: (context) => [
-              ...MenuItems.itemsFirst.map(buildItem).toList(),
-              PopupMenuDivider(),
-              ...MenuItems.itemsThird.map(buildItem).toList(),
-              PopupMenuDivider(),
-              ...MenuItems.itemsSecond.map(buildItem).toList(),
-            ],
-          ),
-        ],
       ),
       body: Stack(
         children: [
           Container(
+            decoration: BoxDecoration(
+                borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(35.0),
+                  topRight: Radius.circular(35.0),
+                ),
+                color: Colors.orange.shade100,
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.orange.withOpacity(0.3),
+                    blurRadius: 8,
+                    spreadRadius: 2,
+                    offset: Offset(0, 3),
+                  ),
+                ],
+            ),
+
             // padding: EdgeInsets.only(top: 30.0),
             height: MediaQuery.of(context).size.height,
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
-                  colors: [
-                    Color.fromARGB(255, 232, 232, 234),
-                    Color.fromARGB(255, 255, 255, 255)
-                  ]),
-            ),
+            // decoration: BoxDecoration(
+            //   color: Color(0Xfff1e2cc),
+            // ),
             // color: Colors.bla,
             child: GridView.builder(
               gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
@@ -385,21 +420,26 @@ class _HomeStudentState extends State<HomeStudent> {
                     //margin: EdgeInsets.only(bottom: 20),
                     margin: EdgeInsets.all(20),
                     decoration: BoxDecoration(
-                      color: Colors.white,
+
+                      color: Colors.orange.shade500,
+                      // border: Border.all(
+                      //   width: 2,
+                      //   color: Colors.black.withOpacity(0.5),
+                      // ),
                       borderRadius: BorderRadius.only(
-                          topLeft: Radius.circular(10),
-                          topRight: Radius.circular(10),
-                          bottomLeft: Radius.circular(10),
-                          bottomRight: Radius.circular(10)),
-                      boxShadow: [
-                        BoxShadow(
-                          // color: inkColors[index % inkColors.length].withOpacity(0.5),
-                          color: Colors.grey.withOpacity(0.6),
-                          spreadRadius: 5,
-                          blurRadius: 7,
-                          offset: Offset(0, 3), // changes position of shadow
-                        ),
-                      ],
+                          topLeft: Radius.circular(20),
+                          topRight: Radius.circular(20),
+                          bottomLeft: Radius.circular(20),
+                          bottomRight: Radius.circular(20)),
+                          boxShadow: [
+                            BoxShadow(
+                              // color: inkColors[index % inkColors.length].withOpacity(0.5),
+                              color: Colors.grey.withOpacity(0.3),
+                              spreadRadius: 5,
+                              blurRadius: 7,
+                              offset: Offset(0, 3), // changes position of shadow
+                            ),
+                          ],
                     ),
                     // decoration: BoxDecoration(
                     //   shape: BoxShape.rectangle,
@@ -423,7 +463,7 @@ class _HomeStudentState extends State<HomeStudent> {
                                     MediaQuery.of(context).size.width * 0.01,
                               ),
                               Align(
-                                alignment: Alignment.topLeft,
+                                alignment: Alignment.center,
                                 child: FittedBox(
                                   fit: BoxFit.contain,
                                   child: Text(
@@ -434,8 +474,8 @@ class _HomeStudentState extends State<HomeStudent> {
                                       fontSize:
                                           MediaQuery.of(context).size.width *
                                               0.04,
-                                      fontWeight: FontWeight.bold,
-                                      color: Colors.black,
+                                      fontWeight: FontWeight.w500,
+                                      color: Colors.white,
                                     ),
                                   ),
                                 ),
@@ -488,9 +528,8 @@ class _HomeStudentState extends State<HomeStudent> {
                                                 0.01,
                                           ),
                                           Text(
-                                            "Status: " +
-                                                studentStatus[index]
-                                                    .toUpperCase(),
+                                            "Status: ${studentStatus[index]
+                                                    .toUpperCase()}",
                                             style: GoogleFonts.poppins(
                                               fontSize: MediaQuery.of(context)
                                                       .size
@@ -498,7 +537,8 @@ class _HomeStudentState extends State<HomeStudent> {
                                                   0.03,
                                               fontWeight: FontWeight.normal,
                                               color:
-                                                  Color.fromARGB(255, 0, 0, 0),
+                                                  // Color.fromARGB(255, 0, 0, 0),
+                                              Colors.white,
                                             ),
                                             textAlign: TextAlign.center,
                                           ),
@@ -530,17 +570,18 @@ class _HomeStudentState extends State<HomeStudent> {
                                                   0.03,
                                               fontWeight: FontWeight.normal,
                                               color:
-                                                  Color.fromARGB(255, 0, 0, 0),
+                                                  // Color.fromARGB(255, 0, 0, 0),
+                                              Colors.white,
                                             ),
                                             textAlign: TextAlign.right,
                                           ),
                                         ],
                                       ),
-                                      SizedBox(
-                                        height:
-                                            MediaQuery.of(context).size.height *
-                                                0.01,
-                                      ),
+                                      // SizedBox(
+                                      //   height:
+                                      //       MediaQuery.of(context).size.height *
+                                      //           0.01,
+                                      // ),
                                     ]),
                               )
                             ],
@@ -606,7 +647,7 @@ class _HomeStudentState extends State<HomeStudent> {
         )
             .then((value) async {
           String? curr_email = widget.email;
-          databaseInterface db = new databaseInterface();
+          databaseInterface db = databaseInterface();
           User result = await db.get_student_by_email(curr_email);
           pic = result.profileImage;
           updateColor.value = !updateColor.value;

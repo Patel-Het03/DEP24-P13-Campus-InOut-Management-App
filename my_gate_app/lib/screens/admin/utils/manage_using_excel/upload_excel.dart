@@ -5,11 +5,10 @@ import 'package:my_gate_app/screens/admin/utils/file_upload_button.dart';
 
 class UploadExcel extends StatefulWidget {
   const UploadExcel(
-      {Key? key,
+      {super.key,
       required this.upload_page_message,
       required this.upload_url,
-      required this.upload_page_color})
-      : super(key: key);
+      required this.upload_page_color});
   final String upload_page_message;
   final String upload_url;
   final Color? upload_page_color;

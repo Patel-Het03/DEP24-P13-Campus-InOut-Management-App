@@ -1,18 +1,16 @@
 // ignore_for_file: prefer_const_literals_to_create_immutables, prefer_const_constructors, unnecessary_new, deprecated_member_use, non_constant_identifier_names
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:my_gate_app/database/database_objects.dart';
-import 'package:my_gate_app/screens/student/student_ticket_popup.dart';
 import 'package:my_gate_app/screens/utils/scrollable_widget.dart';
 
 class StudentTicketTable extends StatefulWidget {
   StudentTicketTable({
-    Key? key,
+    super.key,
     required this.location,
     required this.tickets,
     required this.pre_approval_required,
-  }) : super(key: key);
+  });
   final String location;
   List<ResultObj> tickets;
   final bool pre_approval_required;
@@ -52,11 +50,12 @@ class _StudentTicketTableState extends State<StudentTicketTable> {
 
   @override
   Widget build(BuildContext context) => Scaffold(
-        backgroundColor: Colors.white, // added now
+        backgroundColor: Colors.orange.shade100, // added now
         body: Column(
           children: [
             Center(
               child: Container(
+                color: Colors.orange.shade100,
                 padding: EdgeInsets.all(1),
                 child: Text(
                   // "Ticket Table",
@@ -146,14 +145,11 @@ class _StudentTicketTableState extends State<StudentTicketTable> {
             DataCell(Text((index + 1).toString(),
                 style: TextStyle(color: Colors.black))),
             DataCell(Text(
-                "    " +
-                    ((ticket.date_time.split("T").last)
+                "    ${((ticket.date_time.split("T").last)
                             .split(".")[0]
                             .split(":")
                             .sublist(0, 2))
-                        .join(":") +
-                    "\n" +
-                    ticket.date_time.split("T")[0],
+                        .join(":")}\n${ticket.date_time.split("T")[0]}",
                 style: TextStyle(color: Colors.black))),
             DataCell(Text(ticket.ticket_type.toString(),
                 style: TextStyle(color: Colors.black))),
@@ -187,14 +183,11 @@ class _StudentTicketTableState extends State<StudentTicketTable> {
             DataCell(Text((index + 1).toString(),
                 style: TextStyle(color: Colors.black))),
             DataCell(Text(
-                "    " +
-                    ((ticket.date_time.split("T").last)
+                "    ${((ticket.date_time.split("T").last)
                             .split(".")[0]
                             .split(":")
                             .sublist(0, 2))
-                        .join(":") +
-                    "\n" +
-                    ticket.date_time.split("T")[0],
+                        .join(":")}\n${ticket.date_time.split("T")[0]}",
                 style: TextStyle(color: Colors.black))),
             DataCell(Text(ticket.ticket_type.toString(),
                 style: TextStyle(color: Colors.black))),

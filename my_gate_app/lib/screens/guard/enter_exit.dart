@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:my_gate_app/aboutus.dart';
 import 'package:my_gate_app/auth/authscreen.dart';
 import 'package:my_gate_app/get_email.dart';
-import 'package:my_gate_app/screens/guard/visitors/manage_visitors.dart';
 import 'package:my_gate_app/screens/profile2/guard_profile/guard_profile_page.dart';
 import 'package:my_gate_app/screens/profile2/model/menu_item.dart';
 import 'package:my_gate_app/screens/profile2/utils/menu_items.dart';
@@ -13,15 +12,14 @@ import 'guard_tabs.dart';
 import 'package:my_gate_app/database/database_interface.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:my_gate_app/screens/notificationPage/notification.dart';
-import 'package:my_gate_app/screens/guard/qrScanner.dart';
 import 'package:qrscan/qrscan.dart' as scanner;
 import 'package:my_gate_app/screens/profile2/validification_page.dart';
 
 class EntryExit extends StatefulWidget {
   const EntryExit({
-    Key? key,
+    super.key,
     required this.guard_location,
-  }) : super(key: key);
+  });
   final String guard_location;
 
   @override
@@ -87,7 +85,7 @@ class _EntryExitState extends State<EntryExit> {
               ),
             ),
             Text(
-              '${welcome_message}',
+              welcome_message,
               style: TextStyle(
                   fontSize: 15,
                   color: Colors.black,
@@ -167,11 +165,11 @@ class _EntryExitState extends State<EntryExit> {
             onSelected: (item) => onSelected(context, item),
             icon: Icon(Icons.more_vert, color: Color.fromARGB(255, 0, 0, 0)),
             itemBuilder: (context) => [
-              ...MenuItems.itemsFirst.map(buildItem).toList(),
+              ...MenuItems.itemsFirst.map(buildItem),
               PopupMenuDivider(),
-              ...MenuItems.itemsThird.map(buildItem).toList(),
+              ...MenuItems.itemsThird.map(buildItem),
               PopupMenuDivider(),
-              ...MenuItems.itemsSecond.map(buildItem).toList(),
+              ...MenuItems.itemsSecond.map(buildItem),
             ],
           )
         ],
@@ -331,7 +329,7 @@ class _EntryExitState extends State<EntryExit> {
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(
                               content: Text(
-                                  'You are not authorized for ${location_of_student} Locations'),
+                                  'You are not authorized for $location_of_student Locations'),
                               backgroundColor:
                                   Colors.red, // Set the background color to red
                             ),
@@ -339,7 +337,7 @@ class _EntryExitState extends State<EntryExit> {
                         }
                       } else {
                         // Handle the case where qrdata is null
-                        print("qrdata bhai=${qrdata}");
+                        print("qrdata bhai=$qrdata");
                       }
                     },
                     shape: RoundedRectangleBorder(

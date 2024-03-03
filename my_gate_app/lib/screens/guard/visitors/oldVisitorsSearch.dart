@@ -9,11 +9,11 @@ import 'package:my_gate_app/screens/utils/scrollable_widget.dart';
 
 class oldVisitorSeacrch extends StatefulWidget {
   const oldVisitorSeacrch({
-    Key? key,
+    super.key,
     required this.username,
     required this.phonenumber,
     this.userid,
-  }) : super(key: key);
+  });
 
   final String username;
   final String phonenumber;
@@ -108,7 +108,7 @@ class _oldVisitorSeacrchState extends State<oldVisitorSeacrch> {
                       )
                     : Column(),
                 Text(
-                  "${widget.username}",
+                  widget.username,
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 30,
@@ -217,7 +217,7 @@ class _oldVisitorSeacrchState extends State<oldVisitorSeacrch> {
                 SubmitButton(
                   button_text: "Generate",
                   submit_function: () async {
-                    print("purpose=${purpose},number=${num_additional}");
+                    print("purpose=$purpose,number=$num_additional");
                     int statusCode =
                         await databaseInterface.insert_in_visitors_ticket_table(
                             visitor_name,

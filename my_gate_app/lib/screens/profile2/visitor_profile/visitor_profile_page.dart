@@ -1,30 +1,16 @@
 // ignore_for_file: non_constant_identifier_names, unused_local_variable, unnecessary_new
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:my_gate_app/database/database_interface.dart';
 import 'package:my_gate_app/database/database_objects.dart';
-import 'package:my_gate_app/screens/profile2/authority_profile/authority_edit_profile_page.dart';
 // import 'package:my_gate_app/screens/profile2/guard_profile/guard_edit_profile_page.dart';
-import 'package:my_gate_app/screens/profile2/model/user.dart';
-import 'package:my_gate_app/screens/profile2/utils/user_preferences.dart';
-import 'package:my_gate_app/screens/profile2/widget/appbar_widget.dart';
-import 'package:my_gate_app/screens/profile2/widget/button_widget.dart';
-import 'package:my_gate_app/screens/profile2/widget/profile_widget.dart';
-import 'package:my_gate_app/screens/profile2/edit_profile_page.dart';
-import 'package:animated_theme_switcher/animated_theme_switcher.dart';
-import 'package:my_gate_app/screens/profile2/widget/textfield_widget.dart';
-import 'package:my_gate_app/get_email.dart';
-import 'package:my_gate_app/screens/profile2/model/user.dart';
 import 'package:my_gate_app/screens/utils/custom_snack_bar.dart';
 
 class VisitorProfilePage extends StatefulWidget {
   final ResultObj4 visitorObject;
   final bool isEditable;
   const VisitorProfilePage(
-      {Key? key, required this.visitorObject, required this.isEditable})
-      : super(key: key);
+      {super.key, required this.visitorObject, required this.isEditable});
   @override
   _VisitorProfilePageState createState() => _VisitorProfilePageState();
 }
@@ -49,11 +35,11 @@ class _VisitorProfilePageState extends State<VisitorProfilePage> {
     controller_purpose.text = widget.visitorObject.purpose;
     controller_authority_message.text = widget.visitorObject.authority_message;
 
-    var _date_time = widget.visitorObject.date_time_of_ticket_raised;
-    _date_time =
-        _date_time.split("T")[1].split(".")[0] + " " + _date_time.split("T")[0];
+    var date_time = widget.visitorObject.date_time_of_ticket_raised;
+    date_time =
+        "${date_time.split("T")[1].split(".")[0]} ${date_time.split("T")[0]}";
 
-    controller_date_time_of_ticket_raised.text = _date_time;
+    controller_date_time_of_ticket_raised.text = date_time;
     // controller_date_time_authority.text = widget.visitorObject.date_time_authority ;
     controller_duration_of_stay.text = widget.visitorObject.duration_of_stay;
 
@@ -91,15 +77,15 @@ class _VisitorProfilePageState extends State<VisitorProfilePage> {
       backgroundColor: Colors.white,
       appBar: AppBar(
         leading: IconButton(
-          icon: Icon(Icons.arrow_back),
+          icon: const Icon(Icons.arrow_back),
           onPressed: () {
             Navigator.pop(context);
           },
         ),
-        backgroundColor: Color.fromARGB(255, 0, 0, 0),
-        iconTheme: IconThemeData(color: Colors.black),
+        backgroundColor: const Color.fromARGB(255, 0, 0, 0),
+        iconTheme: const IconThemeData(color: Colors.black),
         elevation: 0,
-        title: Text(
+        title: const Text(
           'Ticket Details',
           style: TextStyle(
               fontWeight: FontWeight.bold,
@@ -133,7 +119,6 @@ class _VisitorProfilePageState extends State<VisitorProfilePage> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
                 ElevatedButton(
-                  child: const Text("Approve Ticket"),
                   onPressed: () async {
                     widget.visitorObject.authority_message =
                         controller_authority_message.text;
@@ -153,10 +138,10 @@ class _VisitorProfilePageState extends State<VisitorProfilePage> {
                     textStyle: MaterialStateProperty.all(
                         const TextStyle(fontSize: 15, color: Colors.black)),
                   ),
+                  child: const Text("Approve Ticket"),
                 ),
                 const SizedBox(width: 5),
                 ElevatedButton(
-                  child: const Text("Reject Ticket"),
                   onPressed: () async {
                     widget.visitorObject.authority_message =
                         controller_authority_message.text;
@@ -174,6 +159,7 @@ class _VisitorProfilePageState extends State<VisitorProfilePage> {
                     textStyle: MaterialStateProperty.all(
                         const TextStyle(fontSize: 15, color: Colors.black)),
                   ),
+                  child: const Text("Reject Ticket"),
                 ),
               ],
             ),
@@ -198,9 +184,9 @@ class _VisitorProfilePageState extends State<VisitorProfilePage> {
           const SizedBox(height: 8),
           TextField(
             enabled: enabled,
-            style: TextStyle(color: Color.fromARGB(255, 0, 0, 0)),
+            style: const TextStyle(color: Color.fromARGB(255, 0, 0, 0)),
             controller: controller,
-            decoration: InputDecoration(
+            decoration: const InputDecoration(
               enabledBorder: OutlineInputBorder(
                 borderSide: BorderSide(color: Color.fromARGB(255, 29, 40, 204)),
               ),

@@ -51,7 +51,7 @@ class ResultObj {
   late String vehicle_number;
   // TODO add fields: guard_name
 
-  ResultObj() {}
+  ResultObj();
 
   ResultObj.constructor1(this.location, this.date_time, this.is_approved,
       this.ticket_type, this.email, this.student_name, this.authority_status,this.destination_address,this.vehicle_number);
@@ -116,7 +116,7 @@ class ResultObj2 {
   late String student_name;
   late String authority_message;
 
-  ResultObj2() {}
+  ResultObj2();
 
   ResultObj2.constructor1(this.location, this.date_time, this.is_approved,
       this.ticket_type, this.email, this.student_name, this.authority_message);
@@ -163,7 +163,7 @@ class ResultObj3 {
   late String inside_parent_location;
   late String exited_all_children;
 
-  ResultObj3() {}
+  ResultObj3();
 
   ResultObj3.constructor1(
       this.in_or_out, this.inside_parent_location, this.exited_all_children);
@@ -208,7 +208,7 @@ class ReadTableObject {
   late String automatic_exit_required;
   late String designation;
 
-  ReadTableObject() {}
+  ReadTableObject();
 
   ReadTableObject.constructor1(
       this.name,
@@ -295,7 +295,7 @@ class ResultObj4 {
   late String duration_of_stay; //
   late String num_additional;
 
-  ResultObj4() {}
+  ResultObj4();
 
   ResultObj4.constructor1(
     this.visitor_name,
