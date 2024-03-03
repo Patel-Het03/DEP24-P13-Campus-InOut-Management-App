@@ -18,7 +18,10 @@ Widget dropdown(
       data: ThemeData(
         textTheme: TextTheme(subtitle1: TextStyle(color: Colors.black)),
       ),
-      child:Text('dropdown is commented '),
+      child:Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Text('dropdown is commented '),
+      ),
       // child: DropdownSearch<String>(
       //   popupBackgroundColor: Colors.white,
       //   mode: Mode.MENU,

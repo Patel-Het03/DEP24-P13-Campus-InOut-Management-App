@@ -30,7 +30,7 @@ class _FileUploadButtonState extends State<FileUploadButton> {
         children: [
           Container(
             padding: EdgeInsets.all(15),
-            //color: Colors.green,
+            // color: Colors.green,
             child: Container(
               height: 60,
               decoration: BoxDecoration(
@@ -48,7 +48,7 @@ class _FileUploadButtonState extends State<FileUploadButton> {
                   ),
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.pink.withOpacity(0.2),
+                      color: Colors.black.withOpacity(0.2),
                       spreadRadius: 4,
                       blurRadius: 10,
                       offset: Offset(0, 3),
@@ -65,7 +65,8 @@ class _FileUploadButtonState extends State<FileUploadButton> {
                     shape: MaterialStateProperty.all<RoundedRectangleBorder>(
                         RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(18.0),
-                            side: BorderSide(color: Colors.blue)))),
+                            // side: BorderSide(color: Colors.blue)
+                        ))),
                 onPressed: () async {
                   FilePickerResult? picked =
                       await FilePicker.platform.pickFiles();
@@ -146,7 +147,7 @@ class _FileUploadButtonState extends State<FileUploadButton> {
                   ),
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.pink.withOpacity(0.2),
+                      color: Colors.black.withOpacity(0.2),
                       spreadRadius: 4,
                       blurRadius: 10,
                       offset: Offset(0, 3),
@@ -160,11 +161,11 @@ class _FileUploadButtonState extends State<FileUploadButton> {
                 ),
                 style: ButtonStyle(
                     backgroundColor:
-                        MaterialStateProperty.all(Colors.deepOrangeAccent),
+                        MaterialStateProperty.all(Colors.grey),
                     shape: MaterialStateProperty.all<RoundedRectangleBorder>(
                         RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(18.0),
-                            side: BorderSide(color: Colors.blue)))),
+                            ))),
                 onPressed: () {
                   try {
                     // send this.chosen_file to this.url_upload_file

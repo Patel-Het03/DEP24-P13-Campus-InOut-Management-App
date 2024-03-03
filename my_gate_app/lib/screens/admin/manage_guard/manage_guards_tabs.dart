@@ -48,6 +48,7 @@ class _ManageGuardsTabsState extends State<ManageGuardsTabs>
           appBar: AppBar(
             title: Text("Manage Guards"),
             centerTitle: true,
+            backgroundColor: Colors.black,
             bottom: TabBar(
               controller: controller,
               tabs: [

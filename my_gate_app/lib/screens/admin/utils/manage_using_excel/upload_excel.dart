@@ -29,14 +29,15 @@ class _UploadExcelState extends State<UploadExcel> {
         // ),
         body: Container(
             decoration: BoxDecoration(
-              gradient: LinearGradient(
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-                colors: [
-                  Colors.lightBlueAccent,
-                  Colors.purple.shade200,
-                ],
-              ),
+              // gradient: LinearGradient(
+              //   begin: Alignment.topLeft,
+              //   end: Alignment.bottomRight,
+              //   colors: [
+              //     Color(0xFF212130),
+              //     Color(0xFF39304A),
+              //   ],
+              // ),
+              color: Color(0xfff0eded),
             ),
             height: MediaQuery.of(context).size.height,
             width: MediaQuery.of(context).size.width,

@@ -48,6 +48,7 @@ class _ManageLocationTabsState extends State<ManageLocationTabs>
           appBar: AppBar(
             title: Text("Manage Locations"),
             centerTitle: true,
+            backgroundColor: Colors.black,
             bottom: TabBar(
               controller: controller,
               tabs: [

@@ -47,6 +47,7 @@ class _ManageAdminTabsState extends State<ManageAdminTabs>
           appBar: AppBar(
             title: Text("Manage Admins"),
             centerTitle: true,
+            backgroundColor: Colors.black,
             bottom: TabBar(
               controller: controller,
               // ignore: prefer_const_literals_to_create_immutables

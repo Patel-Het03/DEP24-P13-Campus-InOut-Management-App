@@ -41,8 +41,11 @@ class _StatisticsTabsTabsState extends State<StatisticsTabs>
     length: 2,
     child: Scaffold(
       appBar: AppBar(
-        title: Text("View Statistics"),
+        title: Text(
+            "View Statistics",
+        ),
         centerTitle: true,
+        backgroundColor: Colors.black,
         bottom: TabBar(
           controller: controller,
           tabs: [

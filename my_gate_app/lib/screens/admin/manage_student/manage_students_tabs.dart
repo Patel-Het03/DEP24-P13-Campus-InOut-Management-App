@@ -40,6 +40,7 @@ class _ManageStudentsTabsState extends State<ManageStudentsTabs>
       appBar: AppBar(
         title: Text("Manage Students"),
         centerTitle: true,
+        backgroundColor: Colors.black,
         bottom: TabBar(
           controller: controller,
           tabs: [
