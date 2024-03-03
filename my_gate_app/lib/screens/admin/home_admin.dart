@@ -444,6 +444,8 @@ Widget AdminButton(BuildContext context, String ButtonText, Widget NextPage,
         color: Colors.orange.shade400,
       ),
       child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           SizedBox(
             height: 5,
@@ -462,12 +464,15 @@ Widget AdminButton(BuildContext context, String ButtonText, Widget NextPage,
               padding: const EdgeInsets.all(8.0),
               child: Align(
                 alignment: Alignment.center,
-                child: Text(
-                  ButtonText,
-                  style: GoogleFonts.roboto(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black),
+                child: FittedBox(
+                  fit: BoxFit.contain,
+                  child: Text(
+                    ButtonText,
+                    style: GoogleFonts.roboto(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black),
+                  ),
                 ),
               ),
             ),
