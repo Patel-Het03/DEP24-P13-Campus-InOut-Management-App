@@ -71,7 +71,6 @@ class _AdminProfilePageState extends State<AdminProfilePage> {
       backgroundColor: Colors.white,
           appBar: buildAppBar(context),
           body: Container(
-              begin: Alignment.bottomLeft,
             decoration: BoxDecoration(
               color: Colors.orange.shade100,
 
