@@ -70,10 +70,8 @@ class _GuardTabsState extends State<GuardTabs>
             centerTitle: true,
             flexibleSpace: Container(
               decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
-                      colors: <Color>[Colors.purple, Colors.blue])),
+                  color:Colors.white
+              ),
             ),
             leading: IconButton(
               icon: Icon(Icons.arrow_back, color: Color.fromARGB(255, 0, 0, 0)),
@@ -96,7 +94,7 @@ class _GuardTabsState extends State<GuardTabs>
 
             bottom: TabBar(
               indicator: BoxDecoration(
-                color: Colors.white.withOpacity(0.5),
+                color: Colors.grey.withOpacity(0.5),
                 borderRadius: BorderRadius.circular(
                     10.0), // Set the border radius for rounded corners
               ),
@@ -111,6 +109,12 @@ class _GuardTabsState extends State<GuardTabs>
               //           color: Color.fromARGB(255, 0, 0, 0),
               //         ))),
               // ignore: prefer_const_literals_to_create_immutables
+              indicatorSize: TabBarIndicatorSize.tab,
+              labelStyle: TextStyle(fontSize:16,
+              fontWeight:FontWeight.bold),
+              unselectedLabelStyle: TextStyle(
+                  // fontSize:15,
+              fontWeight: FontWeight.normal),
               tabs: [
                 Tab(
                   icon: Icon(Icons.pending_actions, color: Colors.black),
@@ -119,8 +123,8 @@ class _GuardTabsState extends State<GuardTabs>
                     'Pending\nTickets',
                     style: TextStyle(
                       color: Color.fromARGB(255, 0, 0, 0),
-                      fontWeight: FontWeight.bold,
-                      fontSize: 16,
+                      // fontWeight: FontWeight.bold,
+                      // fontSize: 16,
                     ),
                     textAlign: TextAlign.center,
                   ),
@@ -133,8 +137,8 @@ class _GuardTabsState extends State<GuardTabs>
                     'Approved\n Tickets',
                     style: TextStyle(
                       color: Color.fromARGB(255, 0, 0, 0),
-                      fontWeight: FontWeight.bold,
-                      fontSize: 16,
+                      // fontWeight: FontWeight.bold,
+                      // fontSize: 16,
                     ),
                     textAlign: TextAlign.center,
                   ),
@@ -146,8 +150,8 @@ class _GuardTabsState extends State<GuardTabs>
                     'Rejected\n Tickets',
                     style: TextStyle(
                       color: Color.fromARGB(255, 0, 0, 0),
-                      fontWeight: FontWeight.bold,
-                      fontSize: 16,
+                      // fontWeight: FontWeight.bold,
+                      // fontSize: 16,
                     ),
                     textAlign: TextAlign.center,
                   ),

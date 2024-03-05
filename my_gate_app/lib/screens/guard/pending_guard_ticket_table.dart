@@ -388,7 +388,7 @@ class _SelectablePageState extends State<SelectablePage> {
   @override
   Widget build(BuildContext context) => Container(
         child: Scaffold(
-          backgroundColor: Color.fromARGB(255, 242, 242, 242),
+          backgroundColor: Colors.brown[50],
           body: Container(
             width: MediaQuery.of(context).size.width,
             child: ScrollableWidget(
@@ -400,234 +400,65 @@ class _SelectablePageState extends State<SelectablePage> {
                     height: 10,
                   ),
                   if (widget.enter_exit == "enter")
-                    Row(
-                      children: [
-                        Padding(
-                          padding: EdgeInsets.only(
-                              left: MediaQuery.of(context).size.width / 20),
-                          child: ElevatedButton.icon(
-                            icon: Icon(
-                              Icons.supervised_user_circle,
-                              color: Color.fromARGB(255, 0, 0, 0),
-                              size: 18.0,
-                            ),
-                            onPressed: () async {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => selectVisitor(),
+
+
+
+                             Padding(
+                               padding: EdgeInsets.only(top:25,left:100,right:100),
+                               child: ElevatedButton.icon(
+                                icon: Icon(
+                                  Icons.supervised_user_circle,
+                                  color: Colors.grey[200],
+                                  size: 18.0,
                                 ),
-                              );
-                            },
-                            label: Text(
-                              "Add Visitor Ticket",
-                              style: TextStyle(
-                                color: Color.fromARGB(255, 0, 0, 0),
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                            style: ButtonStyle(
-                              backgroundColor: MaterialStateProperty.all<Color>(
-                                Colors.blue,
-                              ),
-                              shape: MaterialStateProperty.all<
-                                  RoundedRectangleBorder>(
-                                RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(20),
+                                onPressed: () async {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => selectVisitor(),
+                                    ),
+                                  );
+                                },
+                                label: Text(
+                                  "Add Visitor Ticket",
+                                  style: TextStyle(
+                                    color: Colors.grey[200],
+                                    fontWeight: FontWeight.bold,
+                                  ),
                                 ),
-                              ),
-                              elevation: MaterialStateProperty.all<double>(4),
-                              padding:
-                                  MaterialStateProperty.all<EdgeInsetsGeometry>(
-                                EdgeInsets.symmetric(
-                                  horizontal: 20,
-                                  vertical: 10,
+                                style: ButtonStyle(
+                                  backgroundColor: MaterialStateProperty.all<Color>(
+                                    Colors.brown[400]!,
+                                  ),
+                                  shape: MaterialStateProperty.all<
+                                      RoundedRectangleBorder>(
+                                    RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(10),
+                                    ),
+                                  ),
+                                  elevation: MaterialStateProperty.all<double>(4),
+                                  padding:
+                                      MaterialStateProperty.all<EdgeInsetsGeometry>(
+                                    EdgeInsets.symmetric(
+                                      horizontal: 20,
+                                      vertical: 10,
+                                    ),
+                                  ),
                                 ),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
+                                                           ),
+                             ),
+
+
 
                   SizedBox(
                     height: 10,
                   ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      SizedBox(
-                        width: 20,
-                      ),
-                      // Center(
-                      //   child: ClipRRect(
-                      //     borderRadius: BorderRadius.circular(20),
-                      //     child: Image.asset(
-                      //       'assets/images/security_guards.jpg',
-                      //       height: 150,
-                      //     ),
-                      //   ),
-                      // ),
-                    ],
-                  ),
 
-                  SizedBox(
-                    height: 10,
-                  ),
-                  Center(
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        SizedBox(
-                          width: 30,
-                        ),
-                        ElevatedButton.icon(
-                          onPressed: () async {
-                            await accept_selected_tickets();
-                          },
-                          label: Text(
-                            "",
-                            style: TextStyle(
-                                color: Colors.black,
-                                fontWeight: FontWeight.bold),
-                          ),
-                          icon: Icon(
-                            Icons.check_circle_outlined,
-                            color: Colors.green,
-                            size: 50.0,
-                          ),
-                          style: ButtonStyle(
-                            backgroundColor: MaterialStateProperty.all<Color>(
-                                Color.fromARGB(255, 255, 254, 255)),
-                            shape: MaterialStateProperty.all<
-                                RoundedRectangleBorder>(
-                              RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(20),
-                              ),
-                            ),
-                            elevation: MaterialStateProperty.all<double>(10),
-                          ),
-                        ),
-                        SizedBox(
-                          width: 10,
-                        ),
-                        ElevatedButton.icon(
-                          onPressed: () async {
-                            await reject_selected_tickets();
-                          },
-                          label: Text(
-                            "",
-                            style: TextStyle(
-                                color: Colors.black,
-                                fontWeight: FontWeight.bold),
-                          ),
-                          icon: Icon(
-                            Icons.cancel,
-                            color: Colors.red,
-                            size: 50.0,
-                          ),
-                          style: ButtonStyle(
-                            backgroundColor: MaterialStateProperty.all<Color>(
-                                Color.fromARGB(255, 255, 255, 255)),
-                            shape: MaterialStateProperty.all<
-                                RoundedRectangleBorder>(
-                              RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(20),
-                              ),
-                            ),
-                            elevation: MaterialStateProperty.all<double>(10),
-                          ),
-                        ),
-                        SizedBox(
-                          width: 10,
-                        ),
-                        ElevatedButton.icon(
-                          onPressed: () async {
-                            init();
-                          },
-                          label: Text(
-                            "",
-                            style: TextStyle(
-                                color: Colors.black,
-                                fontWeight: FontWeight.bold),
-                          ),
-                          icon: Icon(
-                            Icons.refresh,
-                            color: Color.fromARGB(255, 8, 8, 8),
-                            size: 50.0,
-                          ),
-                          style: ButtonStyle(
-                            backgroundColor: MaterialStateProperty.all<Color>(
-                                Color.fromARGB(255, 255, 255, 255)),
-                            shape: MaterialStateProperty.all<
-                                RoundedRectangleBorder>(
-                              RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(20),
-                              ),
-                            ),
-                            elevation: MaterialStateProperty.all<double>(10),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
 
                   SizedBox(
                     height: 20,
                   ),
-                  Theme(
-                    data: ThemeData.light(),
-                    child: Row(
-                      children: <Widget>[
-                        // Container(
-                        //   width: MediaQuery.of(context).size.width / 2,
-                        //   child: RadioListTile<SingingCharacter>(
-                        //     title: const Text('Students',
-                        //         style: TextStyle(
-                        //             color: Colors.black,
-                        //             fontWeight: FontWeight.bold)),
-                        //     value: SingingCharacter.Students,
-                        //     groupValue: _character,
-                        //     onChanged: (SingingCharacter? value) {
-                        //       if (value != null) {
-                        //         setState(() {
-                        //           _character = value;
-                        //           Person = value.name;
-                        //           init();
-                        //         });
-                        //       }
-                        //     },
-                        //     activeColor: Colors.black,
-                        //   ),
-                        // ),
-                        // SizedBox(
-                        //   width: 20,
-                        // ),
-                        // Container(
-                        //   width: MediaQuery.of(context).size.width / 2,
-                        //   child: RadioListTile<SingingCharacter>(
-                        //     title: const Text('Visitors',
-                        //         style: TextStyle(
-                        //             color: Colors.black,
-                        //             fontWeight: FontWeight.bold)),
-                        //     value: SingingCharacter.Visitors,
-                        //     groupValue: _character,
-                        //     onChanged: (SingingCharacter? value) {
-                        //       if (value != null) {
-                        //         setState(() {
-                        //           _character = value;
-                        //           // print("${_character},${value.name}");
-                        //           Person = value.name;
-                        //           init();
-                        //         });
-                        //       }
-                        //     },
-                        //     activeColor: Colors.black,
-                        //   ),
-                        // ),
-                      ],
-                    ),
-                  ),
+
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
@@ -703,6 +534,7 @@ class _SelectablePageState extends State<SelectablePage> {
                   SizedBox(
                     height: 25,
                   ),
+
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
@@ -787,20 +619,106 @@ class _SelectablePageState extends State<SelectablePage> {
                       ),
                     ],
                   ),
-
+                  SizedBox(
+                    height: 10,
+                  ),
                   Center(
-                    child: Container(
-                      padding: EdgeInsets.all(1),
-                      child: Text(
-                        // "Ticket Table",
-                        "",
-                        style: GoogleFonts.roboto(
-                            fontSize: 20, fontWeight: FontWeight.bold),
-                      ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        SizedBox(
+                          width: 10,
+                        ),
+                        IconButton(
+                          onPressed: () async {
+                            await accept_selected_tickets();
+                          },
+                          tooltip:"accept the selected ticket",
+                          icon: Icon(
+                            Icons.check_circle_outlined,
+
+                            color: Colors.green,
+                            size: 50.0,
+                          ),
+                          style: ButtonStyle(
+                            backgroundColor: MaterialStateProperty.all<Color>(
+                                Color.fromARGB(255, 255, 254, 255)),
+                            shape: MaterialStateProperty.all<
+                                RoundedRectangleBorder>(
+                              RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(20),
+                              ),
+                            ),
+                            elevation: MaterialStateProperty.all<double>(10),
+                          ),
+                        ),
+                        SizedBox(
+                          width: 10,
+                        ),
+                        IconButton(
+                          onPressed: () async {
+                            await reject_selected_tickets();
+                          },
+                          tooltip: "reject the selected tickets",
+                          iconSize: 50,
+                          icon: Icon(
+                            Icons.cancel,
+                            color: Colors.red,
+                            size: 50.0,
+                          ),
+                          style: ButtonStyle(
+                            backgroundColor: MaterialStateProperty.all<Color>(
+                                Color.fromARGB(255, 255, 255, 255)),
+                            shape: MaterialStateProperty.all<
+                                RoundedRectangleBorder>(
+                              RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(20),
+                              ),
+                            ),
+                            elevation: MaterialStateProperty.all<double>(10),
+                          ),
+                        ),
+                        SizedBox(
+                          width: 10,
+                        ),
+                        IconButton(
+                          onPressed: () async {
+                            init();
+                          },
+                          icon: Icon(
+                            Icons.refresh,
+                            color: Color.fromARGB(255, 8, 8, 8),
+                            size: 50.0,
+                          ),
+                          style: ButtonStyle(
+                            backgroundColor: MaterialStateProperty.all<Color>(
+                                Color.fromARGB(255, 255, 255, 255)),
+                            shape: MaterialStateProperty.all<
+                                RoundedRectangleBorder>(
+                              RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(20),
+                              ),
+                            ),
+                            elevation: MaterialStateProperty.all<double>(10),
+                          ),
+                        ),
+                      ],
                     ),
                   ),
+
+                  // Center(
+                  //   child: Container(
+                  //     padding: EdgeInsets.all(1),
+                  //     child: Text(
+                  //       // "Ticket Table",
+                  //       "",
+                  //       style: GoogleFonts.roboto(
+                  //           fontSize: 20, fontWeight: FontWeight.bold),
+                  //     ),
+                  //   ),
+                  // ),
                   SizedBox(
-                    height: 2,
+                    height: 10,
                   ),
                   // buildDataTable()
                   // Text("No entries available in the ticket table"),
