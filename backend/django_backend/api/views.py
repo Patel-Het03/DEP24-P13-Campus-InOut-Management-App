@@ -2588,6 +2588,8 @@ def get_tickets_for_guard(request):
             ResultObj['student_name'] = student_name
 
             ref_id = ticket['ref_id'].value
+            vehicle_number=ticket['vehicle_reg_num'].value
+
 
             authority_status = ""
 
@@ -2623,6 +2625,7 @@ def get_tickets_for_guard(request):
                 authority_status = "NA"
 
             ResultObj['authority_status'] = authority_status
+            ResultObj['vehicle_number']=vehicle_number
 
             # print("ResultObj")
             # print(ResultObj)
