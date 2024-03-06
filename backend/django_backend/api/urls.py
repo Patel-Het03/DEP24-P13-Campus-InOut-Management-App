@@ -111,6 +111,8 @@ urlpatterns = [
          accept_selected_tickets_visitors),
     path('visitors/reject_selected_tickets_visitors',
          reject_selected_tickets_visitors),
+     # path('/guards/accept_selected_tickets_QR_accepted_rejected',
+     #     accept_selected_tickets_QR_accepted_rejected ),
 
 
 

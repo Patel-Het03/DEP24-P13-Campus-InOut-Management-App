@@ -21,7 +21,9 @@ class databaseInterface {
   static String complete_base_url_static =
       // "http://localhost:" + PORT_NO_static.toString();
       // "http://31.220.57.173:" + PORT_NO_static.toString();
-      "http://172.23.6.189:"+PORT_NO_static.toString();
+      // "http://172.23.6.189:"+PORT_NO_static.toString();
+      //     "http://10.0.2.2:"+PORT_NO_static.toString();
+      "http://192.168.68.111:" + PORT_NO_static.toString();
   databaseInterface() {}
 
   static Future<String> get_welcome_message(String email) async {
@@ -929,7 +931,7 @@ class databaseInterface {
     }
   }
 
-  Future<int> accept_selected_tickets(List<ResultObj> selectedTickets) async {
+   Future<int> accept_selected_tickets(List<ResultObj> selectedTickets) async {
     var uri = complete_base_url_static + "/guards/accept_selected_tickets";
     Map<String, String> headers = {
       'Content-type': 'application/json',
@@ -1684,9 +1686,12 @@ class databaseInterface {
       if (response.statusCode == 200) {
         var data = json.decode(response.body);
 
-        for (var x in data) {
-          output.add(x);
-        }
+        output.add(data['Main Gate']);
+        output.add(data['CS Department']);
+        output.add(data['Mess']);
+        output.add(data['Library']);
+        output.add(data['Hostel']);
+        output.add(data['CS Lab']);
 
         print("Location data");
         print(data);
@@ -1961,7 +1966,9 @@ class databaseInterface {
     // print(email);
     print("in insert QR==${email},${status},${vehicle_reg_num},${ticket_type}");
 
-    var uri = complete_base_url_static + "/insert/insert_when_qr_scanned/";
+    var uri = complete_base_url_static +
+        // "/insert/insert_when_qr_scanned/";
+        "/guards/insert_in_guard_ticket_table";
     try {
       var response = await http.post(
         Uri.parse(uri),
@@ -1971,9 +1978,12 @@ class databaseInterface {
           'vehicle_reg_num': vehicle_reg_num,
           'ticket_type': ticket_type,
           'date_time': date_time,
-          'destination_addr': destination_addr,
-          'location_name': location_name,
-          'guard_email': guard_email
+          // 'destination_addr': destination_addr,
+          'address': destination_addr,
+          // 'location_name': location_name,
+          'location': location_name,
+          'guard_email': guard_email,
+          'choosen_authority_ticket': "",
         },
       );
       if (response.statusCode != 200) {
@@ -1988,27 +1998,95 @@ class databaseInterface {
   }
 
   static Future<void> accept_generated_QR(String location, String is_approved,
-      String ticket_type, String data_time, String st_email) async {
-    var uri = complete_base_url_static +
-        "/guards/accept_selected_tickets_QR_accepted_rejected";
-    try {
-      var response = await http.post(Uri.parse(uri), body: {
-        'email': st_email,
-        'is_approved': is_approved,
-        'ticket_type': ticket_type,
-        'date_time': data_time,
-        'location': location
-      });
-      if (response.statusCode != 200) {
-        print("There is an error ***.");
-        print("yo");
-      } else {
-        print("Noti status yo indi");
-      }
-    } catch (e) {
-      print("database interface error************");
-      print(e.toString());
-    }
+      String ticket_type, String date_time, String st_email) async {
+    print("accept_QR@1@");
+    ResultObj myobj = ResultObj();
+    myobj.location = location;
+    myobj.is_approved = is_approved;
+    myobj.ticket_type = ticket_type;
+    myobj.date_time = date_time;
+    myobj.email = st_email;
+    myobj.student_name="No student name";
+    myobj.authority_status="NO AUTH STATUS";
+    myobj.destination_address="NO DEST ADDRESS";
+    myobj.vehicle_number="PB XX";
+
+
+    List<ResultObj> selectedTickets = [];
+    selectedTickets.add(myobj);
+    print("accept_QR@2@");
+    await databaseInterface().accept_selected_tickets(selectedTickets);
+    print("accept_QR@3@");
+    // print("accept_QR@2@");
+    // var uri = complete_base_url_static + "/guards/accept_selected_tickets";
+    // Map<String, String> headers = {
+    //   'Content-type': 'application/json',
+    //   'Accept': 'application/json',
+    // };
+    //
+    // for (var ticket in selectedTickets) {
+    //   await databaseInterface.insert_notification_guard_accept_reject(
+    //       LoggedInDetails.getEmail(),
+    //       ticket.email,
+    //       ticket.ticket_type,
+    //       ticket.location,
+    //       "Guard has accepted your ticket");
+    // }
+    //
+    // try {
+    //   int length = 0;
+    //   // var response = await http.post(url, body: jsonEncode(data), headers: headers);
+    //   var response = await http.post(Uri.parse(uri),
+    //       body: jsonEncode(selectedTickets.map((i) => i.toJson1()).toList()),
+    //       headers: headers);
+    //   length = selectedTickets.length;
+    //
+    //   int status_code = 0;
+    //   if (length == 0) {
+    //     status_code = 201;
+    //   } else if (length > 0) {
+    //     status_code = response.statusCode.toInt();
+    //
+    //   } else {
+    //     status_code = 500;
+    //   }
+    //   print("status:${status_code}");
+    //
+    // } catch (e) {
+    //   print("Request to accepted selected tickets failed .. ");
+    //   print(e.toString());
+    //   // return Future.error(e);
+    // }
+//     var uri = complete_base_url_static +
+//         // "/guards/accept_selected_tickets_QR_accepted_rejected";
+//         "/guards/accept_selected_tickets";
+//     try {
+//       var jsonData = {
+//         'email': st_email,
+//         'is_approved': is_approved,
+//         'ticket_type': ticket_type,
+//         'date_time': data_time,
+//         'location': location
+//       };
+//       List<Map<String, dynamic>> dataList = [jsonData];
+//
+// // Convert the list to a JSON string
+//       var jsonString = jsonEncode(dataList);
+//
+//       var response = await http.post(Uri.parse(uri), body: jsonString, headers: {
+//         'Content-Type': 'application/json',
+//         'Accept':'application/json'
+//       });
+//       if (response.statusCode != 200) {
+//         print("There is an error ***.");
+//         print("yo");
+//       } else {
+//         print("Noti status yo indi");
+//       }
+//     } catch (e) {
+//       print("database interface error************");
+//       print(e.toString());
+//     }
   }
 
   static Future<List<ResultObj4>> return_entry_visitor_approved_ticket(

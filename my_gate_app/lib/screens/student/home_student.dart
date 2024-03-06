@@ -130,6 +130,7 @@ class _HomeStudentState extends State<HomeStudent> {
         location_id = result.location_id;
         print("entries in home=${entries}");
         print("id's=${result.location_id}");
+        print("preapprovals : ${result.preApprovals}");
         pre_approvals = result.preApprovals;
       });
 
@@ -167,6 +168,7 @@ class _HomeStudentState extends State<HomeStudent> {
       print("asdaasdasdasdasdasdasd");
       print(in_count);
       studentStatus = status;
+      print(studentStatus);
     });
   }
 
