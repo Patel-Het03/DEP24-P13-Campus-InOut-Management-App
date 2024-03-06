@@ -23,7 +23,8 @@ class databaseInterface {
       // "http://31.220.57.173:" + PORT_NO_static.toString();
       // "http://172.23.6.189:"+PORT_NO_static.toString();
       //     "http://10.0.2.2:"+PORT_NO_static.toString();
-      "http://192.168.68.111:" + PORT_NO_static.toString();
+      // "http://192.168.68.111:" + PORT_NO_static.toString();
+      "http://192.168.179.245:" + PORT_NO_static.toString();
   databaseInterface() {}
 
   static Future<String> get_welcome_message(String email) async {
@@ -2006,16 +2007,25 @@ class databaseInterface {
     myobj.ticket_type = ticket_type;
     myobj.date_time = date_time;
     myobj.email = st_email;
-    myobj.student_name="No student name";
-    myobj.authority_status="NO AUTH STATUS";
-    myobj.destination_address="NO DEST ADDRESS";
-    myobj.vehicle_number="PB XX";
+    myobj.student_name = "No student name";
+    myobj.authority_status = "NO AUTH STATUS";
+    myobj.destination_address = "NO DEST ADDRESS";
+    myobj.vehicle_number = "PB XX";
 
 
     List<ResultObj> selectedTickets = [];
     selectedTickets.add(myobj);
     print("accept_QR@2@");
-    await databaseInterface().accept_selected_tickets(selectedTickets);
+    // print("${}");
+    if (is_approved == "Approved"){
+      await databaseInterface().accept_selected_tickets(selectedTickets);
+  }
+  else if(is_approved == "Rejected"){
+      await databaseInterface().reject_selected_tickets(selectedTickets);
+    }
+  else{
+    print("NO Accepted Or Rejected ");
+    }
     print("accept_QR@3@");
     // print("accept_QR@2@");
     // var uri = complete_base_url_static + "/guards/accept_selected_tickets";
