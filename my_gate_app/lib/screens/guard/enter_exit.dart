@@ -66,21 +66,22 @@ class _EntryExitState extends State<EntryExit> {
     return Scaffold(
       // backgroundColor: Color.fromARGB(255, 253, 253, 255),
       appBar: AppBar(
-        backgroundColor: Color.fromARGB(255, 180, 180, 180),
+        backgroundColor: Colors.black,
         centerTitle: true,
         flexibleSpace: Container(
-          decoration: BoxDecoration(
-              gradient: LinearGradient(
-                  begin: Alignment.centerLeft,
-                  end: Alignment.centerRight,
-                  colors: <Color>[Colors.purple, Colors.blue])),
+          // decoration: BoxDecoration(
+          //     gradient: LinearGradient(
+          //         begin: Alignment.centerLeft,
+          //         end: Alignment.centerRight,
+          //         colors: <Color>[Colors.purple, Colors.blue])
+          // ),
         ),
         title: Column(
           children: [
             Text(
               'Guard Home',
               style: TextStyle(
-                color: Colors.black,
+                color: Colors.amber,
                 fontWeight: FontWeight.bold,
               ),
             ),
@@ -88,7 +89,7 @@ class _EntryExitState extends State<EntryExit> {
               welcome_message,
               style: TextStyle(
                   fontSize: 15,
-                  color: Colors.black,
+                  color: Colors.white,
                   fontWeight: FontWeight.bold),
             ),
           ],
@@ -101,7 +102,7 @@ class _EntryExitState extends State<EntryExit> {
                 child: IconButton(
                   icon: Icon(
                     Icons.notifications,
-                    color: Colors.black,
+                    color: Colors.white,
                   ),
                   onPressed: () async {
                     List<List<String>> messages = await databaseInterface
@@ -136,7 +137,7 @@ class _EntryExitState extends State<EntryExit> {
                           ? Container(
                               padding: EdgeInsets.all(1),
                               decoration: BoxDecoration(
-                                color: Colors.red,
+                                color: Colors.white,
                                 borderRadius: BorderRadius.circular(8),
                               ),
                               constraints: BoxConstraints(
@@ -163,7 +164,7 @@ class _EntryExitState extends State<EntryExit> {
           ),
           PopupMenuButton<MenuItem>(
             onSelected: (item) => onSelected(context, item),
-            icon: Icon(Icons.more_vert, color: Color.fromARGB(255, 0, 0, 0)),
+            icon: Icon(Icons.more_vert, color: Colors.white),
             itemBuilder: (context) => [
               ...MenuItems.itemsFirst.map(buildItem),
               PopupMenuDivider(),
@@ -180,10 +181,12 @@ class _EntryExitState extends State<EntryExit> {
               BoxConstraints(maxHeight: MediaQuery.of(context).size.height),
           child: Container(
             decoration: BoxDecoration(
-              gradient: LinearGradient(
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                  colors: [Colors.white, Colors.white]),
+                  // image: DecorationImage(
+                  // image: AssetImage("assets/images/bulb.jpg"),
+                  // fit: BoxFit.cover,
+              color:Color(0xFFf1e2cc),
+
+
             ),
             child: Center(
               child: Column(
@@ -192,7 +195,7 @@ class _EntryExitState extends State<EntryExit> {
                 children: <Widget>[
                   Image.asset('assets/images/enter_exit.webp'),
                   SizedBox(
-                    height: 100,
+                    height: 30,
                   ),
                   MaterialButton(
                     onPressed: () {
@@ -206,34 +209,29 @@ class _EntryExitState extends State<EntryExit> {
                         ),
                       );
                     },
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(80.0),
-                    ),
+
                     padding: EdgeInsets.all(0.0),
                     child: Ink(
                       decoration: BoxDecoration(
-                        gradient: LinearGradient(
-                          colors: [Colors.purple, Colors.blue],
-                          begin: Alignment.centerLeft,
-                          end: Alignment.centerRight,
-                        ),
-                        borderRadius: BorderRadius.circular(30.0),
+                        color:Colors.grey[800],
+                        borderRadius: BorderRadius.circular(15.0),
                       ),
                       child: Container(
                         constraints:
-                            BoxConstraints(maxWidth: 250.0, minHeight: 50.0),
+                            BoxConstraints(maxWidth: 250.0, minHeight: 70.0),
                         alignment: Alignment.center,
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Icon(Icons.arrow_circle_down,
-                                color: Color.fromARGB(255, 0, 0, 0)),
+                                color: Colors.white,
+                            ),
                             SizedBox(width: 10),
                             Text(
                               "Enter Tickets",
                               textAlign: TextAlign.center,
                               style: TextStyle(
-                                color: Color.fromARGB(255, 0, 0, 0),
+                                color: Colors.white,
                                 fontWeight: FontWeight.bold,
                               ),
                             ),
@@ -243,7 +241,7 @@ class _EntryExitState extends State<EntryExit> {
                     ),
                   ),
 
-                  SizedBox(height: 50),
+                  SizedBox(height: 20),
                   MaterialButton(
                     onPressed: () {
                       Navigator.push(
@@ -256,32 +254,26 @@ class _EntryExitState extends State<EntryExit> {
                         ),
                       );
                     },
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(80.0),
-                    ),
+
                     padding: EdgeInsets.all(0.0),
                     child: Ink(
                       decoration: BoxDecoration(
-                        gradient: LinearGradient(
-                          colors: [Colors.purple, Colors.blue],
-                          begin: Alignment.centerLeft,
-                          end: Alignment.centerRight,
-                        ),
-                        borderRadius: BorderRadius.circular(30.0),
+                        color:Colors.grey[800],
+                        borderRadius: BorderRadius.circular(15.0),
                       ),
                       child: Container(
                         constraints:
-                            BoxConstraints(maxWidth: 250.0, minHeight: 50.0),
+                            BoxConstraints(maxWidth: 250.0, minHeight: 70.0),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            Icon(Icons.arrow_circle_up, color: Colors.black),
+                            Icon(Icons.arrow_circle_up, color: Colors.white),
                             SizedBox(width: 10),
                             Text(
                               "Exit Tickets",
                               textAlign: TextAlign.center,
                               style: TextStyle(
-                                color: Colors.black,
+                                color: Colors.white,
                                 fontWeight: FontWeight.bold,
                               ),
                             ),
@@ -291,7 +283,7 @@ class _EntryExitState extends State<EntryExit> {
                     ),
                   ),
 
-                  SizedBox(height: 50),
+                  SizedBox(height: 20),
 
                   MaterialButton(
                     onPressed: () async {
@@ -340,34 +332,29 @@ class _EntryExitState extends State<EntryExit> {
                         print("qrdata bhai=$qrdata");
                       }
                     },
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(80.0),
-                    ),
+
                     padding: EdgeInsets.all(0.0),
                     child: Ink(
                       decoration: BoxDecoration(
-                        gradient: LinearGradient(
-                          colors: [Colors.purple, Colors.blue],
-                          begin: Alignment.centerLeft,
-                          end: Alignment.centerRight,
-                        ),
-                        borderRadius: BorderRadius.circular(30.0),
+                        color:Colors.grey[800],
+                        borderRadius: BorderRadius.circular(15.0),
                       ),
                       child: Container(
                         constraints:
-                            BoxConstraints(maxWidth: 250.0, minHeight: 50.0),
+                            BoxConstraints(maxWidth: 250.0, minHeight: 70.0),
                         alignment: Alignment.center,
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            Icon(Icons.arrow_circle_down,
-                                color: Color.fromARGB(255, 0, 0, 0)),
+                            Icon(Icons.qr_code_rounded,
+                                color: Colors.white,
+                            ),
                             SizedBox(width: 10),
                             Text(
                               "Scan QR",
                               textAlign: TextAlign.center,
                               style: TextStyle(
-                                color: Color.fromARGB(255, 0, 0, 0),
+                                color: Colors.white,
                                 fontWeight: FontWeight.bold,
                               ),
                             ),
