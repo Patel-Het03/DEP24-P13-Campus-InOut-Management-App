@@ -68,11 +68,13 @@ class _StatisticsBarState extends State<StatisticsBar> {
       body: SingleChildScrollView(
         child: Container(
           decoration: BoxDecoration(
-            gradient: LinearGradient(
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter,
-              colors: [Colors.lightBlueAccent, Colors.purple.shade200],
-            ),
+            // gradient: LinearGradient(
+            //   begin: Alignment.topCenter,
+            //   end: Alignment.bottomCenter,
+            //   colors: [Color(0xFF212130),
+            //     Color(0xFF39304A)],
+            // ),
+            color: Color(0xfff0eded),
           ),
           height: MediaQuery.of(context).size.height,
           width: MediaQuery.of(context).size.width,
@@ -152,12 +154,16 @@ class _StatisticsBarState extends State<StatisticsBar> {
                         }, currentTime: DateTime.now(), locale: LocaleType.en);
                       },
                       child: Text(
-                        'Start Date',
-                        style: TextStyle(color: Colors.black,fontWeight: FontWeight.bold),
+                        'Start Date :',
+                        style: TextStyle(
+                            color: Colors.black,
+                            fontWeight: FontWeight.bold
+
+                        ),
                       )),
                   Text(
                     this.chosen_start_date,
-                    style: TextStyle(color: Colors.red),
+                    style: TextStyle(color: Colors.black),
                   ),
                 ],
               ),
@@ -188,12 +194,15 @@ class _StatisticsBarState extends State<StatisticsBar> {
                         }, currentTime: DateTime.now(), locale: LocaleType.en);
                       },
                       child: Text(
-                        'End Date',
-                        style: TextStyle(color: Colors.black,fontWeight: FontWeight.bold),
+                        'End Date :',
+                        style: TextStyle(
+                            color: Colors.black,
+                            fontWeight: FontWeight.bold
+                        ),
                       )),
                   Text(
                     this.chosen_end_date,
-                    style: TextStyle(color: Colors.red),
+                    style: TextStyle(color: Colors.black),
                   ),
                 ],
               ),
@@ -218,7 +227,48 @@ class _StatisticsBarState extends State<StatisticsBar> {
                   }
                 },
                 button_text: "Get",
+
+                // color:Colors.white,
               ),
+          // ElevatedButton(
+          //   style: ElevatedButton.styleFrom(
+          //     // primary: Colors.white,
+          //     // onPrimary: Colors.black,
+          //     shadowColor: Colors.black,
+          //     shape: RoundedRectangleBorder(
+          //       borderRadius: BorderRadius.circular(10),
+          //     ),
+          //     backgroundColor: Colors.white,
+          //     elevation: 4,
+          //   ),
+          //   onPressed: () async {
+          //     if (this.chosen_location != "None" &&
+          //             this.chosen_filter != "None" &&
+          //             this.chosen_start_date != "" &&
+          //             this.chosen_end_date != "") {
+          //           if (this.chosen_end_date.compareTo(this.chosen_start_date) <
+          //               0) {
+          //             print("Start date is more than end date");
+          //             // add a snack bar for this
+          //             final snackBar = get_snack_bar(
+          //                 "Start date is more than end date", Colors.red);
+          //             ScaffoldMessenger.of(context).showSnackBar(snackBar);
+          //           }
+          //           generate_barchart();
+          //         }
+          //   },
+          //   child: Padding(
+          //     padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+          //     child: Text(
+          //       "GET",
+          //       style: TextStyle(
+          //         fontSize: 20,
+          //         fontWeight: FontWeight.bold,
+          //         color: Colors.black,
+          //       ),
+          //     ),
+          //   ),
+          // ),
               SizedBox(
                 height: 10,
               ),

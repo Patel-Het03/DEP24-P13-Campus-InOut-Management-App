@@ -56,6 +56,7 @@ class _ManageExcelTabsState extends State<ManageExcelTabs>
           appBar: AppBar(
             title: Text(widget.appbar_title),
             centerTitle: true,
+            backgroundColor: Colors.black,
             bottom: TabBar(
               controller: controller,
               tabs: const [

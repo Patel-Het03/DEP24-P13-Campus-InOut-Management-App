@@ -40,6 +40,7 @@ class _NotificationsPageState extends State<NotificationsPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
@@ -52,11 +53,13 @@ class _NotificationsPageState extends State<NotificationsPage> {
         ),
         centerTitle: true,
         flexibleSpace: Container(
-          decoration: const BoxDecoration(
-              gradient: LinearGradient(
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                  colors: <Color>[Colors.purple, Colors.blue])),
+          decoration: BoxDecoration(
+              // gradient: LinearGradient(
+              //     begin: Alignment.topLeft,
+              //     end: Alignment.bottomRight,
+              //     colors: <Color>[Colors.purple, Colors.blue])),
+            color: Colors.white,
+        ),
         ),
         // backgroundColor: Color.fromARGB(255, 180, 180, 180),
         title: const Text(
@@ -69,7 +72,24 @@ class _NotificationsPageState extends State<NotificationsPage> {
         ),
       ),
       body: Container(
-        color: Colors.white,
+        // color: Colors.white,
+        decoration: BoxDecoration(
+          color: Colors.orange.shade100,
+          borderRadius: BorderRadius.only(
+            topLeft: Radius.circular(35.0), // Adjust the radius as needed
+            topRight: Radius.circular(35.0), // Adjust the radius as needed
+          ),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.orange.withOpacity(0.3),
+              blurRadius: 0,
+              spreadRadius: 2,
+              offset: Offset(0,3),
+
+            ),
+
+          ],
+        ),
         child: ListView.builder(
           itemCount: notifications.length,
           itemBuilder: (BuildContext context, int index) {

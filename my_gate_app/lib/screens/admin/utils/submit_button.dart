@@ -31,19 +31,21 @@ class SubmitButton extends StatelessWidget {
                   ),
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.pink.withOpacity(0.2),
+                      color: Colors.black.withOpacity(0.2),
                       spreadRadius: 4,
                       blurRadius: 10,
                       offset: const Offset(0, 3),
                     )
-                  ]),
+                  ]
+                ),
               child: ElevatedButton(
                 style: ButtonStyle(
-                    backgroundColor: MaterialStateProperty.all(Colors.red),
+                    backgroundColor: MaterialStateProperty.all(Colors.black),
                     shape: MaterialStateProperty.all<RoundedRectangleBorder>(
                         RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(18.0),
-                            side: const BorderSide(color: Colors.blue)))),
+                            // side: BorderSide(color: Colors.blue)
+                        ))),
                 onPressed: () {
                   submit_function();
                 },

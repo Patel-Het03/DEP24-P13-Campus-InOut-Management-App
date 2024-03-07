@@ -61,16 +61,23 @@ class _AdminProfilePageState extends State<AdminProfilePage> {
       backgroundColor: Colors.white,
           appBar: buildAppBar(context),
           body: Container(
-            decoration: const BoxDecoration(
-              gradient: LinearGradient(
-               colors: [Colors.yellow, Colors.lightGreen],
-              begin: Alignment.bottomLeft,
-               end: Alignment.topRight,
+            decoration: BoxDecoration(
+              color: Colors.orange.shade100,
+
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.orange.withOpacity(0.3),
+                  blurRadius: 0,
+                  spreadRadius: 2,
+                  offset: Offset(0,3),
+
+                ),
+
+              ],
             ),
-          ),
             child: ListView(
-              padding: const EdgeInsets.symmetric(horizontal: 32),
-              physics: const BouncingScrollPhysics(),
+              padding: EdgeInsets.symmetric(horizontal: 8),
+              physics: BouncingScrollPhysics(),
               children: [
                 ImageWidget(),
                 const SizedBox(height: 24),
@@ -108,7 +115,7 @@ class _AdminProfilePageState extends State<AdminProfilePage> {
                     'Remove profile image',
                     style: GoogleFonts.roboto(
                       fontSize: 15,
-                      color: const Color.fromARGB(255, 154, 74, 239),
+                      color: Color.fromARGB(255, 154, 74, 239),
                       fontWeight: FontWeight.bold,
                     ),
                   ),
@@ -210,32 +217,35 @@ class _AdminProfilePageState extends State<AdminProfilePage> {
   }
 
   Widget ImageWidget() {
-    return Center(
-      child: Stack(
-        children: [
-          ClipOval(
-            child: Material(
-              color: Colors.transparent,
-              child: Ink.image(
-                // image: AssetImage(image),
-                // image: NetworkImage(widget.imagePath),
-                image: pic,
-                fit: BoxFit.cover,
-                width: 180,
-                height: 180,
-                child: InkWell(onTap: () async {
-                  pick_image();
-                }),
+    return Padding(
+      padding: const EdgeInsets.all(9.0),
+      child: Center(
+        child: Stack(
+          children: [
+            ClipOval(
+              child: Material(
+                color: Colors.orangeAccent.shade200,
+                child: Ink.image(
+                  // image: AssetImage(image),
+                  // image: NetworkImage(widget.imagePath),
+                  image: pic,
+                  fit: BoxFit.cover,
+                  width: 180,
+                  height: 180,
+                  child: InkWell(onTap: () async {
+                    pick_image();
+                  }),
+                ),
               ),
             ),
-          ),
-          Positioned(
-            bottom: 0,
-            right: 4,
-            // child: buildEditIcon(Theme.of(context).colorScheme.primary),
-            child: buildEditIcon(Color(int.parse("0xFF344953"))),
-          ),
-        ],
+            Positioned(
+              bottom: 0,
+              right: 4,
+              // child: buildEditIcon(Theme.of(context).colorScheme.primary),
+              child: buildEditIcon(Color(int.parse("0xFF344953"))),
+            ),
+          ],
+        ),
       ),
     );
   }

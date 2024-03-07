@@ -54,14 +54,15 @@ class _AddGuardsState extends State<AddGuards> {
         height: MediaQuery.of(context).size.height,
         width: MediaQuery.of(context).size.width,
         decoration: BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-            colors: [
-              Colors.lightBlueAccent,
-              Colors.purple.shade200,
-            ],
-          ),
+          // gradient: LinearGradient(
+          //   begin: Alignment.topLeft,
+          //   end: Alignment.bottomRight,
+          //   colors: [
+          //     Colors.lightBlueAccent,
+          //     Colors.purple.shade200,
+          //   ],
+          // ),
+          color: Color(0xfff0eded),
         ),
         child: Column(
           children: [
