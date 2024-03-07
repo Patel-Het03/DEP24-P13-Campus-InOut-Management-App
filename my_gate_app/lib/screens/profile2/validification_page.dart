@@ -1,18 +1,8 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:my_gate_app/database/database_interface.dart';
-import 'package:my_gate_app/database/database_objects.dart';
-import 'package:my_gate_app/screens/profile2/edit_profile_page.dart';
 import 'package:my_gate_app/screens/profile2/model/user.dart';
 import 'package:my_gate_app/screens/profile2/utils/user_preferences.dart';
-import 'package:my_gate_app/screens/profile2/widget/appbar_widget.dart';
-import 'package:my_gate_app/screens/profile2/widget/button_widget.dart';
-import 'package:my_gate_app/screens/profile2/widget/profile_widget.dart';
-import 'package:my_gate_app/screens/profile2/widget/textfield_widget.dart';
-import 'package:my_gate_app/get_email.dart';
-import 'package:my_gate_app/screens/profile2/model/user.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:my_gate_app/screens/utils/custom_snack_bar.dart';
 
 class Validification_page extends StatefulWidget {
@@ -26,7 +16,7 @@ class Validification_page extends StatefulWidget {
   final String student_location;
 
   const Validification_page({
-    Key? key,
+    super.key,
     required this.email,
     required this.guard_location,
     required this.isEditable,
@@ -35,7 +25,7 @@ class Validification_page extends StatefulWidget {
     required this.vehicle_reg,
     required this.guard_email,
     required this.student_location,
-  }) : super(key: key);
+  });
   @override
   _Validification_pageState createState() => _Validification_pageState();
 }
@@ -60,11 +50,11 @@ class _Validification_pageState extends State<Validification_page> {
   var pic;
 
   Future<void> init() async {
-    String? curr_email = widget.email;
+    String? currEmail = widget.email;
 
-    print("Current Email in validification page: " + curr_email.toString());
-    databaseInterface db = new databaseInterface();
-    User result = await db.get_student_by_email(curr_email);
+    print("Current Email in validification page: $currEmail");
+    databaseInterface db = databaseInterface();
+    User result = await db.get_student_by_email(currEmail);
     // print("result obj image path" + result.imagePath);
     print("result in validification page=${result.name}");
     setState(() {
@@ -79,9 +69,9 @@ class _Validification_pageState extends State<Validification_page> {
       controller_location_of_guard.text = widget.guard_location;
       controller_ticket_type.text = widget.ticket_type;
       /* controller_gender.text=result. */
-      print("Gender in yo:" + result.gender);
+      print("Gender in yo:${result.gender}");
       // imagePath = result.imagePath;
-      print("image path inside setstate: " + imagePath);
+      print("image path inside setstate: $imagePath");
     });
 
     setState(() {
@@ -104,8 +94,8 @@ class _Validification_pageState extends State<Validification_page> {
     controller_ticket_type = TextEditingController();
 
     imagePath = UserPreferences.myUser.imagePath;
-    pic = NetworkImage(this.imagePath);
-    imagePicker = new ImagePicker();
+    pic = NetworkImage(imagePath);
+    imagePicker = ImagePicker();
     // print("image path in image widget: " + this.imagePath);
     init();
   }
@@ -120,15 +110,15 @@ class _Validification_pageState extends State<Validification_page> {
         appBar: AppBar(
           backgroundColor: Colors.black, // Set the background color to black
           centerTitle: true, // Center-align the title
-          iconTheme: IconThemeData(
+          iconTheme: const IconThemeData(
               color: Color.fromARGB(
                   221, 255, 255, 255)), // Set the back arrow color to white
           flexibleSpace: Container(
-            decoration: BoxDecoration(
+            decoration: const BoxDecoration(
               color: Colors.black,
             ),
           ),
-          title: Text(
+          title: const Text(
             "Profile Page",
             style: TextStyle(
                 color: Colors.white,
@@ -148,8 +138,8 @@ class _Validification_pageState extends State<Validification_page> {
             ),
           ),
           child: ListView(
-            padding: EdgeInsets.symmetric(horizontal: 32),
-            physics: BouncingScrollPhysics(),
+            padding: const EdgeInsets.symmetric(horizontal: 32),
+            physics: const BouncingScrollPhysics(),
             children: [
               const SizedBox(height: 24),
               ImageWidget(),
@@ -205,21 +195,21 @@ class _Validification_pageState extends State<Validification_page> {
                               get_snack_bar("Ticket Approved", Colors.green));
                           Navigator.pop(context);
                         },
-                        label: Text(
+                        label: const Text(
                           "Accept",
                           style: TextStyle(
                             color: Colors.black,
                             fontWeight: FontWeight.bold,
                           ),
                         ),
-                        icon: Icon(
+                        icon: const Icon(
                           Icons.check_circle_outlined,
                           color: Colors.green,
                           size: 50.0,
                         ),
                         style: ButtonStyle(
                           backgroundColor: MaterialStateProperty.all<Color>(
-                            Color.fromARGB(255, 255, 254, 255),
+                            const Color.fromARGB(255, 255, 254, 255),
                           ),
                           shape:
                               MaterialStateProperty.all<RoundedRectangleBorder>(
@@ -231,7 +221,7 @@ class _Validification_pageState extends State<Validification_page> {
                         ),
                       ),
                     ),
-                    SizedBox(
+                    const SizedBox(
                       width: 10,
                     ),
                     Flexible(
@@ -258,21 +248,21 @@ class _Validification_pageState extends State<Validification_page> {
                               get_snack_bar("Ticket Rejected", Colors.red));
                           Navigator.pop(context);
                         },
-                        label: Text(
+                        label: const Text(
                           "Reject",
                           style: TextStyle(
                             color: Colors.black,
                             fontWeight: FontWeight.bold,
                           ),
                         ),
-                        icon: Icon(
+                        icon: const Icon(
                           Icons.cancel,
                           color: Colors.red,
                           size: 50.0,
                         ),
                         style: ButtonStyle(
                           backgroundColor: MaterialStateProperty.all<Color>(
-                            Color.fromARGB(255, 255, 255, 255),
+                            const Color.fromARGB(255, 255, 255, 255),
                           ),
                           shape:
                               MaterialStateProperty.all<RoundedRectangleBorder>(
@@ -284,7 +274,7 @@ class _Validification_pageState extends State<Validification_page> {
                         ),
                       ),
                     ),
-                    SizedBox(
+                    const SizedBox(
                       width: 10,
                     ),
                   ],
@@ -321,7 +311,7 @@ class _Validification_pageState extends State<Validification_page> {
         children: [
           Text(
             user.name,
-            style: TextStyle(
+            style: const TextStyle(
                 fontWeight: FontWeight.bold, fontSize: 24, color: Colors.black),
           ),
           const SizedBox(height: 4),
@@ -339,17 +329,17 @@ class _Validification_pageState extends State<Validification_page> {
         children: [
           Text(
             label,
-            style: TextStyle(
+            style: const TextStyle(
                 fontWeight: FontWeight.bold, fontSize: 16, color: Colors.black),
           ),
           const SizedBox(height: 8),
           TextField(
-            style: TextStyle(color: Colors.black),
+            style: const TextStyle(color: Colors.black),
             enabled: enabled,
             controller: controller,
             decoration: InputDecoration(
               disabledBorder: OutlineInputBorder(
-                borderSide: BorderSide(color: Colors.black, width: 1.0),
+                borderSide: const BorderSide(color: Colors.black, width: 1.0),
                 borderRadius: BorderRadius.circular(12),
               ),
               labelStyle: TextStyle(
@@ -368,7 +358,7 @@ class _Validification_pageState extends State<Validification_page> {
         children: [
           Text(
             label,
-            style: TextStyle(
+            style: const TextStyle(
                 fontWeight: FontWeight.bold, fontSize: 16, color: Colors.black),
           ),
           const SizedBox(height: 8),
@@ -378,13 +368,13 @@ class _Validification_pageState extends State<Validification_page> {
                 child: Stack(
                   children: [
                     TextField(
-                      style: TextStyle(color: Colors.black),
+                      style: const TextStyle(color: Colors.black),
                       enabled: enabled, // Use the 'enabled' parameter here
                       controller: controller,
                       decoration: InputDecoration(
                         disabledBorder: OutlineInputBorder(
                           borderSide:
-                              BorderSide(color: Colors.black, width: 1.0),
+                              const BorderSide(color: Colors.black, width: 1.0),
                           borderRadius: BorderRadius.circular(12),
                         ),
                         labelStyle: TextStyle(
@@ -419,7 +409,7 @@ class _Validification_pageState extends State<Validification_page> {
                                         }
                                     });
                           },
-                          child: Text(
+                          child: const Text(
                             'Edit',
                             style: TextStyle(fontWeight: FontWeight.bold),
                           ),
@@ -438,20 +428,18 @@ class _Validification_pageState extends State<Validification_page> {
     var source = ImageSource.gallery;
     print(source);
     XFile image = await imagePicker.pickImage(source: source);
-    var widget_email = widget.email;
+    var widgetEmail = widget.email;
     print("image is picked");
     print(image.path);
-    if (widget_email != null) {
-      await databaseInterface.send_image(
-          image, "/students/change_profile_picture_of_student", widget_email);
-    }
-
-    databaseInterface db = new databaseInterface();
+    await databaseInterface.send_image(
+        image, "/students/change_profile_picture_of_student", widgetEmail);
+  
+    databaseInterface db = databaseInterface();
     User result = await db.get_student_by_email(widget.email);
 
-    var pic_local = await result.profileImage;
+    var picLocal = result.profileImage;
     setState(() {
-      pic = pic_local;
+      pic = picLocal;
     });
   }
 
@@ -461,19 +449,17 @@ class _Validification_pageState extends State<Validification_page> {
     var filePath =
         "assets/images/dummy_person.jpg"; // Replace with the actual file path
     XFile image = XFile(filePath);
-    var widget_email = widget.email;
-    if (widget_email != null) {
-      await databaseInterface.send_image(
-          image, "/students/change_profile_picture_of_student", widget_email);
-    }
-
-    databaseInterface db = new databaseInterface();
+    var widgetEmail = widget.email;
+    await databaseInterface.send_image(
+        image, "/students/change_profile_picture_of_student", widgetEmail);
+  
+    databaseInterface db = databaseInterface();
     User result = await db.get_student_by_email(widget.email);
 
-    var pic_local = await NetworkImage(result.imagePath);
-    var remove_image = await AssetImage('images/dummy_person.jpg');
+    var picLocal = NetworkImage(result.imagePath);
+    var removeImage = const AssetImage('images/dummy_person.jpg');
     setState(() {
-      pic = remove_image;
+      pic = removeImage;
     });
   }
 
@@ -500,7 +486,7 @@ class _Validification_pageState extends State<Validification_page> {
                 BoxShadow(
                   color: Colors.black.withOpacity(0.5),
                   blurRadius: 10,
-                  offset: Offset(0, 4),
+                  offset: const Offset(0, 4),
                 ),
               ],
             ),
@@ -574,7 +560,7 @@ class _Validification_pageState extends State<Validification_page> {
         child: buildCircle(
           color: color,
           all: 8,
-          child: Icon(
+          child: const Icon(
             Icons.add_a_photo,
             color: Colors.white,
             size: 20,
@@ -588,7 +574,7 @@ class _Validification_pageState extends State<Validification_page> {
         child: buildCircle(
           color: color,
           all: 8,
-          child: Icon(
+          child: const Icon(
             Icons.add_a_photo,
             color: Colors.white,
             size: 20,

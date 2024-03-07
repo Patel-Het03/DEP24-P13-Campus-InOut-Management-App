@@ -1,9 +1,8 @@
-import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
 
 Widget dropdown(
   BuildContext context,
-  List<String> parent_locations,
+  List<String> parentLocations,
   void Function(String?)? onChangedFunction,
   String label,
   Icon icon, {
@@ -20,14 +19,14 @@ Widget dropdown(
     child: Theme(
       data: ThemeData(
         textTheme: TextTheme(
-          subtitle1: TextStyle(
+          titleMedium: TextStyle(
             color: text_color,
             fontWeight: FontWeight.bold,
             fontSize: 16.0,
           ),
         ),
       ),
-      child:Text("dropdown commented")
+      child:const Text("dropdown commented")
       // child: DropdownSearch<String>(
       //
       //   mode  = Mode.MENU

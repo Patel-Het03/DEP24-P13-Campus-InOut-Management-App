@@ -5,12 +5,10 @@
   import 'package:my_gate_app/get_email.dart';
   import 'package:my_gate_app/screens/admin/utils/dropdown.dart';
   import 'package:my_gate_app/screens/admin/utils/submit_button.dart';
-  import 'package:my_gate_app/screens/admin/utils/textbox.dart';
   import 'package:my_gate_app/screens/utils/custom_snack_bar.dart';
 
   class GeneratePreApprovalTicket extends StatefulWidget {
-    const GeneratePreApprovalTicket({Key? key, required this.location})
-        : super(key: key);
+    const GeneratePreApprovalTicket({super.key, required this.location});
     final String location;
 
     @override
@@ -97,24 +95,26 @@
     @override
     Widget build(BuildContext context) {
       return Scaffold(
+        backgroundColor: Colors.orange.shade100,
           body: SingleChildScrollView(
               child: Container(
-                  decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                        begin: Alignment.topLeft,
-                        end: Alignment.bottomRight,
-                        colors: [
-                          Colors.white,
-                          Color.fromARGB(255, 255, 255, 255)
-                        ]),
-                  ),
+                  color: Colors.orange.shade100,
+                  // decoration: BoxDecoration(
+                  //   gradient: LinearGradient(
+                  //       begin: Alignment.topLeft,
+                  //       end: Alignment.bottomRight,
+                  //       colors: const [
+                  //         Colors.white,
+                  //         Color.fromARGB(255, 255, 255, 255)
+                  //       ]),
+                  // ),
                   // color: Colors.yellow,
                   child: Column(children: [
                     SizedBox(
                       height: 50,
                     ),
                     Text(
-                      this.entry_or_exit_heading,
+                      entry_or_exit_heading,
                       style: TextStyle(
                           fontWeight: FontWeight.bold,
                           color: Colors.purple,
@@ -130,12 +130,12 @@
                     ),
                     dropdown(
                       context,
-                      this.authorities,
+                      authorities,
                       (String? s) {
                         if (s != null) {
-                          print("inside funciton:" + this.chosen_authority);
-                          this.chosen_authority = s;
-                          print(this.chosen_authority);
+                          print("inside funciton:$chosen_authority");
+                          chosen_authority = s;
+                          print(chosen_authority);
                         }
                       },
                       "Choose Authority",
@@ -152,9 +152,9 @@
                       ["enter", "exit"],
                       (String? s) {
                         if (s != null) {
-                          print("inside funciton:" + this.ticket_type);
-                          this.ticket_type = s;
-                          print(this.ticket_type);
+                          print("inside funciton:$ticket_type");
+                          ticket_type = s;
+                          print(ticket_type);
                         }
                       },
                       "Choose Ticket Type",
@@ -166,14 +166,14 @@
                     SizedBox(
                       height: 50,
                     ),
-                    Container(
+                    SizedBox(
                       width: MediaQuery.of(context).size.width / 1.25,
                       child: TextField(
                         maxLines: null,
                         maxLength: 106,
                         keyboardType: TextInputType.multiline,
                         onChanged: (value) {
-                          this.student_message = value;
+                          student_message = value;
                           print("text form: $student_message");
                         },
                         style: TextStyle(
@@ -209,14 +209,13 @@
                       submit_function: () async {
                         print("auth ticket raised");
                         print("");
-                        final student_message_validity = this
-                            .student_message_form_key
+                        final student_message_validity = student_message_form_key
                             .currentState
                             ?.validate();
                         FocusScope.of(context).unfocus();
                         if (student_message_validity != null &&
                             student_message_validity) {
-                          this.student_message_form_key.currentState?.save();
+                          student_message_form_key.currentState?.save();
                         }
                         int statusCode =
                             await insert_in_authorities_ticket_table();
@@ -228,7 +227,7 @@
                       height: 50,
                     ),
                     Text(
-                      this.ticket_generated_message,
+                      ticket_generated_message,
                       style: TextStyle(
                         color: Colors.red,
                         fontSize: 20,

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class DeleteDataPage extends StatefulWidget {
-  const DeleteDataPage({Key? key}) : super(key: key);
+  const DeleteDataPage({super.key});
 
   @override
   _DeleteDataPageState createState() => _DeleteDataPageState();

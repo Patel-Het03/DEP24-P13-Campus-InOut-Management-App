@@ -2,15 +2,15 @@ import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
 
 Widget dropdown(
-    BuildContext context,
-    List<String> parentLocations,
-    void Function(String?)? onChangedFunction,
-    String label,
-    Icon icon,
-    {double border_radius = 5,
-      Color container_color= Colors.white
-    }
-    ) {
+  BuildContext context,
+  List<String> parentLocations,
+  void Function(String?)? onChangedFunction,
+  String label,
+  Icon icon,
+  {double border_radius = 5,
+    Color container_color= Colors.white
+  }
+) {
   return Container(
     width: MediaQuery.of(context).size.width / 1.5,
     color: container_color,

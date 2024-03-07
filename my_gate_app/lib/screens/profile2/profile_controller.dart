@@ -1,7 +1,6 @@
 import 'package:animated_theme_switcher/animated_theme_switcher.dart';
 // import 'package:theme_provider/theme_provider.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:my_gate_app/get_email.dart';
 import 'package:my_gate_app/screens/profile2/profile_page.dart';
 import 'package:my_gate_app/screens/profile2/themes.dart';
@@ -35,11 +34,13 @@ class _ProfileControllerState extends State<ProfileController> {
 } */
 
 class ProfileController extends StatelessWidget {
-  static final String title = 'User Profile';
+  static const String title = 'User Profile';
+
+  const ProfileController({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final user = UserPreferences.myUser;
+    const user = UserPreferences.myUser;
 
     return ThemeProvider(
       initTheme: user.isDarkMode ? MyThemes.darkTheme : MyThemes.lightTheme,

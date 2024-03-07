@@ -1,29 +1,19 @@
 // ignore_for_file: prefer_const_literals_to_create_immutables, prefer_const_constructors, unnecessary_new, deprecated_member_use, non_constant_identifier_names, avoid_print, must_be_immutable, prefer_collection_literals, prefer_typing_uninitialized_variables
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:intl/intl.dart';
 import 'package:my_gate_app/database/database_interface.dart';
 import 'package:my_gate_app/database/database_objects.dart';
-import 'package:my_gate_app/get_email.dart';
 import 'package:my_gate_app/screens/guard/utils/authority_message.dart';
-import 'package:my_gate_app/screens/guard/utils/filter_page.dart';
-import 'package:my_gate_app/screens/guard/utils/search_dropdown.dart';
-import 'package:my_gate_app/screens/guard/visitors/visitor_form.dart';
 import 'package:my_gate_app/screens/utils/custom_snack_bar.dart';
 import 'package:my_gate_app/screens/profile2/profile_page.dart';
 import 'package:my_gate_app/screens/utils/scrollable_widget.dart';
-import 'guard_ticket_popup.dart';
-import 'package:my_gate_app/screens/guard/visitors/oldVisitorsSearch.dart';
 import 'package:my_gate_app/screens/guard/visitors/selectVisitor.dart';
 
 // Rename this class to PendingGuardTicketTable and change in all files where it being called
 
 class SelectablePage extends StatefulWidget {
   const SelectablePage(
-      {Key? key, required this.location, required this.enter_exit})
-      : super(key: key);
+      {super.key, required this.location, required this.enter_exit});
   final String location;
   final String enter_exit;
 
@@ -34,7 +24,7 @@ class SelectablePage extends StatefulWidget {
 enum SingingCharacter { Students, Visitors }
 
 class _SelectablePageState extends State<SelectablePage> {
-  SingingCharacter? _character = SingingCharacter.Students;
+  final SingingCharacter _character = SingingCharacter.Students;
   String ticket_accepted_message = '';
   String ticket_rejected_message = '';
   String Person = "Visitors";
@@ -153,7 +143,7 @@ class _SelectablePageState extends State<SelectablePage> {
         filtered_tickets_visitors = tickets_visitors
             .where((ticket) => DateTime.parse(ticket.date_time_of_ticket_raised)
                 .isBefore(
-                    DateTime.parse(chosen_end_date!).add(Duration(days: 1))))
+                    DateTime.parse(chosen_end_date).add(Duration(days: 1))))
             .toList();
       } else {
         filtered_tickets_visitors = tickets_visitors
@@ -162,9 +152,9 @@ class _SelectablePageState extends State<SelectablePage> {
                     .toLowerCase()
                     .contains(query.toLowerCase()) &&
                 DateTime.parse(ticket.date_time_of_ticket_raised)
-                    .isAfter(DateTime.parse(chosen_start_date!)) &&
+                    .isAfter(DateTime.parse(chosen_start_date)) &&
                 DateTime.parse(ticket.date_time_of_ticket_raised).isBefore(
-                    DateTime.parse(chosen_end_date!).add(Duration(days: 1))))
+                    DateTime.parse(chosen_end_date).add(Duration(days: 1))))
             .toList();
         print(chosen_end_date);
       }
@@ -229,7 +219,7 @@ class _SelectablePageState extends State<SelectablePage> {
     entryNumToEmailMap = new Map();
     emailToEntryNumMap = new Map();
 
-    allTickets.forEach((element) {
+    for (var element in allTickets) {
       var list = element.split("\n");
       var entry_number = list[0].split(",")[0];
       ans.add(list[0]);
@@ -238,7 +228,7 @@ class _SelectablePageState extends State<SelectablePage> {
         entryNumToEmailMap[entry_number] = email;
         emailToEntryNumMap[email] = entry_number;
       }
-    });
+    }
 
     return ans;
   }
@@ -289,7 +279,7 @@ class _SelectablePageState extends State<SelectablePage> {
             print("First True");
             List<ResultObj> tickets_local_1 = [];
             for (int i = 0; i < tickets_local.length; i++) {
-              print("Ticket Type: " + tickets[i].ticket_type);
+              print("Ticket Type: ${tickets[i].ticket_type}");
               if (tickets[i].ticket_type == 'enter') {
                 tickets_local_1.add(tickets[i]);
               }
@@ -310,7 +300,7 @@ class _SelectablePageState extends State<SelectablePage> {
         List<ResultObj> tickets_local_1 = [];
         for (int i = 0; i < tickets_local.length; i++) {
           var ticket_date = tickets_local[i].date_time.split("T")[0];
-          print("date time of ticket " + tickets_local[i].date_time.toString());
+          print("date time of ticket ${tickets_local[i].date_time}");
           var start_match = ticket_date.compareTo(chosen_start_date);
           var end_match = ticket_date.compareTo(chosen_end_date);
           if (start_match >= 0 && end_match <= 0) {
@@ -373,14 +363,14 @@ class _SelectablePageState extends State<SelectablePage> {
 
     // print("Entry number of student is: " + entry_number);
     // print("Email of student is: " + email);
-    this.tickets.forEach((ResultObj element) {
+    for (var element in tickets) {
       if (element.email == email) {
         new_tickets.add(element);
       }
-    });
+    }
 
     setState(() {
-      this.tickets = new_tickets;
+      tickets = new_tickets;
       selectedTickets = [];
     });
   }
@@ -389,7 +379,7 @@ class _SelectablePageState extends State<SelectablePage> {
   Widget build(BuildContext context) => Container(
         child: Scaffold(
           backgroundColor: Color.fromARGB(255, 242, 242, 242),
-          body: Container(
+          body: SizedBox(
             width: MediaQuery.of(context).size.width,
             child: ScrollableWidget(
               child: Column(
@@ -996,14 +986,11 @@ class _SelectablePageState extends State<SelectablePage> {
           ),
           DataCell(
             Text(
-              "    " +
-                  ((ticket.date_time.split("T").last)
+              "    ${((ticket.date_time.split("T").last)
                           .split(".")[0]
                           .split(":")
                           .sublist(0, 2))
-                      .join(":") +
-                  "\n" +
-                  ticket.date_time.split("T")[0],
+                      .join(":")}\n${ticket.date_time.split("T")[0]}",
               style: TextStyle(color: Colors.black),
             ),
           ),
@@ -1054,14 +1041,7 @@ class _SelectablePageState extends State<SelectablePage> {
                       IconButton(
                         onPressed: () {
                           AuthorityMessage(
-                              ticket.authority_name +
-                                  ", " +
-                                  ticket.authority_designation +
-                                  "\n" +
-                                  ticket.authority_status +
-                                  "\n" +
-                                  ticket.authority_message +
-                                  "\n\n",
+                              "${ticket.authority_name}, ${ticket.authority_designation}\n${ticket.authority_status}\n${ticket.authority_message}\n\n",
                               context);
                         },
                         icon: Icon(
@@ -1091,7 +1071,7 @@ class _SelectablePageState extends State<SelectablePage> {
                     ],
                   ),
                 Text(
-                  ticket.visitor_name + "\n" + ticket.mobile_no,
+                  "${ticket.visitor_name}\n${ticket.mobile_no}",
                   style:
                       TextStyle(color: Colors.black), // Set text color to black
                 ),

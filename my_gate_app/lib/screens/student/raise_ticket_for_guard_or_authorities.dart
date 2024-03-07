@@ -6,8 +6,7 @@ import 'package:my_gate_app/screens/student/student_guard_side/student_tabs.dart
 
 class RaiseTicketForGuardOrAuthorities extends StatefulWidget {
   const RaiseTicketForGuardOrAuthorities(
-      {Key? key, required this.location, required this.pre_approval_required})
-      : super(key: key);
+      {super.key, required this.location, required this.pre_approval_required});
   final String location;
   final bool pre_approval_required;
 
@@ -21,25 +20,37 @@ class _RaiseTicketForGuardOrAuthoritiesState
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.transparent,
       appBar: AppBar(
         title: Text(
+          textAlign: TextAlign.center,
           "Raise Request",
-          style: TextStyle(color: Colors.white),
+          style: TextStyle(color: Colors.black,fontWeight: FontWeight.w800),
         ),
-        backgroundColor: Colors.black,
-        iconTheme: IconThemeData(color: Colors.white),
+        backgroundColor: Colors.white,
+        iconTheme: IconThemeData(color: Colors.black),
       ),
       body: Container(
+
         decoration: BoxDecoration(
-          gradient: LinearGradient(
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-              colors: [Colors.white, Colors.white]),
+          borderRadius: BorderRadius.only(
+            topLeft: Radius.circular(35.0),
+            topRight: Radius.circular(35.0),
+          ),
+          color: Colors.orange.shade100,
+          boxShadow: [
+            BoxShadow(
+              color: Colors.orange.withOpacity(0.3),
+              blurRadius: 8,
+              spreadRadius: 2,
+              offset: Offset(0, 3),
+            ),
+          ],
         ),
         child: Center(
           child: Column(
             // add Column
-            mainAxisAlignment: MainAxisAlignment.center,
+            // mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
               // Text('Welcome', style: TextStyle( // your text
               //     fontSize: 50.0,
@@ -52,7 +63,7 @@ class _RaiseTicketForGuardOrAuthoritiesState
               // );
               // }, child: Text('Raise Ticket for Guard'),
               // ), // your button beneath text
-              Image.asset('assets/images/security-guard.png'),
+              // Image.asset('assets/images/security-guard.png'),
 
               SizedBox(
                 height: 100,

@@ -2,27 +2,27 @@ import 'package:flutter/material.dart';
 
 SnackBar get_snack_bar(
   String message,
-  MaterialColor bg_color,
+  MaterialColor bgColor,
 ) {
   return SnackBar(
     content: Row(
       children: [
-        Icon(
+        const Icon(
           Icons.info_outline,
           color: Colors.white,
         ),
-        SizedBox(
+        const SizedBox(
           width: 10,
         ),
         Text(
           message,
-          style: TextStyle(color: Colors.white,),
+          style: const TextStyle(color: Colors.white,),
         ),
       ],
     ),
-    backgroundColor: bg_color,
+    backgroundColor: bgColor,
     elevation: 10,
     behavior: SnackBarBehavior.floating,
-    margin: EdgeInsets.all(10),
+    margin: const EdgeInsets.all(10),
   );
 }

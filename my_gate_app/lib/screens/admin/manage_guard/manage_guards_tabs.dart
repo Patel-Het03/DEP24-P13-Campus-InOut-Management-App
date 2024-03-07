@@ -9,10 +9,10 @@ import 'package:my_gate_app/screens/admin/utils/view_data_tables/stream_data_tab
 
 class ManageGuardsTabs extends StatefulWidget {
   const ManageGuardsTabs({
-    Key? key,
+    super.key,
     required this.data_entity,
     required this.column_names,
-  }) : super(key: key);
+  });
   final String data_entity;
   final List<String> column_names;
 
@@ -50,7 +50,7 @@ class _ManageGuardsTabsState extends State<ManageGuardsTabs>
             centerTitle: true,
             bottom: TabBar(
               controller: controller,
-              tabs: [
+              tabs: const [
                 Tab(text: 'Add', icon: Icon(Icons.add)),
                 Tab(text: 'Modify', icon: Icon(Icons.mode_edit)),
                 Tab(text: 'Delete', icon: Icon(Icons.delete)),

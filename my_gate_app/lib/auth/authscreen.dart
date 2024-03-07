@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:my_gate_app/auth/authform.dart';
 
 class AuthScreen extends StatefulWidget {
-  const AuthScreen({Key? key}) : super(key: key);
+  const AuthScreen({super.key});
 
   @override
   _AuthScreenState createState() => _AuthScreenState();

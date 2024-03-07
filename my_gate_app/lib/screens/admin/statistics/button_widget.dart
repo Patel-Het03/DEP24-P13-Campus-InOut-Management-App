@@ -6,11 +6,11 @@ class ButtonHeaderWidget extends StatelessWidget {
   final VoidCallback onClicked;
 
   const ButtonHeaderWidget({
-    Key? key,
+    super.key,
     required this.title,
     required this.text,
     required this.onClicked,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) => HeaderWidget(
@@ -27,24 +27,24 @@ class ButtonWidget extends StatelessWidget {
   final VoidCallback onClicked;
 
   const ButtonWidget({
-    Key? key,
+    super.key,
     required this.text,
     required this.onClicked,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) => ElevatedButton(
     style: ElevatedButton.styleFrom(
-      minimumSize: Size.fromHeight(40),
+      minimumSize: const Size.fromHeight(40),
       backgroundColor: Colors.white,
     ),
+    onPressed: onClicked,
     child: FittedBox(
       child: Text(
         text,
-        style: TextStyle(fontSize: 20, color: Colors.black),
+        style: const TextStyle(fontSize: 20, color: Colors.black),
       ),
     ),
-    onPressed: onClicked,
   );
 }
 
@@ -53,10 +53,10 @@ class HeaderWidget extends StatelessWidget {
   final Widget child;
 
   const HeaderWidget({
-    Key? key,
+    super.key,
     required this.title,
     required this.child,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) => Column(
@@ -64,7 +64,7 @@ class HeaderWidget extends StatelessWidget {
     children: [
       Text(
         title,
-        style: TextStyle(
+        style: const TextStyle(
           color: Colors.white,
           fontSize: 24,
           fontWeight: FontWeight.bold,

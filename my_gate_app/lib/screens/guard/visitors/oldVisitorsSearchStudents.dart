@@ -1,6 +1,5 @@
 // ignore_for_file: non_constant_identifier_names, prefer_const_constructors, avoid_print, must_be_immutable
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart' show canLaunch;
 
 import 'package:url_launcher/url_launcher.dart';
 import 'package:my_gate_app/database/database_interface.dart';
@@ -12,11 +11,11 @@ import 'package:my_gate_app/screens/utils/scrollable_widget.dart';
 
 class oldVisitorSeacrchStudent extends StatefulWidget {
   const oldVisitorSeacrchStudent({
-    Key? key,
+    super.key,
     required this.username,
     required this.phonenumber,
     this.userid,
-  }) : super(key: key);
+  });
 
   final String username;
   final String phonenumber;
@@ -115,7 +114,7 @@ class _oldVisitorSeacrchStateStudent extends State<oldVisitorSeacrchStudent> {
                   )
                 : Column(),
             Text(
-              "${widget.username}",
+              widget.username,
               style: TextStyle(
                 fontWeight: FontWeight.bold,
                 fontSize: 30,
@@ -212,7 +211,7 @@ class _oldVisitorSeacrchStateStudent extends State<oldVisitorSeacrchStudent> {
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Container(
+                SizedBox(
                   width: 150,
                   height: 60,
                   child: ElevatedButton.icon(

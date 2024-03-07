@@ -7,12 +7,12 @@ import 'package:my_gate_app/screens/admin/utils/dropdown.dart';
 
 class FilterPage extends StatefulWidget {
   FilterPage({
-    Key? key,
+    super.key,
     required this.chosen_start_date,
     required this.chosen_end_date,
     required this.isSelected,
     required this.onSavedFunction,
-  }) : super(key: key);
+  });
   String chosen_start_date = "None";
   String chosen_end_date = "None";
   List<bool> isSelected;
@@ -71,11 +71,11 @@ class _FilterPageState extends State<FilterPage> {
                               ),
                               checkColor: Colors.black,
                               activeColor: Colors.red,
-                              value: this.date_filter_applied,
+                              value: date_filter_applied,
                               onChanged: (bool? value) {
                                 if(value != null) {
                                   setState(() {
-                                    this.date_filter_applied = value;
+                                    date_filter_applied = value;
                                   });
                                 }
                               },
@@ -114,9 +114,9 @@ class _FilterPageState extends State<FilterPage> {
                                   },
                                   onConfirm: (date) {
                                     setState(() {
-                                      var chosen_date =
+                                      var chosenDate =
                                           DateFormat('yyyy-MM-dd').format(date);
-                                      widget.chosen_start_date = '$chosen_date';
+                                      widget.chosen_start_date = chosenDate;
                                     });
                                     print('confirm $date');
                                   },
@@ -170,9 +170,9 @@ class _FilterPageState extends State<FilterPage> {
                                 print('change $date');
                               }, onConfirm: (date) {
                                 setState(() {
-                                  var chosen_date =
+                                  var chosenDate =
                                       DateFormat('yyyy-MM-dd').format(date);
-                                  widget.chosen_end_date = '$chosen_date';
+                                  widget.chosen_end_date = chosenDate;
                                 });
                                 print('confirm $date');
                               },
@@ -204,11 +204,11 @@ class _FilterPageState extends State<FilterPage> {
                       ),
                       checkColor: Colors.black,
                       activeColor: Colors.red,
-                      value: this.ticket_type_filter_applied,
+                      value: ticket_type_filter_applied,
                       onChanged: (bool? value) {
                         if(value != null) {
                           setState(() {
-                            this.ticket_type_filter_applied = value;
+                            ticket_type_filter_applied = value;
                           });
                         }
                       },
@@ -226,10 +226,10 @@ class _FilterPageState extends State<FilterPage> {
                 SizedBox(height: 10,),
                 dropdown(
                   context,
-                  this.ticket_types,
+                  ticket_types,
                   (String? s) {
                     if (s != null) {
-                      this.chosen_ticket_type = s;
+                      chosen_ticket_type = s;
                     }
                   },
                   "Ticket Type",
@@ -251,15 +251,15 @@ class _FilterPageState extends State<FilterPage> {
                       textStyle: const TextStyle(fontSize: 20),
                       backgroundColor: Colors.red),
                   onPressed: () {
-                    if (this.chosen_ticket_type == "Entry") {
+                    if (chosen_ticket_type == "Entry") {
                       widget.isSelected[0] = true;
                       widget.isSelected[1] = false;
                     }
-                    if (this.chosen_ticket_type == "Exit") {
+                    if (chosen_ticket_type == "Exit") {
                       widget.isSelected[0] = false;
                       widget.isSelected[1] = true;
                     }
-                    if (this.chosen_ticket_type == "Entry & Exit") {
+                    if (chosen_ticket_type == "Entry & Exit") {
                       widget.isSelected[0] = true;
                       widget.isSelected[1] = true;
                     }

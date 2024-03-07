@@ -8,7 +8,7 @@
   import 'package:my_gate_app/get_email.dart';
 
   class PendingAuthorityVisitorTicketTable extends StatefulWidget {
-    const PendingAuthorityVisitorTicketTable({Key? key}) : super(key: key);
+    const PendingAuthorityVisitorTicketTable({super.key});
 
     @override
     State<PendingAuthorityVisitorTicketTable> createState() =>
@@ -18,7 +18,7 @@
   Color getColorFromHex(String hexColor) {
     hexColor = hexColor.replaceAll("#", "");
     if (hexColor.length == 6) {
-      hexColor = "FF" + hexColor;
+      hexColor = "FF$hexColor";
     }
     if (hexColor.length == 8) {
       return Color(int.parse("0x$hexColor"));
@@ -33,7 +33,7 @@
     String searchQuery = '';
     List<String> list_of_persons = [];
     bool isFieldEmpty = true;
-    FocusNode _focusNode = FocusNode();
+    final FocusNode _focusNode = FocusNode();
 
     void filterTickets(String query) {
       if (query.isEmpty) {
@@ -60,11 +60,11 @@
     }
 
     List<Color?> inkColors = [
-      Color.fromARGB(255, 45, 44, 42),
+      const Color.fromARGB(255, 45, 44, 42),
       getColorFromHex('f5a6ff'),
       getColorFromHex('f7f554'),
       getColorFromHex('34ebc0'),
-      Color.fromARGB(255, 65, 67, 63),
+      const Color.fromARGB(255, 65, 67, 63),
       getColorFromHex('62de72'),
     ];
 
@@ -79,10 +79,10 @@
     List<String> segregrateTickettickets_visitors(List<String> allTickets) {
       List<String> ans = [];
 
-      allTickets.forEach((element) {
+      for (var element in allTickets) {
         var list = element.split("\n");
         ans.add(list[0]);
-      });
+      }
 
       return ans;
     }
@@ -137,7 +137,7 @@
             // color: Colors.bla,
             child: Column(
               children: [
-                SizedBox(
+                const SizedBox(
                   height: 8,
                 ),
                 SizedBox(
@@ -145,7 +145,7 @@
                   width: MediaQuery.of(context).size.width / 1.25,
                   child: InputDecorator(
                     isEmpty: isFieldEmpty, // if true, the hint text is shown
-                    decoration: InputDecoration(
+                    decoration: const InputDecoration(
                       hintText: '    Search by Name',
                       hintStyle: TextStyle(
                           color: Color.fromARGB(255, 96, 96,
@@ -154,8 +154,8 @@
 
                     child: TextField(
                       focusNode: _focusNode,
-                      style: TextStyle(color: Color.fromARGB(255, 0, 0, 0)),
-                      decoration: InputDecoration(
+                      style: const TextStyle(color: Color.fromARGB(255, 0, 0, 0)),
+                      decoration: const InputDecoration(
                         // labelText: "Name",
                         // hintText: "Enter name to filter tickets",
                         // hintStyle: TextStyle(color: Colors.grey),
@@ -225,11 +225,11 @@
                           child: Row(
                             children: [
                               FittedBox(
+                                fit: BoxFit.fill,
                                 child: Container(
                                   margin: const EdgeInsets.all(20),
                                   height: 20,
                                 ),
-                                fit: BoxFit.fill,
                               ),
                               const SizedBox(
                                 width: 5,
@@ -245,22 +245,22 @@
                                     Align(
                                       alignment: Alignment.topLeft,
                                       child: Text(
-                                        '${filtered_tickets_visitors[index].visitor_name}',
+                                        filtered_tickets_visitors[index].visitor_name,
                                         style: GoogleFonts.roboto(
                                           fontSize: 25,
                                           fontWeight: FontWeight.bold,
-                                          color: Color.fromARGB(255, 0, 98, 255),
+                                          color: const Color.fromARGB(255, 0, 98, 255),
                                         ),
                                       ),
                                     ),
                                     Align(
                                       alignment: Alignment.topLeft,
                                       child: Text(
-                                        '${filtered_tickets_visitors[index].mobile_no}',
+                                        filtered_tickets_visitors[index].mobile_no,
                                         style: GoogleFonts.roboto(
                                           fontSize: 15,
                                           fontWeight: FontWeight.bold,
-                                          color: Color.fromARGB(255, 0, 98, 255),
+                                          color: const Color.fromARGB(255, 0, 98, 255),
                                         ),
                                       ),
                                     ),
@@ -272,7 +272,7 @@
                                           fontSize: 12,
                                           fontWeight: FontWeight.bold,
                                           color:
-                                              Color.fromARGB(255, 102, 102, 102),
+                                              const Color.fromARGB(255, 102, 102, 102),
                                         ),
                                       ),
                                     ),

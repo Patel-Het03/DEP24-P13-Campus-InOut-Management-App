@@ -1,8 +1,6 @@
 // ignore_for_file: non_constant_identifier_names, avoid_print
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:my_gate_app/auth/authscreen.dart';
 import 'package:my_gate_app/database/database_interface.dart';
@@ -17,7 +15,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 // This file calls the GuardTicketTable file with location name as a parameter
 
 class HomeGuard extends StatefulWidget {
-  const HomeGuard({Key? key}) : super(key: key);
+  const HomeGuard({super.key});
 
   @override
   _HomeGuardState createState() => _HomeGuardState();
@@ -55,10 +53,10 @@ class _HomeGuardState extends State<HomeGuard> {
       appBar: AppBar(
         title: Column(
           children: [
-            Text('Guard Home'),
+            const Text('Guard Home'),
             Text(
-              '${welcome_message}',
-              style: TextStyle(fontSize: 15),
+              welcome_message,
+              style: const TextStyle(fontSize: 15),
             ),
           ],
         ),
@@ -70,15 +68,15 @@ class _HomeGuardState extends State<HomeGuard> {
                 SharedPreferences prefs = await SharedPreferences.getInstance();
                 prefs.clear();
                 Navigator.of(context).pushReplacement(
-                  MaterialPageRoute(builder: (context) => AuthScreen()),
+                  MaterialPageRoute(builder: (context) => const AuthScreen()),
                 );
               },
-              icon: Icon(Icons.logout))
+              icon: const Icon(Icons.logout))
         ],
       ),
       body: SingleChildScrollView(
         child: ConstrainedBox(
-          constraints: BoxConstraints(),
+          constraints: const BoxConstraints(),
           child: Container(
             color: Colors.black38,
             child: GridView.builder(
@@ -108,7 +106,7 @@ class _HomeGuardState extends State<HomeGuard> {
                     height: 50,
                     width: 30,
                     //margin: EdgeInsets.only(bottom: 20),
-                    margin: EdgeInsets.all(20),
+                    margin: const EdgeInsets.all(20),
                     decoration: BoxDecoration(
                       shape: BoxShape.rectangle,
                       color: Colors.blue[100 * (index % 3 + 1)],
@@ -117,7 +115,7 @@ class _HomeGuardState extends State<HomeGuard> {
                     //color: Colors.amber[colorCodes[index]],
                     child: Center(
                         child: Text(
-                      '${entries[index]}',
+                      entries[index],
                       style: GoogleFonts.roboto(
                           fontSize: 20, fontWeight: FontWeight.bold),
                     )),
@@ -139,7 +137,7 @@ class _HomeGuardState extends State<HomeGuard> {
             const SizedBox(width: 12),
             Text(
               item.text,
-              style: TextStyle(color: Colors.black),
+              style: const TextStyle(color: Colors.black),
             ),
           ],
         ),
@@ -161,7 +159,7 @@ class _HomeGuardState extends State<HomeGuard> {
         SharedPreferences prefs = await SharedPreferences.getInstance();
         prefs.clear();
         Navigator.of(context).pushReplacement(
-          MaterialPageRoute(builder: (context) => AuthScreen()),
+          MaterialPageRoute(builder: (context) => const AuthScreen()),
         );
         break;
     }

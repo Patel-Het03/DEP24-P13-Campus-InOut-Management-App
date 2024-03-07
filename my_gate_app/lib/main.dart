@@ -1,7 +1,6 @@
 // ignore_for_file: prefer_const_constructors
 
 import 'package:flutter/material.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:my_gate_app/splash.dart';
 
 import 'package:my_gate_app/get_email.dart';
@@ -24,7 +23,7 @@ void main() async {
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({Key? key}) : super(key: key);
+  const MyApp({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -44,9 +43,9 @@ class MyApp extends StatelessWidget {
             final SharedPreferences prefs = snapshot.data!;
             final String? type = prefs.getString("type");
             final String? email = prefs.getString("email");
-            final String? _guard_location = prefs.getString("guard_location");
+            final String? guardLocation = prefs.getString("guard_location");
             if (type != null) {
-              print("type: " + type);
+              print("type: $type");
             }
             if (type == null) {
               return Splash();
@@ -61,9 +60,9 @@ class MyApp extends StatelessWidget {
               return HomeAdmin();
             } else if (type == "Guard" && email != null) {
               LoggedInDetails.setEmail(email);
-              if (_guard_location != null) {
+              if (guardLocation != null) {
                 return EntryExit(
-                  guard_location: _guard_location,
+                  guard_location: guardLocation,
                 );
               } else {
                 return Splash();

@@ -3,6 +3,8 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 
 class OtpTimer extends StatefulWidget {
+  const OtpTimer({super.key});
+
   @override
   _OtpTimerState createState() => _OtpTimerState();
 }
@@ -41,16 +43,16 @@ class _OtpTimerState extends State<OtpTimer> {
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: <Widget>[
-        Icon(
+        const Icon(
           Icons.timer,
           color: Colors.blue,
         ),
-        SizedBox(
+        const SizedBox(
           width: 5,
         ),
         Text(
           timerText,
-          style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black),
+          style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.black),
         )
       ],
     );

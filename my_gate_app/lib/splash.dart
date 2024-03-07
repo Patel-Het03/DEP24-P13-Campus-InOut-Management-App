@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'auth/authscreen.dart';
 
 class Splash extends StatefulWidget {
-  const Splash({Key? key}) : super(key: key);
+  const Splash({super.key});
 
   @override
   State<Splash> createState() => _SplashState();
@@ -17,11 +17,11 @@ class _SplashState extends State<Splash> {
   }
 
   _navigatetohome() async {
-    await Future.delayed(Duration(milliseconds: 1500), () {});
+    await Future.delayed(const Duration(milliseconds: 1500), () {});
     Navigator.pushReplacement(
       context,
       MaterialPageRoute(
-        builder: (context) => AuthScreen(),
+        builder: (context) => const AuthScreen(),
       ),
     );
   }
@@ -46,7 +46,7 @@ class _SplashState extends State<Splash> {
     return Scaffold(
       body: Container(
         color: Colors.black,
-        decoration: BoxDecoration(
+        decoration: const BoxDecoration(
           image: DecorationImage(
             image: AssetImage("assets/images/splash.jpg"),
             // fit: BoxFit.cover,

@@ -1,4 +1,5 @@
 /// Example of a simple line chart.
+library;
 import 'package:charts_flutter/flutter.dart' as charts;
 import 'package:flutter/material.dart';
 
@@ -6,11 +7,11 @@ class SimpleLineChart extends StatelessWidget {
   final List<charts.Series<LinearSales, int>> seriesList;
   final bool? animate;
 
-  SimpleLineChart(this.seriesList, {this.animate});
+  const SimpleLineChart(this.seriesList, {super.key, this.animate});
 
   /// Creates a [LineChart] with sample data and no transition.
   factory SimpleLineChart.withSampleData(var data) {
-    return new SimpleLineChart(
+    return SimpleLineChart(
       _createSampleData(data),
       // Disable animations for image tests.
       animate: false,
@@ -20,7 +21,7 @@ class SimpleLineChart extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return new charts.LineChart(seriesList, animate: animate);
+    return charts.LineChart(seriesList, animate: animate);
   }
 
   /// Create one series with sample hard coded data.
@@ -47,7 +48,7 @@ class SimpleLineChart extends StatelessWidget {
     // ];
 
     return [
-      new charts.Series<LinearSales, int>(
+      charts.Series<LinearSales, int>(
         id: 'Sales',
         colorFn: (_, __) => charts.MaterialPalette.blue.shadeDefault,
         domainFn: (LinearSales sales, _) => sales.year,

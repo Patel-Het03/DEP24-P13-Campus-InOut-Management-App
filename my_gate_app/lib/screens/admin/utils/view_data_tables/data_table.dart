@@ -13,11 +13,10 @@ import 'package:my_gate_app/screens/utils/scrollable_widget.dart';
 
 class AdminDataTable extends StatefulWidget {
   AdminDataTable(
-      {Key? key,
+      {super.key,
       required this.data_entity,
       required this.column_names,
-      required this.tickets})
-      : super(key: key);
+      required this.tickets});
   final String data_entity;
   final List<String> column_names;
   List<ReadTableObject> tickets;

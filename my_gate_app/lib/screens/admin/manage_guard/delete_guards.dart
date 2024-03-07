@@ -2,10 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:my_gate_app/database/database_interface.dart';
 import 'package:my_gate_app/screens/admin/utils/dropdown.dart';
 import 'package:my_gate_app/screens/admin/utils/submit_button.dart';
-import 'package:my_gate_app/screens/admin/utils/textbox.dart';
 
 class DeleteGuards extends StatefulWidget {
-  const DeleteGuards({Key? key}) : super(key: key);
+  const DeleteGuards({super.key});
 
   @override
   _DeleteGuardsState createState() => _DeleteGuardsState();
@@ -47,10 +46,10 @@ class _DeleteGuardsState extends State<DeleteGuards> {
         ),
         child: Column(
           children: [
-            SizedBox(
+            const SizedBox(
               height: 50,
             ),
-            Text(
+            const Text(
               "Remove Guard",
               style: TextStyle(
                   fontWeight: FontWeight.bold,
@@ -77,34 +76,34 @@ class _DeleteGuardsState extends State<DeleteGuards> {
                 color: Colors.black,
               ),
             ), */
-            SizedBox(
+            const SizedBox(
               height: 50,
             ),
             dropdown(
               context,
-              this.guard_emails,
+              guard_emails,
               (String? s) {
                 if (s != null) {
-                  print("inside funciton:" + this.chosen_delete_guard_email);
-                  this.chosen_delete_guard_email = s;
-                  print(this.chosen_delete_guard_email);
+                  print("inside funciton:$chosen_delete_guard_email");
+                  chosen_delete_guard_email = s;
+                  print(chosen_delete_guard_email);
                 }
               },
               "Guard Email",
-              Icon(
+              const Icon(
                 Icons.email_outlined,
                 color: Colors.black,
               ),
             ),
-            SizedBox(
+            const SizedBox(
               height: 50,
             ),
             SubmitButton(
                 submit_function: () async {
-                  if (this.chosen_delete_guard_email != "None") {
+                  if (chosen_delete_guard_email != "None") {
                     String response = await databaseInterface
-                        .delete_guard(this.chosen_delete_guard_email);
-                    print("Response: " + response);
+                        .delete_guard(chosen_delete_guard_email);
+                    print("Response: $response");
                   }
                 },
                 button_text: "Delete")

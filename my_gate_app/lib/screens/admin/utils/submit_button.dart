@@ -2,8 +2,7 @@ import 'package:flutter/material.dart';
 
 class SubmitButton extends StatelessWidget {
   const SubmitButton(
-      {Key? key, required this.submit_function, required this.button_text})
-      : super(key: key);
+      {super.key, required this.submit_function, required this.button_text});
   final void Function() submit_function;
   final String button_text;
 
@@ -13,12 +12,12 @@ class SubmitButton extends StatelessWidget {
       child: Column(
         children: [
           Container(
-            padding: EdgeInsets.all(15),
+            padding: const EdgeInsets.all(15),
             //color: Colors.green,
             child: Container(
               height: 60,
               decoration: BoxDecoration(
-                  gradient: LinearGradient(
+                  gradient: const LinearGradient(
                     // ignore: prefer_const_literals_to_create_immutables
                     colors: [
                       Color.fromRGBO(255, 143, 158, 1),
@@ -35,7 +34,7 @@ class SubmitButton extends StatelessWidget {
                       color: Colors.pink.withOpacity(0.2),
                       spreadRadius: 4,
                       blurRadius: 10,
-                      offset: Offset(0, 3),
+                      offset: const Offset(0, 3),
                     )
                   ]),
               child: ElevatedButton(
@@ -44,26 +43,26 @@ class SubmitButton extends StatelessWidget {
                     shape: MaterialStateProperty.all<RoundedRectangleBorder>(
                         RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(18.0),
-                            side: BorderSide(color: Colors.blue)))),
+                            side: const BorderSide(color: Colors.blue)))),
                 onPressed: () {
-                  this.submit_function();
+                  submit_function();
                 },
                 child: FittedBox(
+                  fit: BoxFit.fill,
                   child: Container(
-                      margin: EdgeInsets.all(30),
+                      margin: const EdgeInsets.all(30),
                       height: 100,
                       width: MediaQuery.of(context).size.width / 1.5,
                       child: Text(
-                        this.button_text,
+                        button_text,
                         textAlign: TextAlign.center,
-                        style: TextStyle(
+                        style: const TextStyle(
                             fontWeight: FontWeight.bold,
                             color: Colors.white,
                             fontSize: 50),
                       )
                       //Image.asset("images/enter_button.png"),
                       ),
-                  fit: BoxFit.fill,
                 ),
               ),
             ),

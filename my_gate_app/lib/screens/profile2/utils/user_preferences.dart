@@ -1,7 +1,5 @@
-import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:my_gate_app/screens/profile2/model/user.dart';
-import 'package:my_gate_app/get_email.dart';
 
 class UserPreferences {
   static const myUser = User(

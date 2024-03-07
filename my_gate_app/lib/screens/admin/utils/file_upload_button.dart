@@ -1,16 +1,13 @@
 // ignore_for_file: prefer_const_constructors, non_constant_identifier_names, avoid_init_to_null, avoid_print
 
-import 'dart:io';
 import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:my_gate_app/database/database_interface.dart';
 import 'package:my_gate_app/screens/utils/custom_snack_bar.dart';
-import 'package:my_gate_app/screens/admin/utils/delete_single_student.dart';
 
 class FileUploadButton extends StatefulWidget {
-  const FileUploadButton({Key? key, required this.url_upload_file})
-      : super(key: key);
+  const FileUploadButton({super.key, required this.url_upload_file});
   final String url_upload_file;
   @override
   State<FileUploadButton> createState() => _FileUploadButtonState();
@@ -21,7 +18,7 @@ class _FileUploadButtonState extends State<FileUploadButton> {
   String upload_file_message = "";
   Uint8List? chosen_file = null;
 
-  databaseInterface db = new databaseInterface();
+  databaseInterface db = databaseInterface();
 
   @override
   Widget build(BuildContext context) {
@@ -83,13 +80,13 @@ class _FileUploadButtonState extends State<FileUploadButton> {
                       chosen_file = picked.files.first.bytes;
 
                       setState(() {
-                        this.chosen_file_message =
-                            "File: " + picked.files.first.name;
+                        chosen_file_message =
+                            "File: ${picked.files.first.name}";
                       });
                       // print("File path in upload=${this.chosen_file_message}");
                     } else if (picked.files.first.extension != 'csv') {
                       setState(() {
-                        this.chosen_file_message =
+                        chosen_file_message =
                             """Incorrect file uploaded.\nKindly upload csv file""";
                       });
                       final snackBar = get_snack_bar(
@@ -100,6 +97,7 @@ class _FileUploadButtonState extends State<FileUploadButton> {
                   }
                 },
                 label: FittedBox(
+                  fit: BoxFit.fill,
                   child: Container(
                       margin: EdgeInsets.all(30),
                       height: 100,
@@ -114,13 +112,12 @@ class _FileUploadButtonState extends State<FileUploadButton> {
                       )
                       //Image.asset("images/enter_button.png"),
                       ),
-                  fit: BoxFit.fill,
                 ),
               ),
             ),
           ),
           Text(
-            this.chosen_file_message,
+            chosen_file_message,
             style: TextStyle(color: Colors.red, fontSize: 20),
           ),
           SizedBox(
@@ -168,9 +165,9 @@ class _FileUploadButtonState extends State<FileUploadButton> {
                 onPressed: () {
                   try {
                     // send this.chosen_file to this.url_upload_file
-                    if (this.chosen_file != null) {
+                    if (chosen_file != null) {
                       setState(() {
-                        this.upload_file_message = "File uploaded";
+                        upload_file_message = "File uploaded";
                         db.send_file(chosen_file, widget.url_upload_file);
                         final snackBar =
                             get_snack_bar("File uploaded", Colors.green);
@@ -178,7 +175,7 @@ class _FileUploadButtonState extends State<FileUploadButton> {
                       });
                     } else {
                       setState(() {
-                        this.upload_file_message = "Kindly choose a csv file";
+                        upload_file_message = "Kindly choose a csv file";
                         final snackBar = get_snack_bar(
                             "Kindly choose a csv file", Colors.red);
                         ScaffoldMessenger.of(context).showSnackBar(snackBar);
@@ -187,7 +184,7 @@ class _FileUploadButtonState extends State<FileUploadButton> {
                   } catch (e) {
                     print(e.toString());
                     setState(() {
-                      this.upload_file_message = "Error: choose a csv file";
+                      upload_file_message = "Error: choose a csv file";
                       final snackBar =
                           get_snack_bar("Kindly choose a csv file", Colors.red);
                       ScaffoldMessenger.of(context).showSnackBar(snackBar);
@@ -195,6 +192,7 @@ class _FileUploadButtonState extends State<FileUploadButton> {
                   }
                 },
                 label: FittedBox(
+                  fit: BoxFit.fill,
                   child: Container(
                       margin: EdgeInsets.all(30),
                       height: 100,
@@ -209,13 +207,12 @@ class _FileUploadButtonState extends State<FileUploadButton> {
                       )
                       //Image.asset("images/enter_button.png"),
                       ),
-                  fit: BoxFit.fill,
                 ),
               ),
             ),
           ),
           Text(
-            this.upload_file_message,
+            upload_file_message,
             style: TextStyle(color: Colors.red, fontSize: 20),
           ),
           // Container(

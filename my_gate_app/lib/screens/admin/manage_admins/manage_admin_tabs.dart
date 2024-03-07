@@ -1,18 +1,15 @@
 // ignore_for_file: prefer_const_constructors
 
 import 'package:flutter/material.dart';
-import 'package:my_gate_app/database/database_objects.dart';
 import 'package:my_gate_app/screens/admin/manage_admins/add_admins.dart';
-import 'package:my_gate_app/screens/admin/manage_admins/delete_admins.dart';
-import 'package:my_gate_app/screens/admin/manage_admins/modify_admins.dart';
 import 'package:my_gate_app/screens/admin/utils/view_data_tables/stream_data_table.dart';
 
 class ManageAdminTabs extends StatefulWidget {
   const ManageAdminTabs({
-    Key? key,
+    super.key,
     required this.data_entity,
     required this.column_names,
-  }) : super(key: key);
+  });
   final String data_entity;
   final List<String> column_names;
 

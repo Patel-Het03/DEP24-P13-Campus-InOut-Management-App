@@ -6,10 +6,9 @@ import 'package:my_gate_app/database/database_objects.dart';
 import 'package:my_gate_app/screens/admin/statistics/donut_chart.dart';
 import 'package:my_gate_app/screens/admin/utils/dropdown.dart';
 import 'package:my_gate_app/screens/admin/utils/submit_button.dart';
-import 'package:my_gate_app/screens/admin/utils/textbox.dart';
 
 class StatisticsPie extends StatefulWidget {
-  const StatisticsPie({Key? key}) : super(key: key);
+  const StatisticsPie({super.key});
 
   @override
   _StatisticsPieState createState() => _StatisticsPieState();
@@ -58,7 +57,7 @@ class _StatisticsPieState extends State<StatisticsPie> {
         .get_statistics_data_by_location(location, filter,status);
     List<LinearSales> new_data = [];
     int index = 0;
-    if(res.length==0){
+    if(res.isEmpty){
       showDialog(
         context: context,
         builder: (BuildContext context) {
@@ -79,7 +78,7 @@ class _StatisticsPieState extends State<StatisticsPie> {
     }
     for (StatisticsResultObj each_object in res) {
       if (each_object.count != 0) {
-        new_data.add(new LinearSales(
+        new_data.add(LinearSales(
             each_object.category, each_object.count, color_array[index]));
       }
       index++;

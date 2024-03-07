@@ -9,11 +9,11 @@ void AuthorityMessage(String message, BuildContext context) {
         RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
         elevation: 16,
         child: Container(
-          padding: EdgeInsets.only(left:20),
+          padding: const EdgeInsets.only(left:20),
           child: ListView(
             shrinkWrap: true,
             children: <Widget>[
-              SizedBox(height: 20),
+              const SizedBox(height: 20),
               Text(message),
             ],
           ),

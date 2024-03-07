@@ -1,23 +1,16 @@
 // ignore_for_file: prefer_const_constructors, non_constant_identifier_names
 
 import 'package:flutter/material.dart';
-import 'package:my_gate_app/auth/authscreen.dart';
 import 'package:my_gate_app/database/database_objects.dart';
-import 'package:my_gate_app/get_email.dart';
-import 'package:my_gate_app/screens/guard/guard_ticket_table.dart';
 import 'package:my_gate_app/screens/guard/pending_guard_ticket_table.dart';
 import 'package:my_gate_app/screens/guard/stream_guard_ticket_table.dart';
-import 'package:my_gate_app/screens/guard/stream_selectable_page.dart';
-import 'package:my_gate_app/screens/profile2/guard_profile/guard_profile_page.dart';
-import 'package:my_gate_app/screens/profile2/model/menu_item.dart';
-import 'package:my_gate_app/screens/profile2/utils/menu_items.dart';
 
 class GuardTabs extends StatefulWidget {
   const GuardTabs({
-    Key? key,
+    super.key,
     required this.location,
     required this.enter_exit,
-  }) : super(key: key);
+  });
   final String location;
   final String enter_exit;
 
@@ -73,7 +66,7 @@ class _GuardTabsState extends State<GuardTabs>
                   gradient: LinearGradient(
                       begin: Alignment.topLeft,
                       end: Alignment.bottomRight,
-                      colors: <Color>[Colors.purple, Colors.blue])),
+                      colors: const <Color>[Colors.purple, Colors.blue])),
             ),
             leading: IconButton(
               icon: Icon(Icons.arrow_back, color: Color.fromARGB(255, 0, 0, 0)),

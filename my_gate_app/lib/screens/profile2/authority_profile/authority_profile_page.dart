@@ -1,24 +1,14 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:my_gate_app/database/database_interface.dart';
-import 'package:google_fonts/google_fonts.dart';
-import 'package:my_gate_app/screens/profile2/authority_profile/authority_edit_profile_page.dart';
 // import 'package:my_gate_app/screens/profile2/guard_profile/guard_edit_profile_page.dart';
 import 'package:my_gate_app/screens/profile2/model/user.dart';
 import 'package:my_gate_app/screens/profile2/utils/user_preferences.dart';
 import 'package:my_gate_app/screens/profile2/widget/appbar_widget.dart';
-import 'package:my_gate_app/screens/profile2/widget/button_widget.dart';
-import 'package:my_gate_app/screens/profile2/widget/profile_widget.dart';
-import 'package:my_gate_app/screens/profile2/edit_profile_page.dart';
-import 'package:animated_theme_switcher/animated_theme_switcher.dart';
-import 'package:my_gate_app/screens/profile2/widget/textfield_widget.dart';
-import 'package:my_gate_app/get_email.dart';
-import 'package:my_gate_app/screens/profile2/model/user.dart';
 
 class AuthorityProfilePage extends StatefulWidget {
   final String? email;
-  const AuthorityProfilePage({Key? key, required this.email}) : super(key: key);
+  const AuthorityProfilePage({super.key, required this.email});
   @override
   _AuthorityProfilePageState createState() => _AuthorityProfilePageState();
 }
@@ -33,35 +23,35 @@ class _AuthorityProfilePageState extends State<AuthorityProfilePage> {
   var pic;
 
   Future<void> init() async {
-    String? curr_email = widget.email;
-    print("Current Email: " + curr_email.toString());
-    databaseInterface db = new databaseInterface();
-    AuthorityUser result = await db.get_authority_by_email(curr_email);
+    String? currEmail = widget.email;
+    print("Current Email: $currEmail");
+    databaseInterface db = databaseInterface();
+    AuthorityUser result = await db.get_authority_by_email(currEmail);
     setState(() {
       user = result;
       controller_designation.text = user.designation;
       imagePath = user.imagePath;
-      print("Result Name in Profile Page" + result.name);
+      print("Result Name in Profile Page${result.name}");
     });
 
     setState(() {
-      pic = NetworkImage(this.imagePath);
+      pic = NetworkImage(imagePath);
     });
   }
 
   @override
   void initState() {
     super.initState();
-    String? curr_email = widget.email;
-    print("Current Email: " + curr_email.toString());
+    String? currEmail = widget.email;
+    print("Current Email: $currEmail");
     controller_designation = TextEditingController();
 
     imagePath = UserPreferences.myAuthorityUser.imagePath;
-    pic = NetworkImage(this.imagePath);
-    imagePicker = new ImagePicker();
+    pic = NetworkImage(imagePath);
+    imagePicker = ImagePicker();
 
     init();
-    print("User Name in Profile Page" + user.name);
+    print("User Name in Profile Page${user.name}");
   }
 
   @override
@@ -70,19 +60,7 @@ class _AuthorityProfilePageState extends State<AuthorityProfilePage> {
       /* backgroundColor: Colors.white, */
       appBar: buildAppBar(context),
       body: Container(
-        padding: EdgeInsets.only(top: 16.0),
-        child: ListView(
-          padding: EdgeInsets.symmetric(horizontal: 32),
-          physics: BouncingScrollPhysics(),
-          children: [
-            ImageWidget(),
-            const SizedBox(height: 24),
-            buildName(user),
-            const SizedBox(height: 24),
-            const SizedBox(height: 24),
-            builText(controller_designation, "Designation", false, 1),
-          ],
-        ),
+        padding: const EdgeInsets.only(top: 16.0),
         decoration: const BoxDecoration(
           gradient: LinearGradient(
             colors: [
@@ -93,6 +71,18 @@ class _AuthorityProfilePageState extends State<AuthorityProfilePage> {
             end: Alignment.topRight,
           ),
         ),
+        child: ListView(
+          padding: const EdgeInsets.symmetric(horizontal: 32),
+          physics: const BouncingScrollPhysics(),
+          children: [
+            ImageWidget(),
+            const SizedBox(height: 24),
+            buildName(user),
+            const SizedBox(height: 24),
+            const SizedBox(height: 24),
+            builText(controller_designation, "Designation", false, 1),
+          ],
+        ),
       ),
     );
   }
@@ -101,7 +91,7 @@ class _AuthorityProfilePageState extends State<AuthorityProfilePage> {
         children: [
           Text(
             user.name,
-            style: TextStyle(
+            style: const TextStyle(
                 fontWeight: FontWeight.bold, fontSize: 24, color: Colors.black),
           ),
           const SizedBox(height: 4),
@@ -119,17 +109,17 @@ class _AuthorityProfilePageState extends State<AuthorityProfilePage> {
         children: [
           Text(
             label,
-            style: TextStyle(
+            style: const TextStyle(
                 fontWeight: FontWeight.bold, fontSize: 16, color: Colors.black),
           ),
           const SizedBox(height: 8),
           TextField(
-            style: TextStyle(color: Colors.black),
+            style: const TextStyle(color: Colors.black),
             enabled: enabled,
             controller: controller,
             decoration: InputDecoration(
               disabledBorder: OutlineInputBorder(
-                borderSide: BorderSide(color: Colors.black, width: 1.0),
+                borderSide: const BorderSide(color: Colors.black, width: 1.0),
                 borderRadius: BorderRadius.circular(12),
               ),
               labelStyle: TextStyle(
@@ -145,16 +135,16 @@ class _AuthorityProfilePageState extends State<AuthorityProfilePage> {
     print("edit profile page image clicked 2");
     var source = ImageSource.gallery;
     XFile image = await imagePicker.pickImage(source: source);
-    var widget_email = widget.email;
-    if (widget_email != null) {
+    var widgetEmail = widget.email;
+    if (widgetEmail != null) {
       await databaseInterface.send_image(image,
-          "/authorities/change_profile_picture_of_authority", widget_email);
+          "/authorities/change_profile_picture_of_authority", widgetEmail);
     }
-    databaseInterface db = new databaseInterface();
+    databaseInterface db = databaseInterface();
     AuthorityUser result = await db.get_authority_by_email(widget.email);
-    var pic_local = await NetworkImage(result.imagePath);
+    var picLocal = NetworkImage(result.imagePath);
     setState(() {
-      pic = pic_local;
+      pic = picLocal;
     });
   }
 
@@ -163,16 +153,16 @@ class _AuthorityProfilePageState extends State<AuthorityProfilePage> {
     var source = ImageSource.gallery;
     var filePath = "assets/images/dummy_person.jpg";
     XFile image = XFile(filePath);
-    var widget_email = widget.email;
-    if (widget_email != null) {
+    var widgetEmail = widget.email;
+    if (widgetEmail != null) {
       await databaseInterface.send_image(image,
-          "/authorities/change_profile_picture_of_authority", widget_email);
+          "/authorities/change_profile_picture_of_authority", widgetEmail);
     }
-    databaseInterface db = new databaseInterface();
+    databaseInterface db = databaseInterface();
     AuthorityUser result = await db.get_authority_by_email(widget.email);
-    var pic_local = await NetworkImage(result.imagePath);
+    var picLocal = NetworkImage(result.imagePath);
     setState(() {
-      pic = pic_local;
+      pic = picLocal;
     });
   }
 
@@ -207,7 +197,7 @@ class _AuthorityProfilePageState extends State<AuthorityProfilePage> {
         child: buildCircle(
           color: color,
           all: 8,
-          child: Icon(
+          child: const Icon(
             Icons.add_a_photo,
             color: Colors.white,
             size: 20,

@@ -8,8 +8,7 @@ import 'package:my_gate_app/screens/utils/custom_snack_bar.dart';
 class ProfilePage extends StatefulWidget {
   final String? email;
   final bool isEditable;
-  const ProfilePage({Key? key, required this.email, required this.isEditable})
-      : super(key: key);
+  const ProfilePage({super.key, required this.email, required this.isEditable});
   @override
   _ProfilePageState createState() => _ProfilePageState();
 }
@@ -30,10 +29,10 @@ class _ProfilePageState extends State<ProfilePage> {
   var pic;
 
   Future<void> init() async {
-    String? curr_email = widget.email;
-    print("Current Email: " + curr_email.toString());
-    databaseInterface db = new databaseInterface();
-    User result = await db.get_student_by_email(curr_email);
+    String? currEmail = widget.email;
+    print("Current Email: $currEmail");
+    databaseInterface db = databaseInterface();
+    User result = await db.get_student_by_email(currEmail);
     // print("result obj image path" + result.imagePath);
     setState(() {
       user = result;
@@ -43,9 +42,9 @@ class _ProfilePageState extends State<ProfilePage> {
       controller_degree.text = result.degree;
       controller_gender.text = result.gender;
       /* controller_gender.text=result. */
-      print("Gender in yo:" + result.gender);
+      print("Gender in yo:${result.gender}");
       // imagePath = result.imagePath;
-      print("image path inside setstate: " + imagePath);
+      print("image path inside setstate: $imagePath");
     });
 
     setState(() {
@@ -64,8 +63,8 @@ class _ProfilePageState extends State<ProfilePage> {
     controller_gender = TextEditingController();
 
     imagePath = UserPreferences.myUser.imagePath;
-    pic = NetworkImage(this.imagePath);
-    imagePicker = new ImagePicker();
+    pic = NetworkImage(imagePath);
+    imagePicker = ImagePicker();
     // print("image path in image widget: " + this.imagePath);
     init();
   }
@@ -79,15 +78,15 @@ class _ProfilePageState extends State<ProfilePage> {
       appBar: AppBar(
         backgroundColor: Colors.black, // Set the background color to black
         centerTitle: true, // Center-align the title
-        iconTheme: IconThemeData(
+        iconTheme: const IconThemeData(
             color: Color.fromARGB(
                 221, 255, 255, 255)), // Set the back arrow color to white
         flexibleSpace: Container(
-          decoration: BoxDecoration(
+          decoration: const BoxDecoration(
             color: Colors.black,
           ),
         ),
-        title: Text(
+        title: const Text(
           "Profile Page",
           style: TextStyle(
               color: Colors.white,
@@ -107,8 +106,8 @@ class _ProfilePageState extends State<ProfilePage> {
           ),
         ),
         child: ListView(
-          padding: EdgeInsets.symmetric(horizontal: 32),
-          physics: BouncingScrollPhysics(),
+          padding: const EdgeInsets.symmetric(horizontal: 32),
+          physics: const BouncingScrollPhysics(),
           children: [
             const SizedBox(height: 24),
             ImageWidget(),
@@ -139,7 +138,7 @@ class _ProfilePageState extends State<ProfilePage> {
         children: [
           Text(
             user.name,
-            style: TextStyle(
+            style: const TextStyle(
                 fontWeight: FontWeight.bold, fontSize: 24, color: Colors.black),
           ),
           const SizedBox(height: 4),
@@ -157,17 +156,17 @@ class _ProfilePageState extends State<ProfilePage> {
         children: [
           Text(
             label,
-            style: TextStyle(
+            style: const TextStyle(
                 fontWeight: FontWeight.bold, fontSize: 16, color: Colors.black),
           ),
           const SizedBox(height: 8),
           TextField(
-            style: TextStyle(color: Colors.black),
+            style: const TextStyle(color: Colors.black),
             enabled: enabled,
             controller: controller,
             decoration: InputDecoration(
               disabledBorder: OutlineInputBorder(
-                borderSide: BorderSide(color: Colors.black, width: 1.0),
+                borderSide: const BorderSide(color: Colors.black, width: 1.0),
                 borderRadius: BorderRadius.circular(12),
               ),
               labelStyle: TextStyle(
@@ -186,7 +185,7 @@ class _ProfilePageState extends State<ProfilePage> {
         children: [
           Text(
             label,
-            style: TextStyle(
+            style: const TextStyle(
                 fontWeight: FontWeight.bold, fontSize: 16, color: Colors.black),
           ),
           const SizedBox(height: 8),
@@ -196,13 +195,13 @@ class _ProfilePageState extends State<ProfilePage> {
                 child: Stack(
                   children: [
                     TextField(
-                      style: TextStyle(color: Colors.black),
+                      style: const TextStyle(color: Colors.black),
                       enabled: enabled, // Use the 'enabled' parameter here
                       controller: controller,
                       decoration: InputDecoration(
                         disabledBorder: OutlineInputBorder(
                           borderSide:
-                              BorderSide(color: Colors.black, width: 1.0),
+                              const BorderSide(color: Colors.black, width: 1.0),
                           borderRadius: BorderRadius.circular(12),
                         ),
                         labelStyle: TextStyle(
@@ -237,7 +236,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                         }
                                     });
                           },
-                          child: Text(
+                          child: const Text(
                             'Edit',
                             style: TextStyle(fontWeight: FontWeight.bold),
                           ),
@@ -256,20 +255,20 @@ class _ProfilePageState extends State<ProfilePage> {
     var source = ImageSource.gallery;
     print(source);
     XFile image = await imagePicker.pickImage(source: source);
-    var widget_email = widget.email;
+    var widgetEmail = widget.email;
     print("image is picked");
     print(image.path);
-    if (widget_email != null) {
+    if (widgetEmail != null) {
       await databaseInterface.send_image(
-          image, "/students/change_profile_picture_of_student", widget_email);
+          image, "/students/change_profile_picture_of_student", widgetEmail);
     }
 
-    databaseInterface db = new databaseInterface();
+    databaseInterface db = databaseInterface();
     User result = await db.get_student_by_email(widget.email);
 
-    var pic_local = await result.profileImage;
+    var picLocal = result.profileImage;
     setState(() {
-      pic = pic_local;
+      pic = picLocal;
     });
   }
 
@@ -279,19 +278,19 @@ class _ProfilePageState extends State<ProfilePage> {
     var filePath =
         "assets/images/dummy_person.jpg"; // Replace with the actual file path
     XFile image = XFile(filePath);
-    var widget_email = widget.email;
-    if (widget_email != null) {
+    var widgetEmail = widget.email;
+    if (widgetEmail != null) {
       await databaseInterface.send_image(
-          image, "/students/change_profile_picture_of_student", widget_email);
+          image, "/students/change_profile_picture_of_student", widgetEmail);
     }
 
-    databaseInterface db = new databaseInterface();
+    databaseInterface db = databaseInterface();
     User result = await db.get_student_by_email(widget.email);
 
-    var pic_local = await NetworkImage(result.imagePath);
-    var remove_image = await AssetImage('images/dummy_person.jpg');
+    var picLocal = NetworkImage(result.imagePath);
+    var removeImage = const AssetImage('images/dummy_person.jpg');
     setState(() {
-      pic = remove_image;
+      pic = removeImage;
     });
   }
 
@@ -318,7 +317,7 @@ class _ProfilePageState extends State<ProfilePage> {
                 BoxShadow(
                   color: Colors.black.withOpacity(0.5),
                   blurRadius: 10,
-                  offset: Offset(0, 4),
+                  offset: const Offset(0, 4),
                 ),
               ],
             ),
@@ -392,7 +391,7 @@ class _ProfilePageState extends State<ProfilePage> {
         child: buildCircle(
           color: color,
           all: 8,
-          child: Icon(
+          child: const Icon(
             Icons.add_a_photo,
             color: Colors.white,
             size: 20,
@@ -406,7 +405,7 @@ class _ProfilePageState extends State<ProfilePage> {
         child: buildCircle(
           color: color,
           all: 8,
-          child: Icon(
+          child: const Icon(
             Icons.add_a_photo,
             color: Colors.white,
             size: 20,

@@ -1,18 +1,12 @@
 // ignore_for_file: prefer_const_constructors
 
 import 'package:flutter/material.dart';
-import 'package:my_gate_app/auth/authscreen.dart';
 import 'package:my_gate_app/database/database_objects.dart';
-import 'package:my_gate_app/get_email.dart';
 import 'package:my_gate_app/screens/authorities/pending_authority_ticket_table.dart';
 import 'package:my_gate_app/screens/authorities/stream_authority_ticket_table.dart';
-import 'package:my_gate_app/screens/profile2/authority_profile/authority_edit_profile_page.dart';
-import 'package:my_gate_app/screens/profile2/authority_profile/authority_profile_page.dart';
-import 'package:my_gate_app/screens/profile2/model/menu_item.dart';
-import 'package:my_gate_app/screens/profile2/utils/menu_items.dart';
 
 class AuthorityTabs extends StatefulWidget {
-  const AuthorityTabs({Key? key}) : super(key: key);
+  const AuthorityTabs({super.key});
 
   @override
   State<AuthorityTabs> createState() => _AuthorityTabsState();

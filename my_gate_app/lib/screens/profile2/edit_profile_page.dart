@@ -2,23 +2,17 @@
 
 import 'dart:io';
 
-import 'package:animated_theme_switcher/animated_theme_switcher.dart';
 import 'package:flutter/material.dart';
 import 'package:my_gate_app/database/database_interface.dart';
 import 'package:my_gate_app/get_email.dart';
-import 'package:my_gate_app/screens/profile2/widget/image_from_gallery_ex.dart';
-import 'package:path/path.dart';
 import 'package:my_gate_app/screens/profile2/model/user.dart';
 import 'package:my_gate_app/screens/profile2/utils/user_preferences.dart';
 import 'package:my_gate_app/screens/profile2/widget/appbar_widget.dart';
-import 'package:my_gate_app/screens/profile2/widget/button_widget.dart';
-import 'package:my_gate_app/screens/profile2/widget/profile_widget.dart';
-import 'package:my_gate_app/screens/profile2/widget/textfield_widget.dart';
 import 'package:image_picker/image_picker.dart';
 
 class EditProfilePage extends StatefulWidget {
   final String? email;
-  const EditProfilePage({Key? key, required this.email}) : super(key: key);
+  const EditProfilePage({super.key, required this.email});
   @override
   _EditProfilePageState createState() => _EditProfilePageState();
 }
@@ -41,15 +35,15 @@ class _EditProfilePageState extends State<EditProfilePage> {
   void initState() {
     super.initState();
     String? curr_email = widget.email;
-    print("Current Email: " + curr_email.toString());
+    print("Current Email: $curr_email");
     controller_name = TextEditingController();
     controller_email = TextEditingController();
     controller_phone = TextEditingController();
     controller_department = TextEditingController();
     controller_year_of_entry = TextEditingController();
     controller_degree = TextEditingController();
-    imagePicker = new ImagePicker();
-    databaseInterface db = new databaseInterface();
+    imagePicker = ImagePicker();
+    databaseInterface db = databaseInterface();
     db.get_student_by_email(curr_email).then((User result) {
       setState(() {
         user = result;
@@ -60,19 +54,19 @@ class _EditProfilePageState extends State<EditProfilePage> {
         controller_year_of_entry.text = user.year_of_entry;
         controller_degree.text = user.degree;
         imagePath = user.imagePath;
-        print("Result Name in Edit Profile Page" + result.name);
-        print("Image path: " + user.imagePath);
+        print("Result Name in Edit Profile Page${result.name}");
+        print("Image path: ${user.imagePath}");
       });
     });
-    print("User Name in Edit Profile Page" + user.name);
+    print("User Name in Edit Profile Page${user.name}");
   }
 
   @override
   Widget build(BuildContext context) => Scaffold(
         appBar: buildAppBar(context),
         body: ListView(
-          padding: EdgeInsets.symmetric(horizontal: 32),
-          physics: BouncingScrollPhysics(),
+          padding: const EdgeInsets.symmetric(horizontal: 32),
+          physics: const BouncingScrollPhysics(),
           children: [
             // ProfileWidget(
             //   imagePath: user.imagePath,
@@ -122,7 +116,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
         children: [
           Text(
             label,
-            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+            style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
           ),
           const SizedBox(height: 8),
           TextField(
@@ -156,7 +150,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
   }
 
   Widget buildImage() {
-    final image = NetworkImage(this.user.imagePath);
+    final image = NetworkImage(user.imagePath);
     // final image =imagePath;
     // final image = NetworkImage(imagePath);
 
@@ -179,7 +173,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                 image,
                 "/students/change_profile_of_student",
                 LoggedInDetails.getEmail());
-            print("Image path:" + image.path);
+            print("Image path:${image.path}");
             setState(() {
               _image = File(image.path);
             });
@@ -195,7 +189,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
         child: buildCircle(
           color: color,
           all: 8,
-          child: Icon(
+          child: const Icon(
             Icons.add_a_photo,
             color: Colors.white,
             size: 20,
@@ -219,7 +213,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
 
 class ImageWidget extends StatefulWidget {
   String imagePath;
-  ImageWidget({Key? key, required this.imagePath}) : super(key: key);
+  ImageWidget({super.key, required this.imagePath});
 
   @override
   State<ImageWidget> createState() => _ImageWidgetState();
@@ -232,9 +226,9 @@ class _ImageWidgetState extends State<ImageWidget> {
   @override
   void initState() {
     super.initState();
-    imagePicker = new ImagePicker();
+    imagePicker = ImagePicker();
     // test_function(widget.imagePath);
-    print("image path in image widget: " + widget.imagePath);
+    print("image path in image widget: ${widget.imagePath}");
     setState(() {
       pic = NetworkImage(widget.imagePath);
     });
@@ -248,12 +242,12 @@ class _ImageWidgetState extends State<ImageWidget> {
     XFile image = await imagePicker.pickImage(source: source);
     await databaseInterface.send_image(image,
         "/students/change_profile_of_student", LoggedInDetails.getEmail());
-    print("Image path after picking the image:" + image.path);
+    print("Image path after picking the image:${image.path}");
     // setState((){
     //   _image = File(image.path);
     // });
 
-    databaseInterface db = new databaseInterface();
+    databaseInterface db = databaseInterface();
     // await db
     //     .get_student_by_email(LoggedInDetails.getEmail())
     //     .then((User result) {
@@ -263,9 +257,9 @@ class _ImageWidgetState extends State<ImageWidget> {
     //     pic = NetworkImage(widget.imagePath);
     //   });
     User result = await db.get_student_by_email(LoggedInDetails.getEmail());
-    print("Updated path before call to test_function: " + result.imagePath);
+    print("Updated path before call to test_function: ${result.imagePath}");
 
-    print("inside test_function, the value of image_path_:" + result.imagePath);
+    print("inside test_function, the value of image_path_:${result.imagePath}");
     var pic_local = await NetworkImage(result.imagePath);
     setState(() {
       pic = pic_local;
@@ -309,7 +303,7 @@ class _ImageWidgetState extends State<ImageWidget> {
         child: buildCircle(
           color: color,
           all: 8,
-          child: Icon(
+          child: const Icon(
             Icons.add_a_photo,
             color: Colors.white,
             size: 20,

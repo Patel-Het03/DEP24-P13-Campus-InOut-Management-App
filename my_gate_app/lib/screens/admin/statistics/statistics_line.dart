@@ -2,16 +2,13 @@
 
 import 'package:flutter/material.dart';
 import 'package:my_gate_app/database/database_interface.dart';
-import 'package:my_gate_app/database/database_objects.dart';
 import 'package:my_gate_app/screens/admin/statistics/line_chart.dart';
 import 'package:my_gate_app/screens/admin/utils/dropdown.dart';
 import 'package:my_gate_app/screens/admin/utils/submit_button.dart';
-import 'package:my_gate_app/screens/admin/utils/textbox.dart';
 
-import 'bar_chart.dart';
 
 class StatisticsLine extends StatefulWidget {
-  const StatisticsLine({Key? key}) : super(key: key);
+  const StatisticsLine({super.key});
 
   @override
   _StatisticsLineState createState() => _StatisticsLineState();

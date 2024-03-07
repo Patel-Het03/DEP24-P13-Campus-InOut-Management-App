@@ -7,7 +7,7 @@ Widget GuardTicketPopup(){
     child: Container(
       child: ListView(
         shrinkWrap: true,
-        children: <Widget>[
+        children: const <Widget>[
           SizedBox(height: 20),
           Center(child: Text('Ticket Details')),
           SizedBox(height: 20),

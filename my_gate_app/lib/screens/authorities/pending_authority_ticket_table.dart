@@ -1,18 +1,15 @@
 // ignore_for_file: prefer_const_literals_to_create_immutables, prefer_const_constructors, unnecessary_new, deprecated_member_use, non_constant_identifier_names, avoid_print, must_be_immutable
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:intl/intl.dart';
 import 'package:my_gate_app/database/database_interface.dart';
 import 'package:my_gate_app/database/database_objects.dart';
 import 'package:my_gate_app/get_email.dart';
-import 'package:my_gate_app/screens/guard/utils/filter_page.dart';
-import 'package:my_gate_app/screens/guard/utils/search_dropdown.dart';
 import 'package:my_gate_app/screens/profile2/profile_page.dart';
 import 'package:my_gate_app/screens/utils/custom_snack_bar.dart';
 import 'package:my_gate_app/screens/utils/scrollable_widget.dart';
 
 class PendingAuthorityTicketTable extends StatefulWidget {
-  const PendingAuthorityTicketTable({Key? key}) : super(key: key);
+  const PendingAuthorityTicketTable({super.key});
 
   @override
   _PendingAuthorityTicketTableState createState() =>
@@ -69,7 +66,7 @@ class _PendingAuthorityTicketTableState
     databaseInterface db = new databaseInterface();
     int status_code =
         await db.reject_selected_tickets_authorities(selectedTickets);
-    print("The status code is " + status_code.toString());
+    print("The status code is $status_code");
     if (status_code == 200) {
       print("Selected tickets rejected\n");
       print("Tell this thing to the authority and update the frontend page\n");
@@ -109,7 +106,7 @@ class _PendingAuthorityTicketTableState
     databaseInterface db = new databaseInterface();
     int status_code =
         await db.reject_selected_tickets_authorities(selectedTickets_action);
-    print("The status code is " + status_code.toString());
+    print("The status code is $status_code");
     if (status_code == 200) {
       await init();
       final snackBar = get_snack_bar("Ticket rejected", Colors.green);
@@ -125,7 +122,7 @@ class _PendingAuthorityTicketTableState
       if (query.isEmpty) {
         ticketsFiltered = tickets
             .where((ticket) => DateTime.parse(ticket.date_time).isBefore(
-                DateTime.parse(chosen_end_date!).add(Duration(days: 1))))
+                DateTime.parse(chosen_end_date).add(Duration(days: 1))))
             .toList();
       } else {
         ticketsFiltered = tickets
@@ -134,9 +131,9 @@ class _PendingAuthorityTicketTableState
                     .toLowerCase()
                     .contains(query.toLowerCase()) &&
                 DateTime.parse(ticket.date_time)
-                    .isAfter(DateTime.parse(chosen_start_date!)) &&
+                    .isAfter(DateTime.parse(chosen_start_date)) &&
                 DateTime.parse(ticket.date_time).isBefore(
-                    DateTime.parse(chosen_end_date!).add(Duration(days: 1))))
+                    DateTime.parse(chosen_end_date).add(Duration(days: 1))))
             .toList();
         print(chosen_end_date);
       }
@@ -609,14 +606,11 @@ class _PendingAuthorityTicketTableState
             style: TextStyle(color: Colors.black),
           )),
           DataCell(Text(
-            "    " +
-                ((ticket.date_time.split("T").last)
+            "    ${((ticket.date_time.split("T").last)
                         .split(".")[0]
                         .split(":")
                         .sublist(0, 2))
-                    .join(":") +
-                "\n" +
-                ticket.date_time.split("T")[0],
+                    .join(":")}\n${ticket.date_time.split("T")[0]}",
             style: TextStyle(color: Colors.black),
           )),
           DataCell(Text(

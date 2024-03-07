@@ -6,8 +6,7 @@ import 'package:my_gate_app/screens/utils/scrollable_widget.dart';
 
 class StudentAuthoritiesTicketTable extends StatefulWidget {
   StudentAuthoritiesTicketTable(
-      {Key? key, required this.location, required this.tickets})
-      : super(key: key);
+      {super.key, required this.location, required this.tickets});
   final String location;
   List<ResultObj7> tickets;
 
@@ -25,11 +24,12 @@ class _StudentAuthoritiesTicketTableState
 
   @override
   Widget build(BuildContext context) => Scaffold(
-        backgroundColor: Colors.white,
+        backgroundColor: Colors.orange.shade100,
         body: Column(
           children: [
             Center(
               child: Container(
+                color: Colors.orange.shade100,
                 padding: EdgeInsets.all(1),
                 child: Text(
                   "",
@@ -96,14 +96,11 @@ class _StudentAuthoritiesTicketTableState
           DataCell(Text((index + 1).toString(),
               style: TextStyle(color: Colors.black))),
           DataCell(Text(
-              "    " +
-                  ((ticket.date_time.split("T").last)
+              "    ${((ticket.date_time.split("T").last)
                           .split(".")[0]
                           .split(":")
                           .sublist(0, 2))
-                      .join(":") +
-                  "\n" +
-                  ticket.date_time.split("T")[0],
+                      .join(":")}\n${ticket.date_time.split("T")[0]}",
               style: TextStyle(color: Colors.black))),
           DataCell(Text(ticket.ticket_type.toString(),
               style: TextStyle(color: Colors.black))),

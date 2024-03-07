@@ -3,13 +3,12 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:my_gate_app/database/database_objects.dart';
-import 'package:my_gate_app/screens/guard/utils/search_dropdown.dart';
 import 'package:my_gate_app/screens/profile2/visitor_profile/visitor_profile_page.dart';
 import 'package:my_gate_app/database/database_interface.dart';
 import 'package:my_gate_app/get_email.dart';
 
 class PastAuthorityVisitorTicketTable extends StatefulWidget {
-  const PastAuthorityVisitorTicketTable({Key? key}) : super(key: key);
+  const PastAuthorityVisitorTicketTable({super.key});
 
   @override
   State<PastAuthorityVisitorTicketTable> createState() =>
@@ -19,7 +18,7 @@ class PastAuthorityVisitorTicketTable extends StatefulWidget {
 Color getColorFromHex(String hexColor) {
   hexColor = hexColor.replaceAll("#", "");
   if (hexColor.length == 6) {
-    hexColor = "FF" + hexColor;
+    hexColor = "FF$hexColor";
   }
   if (hexColor.length == 8) {
     return Color(int.parse("0x$hexColor"));
@@ -33,7 +32,7 @@ class _PastAuthorityVisitorTicketTableState
   List<ResultObj4> filtered_tickets_visitors = [];
   String searchQuery = '';
   bool isFieldEmpty = true;
-  FocusNode _focusNode = FocusNode();
+  final FocusNode _focusNode = FocusNode();
   List<String> list_of_persons = [];
 
   String chosen_visitor_name = "None";
@@ -86,10 +85,10 @@ class _PastAuthorityVisitorTicketTableState
   List<String> segregrateTickettickets_visitors(List<String> allTickets) {
     List<String> ans = [];
 
-    allTickets.forEach((element) {
+    for (var element in allTickets) {
       var list = element.split("\n");
       ans.add(list[0]);
-    });
+    }
 
     return ans;
   }
@@ -215,11 +214,11 @@ class _PastAuthorityVisitorTicketTableState
                         child: Row(
                           children: [
                             FittedBox(
+                              fit: BoxFit.fill,
                               child: Container(
                                 margin: EdgeInsets.all(20),
                                 height: 50,
                               ),
-                              fit: BoxFit.fill,
                             ),
                             SizedBox(
                               width: 5,
@@ -235,7 +234,7 @@ class _PastAuthorityVisitorTicketTableState
                                   Align(
                                     alignment: Alignment.topLeft,
                                     child: Text(
-                                      '${filtered_tickets_visitors[index].visitor_name}',
+                                      filtered_tickets_visitors[index].visitor_name,
                                       style: GoogleFonts.roboto(
                                         fontSize: 25,
                                         fontWeight: FontWeight.bold,
@@ -246,7 +245,7 @@ class _PastAuthorityVisitorTicketTableState
                                   Align(
                                     alignment: Alignment.topLeft,
                                     child: Text(
-                                      '${filtered_tickets_visitors[index].mobile_no}',
+                                      filtered_tickets_visitors[index].mobile_no,
                                       style: GoogleFonts.roboto(
                                         fontSize: 15,
                                         fontWeight: FontWeight.bold,

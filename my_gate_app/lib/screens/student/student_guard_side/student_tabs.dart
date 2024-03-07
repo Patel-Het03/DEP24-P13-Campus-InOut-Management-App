@@ -8,10 +8,10 @@ import 'package:my_gate_app/screens/student/student_guard_side/stream_student_ti
 
 class StudentTabs extends StatefulWidget {
   const StudentTabs({
-    Key? key,
+    super.key,
     required this.location,
     required this.pre_approval_required,
-  }) : super(key: key);
+  });
   final String location;
   final bool pre_approval_required;
 
@@ -43,20 +43,24 @@ class _StudentTabsState extends State<StudentTabs>
         length: 2,
         child: Scaffold(
           appBar: AppBar(
-            backgroundColor: Colors.black,
+            backgroundColor: Colors.white,
             title: Text(
               widget.location,
-              style: TextStyle(color: Colors.white),
+              style: TextStyle(color: Colors.black,fontWeight: FontWeight.w800),
             ),
+            iconTheme: IconThemeData(color: Colors.black),
             centerTitle: true,
             bottom: TabBar(
+              controller: controller,
+              indicatorSize: TabBarIndicatorSize.tab,
               indicator: BoxDecoration(
-                color: Colors.white.withOpacity(0.5),
+                color: Colors.grey.withOpacity(0.5),
                 borderRadius: BorderRadius.circular(
                     10.0), // Set the border radius for rounded corners
-              ),
-              controller: controller,
-              tabs: [
+              ), // Set the indicator color to white with opacity
+              labelStyle: TextStyle(fontSize: 16,color: Colors.black,fontWeight: FontWeight.w900),
+              unselectedLabelStyle: TextStyle(fontSize: 12,color: Colors.black),
+              tabs: const [
                 Tab(
                   text: 'Status',
                   icon: Icon(Icons.account_circle),

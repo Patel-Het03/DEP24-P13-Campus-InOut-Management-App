@@ -3,16 +3,14 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
-import 'package:my_gate_app/screens/description.dart';
 import 'package:my_gate_app/screens/description.dart';
 
 import 'add_task.dart';
 
 class Home extends StatefulWidget {
-  const Home({Key? key}) : super(key: key);
+  const Home({super.key});
 
   @override
   _HomeState createState() => _HomeState();
@@ -30,7 +28,7 @@ class _HomeState extends State<Home> {
 
   getuid() async {
     FirebaseAuth auth = FirebaseAuth.instance;
-    final User? user = await auth.currentUser;
+    final User? user = auth.currentUser;
     setState(() {
       uid = user?.uid;
       //print('uid=');

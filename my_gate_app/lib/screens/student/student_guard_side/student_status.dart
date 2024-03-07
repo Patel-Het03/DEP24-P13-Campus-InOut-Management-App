@@ -1,24 +1,21 @@
 // ignore_for_file: unnecessary_new, deprecated_member_use, non_constant_identifier_names, prefer_const_constructors, unnecessary_this, unnecessary_brace_in_string_interps, avoid_unnecessary_containers, must_be_immutable
 
 import 'dart:core';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:my_gate_app/database/database_interface.dart';
 import 'package:my_gate_app/get_email.dart';
-import 'package:my_gate_app/screens/admin/utils/dropdown.dart';
 import 'package:my_gate_app/screens/utils/custom_snack_bar.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 
 class StudentStatus extends StatefulWidget {
   StudentStatus({
-    Key? key,
+    super.key,
     required this.location,
     required this.in_or_out,
     required this.inside_parent_location,
     required this.exited_all_children,
     required this.pre_approval_required,
-  }) : super(key: key);
+  });
 
   final String location;
   String in_or_out; // "in", "pending_entry", "out", "pending_out"
@@ -37,8 +34,8 @@ class _StudentStatusState extends State<StudentStatus> {
   String choosen_authority_ticket = "None";
   List<String> enter_authorities_tickets = [];
   List<String> exit_authorities_tickets = [];
-  TextEditingController _destinationAddressController = TextEditingController();
-  TextEditingController _vehicleRegisterationController =
+  final TextEditingController _destinationAddressController = TextEditingController();
+  final TextEditingController _vehicleRegisterationController =
       TextEditingController();
 
   Future<void> get_parent_location_name() async {
@@ -111,7 +108,7 @@ class _StudentStatusState extends State<StudentStatus> {
   @override
   Widget build(BuildContext context) {
     return Container(
-        color: Colors.white, // Change the color of background
+        color: Colors.orange.shade100, // Change the color of background
 
         // ///////////////////////////
         //       decoration: BoxDecoration(
@@ -195,7 +192,7 @@ class _StudentStatusState extends State<StudentStatus> {
       return Center(
           child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
-        children: [
+        children: const [
           // Container(
           //   margin: const EdgeInsets.all(15.0),
           //   child: dropdown(
@@ -344,7 +341,7 @@ class _StudentStatusState extends State<StudentStatus> {
                   decoration: BoxDecoration(
                     gradient: LinearGradient(
                       // colors: [Color(0xff374ABE), Color(0xff64B6FF)],
-                      colors: [Colors.black, Colors.black],
+                      colors: const [Colors.black, Colors.black],
                       begin: Alignment.centerLeft,
                       end: Alignment.centerRight,
                     ),
@@ -394,7 +391,7 @@ class _StudentStatusState extends State<StudentStatus> {
                   decoration: BoxDecoration(
                     gradient: LinearGradient(
                       // colors: [Color(0xff374ABE), Color(0xff64B6FF)],
-                      colors: [Colors.black, Colors.black],
+                      colors: const [Colors.black, Colors.black],
                       begin: Alignment.centerLeft,
                       end: Alignment.centerRight,
                     ),
@@ -447,7 +444,7 @@ class _StudentStatusState extends State<StudentStatus> {
           content: new SingleChildScrollView(
             child: new ListBody(
               children: [
-                new Text('Are you sure you want to ' + ticket_type + ' ?'),
+                new Text('Are you sure you want to $ticket_type ?'),
               ],
             ),
           ),
@@ -559,7 +556,7 @@ class _StudentStatusState extends State<StudentStatus> {
 
 // Displays the checked out image
 class StatusOUT extends StatelessWidget {
-  const StatusOUT({Key? key, required this.location}) : super(key: key);
+  const StatusOUT({super.key, required this.location});
   final String location;
 
   @override
@@ -581,6 +578,7 @@ class StatusOUT extends StatelessWidget {
           ),
           Center(
             child: FittedBox(
+              fit: BoxFit.fill,
               child: Container(
                 margin: EdgeInsets.all(10),
                 // margin: EdgeInsets.only(top:20),
@@ -588,7 +586,6 @@ class StatusOUT extends StatelessWidget {
                 child: Image.asset("assets/images/checked_out_2.jpg"),
                 // child: Image.asset("assets/images/checked_out_2.png"),
               ),
-              fit: BoxFit.fill,
             ),
           ),
           SizedBox(
@@ -611,7 +608,7 @@ class StatusOUT extends StatelessWidget {
 
 // Displays the checked in image
 class StatusIN extends StatelessWidget {
-  const StatusIN({Key? key, required this.location}) : super(key: key);
+  const StatusIN({super.key, required this.location});
   final String location;
 
   @override
@@ -632,12 +629,12 @@ class StatusIN extends StatelessWidget {
           ),
           Center(
             child: FittedBox(
+              fit: BoxFit.fill,
               child: Container(
                 margin: EdgeInsets.all(10),
                 height: 200,
                 child: Image.asset("assets/images/checked_in.png"),
               ),
-              fit: BoxFit.fill,
             ),
           ),
           SizedBox(
@@ -659,8 +656,7 @@ class StatusIN extends StatelessWidget {
 }
 
 class StatusPendingEntry extends StatelessWidget {
-  const StatusPendingEntry({Key? key, required this.location})
-      : super(key: key);
+  const StatusPendingEntry({super.key, required this.location});
   final String location;
 
   @override
@@ -681,12 +677,12 @@ class StatusPendingEntry extends StatelessWidget {
           ),
           Center(
             child: FittedBox(
+              fit: BoxFit.fill,
               child: Container(
                 margin: EdgeInsets.all(10),
                 height: 200,
                 child: Image.asset("assets/images/pending.jpg"),
               ),
-              fit: BoxFit.fill,
             ),
           ),
           SizedBox(
@@ -708,7 +704,7 @@ class StatusPendingEntry extends StatelessWidget {
 }
 
 class StatusPendingExit extends StatelessWidget {
-  const StatusPendingExit({Key? key, required this.location}) : super(key: key);
+  const StatusPendingExit({super.key, required this.location});
   final String location;
 
   @override
@@ -728,12 +724,12 @@ class StatusPendingExit extends StatelessWidget {
           ),
           Center(
             child: FittedBox(
+              fit: BoxFit.fill,
               child: Container(
                 margin: EdgeInsets.all(10),
                 height: 200,
                 child: Image.asset("assets/images/pending.jpg"),
               ),
-              fit: BoxFit.fill,
             ),
           ),
           SizedBox(
@@ -756,8 +752,7 @@ class StatusPendingExit extends StatelessWidget {
 
 class EnterButton extends StatelessWidget {
   const EnterButton(
-      {Key? key, required this.enter_function, required this.enter_message})
-      : super(key: key);
+      {super.key, required this.enter_function, required this.enter_message});
   final void Function(String) enter_function;
   final String enter_message;
 
@@ -802,12 +797,12 @@ class EnterButton extends StatelessWidget {
                   // this.enter_function("enter");
                 },
                 child: FittedBox(
+                  fit: BoxFit.fill,
                   child: Container(
                     margin: EdgeInsets.all(10),
                     height: 100,
                     child: Image.asset("assets/images/enter_button.png"),
                   ),
-                  fit: BoxFit.fill,
                 ),
               ),
             ),
@@ -824,8 +819,7 @@ class EnterButton extends StatelessWidget {
 
 class ExitButton extends StatelessWidget {
   const ExitButton(
-      {Key? key, required this.exit_function, required this.exit_message})
-      : super(key: key);
+      {super.key, required this.exit_function, required this.exit_message});
   final void Function(String) exit_function;
   final String exit_message;
 
@@ -840,7 +834,7 @@ class ExitButton extends StatelessWidget {
               height: 60,
               decoration: BoxDecoration(
                   gradient: LinearGradient(
-                    colors: [
+                    colors: const [
                       Color.fromRGBO(255, 143, 158, 1),
                       Color.fromRGBO(255, 188, 143, 1),
                     ],
@@ -868,12 +862,12 @@ class ExitButton extends StatelessWidget {
                   // this.exit_function("exit");
                 },
                 child: FittedBox(
+                  fit: BoxFit.fill,
                   child: Container(
                     margin: EdgeInsets.all(10),
                     height: 100,
                     child: Image.asset("assets/images/exit_button.jpeg"),
                   ),
-                  fit: BoxFit.fill,
                 ),
               ),
             ),

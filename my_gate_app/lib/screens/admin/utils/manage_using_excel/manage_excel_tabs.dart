@@ -7,7 +7,7 @@ import 'package:my_gate_app/screens/admin/utils/view_data_tables/stream_data_tab
 
 class ManageExcelTabs extends StatefulWidget {
   const ManageExcelTabs({
-    Key? key,
+    super.key,
     required this.appbar_title,
     required this.add_url,
     required this.modify_url,
@@ -15,7 +15,7 @@ class ManageExcelTabs extends StatefulWidget {
     required this.entity,
     required this.data_entity,
     required this.column_names,
-  }) : super(key: key);
+  });
   final String appbar_title;
   final String add_url;
   final String modify_url;
@@ -58,7 +58,7 @@ class _ManageExcelTabsState extends State<ManageExcelTabs>
             centerTitle: true,
             bottom: TabBar(
               controller: controller,
-              tabs: [
+              tabs: const [
                 Tab(text: 'Add', icon: Icon(Icons.add)),
                 Tab(text: 'Modify', icon: Icon(Icons.edit)),
                 Tab(text: 'Delete', icon: Icon(Icons.delete)),

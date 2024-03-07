@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:my_gate_app/screens/guard/visitors/oldVisitorsSearch.dart';
 import 'package:my_gate_app/database/database_interface.dart';
 import 'package:my_gate_app/screens/guard/visitors/visitors_tabs_controller.dart';
 
 class selectVisitor extends StatefulWidget {
+  const selectVisitor({super.key});
+
   @override
   _selectVisitorState createState() => _selectVisitorState();
 }
@@ -52,10 +53,10 @@ class _selectVisitorState extends State<selectVisitor> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Color.fromARGB(255, 180, 180, 180),
+        backgroundColor: const Color.fromARGB(255, 180, 180, 180),
         centerTitle: true,
         flexibleSpace: Container(
-          decoration: BoxDecoration(
+          decoration: const BoxDecoration(
               gradient: LinearGradient(
                   begin: Alignment.centerLeft,
                   end: Alignment.centerRight,
@@ -76,7 +77,7 @@ class _selectVisitorState extends State<selectVisitor> {
               ),
             ),
             TextField(
-              decoration: InputDecoration(labelText: "Name"),
+              decoration: const InputDecoration(labelText: "Name"),
               onChanged: (value) {
                 setState(() {
                   _name = value;
@@ -84,7 +85,7 @@ class _selectVisitorState extends State<selectVisitor> {
               },
             ),
             TextField(
-              decoration: InputDecoration(labelText: "Phone Number"),
+              decoration: const InputDecoration(labelText: "Phone Number"),
               keyboardType: TextInputType.number,
               onChanged: (value) {
                 setState(() {
@@ -92,8 +93,8 @@ class _selectVisitorState extends State<selectVisitor> {
                 });
               },
             ),
-            SizedBox(height: 16.0),
-            Text("Search Results:"),
+            const SizedBox(height: 16.0),
+            const Text("Search Results:"),
             Expanded(
               child: ListView.builder(
                 itemCount: (_name.isEmpty && _phoneNumber.isEmpty)
@@ -136,7 +137,7 @@ class _selectVisitorState extends State<selectVisitor> {
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(
                       backgroundColor: Colors.red,
-                      content: Text(
+                      content: const Text(
                           "Name/Phone number fields required for adding new visitor."),
                       action: SnackBarAction(
                         label: "OK",
@@ -148,7 +149,7 @@ class _selectVisitorState extends State<selectVisitor> {
                   );
                 }
               },
-              child: Row(
+              child: const Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Icon(Icons.add),

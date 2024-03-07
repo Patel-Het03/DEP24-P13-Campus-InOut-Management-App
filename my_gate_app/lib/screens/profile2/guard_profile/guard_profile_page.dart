@@ -1,23 +1,12 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:my_gate_app/database/database_interface.dart';
-import 'package:my_gate_app/screens/profile2/guard_profile/guard_edit_profile_page.dart';
 import 'package:my_gate_app/screens/profile2/model/user.dart';
 import 'package:my_gate_app/screens/profile2/utils/user_preferences.dart';
-import 'package:my_gate_app/screens/profile2/widget/appbar_widget.dart';
-import 'package:my_gate_app/screens/profile2/widget/button_widget.dart';
-import 'package:my_gate_app/screens/profile2/widget/profile_widget.dart';
-import 'package:my_gate_app/screens/profile2/edit_profile_page.dart';
-import 'package:animated_theme_switcher/animated_theme_switcher.dart';
-import 'package:my_gate_app/screens/profile2/widget/textfield_widget.dart';
-import 'package:my_gate_app/get_email.dart';
-import 'package:my_gate_app/screens/profile2/model/user.dart';
 
 class GuardProfilePage extends StatefulWidget {
   final String? email;
-  const GuardProfilePage({Key? key, required this.email}) : super(key: key);
+  const GuardProfilePage({super.key, required this.email});
   @override
   _GuardProfilePageState createState() => _GuardProfilePageState();
 }
@@ -33,21 +22,21 @@ class _GuardProfilePageState extends State<GuardProfilePage> {
   var pic;
 
   Future<void> init() async {
-    String? curr_email = widget.email;
-    print("Current Email: " + curr_email.toString());
-    databaseInterface db = new databaseInterface();
-    GuardUser result = await db.get_guard_by_email(curr_email);
-    print("result obj image path" + result.imagePath);
+    String? currEmail = widget.email;
+    print("Current Email: $currEmail");
+    databaseInterface db = databaseInterface();
+    GuardUser result = await db.get_guard_by_email(currEmail);
+    print("result obj image path${result.imagePath}");
 
     setState(() {
       user = result;
       controller_location.text = user.location;
       imagePath = user.imagePath;
-      print("Result Name in Profile Page" + result.name);
+      print("Result Name in Profile Page${result.name}");
     });
 
     setState(() {
-      pic = NetworkImage(this.imagePath);
+      pic = NetworkImage(imagePath);
     });
   }
 
@@ -55,16 +44,16 @@ class _GuardProfilePageState extends State<GuardProfilePage> {
   void initState() {
     super.initState();
     // String? curr_email = LoggedInDetails.getEmail();
-    String? curr_email = widget.email;
-    print("Current Email: " + curr_email.toString());
+    String? currEmail = widget.email;
+    print("Current Email: $currEmail");
     controller_location = TextEditingController();
 
     imagePath = UserPreferences.myGuardUser.imagePath;
-    pic = NetworkImage(this.imagePath);
-    imagePicker = new ImagePicker();
+    pic = NetworkImage(imagePath);
+    imagePicker = ImagePicker();
 
     init();
-    print("User Name in Profile Page" + user.name);
+    print("User Name in Profile Page${user.name}");
   }
 
   @override
@@ -72,12 +61,12 @@ class _GuardProfilePageState extends State<GuardProfilePage> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor:
-            Color.fromARGB(255, 180, 180, 180), // Set the background color
+            const Color.fromARGB(255, 180, 180, 180), // Set the background color
         centerTitle: true, // Center-align the title
         iconTheme:
-            IconThemeData(color: Colors.black), // Set the back arrow color
+            const IconThemeData(color: Colors.black), // Set the back arrow color
         flexibleSpace: Container(
-          decoration: BoxDecoration(
+          decoration: const BoxDecoration(
             gradient: LinearGradient(
               begin: Alignment.centerLeft,
               end: Alignment.centerRight,
@@ -88,14 +77,14 @@ class _GuardProfilePageState extends State<GuardProfilePage> {
             ),
           ),
         ),
-        title: Text(
+        title: const Text(
           "Guard Profile Page",
           style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
         ), // Replace "Your Title" with your desired title
       ),
       backgroundColor: Colors.white,
       body: Container(
-        decoration: BoxDecoration(
+        decoration: const BoxDecoration(
           gradient: LinearGradient(
             colors: [Color.fromARGB(255, 243, 240, 244), Color.fromARGB(255, 255, 255, 255)],
             begin: Alignment.bottomLeft,
@@ -103,8 +92,8 @@ class _GuardProfilePageState extends State<GuardProfilePage> {
           ),
         ),
         child: ListView(
-          padding: EdgeInsets.symmetric(horizontal: 32),
-          physics: BouncingScrollPhysics(),
+          padding: const EdgeInsets.symmetric(horizontal: 32),
+          physics: const BouncingScrollPhysics(),
           children: [
             const SizedBox(height: 24),
             ImageWidget(),
@@ -156,7 +145,7 @@ class _GuardProfilePageState extends State<GuardProfilePage> {
             controller: controller,
             decoration: InputDecoration(
               disabledBorder: OutlineInputBorder(
-                borderSide: BorderSide(color: Colors.black, width: 1.0),
+                borderSide: const BorderSide(color: Colors.black, width: 1.0),
                 borderRadius: BorderRadius.circular(12),
               ),
               labelStyle: TextStyle(
@@ -172,18 +161,18 @@ class _GuardProfilePageState extends State<GuardProfilePage> {
     var source = ImageSource.gallery;
     XFile image = await imagePicker.pickImage(source: source);
 
-    var widget_email = widget.email;
-    if (widget_email != null) {
+    var widgetEmail = widget.email;
+    if (widgetEmail != null) {
       await databaseInterface.send_image(
-          image, "/guards/change_profile_picture_of_guard", widget_email);
+          image, "/guards/change_profile_picture_of_guard", widgetEmail);
     }
 
-    databaseInterface db = new databaseInterface();
-    GuardUser result = await db.get_guard_by_email(widget_email);
+    databaseInterface db = databaseInterface();
+    GuardUser result = await db.get_guard_by_email(widgetEmail);
 
-    var pic_local = await NetworkImage(result.imagePath);
+    var picLocal = NetworkImage(result.imagePath);
     setState(() {
-      pic = pic_local;
+      pic = picLocal;
     });
   }
 
@@ -193,18 +182,18 @@ class _GuardProfilePageState extends State<GuardProfilePage> {
         "assets/images/dummy_person.jpg"; // Replace with the actual file path
     XFile image = XFile(filePath);
 
-    var widget_email = widget.email;
-    if (widget_email != null) {
+    var widgetEmail = widget.email;
+    if (widgetEmail != null) {
       await databaseInterface.send_image(
-          image, "/guards/change_profile_picture_of_guard", widget_email);
+          image, "/guards/change_profile_picture_of_guard", widgetEmail);
     }
 
-    databaseInterface db = new databaseInterface();
-    GuardUser result = await db.get_guard_by_email(widget_email);
+    databaseInterface db = databaseInterface();
+    GuardUser result = await db.get_guard_by_email(widgetEmail);
 
-    var pic_local = await NetworkImage(result.imagePath);
+    var picLocal = NetworkImage(result.imagePath);
     setState(() {
-      pic = pic_local;
+      pic = picLocal;
     });
   }
 
@@ -240,7 +229,7 @@ class _GuardProfilePageState extends State<GuardProfilePage> {
         child: buildCircle(
           color: color,
           all: 8,
-          child: Icon(
+          child: const Icon(
             Icons.add_a_photo,
             color: Colors.white,
             size: 20,

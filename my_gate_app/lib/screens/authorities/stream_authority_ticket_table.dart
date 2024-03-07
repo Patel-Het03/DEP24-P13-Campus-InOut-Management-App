@@ -10,10 +10,10 @@ import 'package:my_gate_app/screens/authorities/authority_ticket_table.dart';
 
 class StreamAuthorityTicketTable extends StatefulWidget {
   const StreamAuthorityTicketTable({
-    Key? key,
+    super.key,
     required this.is_approved,
     required this.image_path,
-  }) : super(key: key);
+  });
   final String is_approved;
   final String image_path;
 
