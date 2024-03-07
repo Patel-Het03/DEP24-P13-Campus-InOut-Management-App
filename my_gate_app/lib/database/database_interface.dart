@@ -19,9 +19,10 @@ class databaseInterface {
   static int PORT_NO_static = 8000;
 // 31.220.57.173
   static String complete_base_url_static =
-      "http://localhost:$PORT_NO_static";
+      // "http://localhost:$PORT_NO_static";
       // "http://31.220.57.173:" + PORT_NO_static.toString();
       // "http://10.0.2.2:"+PORT_NO_static.toString();
+        "http://192.168.68.111:"+PORT_NO_static.toString();
   databaseInterface();
 
   static Future<String> get_welcome_message(String email) async {

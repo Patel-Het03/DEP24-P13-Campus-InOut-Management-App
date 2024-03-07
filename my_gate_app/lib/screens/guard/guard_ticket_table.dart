@@ -658,7 +658,7 @@ class _GuardTicketTableState extends State<GuardTicketTable> {
             style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
           )),
           DataCell(Text(
-            "    ${((ticket.date_time_guard.split("T").last)
+            ((ticket.date_time_guard.split("T").last)
                         .split(".")[0]
                         .split(":")
                         .sublist(0, 1))
@@ -666,7 +666,7 @@ class _GuardTicketTableState extends State<GuardTicketTable> {
                 "\n" +
                 ticket.date_time_guard.split("T")[0],
             style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
-          )),
+    )),
           DataCell(Text(
             ticket.num_additional,
             style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
