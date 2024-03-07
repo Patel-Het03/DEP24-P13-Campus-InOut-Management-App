@@ -213,6 +213,11 @@ class VisitorTicketTable(models.Model):
     guard_status = models.CharField(max_length=100, default='Pending')  # Takes values "Approved" | "Rejected" | "Pending"
     ticket_type = models.CharField(max_length=100, default=None) # Takes values "enter"|"exit"
     duration_of_stay = models.CharField(max_length=100, default=None)
+    student_entry_no=models.ForeignKey('Student', on_delete=models.DO_NOTHING, null=True)
+    num_additional=models.IntegerField(default=0)
+    type=models.CharField(max_length=32, default='authoriy', choices=(('student', 'Student'), ('authority', 'Authority')))
+
+
     
     
 class NotificationTable(models.Model):

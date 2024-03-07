@@ -23,8 +23,8 @@ class databaseInterface {
       // "http://31.220.57.173:" + PORT_NO_static.toString();
       // "http://172.23.6.189:"+PORT_NO_static.toString();
       //     "http://10.0.2.2:"+PORT_NO_static.toString();
-      // "http://192.168.68.111:" + PORT_NO_static.toString();
-      "http://192.168.179.245:" + PORT_NO_static.toString();
+      "http://192.168.68.111:" + PORT_NO_static.toString();
+      // "http://192.168.179.245:" + PORT_NO_static.toString();
   databaseInterface() {}
 
   static Future<String> get_welcome_message(String email) async {
@@ -1569,7 +1569,8 @@ class databaseInterface {
           'ticket_type': ticket_type,
           'duration_of_stay': duration_of_stay,
           'num_additional': num_additional,
-          'student_email': student_id
+          'student_email': student_id,
+          'type':'student',
         },
       );
       var data = json.decode(response.body);
@@ -2031,19 +2032,15 @@ class databaseInterface {
 
   static Future<List<ResultObj4>> return_entry_visitor_approved_ticket(
       String location, String is_approved, String enter_exit) async {
-    if (is_approved == "Approved" && enter_exit == "enter") {
-      is_approved = "Pending";
-      enter_exit = "exit";
-    }
+    // if (is_approved == "Approved" && enter_exit == "enter") {
+    //   is_approved = "Pending";
+    //   enter_exit = "enter";
+    // }
 
     var uri =
         Uri.parse(complete_base_url_static + "/guards/get_visitor_tickets");
     try {
-      var response = await http.get(uri.replace(queryParameters: {
-        "location": location,
-        "is_approved": is_approved,
-        "enter_exit": enter_exit
-      }));
+      var response = await http.post(uri,body:{"is_approved":is_approved,"enter_exit":enter_exit});
       print(
           "00000000000000000000000000000000000000000000000000000000000000000000000000000000");
 

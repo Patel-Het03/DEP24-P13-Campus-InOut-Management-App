@@ -670,7 +670,7 @@ class _GuardTicketTableState extends State<GuardTicketTable> {
                 ((ticket.date_time_guard.split("T").last)
                         .split(".")[0]
                         .split(":")
-                        .sublist(0, 2))
+                        .sublist(0, 1))
                     .join(":") +
                 "\n" +
                 ticket.date_time_guard.split("T")[0],

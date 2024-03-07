@@ -219,8 +219,8 @@ class _oldVisitorSeacrchStateStudent extends State<oldVisitorSeacrchStudent> {
                     onPressed: () async {
                       String phoneNumber = student_number;
                       String url = "tel:$phoneNumber";
-                      if (await canLaunch(url)) {
-                        await launch(url);
+                      if (await canLaunchUrl(Uri(scheme:'tel',path:phoneNumber))) {
+                        await launchUrl(Uri(scheme:'tel',path:phoneNumber));
                       } else {
                         throw 'Could not launch $url';
                       }

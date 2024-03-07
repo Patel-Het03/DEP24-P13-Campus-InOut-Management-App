@@ -1260,7 +1260,7 @@ def add_admin_form(request):
     except Exception as e:
         print("Exception raised in add_admin_form function")
 
-        print("The exception is " + e)
+        print("The exception is " + str(e))
 
         response_str = "Error in creating admin"
 
@@ -2321,17 +2321,24 @@ def get_pending_tickets_for_visitors(request):
                 queryset_visitor, many=False)
 
             auth_id = visitor_tickets['auth_id']
-            queryset_authorities = Authorities.objects.get(auth_id=auth_id)
-            serializer_authorities = AuthoritiesSerializer(
-                queryset_authorities, many=False)
+            # print(auth_id)
+            if(auth_id):
+                queryset_authorities = Authorities.objects.get(auth_id=auth_id)
+                serializer_authorities = AuthoritiesSerializer(
+                    queryset_authorities, many=False)
+                ResultObj['authority_name'] = serializer_authorities.data['authority_name']
+                ResultObj['authority_email'] = serializer_authorities.data['email']
+                ResultObj['authority_designation'] = serializer_authorities.data['authority_designation']
 
+            else:
+                ResultObj['authority_name'] = ''
+                ResultObj['authority_email'] = ''
+                ResultObj['authority_designation'] = ''
+            
             ResultObj['visitor_name'] = serializer_visitor.data['visitor_name']
             ResultObj['mobile_no'] = serializer_visitor.data['mobile_no']
             ResultObj['current_status'] = serializer_visitor.data['current_status']
-            ResultObj['car_number'] = visitor_tickets['car_number']
-            ResultObj['authority_name'] = serializer_authorities.data['authority_name']
-            ResultObj['authority_email'] = serializer_authorities.data['email']
-            ResultObj['authority_designation'] = serializer_authorities.data['authority_designation']
+            ResultObj['car_number'] = visitor_tickets['car_number'] 
             ResultObj['purpose'] = visitor_tickets['purpose']
             ResultObj['authority_status'] = visitor_tickets['authority_status']
             ResultObj['authority_message'] = visitor_tickets['authority_message']
@@ -2343,6 +2350,8 @@ def get_pending_tickets_for_visitors(request):
             ResultObj['ticket_type'] = visitor_tickets['ticket_type']
             ResultObj['visitor_ticket_id'] = visitor_tickets['visitor_ticket_id']
             ResultObj['duration_of_stay'] = visitor_tickets['duration_of_stay']
+            ResultObj['num_additional'] = str(visitor_tickets['num_additional'])
+            
 
             pending_tickets_list.append(ResultObj)
 
@@ -2355,6 +2364,74 @@ def get_pending_tickets_for_visitors(request):
         print("Exception in get_pending_tickets_for_visitors: " + str(e))
         return Response(pending_tickets_list, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
+@api_view(['POST'])
+def get_visitor_tickets(request):
+    print("$$$")
+    try:
+        data = request.data
+        is_approved=data["is_approved"]
+        enter_exit = data['enter_exit']
+        print(is_approved)
+        print(enter_exit)
+
+        queryset_visitor_ticket_table = VisitorTicketTable.objects.filter(
+            ticket_type=enter_exit, guard_status=str(is_approved))
+
+        serializer_visitor_ticket_table = VisitorTicketTableSerializer(
+            queryset_visitor_ticket_table, many=True)
+
+        tickets_list = []
+
+        for visitor_tickets in serializer_visitor_ticket_table.data:
+            ResultObj = {}
+            visitor_id = visitor_tickets['visitor_id']
+            queryset_visitor = Visitor.objects.get(visitor_id=visitor_id)
+            serializer_visitor = VisitorSerializer(
+                queryset_visitor, many=False)
+
+            auth_id = visitor_tickets['auth_id']
+            # print(auth_id)
+            if(auth_id):
+                queryset_authorities = Authorities.objects.get(auth_id=auth_id)
+                serializer_authorities = AuthoritiesSerializer(
+                    queryset_authorities, many=False)
+                ResultObj['authority_name'] = serializer_authorities.data['authority_name']
+                ResultObj['authority_email'] = serializer_authorities.data['email']
+                ResultObj['authority_designation'] = serializer_authorities.data['authority_designation']
+
+            else:
+                ResultObj['authority_name'] = ''
+                ResultObj['authority_email'] = ''
+                ResultObj['authority_designation'] = ''
+            
+            ResultObj['visitor_name'] = serializer_visitor.data['visitor_name']
+            ResultObj['mobile_no'] = serializer_visitor.data['mobile_no']
+            ResultObj['current_status'] = serializer_visitor.data['current_status']
+            ResultObj['car_number'] = visitor_tickets['car_number'] 
+            ResultObj['purpose'] = visitor_tickets['purpose']
+            ResultObj['authority_status'] = visitor_tickets['authority_status']
+            ResultObj['authority_message'] = visitor_tickets['authority_message']
+            ResultObj['date_time_of_ticket_raised'] = visitor_tickets['date_time_of_ticket_raised']
+            ResultObj['date_time_authority'] = visitor_tickets['date_time_authority']
+            ResultObj['date_time_guard'] = visitor_tickets['date_time_guard']
+            ResultObj['date_time_of_exit'] = visitor_tickets['date_time_of_exit']
+            ResultObj['guard_status'] = visitor_tickets['guard_status']
+            ResultObj['ticket_type'] = visitor_tickets['ticket_type']
+            ResultObj['visitor_ticket_id'] = visitor_tickets['visitor_ticket_id']
+            ResultObj['duration_of_stay'] = visitor_tickets['duration_of_stay']
+            ResultObj['num_additional'] = str(visitor_tickets['num_additional'])
+            
+
+            tickets_list.append(ResultObj)
+        print(tickets_list)
+        tickets_list.reverse()
+
+        return Response(tickets_list, status=status.HTTP_200_OK)
+
+    except Exception as e:
+        tickets_list = []
+        print("Exception in get_visitor_tickets: " + str(e))
+        return Response(tickets_list, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 @api_view(['POST'])
 def get_pending_visitor_tickets_for_authorities(request):
@@ -3038,7 +3115,7 @@ def accept_selected_tickets(request):
 def accept_selected_tickets_visitors(request):
     try:
         list_data = request.data
-
+        # print(list_data)
         for data in list_data:
 
             visitor_name = data['visitor_name']
@@ -3072,8 +3149,7 @@ def accept_selected_tickets_visitors(request):
             if ticket_type == 'enter':
                 VisitorTicketTable.objects.filter(
                     visitor_ticket_id=visitor_ticket_id).update(
-                        guard_status="Pending",
-                        ticket_type="exit",
+                        guard_status="Approved",
                         date_time_guard=datetime.now())
 
                 Visitor.objects.filter(visitor_id=visitor_id).update(
@@ -3461,9 +3537,10 @@ def get_all_guard_emails(request):
 
 @api_view(['POST'])
 def get_guard_by_email(request):
+    
     data = request.data
     email_ = data['email']
-
+    print(email_)
     try:
         queryset = Guard.objects.get(email=email_, is_present=True)
         serializer = GuardSerializer(queryset, many=False)
@@ -4016,12 +4093,12 @@ def insert_in_visitors_ticket_table(request):
         visitor_name = request.data['visitor_name']
         mobile_no = request.data['mobile_no']
         car_number = request.data['car_number']
-        authority_name = request.data['authority_name']
-        authority_email = request.data['authority_email']
-        authority_designation = request.data['authority_designation']
+       
         purpose = request.data['purpose']
         ticket_type = request.data['ticket_type']
         duration_of_stay = request.data['duration_of_stay']
+       
+        type=request.data['type']
 
         is_not_present = len(Visitor.objects.filter(
             visitor_name=visitor_name, mobile_no=mobile_no)) == 0
@@ -4049,36 +4126,70 @@ def insert_in_visitors_ticket_table(request):
             res["message"] = 'Cannot raise an exit ticket because person is already outside campus'
             return Response({"output": res}, status=status.HTTP_400_BAD_REQUEST)
 
-        is_authority_present = len(Authorities.objects.filter(
-            email=authority_email, is_present=True)) != 0
+        
+        if(type=='authority'):
+            authority_name = request.data['authority_name']
+            authority_email = request.data['authority_email']
+            authority_designation = request.data['authority_designation']
+            is_authority_present = len(Authorities.objects.filter(
+                email=authority_email, is_present=True)) != 0
+            if is_authority_present:
+                queryset_authority = Authorities.objects.get(
+                    email=authority_email, is_present=True)
 
-        if is_authority_present:
-            queryset_authority = Authorities.objects.get(
-                email=authority_email, is_present=True)
-
+            else:
+                print('Requested authority is not present')
+                res["status"] = True
+                res["message"] = 'Requested authority is not present'
+                return Response({"output": res}, status=status.HTTP_400_BAD_REQUEST)
+            VisitorTicketTable.objects.create(
+                visitor_id=queryset_visitor,
+                car_number=car_number,
+                auth_id=queryset_authority,
+                purpose=purpose,
+                ticket_type=ticket_type,
+                duration_of_stay=duration_of_stay,
+                num_additional=num_additional,
+            )
         else:
-            print('Requested authority is not present')
-            res["status"] = True
-            res["message"] = 'Requested authority is not present'
-            return Response({"output": res}, status=status.HTTP_400_BAD_REQUEST)
+            student_email=request.data['student_email'].strip()
+            num_additional=int(request.data['num_additional'])
+            
+            is_student_present=len(Student.objects.filter(email=student_email,
+                                                    is_present=True))!=0
+            print(len(Student.objects.filter(email=student_email,
+                                            is_present=True)))
+            if is_student_present:
+                student=Student.objects.get(
+                    email=student_email, is_present=True)
+            else:
+                print('Student is not present')
+                res["status"] = True
+                res["message"] = 'Student is not present'
+                return Response({"output": res}, status=status.HTTP_400_BAD_REQUEST)
+            
+            VisitorTicketTable.objects.create(
+                visitor_id=queryset_visitor,
+                car_number=car_number,
+                purpose=purpose,
+                ticket_type=ticket_type,
+                duration_of_stay=duration_of_stay,
+                num_additional=num_additional,
+                student_entry_no=student,
+            )
+        
 
-        VisitorTicketTable.objects.create(
-            visitor_id=queryset_visitor,
-            car_number=car_number,
-            auth_id=queryset_authority,
-            purpose=purpose,
-            ticket_type=ticket_type,
-            duration_of_stay=duration_of_stay,
-        )
 
         Visitor.objects.filter(visitor_name=visitor_name, mobile_no=mobile_no).update(
             current_status='pending_entry')
+        
 
         res["status"] = True
         res["message"] = "Ticket inserted in visitors table successfully"
         return Response({"output": res}, status=status.HTTP_200_OK)
 
-    except:
+    except Exception as e:
+        print(e)
         res["status"] = False
         res["message"] = "Exception in inserting ticket to visitors table"
         return Response({"output": res}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
