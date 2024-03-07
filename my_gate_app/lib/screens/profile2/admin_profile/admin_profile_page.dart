@@ -1,16 +1,26 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:my_gate_app/database/database_interface.dart';
+import 'package:my_gate_app/screens/profile2/admin_profile/admin_edit_profile_page.dart';
+import 'package:my_gate_app/screens/profile2/authority_profile/authority_edit_profile_page.dart';
 // import 'package:my_gate_app/screens/profile2/guard_profile/guard_edit_profile_page.dart';
 import 'package:my_gate_app/screens/profile2/model/user.dart';
 import 'package:my_gate_app/screens/profile2/utils/user_preferences.dart';
 import 'package:my_gate_app/screens/profile2/widget/appbar_widget.dart';
+import 'package:my_gate_app/screens/profile2/widget/button_widget.dart';
+import 'package:my_gate_app/screens/profile2/widget/profile_widget.dart';
+import 'package:my_gate_app/screens/profile2/edit_profile_page.dart';
+import 'package:animated_theme_switcher/animated_theme_switcher.dart';
+import 'package:my_gate_app/screens/profile2/widget/textfield_widget.dart';
+import 'package:my_gate_app/get_email.dart';
+import 'package:my_gate_app/screens/profile2/model/user.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 
 class AdminProfilePage extends StatefulWidget {
   final String? email;
-  const AdminProfilePage({super.key, required this.email});
+  const AdminProfilePage({Key? key, required this.email}): super(key: key);
   @override
   _AdminProfilePageState createState() => _AdminProfilePageState();
 }
@@ -24,32 +34,32 @@ class _AdminProfilePageState extends State<AdminProfilePage> {
   var pic;
 
   Future<void> init() async {
-    String? currEmail = widget.email;
-    print("Current Email: $currEmail");
-    databaseInterface db = databaseInterface();
-    AdminUser result = await db.get_admin_by_email(currEmail);
+    String? curr_email = widget.email;
+    print("Current Email: " + curr_email.toString());
+    databaseInterface db = new databaseInterface();
+    AdminUser result = await db.get_admin_by_email(curr_email);
     setState(() {
       user = result;  
       imagePath = result.imagePath;
-      print("Result Name in Profile Page${result.name}");
+      print("Result Name in Profile Page" + result.name);
     });
 
     setState(() {
-      pic = NetworkImage(imagePath);
+      pic = NetworkImage(this.imagePath);
     });
   }
   @override
   void initState(){
     super.initState();
-    String? currEmail = widget.email;
-    print("Current Email: $currEmail");
+    String? curr_email = widget.email;
+    print("Current Email: " + curr_email.toString());
     
     imagePath = UserPreferences.myAdminUser.imagePath;
-    pic = NetworkImage(imagePath);
-    imagePicker = ImagePicker();
+    pic = NetworkImage(this.imagePath);
+    imagePicker = new ImagePicker();
 
     init(); 
-    print("User Name in Profile Page${user.name}");
+    print("User Name in Profile Page" + user.name);
     
   }
 
@@ -89,18 +99,18 @@ class _AdminProfilePageState extends State<AdminProfilePage> {
                       context: context,
                       builder: (BuildContext context) {
                         return AlertDialog(
-                          title: const Text('Remove Profile Image?'),
-                          content: const Text(
+                          title: Text('Remove Profile Image?'),
+                          content: Text(
                               'Are you sure you want to remove your profile image?'),
                           actions: [
                             TextButton(
-                              child: const Text('No'),
+                              child: Text('No'),
                               onPressed: () {
                                 Navigator.of(context).pop();
                               },
                             ),
                             TextButton(
-                              child: const Text('Yes'),
+                              child: Text('Yes'),
                               onPressed: () {
                                 Navigator.of(context).pop();
                                 pick_image_blank();
@@ -111,12 +121,20 @@ class _AdminProfilePageState extends State<AdminProfilePage> {
                       },
                     );
                   },
-                  child: Text(
-                    'Remove profile image',
-                    style: GoogleFonts.roboto(
-                      fontSize: 15,
-                      color: Color.fromARGB(255, 154, 74, 239),
-                      fontWeight: FontWeight.bold,
+                  child: Center(
+                    child: Align(
+                      alignment: Alignment.center,
+                      child:FittedBox(
+                        fit: BoxFit.contain,
+                        child: Text(
+                          'Remove profile image',
+                          style: GoogleFonts.roboto(
+                            fontSize: 15,
+                            color: Colors.grey,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
                     ),
                   ),
                 ),
@@ -133,7 +151,7 @@ class _AdminProfilePageState extends State<AdminProfilePage> {
         children: [
           Text(
             user.name,
-            style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 24, color: Colors.black),
+            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 24, color: Colors.black),
           ),
           const SizedBox(height: 4),
           Text(
@@ -161,7 +179,7 @@ class _AdminProfilePageState extends State<AdminProfilePage> {
             
             decoration: InputDecoration(
               disabledBorder: OutlineInputBorder(
-                borderSide: const BorderSide(color: Colors.black, width: 1.0),
+                borderSide: BorderSide(color: Colors.black, width: 1.0),
                 borderRadius: BorderRadius.circular(12),
               ),
             
@@ -180,18 +198,18 @@ class _AdminProfilePageState extends State<AdminProfilePage> {
     print("edit profile page image clicked 2");
     var source = ImageSource.gallery;
     XFile image = await imagePicker.pickImage(source: source);
-    var widgetEmail = widget.email;
-    if (widgetEmail!= null){
+    var widget_email = widget.email;
+    if (widget_email!= null){
       await databaseInterface.send_image(image,
-          "/admins/change_profile_picture_of_admin", widgetEmail);
+          "/admins/change_profile_picture_of_admin", widget_email);
     }
 
-    databaseInterface db = databaseInterface();
+    databaseInterface db = new databaseInterface();
     AdminUser result = await db.get_admin_by_email(widget.email);
     
-    var picLocal = NetworkImage(result.imagePath);
+    var pic_local = await NetworkImage(result.imagePath);
     setState(() {
-      pic = picLocal;
+      pic = pic_local;
     });
   }
 
@@ -200,19 +218,19 @@ class _AdminProfilePageState extends State<AdminProfilePage> {
     var source = ImageSource.gallery;
     var filePath =
         "assets/images/dummy_person.jpg";
-    XFile image = XFile(filePath);
-    var widgetEmail = widget.email;
-    if (widgetEmail!= null){
+    XFile image = XFile(filePath);;
+    var widget_email = widget.email;
+    if (widget_email!= null){
       await databaseInterface.send_image(image,
-          "/admins/change_profile_picture_of_admin", widgetEmail);
+          "/admins/change_profile_picture_of_admin", widget_email);
     }
 
-    databaseInterface db = databaseInterface();
+    databaseInterface db = new databaseInterface();
     AdminUser result = await db.get_admin_by_email(widget.email);
     
-    var picLocal = NetworkImage(result.imagePath);
+    var pic_local = await NetworkImage(result.imagePath);
     setState(() {
-      pic = picLocal;
+      pic = pic_local;
     });
   }
 
@@ -256,7 +274,7 @@ class _AdminProfilePageState extends State<AdminProfilePage> {
         child: buildCircle(
           color: color,
           all: 8,
-          child: const Icon(
+          child: Icon(
             Icons.add_a_photo,
             color: Colors.white,
             size: 20,
