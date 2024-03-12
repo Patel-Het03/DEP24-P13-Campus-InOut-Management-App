@@ -203,6 +203,8 @@ class _AuthFormState extends State<AuthForm> {
   Widget build(BuildContext context) {
     return Container(
         color: Colors.black,
+        height: MediaQuery.of(context).size.height,
+
 
         // height: MediaQuery.of(context).size.height,
         // width: MediaQuery.of(context).size.width,
@@ -219,39 +221,64 @@ class _AuthFormState extends State<AuthForm> {
         //     decoration: new BoxDecoration(color: Colors.white.withOpacity(0.0)),
         //   ),
         // ),
+
         child: ListView(
+
           children: [
-            Text(
-              'Welcome to \nCampus-InOutMgmt\nIIT ROPAR',
-              textAlign: TextAlign.center,
-              style: GoogleFonts.nunitoSans(
-                fontSize: 35,
-                color: Color.fromARGB(255, 255, 255, 255),
-                fontWeight: FontWeight.bold,
-              ),
-            ),
+            // Text(
+            //   'Welcome to \nCampus-InOutMgmt\nIIT ROPAR',
+            //   textAlign: TextAlign.center,
+            //   style: GoogleFonts.nunitoSans(
+            //     fontSize: 35,
+            //     color: Color.fromARGB(255, 255, 255, 255),
+            //     fontWeight: FontWeight.bold,
+            //   ),
+            // ),
+
             Container(
-              decoration: BoxDecoration(
-                color: Color.fromARGB(255, 255, 255, 255),
-                borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(30),
-                  topRight: Radius.circular(30),
-                  bottomLeft: Radius.circular(30),
-                  bottomRight: Radius.circular(30),
-                ),
-              ),
+              // decoration: BoxDecoration(
+              //   color: Color.fromARGB(255, 255, 255, 255),
+              //   borderRadius: BorderRadius.only(
+              //     topLeft: Radius.circular(30),
+              //     topRight: Radius.circular(30),
+              //     bottomLeft: Radius.circular(30),
+              //     bottomRight: Radius.circular(30),
+              //   ),
+              // ),
+              color: Color.fromARGB(255, 255, 255, 255),
               // ignore: prefer_const_constructors
-              margin: EdgeInsets.only(
-                  bottom: 0.0, top: MediaQuery.of(context).size.height / 6),
+              // margin: EdgeInsets.only(
+              //     bottom: 0.0, top: MediaQuery.of(context).size.height / 6),
               padding:
-                  EdgeInsets.only(left: 10, right: 10, top: 140, bottom: 100),
+                  EdgeInsets.only(left: 10, right: 10, top: 14, bottom: 100),
+              height: MediaQuery.of(context).size.height,
               child: Form(
                 key: _formkey,
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
+                    Text(
+                      'Welcome ',
+                      textAlign: TextAlign.center,
+                      style: GoogleFonts.kodchasan(
+                        fontSize: 30,
+                        color: Colors.black,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    SizedBox(height: 130),
+
+                    Text(
+                      "Let's SignIn",
+                      textAlign: TextAlign.center,
+                      style: GoogleFonts.kodchasan(
+                        fontSize: 20,
+                        color: Colors.black,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
                     SizedBox(
-                      height: 10,
+                      height: 50,
                     ),
                     //marked1
                     TextFormField(
@@ -282,17 +309,17 @@ class _AuthFormState extends State<AuthForm> {
                         enabledBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(8.0),
                           borderSide: const BorderSide(
-                              color: Colors.grey), // Change border color here
+                              color: Colors.black), // Change border color here
                         ),
                         focusedBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(8.0),
                           borderSide: const BorderSide(
-                              color: Colors.blue), // Change border color here
+                              color: Colors.black), // Change border color here
                         ),
-                        labelText: "Enter Email",
+                        labelText: "Email",
                         labelStyle: TextStyle(
                           fontWeight: FontWeight.bold,
-                          color: Colors.blue,
+                          color: Colors.black.withOpacity(0.7),
                         ),
                         filled: true,
                         fillColor: Color.fromARGB(255, 241, 241, 241),
@@ -302,11 +329,13 @@ class _AuthFormState extends State<AuthForm> {
                         suffixStyle: TextStyle(
                           color: Colors.grey[800],
                         ),
+                        contentPadding: EdgeInsets.symmetric(vertical: 12.0, horizontal: 16.0),
+
                       ),
                     ),
 
                     SizedBox(
-                      height: 10,
+                      height: 20,
                     ),
                     //marked2
                     TextFormField(
@@ -339,21 +368,21 @@ class _AuthFormState extends State<AuthForm> {
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(8.0),
                           borderSide: const BorderSide(
-                              color: Colors.red), // Change border color here
+                              color: Colors.black), // Change border color here
                         ),
                         enabledBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(8.0),
                           borderSide: const BorderSide(
-                              color: Colors.grey), // Change border color here
+                              color: Colors.black), // Change border color here
                         ),
                         focusedBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(8.0),
                           borderSide: const BorderSide(
-                              color: Colors.blue), // Change border color here
+                              color: Colors.black), // Change border color here
                         ),
-                        labelText: "Enter Password",
+                        labelText: "Password",
                         labelStyle: TextStyle(
-                          color: Colors.blue,
+                          color: Colors.black.withOpacity(0.7),
                           fontWeight: FontWeight.bold,
                         ),
                         suffixIcon: GestureDetector(
@@ -370,156 +399,188 @@ class _AuthFormState extends State<AuthForm> {
                         suffixStyle: TextStyle(
                           color: Colors.grey[800],
                         ),
+                        contentPadding: EdgeInsets.symmetric(vertical: 12.0, horizontal: 16.0),
                       ),
                     ),
-                    SizedBox(
-                      height: 10,
-                    ),
+                    // SizedBox(
+                    //   height: 10,
+                    // ),
 
-                    SubmitButton(
-                      submit_function: () async {
-                        /*  final email_validity =
-                      this.email_form_key.currentState?.validate(); */
-                        FocusScope.of(context).unfocus();
-                        if (/* email_validity != null && email_validity */ true) {
-                          print("Sending otp");
-                          email_form_key.currentState?.save();
+                    // SubmitButton(
+                    //   submit_function: () async {
+                    //     /*  final email_validity =
+                    //   this.email_form_key.currentState?.validate(); */
+                    //     FocusScope.of(context).unfocus();
+                    //     if (/* email_validity != null && email_validity */ true) {
+                    //       print("Sending otp");
+                    //       email_form_key.currentState?.save();
+                    //
+                    //       forgot_password(1);
+                    //       print("Fetched Email=   $fetchedemail");
+                    //       /* print("Fetched Email=   "+_email); */
+                    //       print("otp sent to $fetchedemail");
+                    //       setState(() {
+                    //         otp_op = 2;
+                    //         showOtpField = true;
+                    //         startTimeout();
+                    //         print("timer started");
+                    //       });
+                    //     }
+                    //   },
+                    //   button_text: "GET OTP",
+                    // ),
 
-                          forgot_password(1);
-                          print("Fetched Email=   $fetchedemail");
-                          /* print("Fetched Email=   "+_email); */
-                          print("otp sent to $fetchedemail");
-                          setState(() {
-                            otp_op = 2;
-                            showOtpField = true;
-                            startTimeout();
-                            print("timer started");
-                          });
-                        }
-                      },
-                      button_text: "GET OTP",
-                    ),
+                    // SizedBox(
+                    //   height: 10,
+                    // ),
 
-                    SizedBox(
-                      height: 10,
-                    ),
+                    // Visibility(
+                    //   visible:
+                    //       showOtpField, // show the OTP field only when showOtpField is true
+                    //
+                    //   child: OtpTextField(
+                    //     numberOfFields: 6,
+                    //     inputFormatters: <TextInputFormatter>[
+                    //       FilteringTextInputFormatter.digitsOnly
+                    //     ],
+                    //
+                    //     fieldWidth: (MediaQuery.of(context).size.width) / 10,
+                    //     focusedBorderColor: Colors.black,
+                    //     // defaultBorderColor: Colors.grey,
+                    //     borderRadius: BorderRadius.circular(5),
+                    //     showFieldAsBox: true,
+                    //     textStyle: TextStyle(
+                    //       color: Colors.black,
+                    //       fontWeight: FontWeight.bold,
+                    //       fontSize: 20,
+                    //     ),
+                    //     keyboardType: TextInputType.number,
+                    //     onSubmit: (String code) {
+                    //       if (code.length == 6) {
+                    //         entered_otp = int.parse(code);
+                    //         print("entered otp set to: $entered_otp");
+                    //       }
+                    //     },
+                    //   ),
+                    // ),
 
-                    Visibility(
-                      visible:
-                          showOtpField, // show the OTP field only when showOtpField is true
-
-                      child: OtpTextField(
-                        numberOfFields: 6,
-                        inputFormatters: <TextInputFormatter>[
-                          FilteringTextInputFormatter.digitsOnly
-                        ],
-
-                        fieldWidth: (MediaQuery.of(context).size.width) / 10,
-                        focusedBorderColor: Colors.black,
-                        // defaultBorderColor: Colors.grey,
-                        borderRadius: BorderRadius.circular(5),
-                        showFieldAsBox: true,
-                        textStyle: TextStyle(
-                          color: Colors.black,
-                          fontWeight: FontWeight.bold,
-                          fontSize: 20,
-                        ),
-                        keyboardType: TextInputType.number,
-                        onSubmit: (String code) {
-                          if (code.length == 6) {
-                            entered_otp = int.parse(code);
-                            print("entered otp set to: $entered_otp");
-                          }
-                        },
-                      ),
-                    ),
-
-                    SizedBox(
-                      height: 10,
-                    ),
+                    // SizedBox(
+                    //   height: 10,
+                    // ),
                     //mark3
-                    Container(
-                      child: TextButton(
+                    // Container(
+                    //   child: TextButton(
+                    //       onPressed: () {
+                    //         Navigator.of(context).push(
+                    //           MaterialPageRoute(
+                    //               builder: (context) => ForgotPassword()),
+                    //         );
+                    //         // forgot_password();
+                    //       },
+                    //       child: Text(
+                    //         'Forgot Password?',
+                    //         style: GoogleFonts.roboto(
+                    //           fontSize: 15,
+                    //           color: Colors.grey[700],
+                    //           fontWeight: FontWeight.bold,
+                    //         ),
+                    //       )),
+                    // ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+
+                      children: [
+                        SizedBox(width: 5),
+                        TextButton(
                           onPressed: () {
                             Navigator.of(context).push(
                               MaterialPageRoute(
-                                  builder: (context) => ForgotPassword()),
+                                builder: (context) => ForgotPassword(),
+                              ),
                             );
-                            // forgot_password();
                           },
                           child: Text(
-                            'Forgot Password?',
-                            style: GoogleFonts.roboto(
-                              fontSize: 15,
-                              color: Color.fromARGB(255, 154, 74, 239),
+                            'Forgot Password',
+                            style: GoogleFonts.kodchasan(
+                              fontSize: 13, // Set the font size here
+                              color: Colors.grey[700],
                               fontWeight: FontWeight.bold,
                             ),
-                          )),
+                          ),
+                        ),
+                      ],
                     ),
                     //mark3end
                     SizedBox(
-                      height: 10,
+                      height: 20,
                     ),
                     //mark4
-                    Container(
-                      padding: EdgeInsets.all(5),
-                      width: double.infinity,
-                      height: 75,
-                      // decoration: BoxDecoration(
-                      //   borderRadius: BorderRadius.circular(10),
-                      // ),
+                    SizedBox(
+                      width: 250.0,
+                      child: Container(
+                        padding: EdgeInsets.all(12),
+                        width: double.infinity,
+                        height: 65,
+                        // decoration: BoxDecoration(
+                        //   borderRadius: BorderRadius.circular(10),
+                        // ),
 
-                      child: MaterialButton(
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        color: Theme.of(context).primaryColor,
-                        onPressed: () async {
-                          await startauthentication();
+                        child: MaterialButton(
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(15),
+                          ),
+                          color: Color(0xFF827397),
 
-                          if (is_authenticated.person_type == "Student") {
-                            print("Inside Student");
-                            Navigator.of(context).pushReplacement(
-                              MaterialPageRoute(
-                                  builder: (context) => HomeStudent(
-                                      email: LoggedInDetails.getEmail())),
-                            );
-                          } else if (is_authenticated.person_type == "Guard") {
-                            await guardLocation();
-                            // print("Inside Guard");
-                            SharedPreferences prefs =
-                                await SharedPreferences.getInstance();
-                            await prefs.setString(
-                                'guard_location', _guard_location);
-                            Navigator.of(context).pushReplacement(
-                              MaterialPageRoute(
-                                  builder: (context) => EntryExit(
-                                        guard_location: _guard_location,
-                                      )),
-                            );
-                          } else if (is_authenticated.person_type ==
-                              "Authority") {
-                            Navigator.of(context).pushReplacement(
-                              MaterialPageRoute(
-                                  builder: (context) => AuthorityMain()),
-                            );
-                          } else if (is_authenticated.person_type == "Admin") {
-                            Navigator.of(context).pushReplacement(
-                              MaterialPageRoute(
-                                  builder: (context) => HomeAdmin()),
-                            );
-                          } else {
-                            // print("Login failed .... display snackbar");
-                            // final snackBar =
-                            //     get_snack_bar("Login failed", Colors.red);
-                            // ScaffoldMessenger.of(context)
-                            //     .showSnackBar(snackBar);
-                            // print(is_authenticated.message);
-                          }
-                        },
-                        child: Text(
-                          'Login',
-                          style: GoogleFonts.roboto(fontSize: 16),
+                          onPressed: () async {
+                            await startauthentication();
+
+                            if (is_authenticated.person_type == "Student") {
+                              print("Inside Student");
+                              Navigator.of(context).pushReplacement(
+                                MaterialPageRoute(
+                                    builder: (context) => HomeStudent(
+                                        email: LoggedInDetails.getEmail())),
+                              );
+                            } else if (is_authenticated.person_type == "Guard") {
+                              await guardLocation();
+                              // print("Inside Guard");
+                              SharedPreferences prefs =
+                                  await SharedPreferences.getInstance();
+                              await prefs.setString(
+                                  'guard_location', _guard_location);
+                              Navigator.of(context).pushReplacement(
+                                MaterialPageRoute(
+                                    builder: (context) => EntryExit(
+                                          guard_location: _guard_location,
+                                        )),
+                              );
+                            } else if (is_authenticated.person_type ==
+                                "Authority") {
+                              Navigator.of(context).pushReplacement(
+                                MaterialPageRoute(
+                                    builder: (context) => AuthorityMain()),
+                              );
+                            } else if (is_authenticated.person_type == "Admin") {
+                              Navigator.of(context).pushReplacement(
+                                MaterialPageRoute(
+                                    builder: (context) => HomeAdmin()),
+                              );
+                            } else {
+                              // print("Login failed .... display snackbar");
+                              // final snackBar =
+                              //     get_snack_bar("Login failed", Colors.red);
+                              // ScaffoldMessenger.of(context)
+                              //     .showSnackBar(snackBar);
+                              // print(is_authenticated.message);
+                            }
+                          },
+                          child: Text(
+                            'SignIn',
+                            style: GoogleFonts.kodchasan(
+                                fontSize: 20,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
                         ),
                       ),
                     ),

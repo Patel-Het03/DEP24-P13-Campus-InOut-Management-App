@@ -30,7 +30,7 @@ DEBUG = True
 # ALLOWED_HOSTS = ['*']
 # ALLOWED_HOSTS = ['*','10.0.2.2','127.0.0.1','localhost','103.118.50.66', '157.39.150.123', 'testserver']
 ALLOWED_HOSTS = ['31.220.57.173', '31.220.57.173',
-                 '10.0.2.2', '127.0.0.1', 'localhost', '172.23.6.189','0.0.0.0','192.168.68.111',]
+                 '10.0.2.2', '127.0.0.1', 'localhost', '172.23.6.189','0.0.0.0','172.23.7.151',]
 
 # Application definition
 
@@ -126,7 +126,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'NAME': 'MyGateAppDB',
         'USER': 'postgres',
-        'PASSWORD': '123456',
+        'PASSWORD': '123@123',
         'HOST': 'localhost',
         'PORT': '5432',
     }
