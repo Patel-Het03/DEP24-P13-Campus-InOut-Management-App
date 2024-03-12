@@ -415,8 +415,8 @@ Widget AdminButton(BuildContext context, String ButtonText, Widget NextPage,
           context, MaterialPageRoute(builder: (context) => NextPage));
     },
     child: Container(
-      height: MediaQuery.of(context).size.height / 5,
-      width: MediaQuery.of(context).size.height/5,
+      height: MediaQuery.of(context).size.height / 6,
+      width: MediaQuery.of(context).size.height/6,
       alignment: Alignment.center,
       margin: EdgeInsets.all(20),
       decoration: BoxDecoration(

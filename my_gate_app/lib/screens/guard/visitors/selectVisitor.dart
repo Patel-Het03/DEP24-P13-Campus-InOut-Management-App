@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:my_gate_app/database/database_interface.dart';
 import 'package:my_gate_app/screens/guard/visitors/visitors_tabs_controller.dart';
+import 'package:my_gate_app/screens/guard/utils/UI_statics.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class selectVisitor extends StatefulWidget {
   const selectVisitor({super.key});
@@ -53,112 +55,171 @@ class _selectVisitorState extends State<selectVisitor> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: const Color.fromARGB(255, 180, 180, 180),
+        backgroundColor: Color.fromARGB(255, 180, 180, 180),
         centerTitle: true,
+        iconTheme: IconThemeData(color: Colors.black),
         flexibleSpace: Container(
-          decoration: const BoxDecoration(
-              gradient: LinearGradient(
-                  begin: Alignment.centerLeft,
-                  end: Alignment.centerRight,
-                  colors: <Color>[Colors.purple, Colors.blue])),
-        ),
+            decoration: BoxDecoration(
+          color: hexToColor(guardColors[0]),
+        )),
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Text(
-              'Search/Add Visitor',
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: MediaQuery.of(context).size.width / 20,
-                fontWeight: FontWeight.bold,
+      body: Container(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            colors: [hexToColor(guardColors[0]), hexToColor(guardColors[1])],
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+          ),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Text(
+                'Search or Add Visitor',
+                style: GoogleFonts.mPlusRounded1c(
+                  fontSize: 24,
+                  fontWeight: FontWeight.bold,
+                  color:
+                      // Color.fromARGB(255, 0, 0, 0),
+                      Colors.black,
+                ),
+                textAlign: TextAlign.center,
               ),
-            ),
-            TextField(
-              decoration: const InputDecoration(labelText: "Name"),
-              onChanged: (value) {
-                setState(() {
-                  _name = value;
-                });
-              },
-            ),
-            TextField(
-              decoration: const InputDecoration(labelText: "Phone Number"),
-              keyboardType: TextInputType.number,
-              onChanged: (value) {
-                setState(() {
-                  _phoneNumber = value;
-                });
-              },
-            ),
-            const SizedBox(height: 16.0),
-            const Text("Search Results:"),
-            Expanded(
-              child: ListView.builder(
-                itemCount: (_name.isEmpty && _phoneNumber.isEmpty)
-                    ? 0
-                    : searchUsers(_name, _phoneNumber).length.clamp(0, 4),
-                itemBuilder: (context, index) {
-                  final user = searchUsers(_name, _phoneNumber)[index];
-                  return ListTile(
-                    title: Text(user.name),
-                    subtitle: Text(user.phoneNumber),
-                    onTap: () async {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => VisitorsTabs(
-                            username: user.name,
-                            userid: user.id,
-                            phonenumber: user.phoneNumber,
+              SizedBox(
+                height: MediaQuery.of(context).size.height * 0.05,
+              ),
+              Container(
+                height: 40.0, // Adjust the height as needed
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(8.0),
+                  color: Colors.white,
+                ),
+                child: TextField(
+                  onChanged: (value) {
+                    setState(() {
+                      _name = value;
+                    });
+                  },
+                  decoration: InputDecoration(
+                      contentPadding: EdgeInsets.symmetric(horizontal: 16.0),
+                      border: InputBorder.none,
+                      hintText: 'Name',
+                      hintStyle: GoogleFonts.lato(color: Colors.grey)),
+                ),
+              ),
+              SizedBox(
+                height: MediaQuery.of(context).size.height * 0.02,
+              ),
+              Container(
+                height: 40.0, // Adjust the height as needed
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(8.0),
+                  color: Colors.white,
+                ),
+                child: TextField(
+                  onChanged: (value) {
+                    setState(() {
+                      _phoneNumber = value;
+                    });
+                  },
+                  decoration: InputDecoration(
+                      contentPadding: EdgeInsets.symmetric(horizontal: 16.0),
+                      border: InputBorder.none,
+                      hintText: 'Phone Number',
+                      hintStyle: GoogleFonts.lato(color: Colors.grey)),
+                ),
+              ),
+              SizedBox(height: MediaQuery.of(context).size.height * 0.04),
+              const Text("Search Results:",
+                  style: TextStyle(
+                    color: Colors.black,
+                  )),
+              Expanded(
+                child: ListView.builder(
+                  itemCount: (_name.isEmpty && _phoneNumber.isEmpty)
+                      ? 0
+                      : searchUsers(_name, _phoneNumber).length.clamp(0, 4),
+                  itemBuilder: (context, index) {
+                    final user = searchUsers(_name, _phoneNumber)[index];
+                    return ListTile(
+                      title: Text(user.name),
+                      subtitle: Text(user.phoneNumber),
+                      onTap: () async {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => VisitorsTabs(
+                              username: user.name,
+                              userid: user.id,
+                              phonenumber: user.phoneNumber,
+                            ),
                           ),
+                        );
+                      },
+                    );
+                  },
+                ),
+              ),
+              ElevatedButton(
+                style: ButtonStyle(
+                  backgroundColor: MaterialStateProperty.all<Color>(
+                      hexToColor(guardColors[2])),
+                  shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                      RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(5.0), // Set the border radius here
+                      ),
+                  ),
+
+                ),
+
+                onPressed: () async {
+                  if (_name.isNotEmpty && _phoneNumber.isNotEmpty) {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => VisitorsTabs(
+                          username: _name,
+                          phonenumber: _phoneNumber,
                         ),
-                      );
-                    },
-                  );
+                      ),
+                    ).then((value) => initState());
+                  } else {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        backgroundColor: Colors.red,
+                        content: const Text(
+                            "Name/Phone number fields required for adding new visitor."),
+                        action: SnackBarAction(
+                          label: "OK",
+                          onPressed: () {
+                            ScaffoldMessenger.of(context).hideCurrentSnackBar();
+                          },
+                        ),
+                      ),
+                    );
+                  }
                 },
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(Icons.add,
+                    color: Colors.white,),
+                    SizedBox(width: 8.0),
+                    Text("New User",
+                        style: GoogleFonts.lato(
+                            color: Colors.white,
+                                fontSize:18,
+                        )),
+                  ],
+                ),
               ),
-            ),
-            ElevatedButton(
-              onPressed: () async {
-                if (_name.isNotEmpty && _phoneNumber.isNotEmpty) {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => VisitorsTabs(
-                        username: _name,
-                        phonenumber: _phoneNumber,
-                      ),
-                    ),
-                  ).then((value) => initState());
-                } else {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      backgroundColor: Colors.red,
-                      content: const Text(
-                          "Name/Phone number fields required for adding new visitor."),
-                      action: SnackBarAction(
-                        label: "OK",
-                        onPressed: () {
-                          ScaffoldMessenger.of(context).hideCurrentSnackBar();
-                        },
-                      ),
-                    ),
-                  );
-                }
-              },
-              child: const Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Icon(Icons.add),
-                  SizedBox(width: 8.0),
-                  Text("New User"),
-                ],
-              ),
-            )
-          ],
+              SizedBox(
+                height:MediaQuery.of(context).size.height*0.03
+              )
+            ],
+          ),
         ),
       ),
     );

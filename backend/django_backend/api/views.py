@@ -2439,7 +2439,7 @@ def get_pending_visitor_tickets_for_authorities(request):
         data = request.data
 
         authority_email = data['authority_email']
-
+        print("authority_email :"+authority_email)
         queryset_authorities_table = Authorities.objects.get(
             email=authority_email)
 
@@ -2447,13 +2447,13 @@ def get_pending_visitor_tickets_for_authorities(request):
             queryset_authorities_table, many=False)
 
         auth_id = serializer_authorities_table.data['auth_id']
-
+        print("auth_id :",auth_id)
         queryset_visitor_ticket_table = VisitorTicketTable.objects.filter(
             auth_id=auth_id, authority_status='Pending')
 
         serializer_visitor_ticket_table = VisitorTicketTableSerializer(
             queryset_visitor_ticket_table, many=True)
-
+        print(serializer_visitor_ticket_table.data)
         pending_tickets_list = []
         for visitor_tickets in serializer_visitor_ticket_table.data:
             ResultObj = {}
