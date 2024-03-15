@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:my_gate_app/database/database_interface.dart';
 import 'package:my_gate_app/screens/admin/home_admin.dart';
-import 'package:my_gate_app/screens/guard/home_guard.dart';
+import 'package:my_gate_app/screens/guard/..home_guard.dart';
 import 'package:my_gate_app/screens/student/home_student.dart';
 import 'package:my_gate_app/get_email.dart';
 

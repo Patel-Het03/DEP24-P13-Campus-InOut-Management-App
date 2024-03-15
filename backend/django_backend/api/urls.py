@@ -82,6 +82,7 @@ urlpatterns = [
     path('guards/insert_in_guard_ticket_table', insert_in_guard_ticket_table),
     path('guards/accept_selected_tickets', accept_selected_tickets),
     path('guards/reject_selected_tickets', reject_selected_tickets),
+    
     # To find "Pending" tickets for given location
     path('guards/get_pending_tickets_for_guard', get_pending_tickets_for_guard),
     # To find "Accepted"|"Rejected" tickets for given location for Students

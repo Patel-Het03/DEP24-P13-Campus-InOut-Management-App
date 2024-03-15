@@ -103,10 +103,14 @@ class _selectVisitorState extends State<selectVisitor> {
                     });
                   },
                   decoration: InputDecoration(
-                      contentPadding: EdgeInsets.symmetric(horizontal: 16.0),
+                      contentPadding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
                       border: InputBorder.none,
                       hintText: 'Name',
                       hintStyle: GoogleFonts.lato(color: Colors.grey)),
+                  style: GoogleFonts.lato(
+                    color:Colors.black,
+                    fontSize:20,
+                  ),
                 ),
               ),
               SizedBox(
@@ -114,6 +118,7 @@ class _selectVisitorState extends State<selectVisitor> {
               ),
               Container(
                 height: 40.0, // Adjust the height as needed
+
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(8.0),
                   color: Colors.white,
@@ -124,11 +129,16 @@ class _selectVisitorState extends State<selectVisitor> {
                       _phoneNumber = value;
                     });
                   },
+                  textAlignVertical: TextAlignVertical.center,
                   decoration: InputDecoration(
-                      contentPadding: EdgeInsets.symmetric(horizontal: 16.0),
+                      contentPadding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
                       border: InputBorder.none,
                       hintText: 'Phone Number',
                       hintStyle: GoogleFonts.lato(color: Colors.grey)),
+                      style: GoogleFonts.lato(
+                        color:Colors.black,
+                        fontSize:20,
+                      ),
                 ),
               ),
               SizedBox(height: MediaQuery.of(context).size.height * 0.04),
