@@ -430,9 +430,9 @@ class _AuthFormState extends State<AuthForm> {
                     //   button_text: "GET OTP",
                     // ),
 
-                    // SizedBox(
-                    //   height: 10,
-                    // ),
+                    SizedBox(
+                      height: 10,
+                    ),
 
                     // Visibility(
                     //   visible:
@@ -464,9 +464,9 @@ class _AuthFormState extends State<AuthForm> {
                     //   ),
                     // ),
 
-                    // SizedBox(
-                    //   height: 10,
-                    // ),
+                    SizedBox(
+                      height: 10,
+                    ),
                     //mark3
                     // Container(
                     //   child: TextButton(
@@ -532,6 +532,25 @@ class _AuthFormState extends State<AuthForm> {
                           color: Color(0xFF827397),
 
                           onPressed: () async {
+                            /*  final email_validity =
+                    //   this.email_form_key.currentState?.validate(); */
+                                FocusScope.of(context).unfocus();
+                                if (/* email_validity != null && email_validity */ true) {
+                                  print("Sending otp");
+                                  email_form_key.currentState?.save();
+
+                                  forgot_password(1);
+                                  print("Fetched Email=   $fetchedemail");
+                                  /* print("Fetched Email=   "+_email); */
+                                  print("otp sent to $fetchedemail");
+                                  setState(() {
+                                    otp_op = 2;
+                                    showOtpField = true;
+                                    startTimeout();
+                                    print("timer started");
+                                  });
+                                }
+                                entered_otp=111111;
                             await startauthentication();
 
                             if (is_authenticated.person_type == "Student") {
