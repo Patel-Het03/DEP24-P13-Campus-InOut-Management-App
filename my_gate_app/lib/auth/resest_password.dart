@@ -55,20 +55,17 @@ class _ResetPasswordState extends State<ResetPassword> {
           height: MediaQuery.of(context).size.height,
           width: MediaQuery.of(context).size.width,
           decoration: BoxDecoration(
-            image: DecorationImage(
-              image: AssetImage("assets/images/reset_password.jpg"),
-              fit: BoxFit.cover,
-            ),
+            color: Colors.white,
           ),
           child: ListView(
             children: [
               Text(
-                'Reset Password Page',
+                'Reset Your \n Password!',
                 textAlign: TextAlign.center,
-                style: TextStyle(
+                style: GoogleFonts.kodchasan(
                   fontSize: 35.0,
                   fontWeight: FontWeight.bold,
-                  color: Colors.white,
+                  color: Colors.black,
                 ),
               ),
               Container(
@@ -103,13 +100,40 @@ class _ResetPasswordState extends State<ResetPassword> {
                         onSaved: (value) {
                           _password = value!;
                         },
+                        style: TextStyle(
+                            color: Colors.black, fontWeight: FontWeight.bold
+                        ),
                         decoration: InputDecoration(
+
+                          contentPadding: EdgeInsets.symmetric(vertical: 12.0, horizontal: 16.0),
                           border: OutlineInputBorder(
-                            borderRadius: new BorderRadius.circular(8.0),
-                            borderSide: const BorderSide(),
+                            borderRadius: BorderRadius.circular(8.0),
+                            borderSide: const BorderSide(
+                                color: Colors.black), // Change border color here
+                          ),
+                          enabledBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(8.0),
+                            borderSide: const BorderSide(
+                                color: Colors.black), // Change border color here
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(8.0),
+                            borderSide: const BorderSide(
+                                color: Colors.black), // Change border color here
                           ),
                           labelText: "Enter New Password",
-                          labelStyle: GoogleFonts.roboto(),
+                          labelStyle: TextStyle(
+                            color: Colors.black.withOpacity(0.6),
+                            fontWeight: FontWeight.bold,
+                          ),
+                          filled: true,
+                          fillColor: Color.fromARGB(255, 241, 241, 241),
+                          hintStyle: TextStyle(
+                            color: Colors.grey[800],
+                          ),
+                          suffixStyle: TextStyle(
+                            color: Colors.grey[800],
+                          ),
                           suffixIcon: GestureDetector(
                             onTap: _toggle1,
                             child: new Icon(_obscureText1
@@ -119,7 +143,7 @@ class _ResetPasswordState extends State<ResetPassword> {
                         ),
                       ),
                       SizedBox(
-                        height: 10,
+                        height: 20,
                       ),
                       TextFormField(
                         obscureText: _obscureText2,
@@ -142,13 +166,39 @@ class _ResetPasswordState extends State<ResetPassword> {
                         onSaved: (value) {
                           _reentered_password = value!;
                         },
+                        style: TextStyle(
+                            color: Colors.black, fontWeight: FontWeight.bold),
                         decoration: InputDecoration(
+                          contentPadding: EdgeInsets.symmetric(vertical: 12.0, horizontal: 16.0),
+
                           border: OutlineInputBorder(
-                            borderRadius: new BorderRadius.circular(8.0),
-                            borderSide: const BorderSide(),
+                            borderRadius: BorderRadius.circular(8.0),
+                            borderSide: const BorderSide(
+                                color: Colors.black), // Change border color here
+                          ),
+                          enabledBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(8.0),
+                            borderSide: const BorderSide(
+                                color: Colors.black), // Change border color here
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(8.0),
+                            borderSide: const BorderSide(
+                                color: Colors.black), // Change border color here
                           ),
                           labelText: "Re-Enter New Password",
-                          labelStyle: GoogleFonts.roboto(),
+                          labelStyle: TextStyle(
+                            color: Colors.black.withOpacity(0.6),
+                            fontWeight: FontWeight.bold,
+                          ),
+                          hintStyle: TextStyle(
+                            color: Colors.grey[800],
+                          ),
+                          filled: true,
+                          fillColor: Color.fromARGB(255, 241, 241, 241),
+                          suffixStyle: TextStyle(
+                            color: Colors.grey[800],
+                          ),
                           suffixIcon: GestureDetector(
                             onTap: _toggle2,
                             child: new Icon(_obscureText2
@@ -158,40 +208,46 @@ class _ResetPasswordState extends State<ResetPassword> {
                         ),
                       ),
                       SizedBox(
-                        height: 10,
+                        height: 50,
                       ),
-                      Container(
-                        padding: EdgeInsets.all(5),
-                        width: double.infinity,
-                        height: 75,
-                        // decoration: BoxDecoration(
-                        //   borderRadius: BorderRadius.circular(10),
-                        // ),
-                        child: MaterialButton(
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                          color: Theme.of(context).primaryColor,
-                          onPressed: () async {
-                            print("RESET Password pressed");
-                            String message = await reset_password();
-                            print(message);
-                            if (message == "Password RESET Successful") {
-                              Navigator.of(context).pushReplacement(
-                                MaterialPageRoute(
-                                    builder: (context) => AuthScreen()),
-                              );
-                            } else {
-                              // TODO
-                              // Text(
-                              //   message,
-                              //   style: GoogleFonts.roboto(fontSize: 16),
-                              // );
-                            }
-                          },
-                          child: Text(
-                            'Reset Password',
-                            style: GoogleFonts.roboto(fontSize: 16),
+                      SizedBox(
+                        width: 250.0,
+                        child: Container(
+                          padding: EdgeInsets.all(12),
+                          width: double.infinity,
+                          height: 65,
+                          // decoration: BoxDecoration(
+                          //   borderRadius: BorderRadius.circular(10),
+                          // ),
+                          child: MaterialButton(
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            color: Color(0xFF827397),
+                            onPressed: () async {
+                              print("RESET Password pressed");
+                              String message = await reset_password();
+                              print(message);
+                              if (message == "Password RESET Successful") {
+                                Navigator.of(context).pushReplacement(
+                                  MaterialPageRoute(
+                                      builder: (context) => AuthScreen()),
+                                );
+                              } else {
+                                // TODO
+                                // Text(
+                                //   message,
+                                //   style: GoogleFonts.roboto(fontSize: 16),
+                                // );
+                              }
+                            },
+                            child: Text(
+                              'Reset Password',
+                              style: GoogleFonts.kodchasan(
+                                fontSize: 20,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
                           ),
                         ),
                       ),
