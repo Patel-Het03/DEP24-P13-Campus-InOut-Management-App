@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:my_gate_app/database/database_objects.dart';
 import 'package:my_gate_app/screens/guard/visitors/oldVisitorsSearch.dart';
 import 'package:my_gate_app/screens/guard/visitors/oldVisitorsSearchStudents.dart';
+import 'package:my_gate_app/screens/guard/utils/UI_statics.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class VisitorsTabs extends StatefulWidget {
   const VisitorsTabs({
@@ -41,21 +43,29 @@ class _VisitorsTabsState extends State<VisitorsTabs>
     super.dispose();
   }
 
-
   @override
   Widget build(BuildContext context) => DefaultTabController(
         length: 2,
         child: Scaffold(
           appBar: AppBar(
             centerTitle: true,
+            backgroundColor: Color.fromARGB(255, 180, 180, 180),
+
+            iconTheme: IconThemeData(color: Colors.black),
             flexibleSpace: Container(
-              decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
-                      colors: const <Color>[Colors.purple, Colors.blue])),
+                decoration: BoxDecoration(
+              color: hexToColor(guardColors[0]),
+            )),
+            title: Text(
+              "Enter Details",
+              style: GoogleFonts.mPlusRounded1c(
+                fontSize: 24,
+                fontWeight: FontWeight.bold,
+                color:
+                    // Color.fromARGB(255, 0, 0, 0),
+                    Colors.black,
+              ),
             ),
-            title: Text("Choose the Person",style: TextStyle(color: Colors.black,fontWeight: FontWeight.bold)),
             leading: IconButton(
               icon: Icon(Icons.arrow_back, color: Color.fromARGB(255, 0, 0, 0)),
               onPressed: () {
@@ -65,48 +75,71 @@ class _VisitorsTabsState extends State<VisitorsTabs>
             // backgroundColor: Color.fromARGB(255, 203, 202, 202),
 
             bottom: TabBar(
-              indicator: BoxDecoration(
-                color: Colors.white.withOpacity(0.5),
-                borderRadius: BorderRadius.circular(
-                    10.0), // Set the border radius for rounded corners
+              indicatorSize: TabBarIndicatorSize.tab,
+              indicator: UnderlineTabIndicator(
+                borderSide: BorderSide(
+                  width: 3,
+                  color: Colors.black,
+                ),
               ),
+              labelStyle: TextStyle(
+                  fontSize: 16,
+                  color: Colors.black,
+                  fontWeight: FontWeight.w800),
+              unselectedLabelStyle: TextStyle(
+                  fontSize: 16,
+                  color: Colors.grey[700],
+                  fontWeight: FontWeight.w800),
+
               controller: controller,
               unselectedLabelColor: Colors.white.withOpacity(0.5),
-              // indicatorPadding: EdgeInsets.only(left: 30, right: 30),
-              // indicator: ShapeDecoration(
-              //     color: Color.fromARGB(255, 255, 255, 255),
-              //     shape: BeveledRectangleBorder(
-              //         borderRadius: BorderRadius.circular(20),
-              //         side: BorderSide(
-              //           color: Color.fromARGB(255, 0, 0, 0),
-              //         ))),
-              // ignore: prefer_const_literals_to_create_immutables
+              
               tabs: [
                 Tab(
-                  icon: Icon(Icons.pending_actions, color: Colors.black),
-                  iconMargin: EdgeInsets.only(bottom: 4),
-                  child: Text(
-                    'Student',
-                    style: TextStyle(
-                      color: Color.fromARGB(255, 0, 0, 0),
-                      fontWeight: FontWeight.bold,
-                      fontSize: 16,
+                  child: Center(
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment
+                          .center, // Center icon and text horizontally
+                      children: [
+                        Icon(Icons.pending_actions, color: Colors.black),
+                        SizedBox(
+                            width: 10), // Adjust the width between icon and text
+                        Text(
+                          'Student',
+                          style: TextStyle(
+                            color: Color.fromARGB(255, 0, 0, 0),
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16,
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
+                      ],
                     ),
-                    textAlign: TextAlign.center,
                   ),
                 ),
                 Tab(
-                  icon:
-                      Icon(Icons.approval, color: Color.fromARGB(255, 0, 0, 0)),
-                  iconMargin: EdgeInsets.only(bottom: 4),
-                  child: Text(
-                    'Authority',
-                    style: TextStyle(
-                      color: Color.fromARGB(255, 0, 0, 0),
-                      fontWeight: FontWeight.bold,
-                      fontSize: 16,
+                  child: Center(
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment
+                          .center, // Center icon and text horizontally
+                      children: [
+                        Icon(
+                          Icons.add,
+                          color: Colors.black,
+                        ),
+                        SizedBox(
+                            width: 8), // Adjust the width between icon and text
+                        Text(
+                          'Authority',
+                          style: TextStyle(
+                            color: Color.fromARGB(255, 0, 0, 0),
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16,
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
+                      ],
                     ),
-                    textAlign: TextAlign.center,
                   ),
                 ),
               ],
@@ -115,12 +148,12 @@ class _VisitorsTabsState extends State<VisitorsTabs>
           body: TabBarView(
             controller: controller,
             children: [
-
-              oldVisitorSeacrchStudent(username: widget.username, phonenumber: widget.phonenumber),
-              oldVisitorSeacrch(username: widget.username, phonenumber: widget.phonenumber),
+              oldVisitorSeacrchStudent(
+                  username: widget.username, phonenumber: widget.phonenumber),
+              oldVisitorSeacrch(
+                  username: widget.username, phonenumber: widget.phonenumber),
             ],
           ),
         ),
       );
-
 }

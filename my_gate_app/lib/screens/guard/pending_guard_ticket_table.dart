@@ -7,7 +7,6 @@ import 'package:my_gate_app/screens/guard/utils/authority_message.dart';
 import 'package:my_gate_app/screens/utils/custom_snack_bar.dart';
 import 'package:my_gate_app/screens/profile2/profile_page.dart';
 import 'package:my_gate_app/screens/utils/scrollable_widget.dart';
-import 'package:my_gate_app/screens/guard/visitors/selectVisitor.dart';
 
 // Rename this class to PendingGuardTicketTable and change in all files where it being called
 
@@ -393,50 +392,50 @@ class _SelectablePageState extends State<SelectablePage> {
 
 
 
-                             Padding(
-                               padding: EdgeInsets.only(top:25,left:100,right:100),
-                               child: ElevatedButton.icon(
-                                icon: Icon(
-                                  Icons.supervised_user_circle,
-                                  color: Colors.grey[200],
-                                  size: 18.0,
-                                ),
-                                onPressed: () async {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) => selectVisitor(),
-                                    ),
-                                  );
-                                },
-                                label: Text(
-                                  "Add Visitor Ticket",
-                                  style: TextStyle(
-                                    color: Colors.grey[200],
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                                style: ButtonStyle(
-                                  backgroundColor: MaterialStateProperty.all<Color>(
-                                    Colors.brown[400]!,
-                                  ),
-                                  shape: MaterialStateProperty.all<
-                                      RoundedRectangleBorder>(
-                                    RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(10),
-                                    ),
-                                  ),
-                                  elevation: MaterialStateProperty.all<double>(4),
-                                  padding:
-                                      MaterialStateProperty.all<EdgeInsetsGeometry>(
-                                    EdgeInsets.symmetric(
-                                      horizontal: 20,
-                                      vertical: 10,
-                                    ),
-                                  ),
-                                ),
-                                                           ),
-                             ),
+                             // Padding(
+                             //   padding: EdgeInsets.only(top:25,left:100,right:100),
+                             //   child: ElevatedButton.icon(
+                             //    icon: Icon(
+                             //      Icons.supervised_user_circle,
+                             //      color: Colors.grey[200],
+                             //      size: 18.0,
+                             //    ),
+                             //    onPressed: () async {
+                             //      Navigator.push(
+                             //        context,
+                             //        MaterialPageRoute(
+                             //          builder: (context) => selectVisitor(),
+                             //        ),
+                             //      );
+                             //    },
+                             //    label: Text(
+                             //      "Add Visitor Ticket",
+                             //      style: TextStyle(
+                             //        color: Colors.grey[200],
+                             //        fontWeight: FontWeight.bold,
+                             //      ),
+                             //    ),
+                             //    style: ButtonStyle(
+                             //      backgroundColor: MaterialStateProperty.all<Color>(
+                             //        Colors.brown[400]!,
+                             //      ),
+                             //      shape: MaterialStateProperty.all<
+                             //          RoundedRectangleBorder>(
+                             //        RoundedRectangleBorder(
+                             //          borderRadius: BorderRadius.circular(10),
+                             //        ),
+                             //      ),
+                             //      elevation: MaterialStateProperty.all<double>(4),
+                             //      padding:
+                             //          MaterialStateProperty.all<EdgeInsetsGeometry>(
+                             //        EdgeInsets.symmetric(
+                             //          horizontal: 20,
+                             //          vertical: 10,
+                             //        ),
+                             //      ),
+                             //    ),
+                             //                               ),
+                             // ),
 
 
 

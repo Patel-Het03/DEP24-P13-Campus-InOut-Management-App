@@ -1,0 +1,4 @@
+backend/env/
+my_gate_app/.dart_tool/
+git rm --cached -r .idea
+my_gate_app/build/

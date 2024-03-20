@@ -4,6 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:my_gate_app/database/database_objects.dart';
 import 'package:my_gate_app/screens/guard/pending_guard_ticket_table.dart';
 import 'package:my_gate_app/screens/guard/stream_guard_ticket_table.dart';
+import 'package:my_gate_app/screens/guard/utils/UI_statics.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:my_gate_app/screens/guard/ticket_screen.dart';
 
 class GuardTabs extends StatefulWidget {
   const GuardTabs({
@@ -27,7 +30,7 @@ class _GuardTabsState extends State<GuardTabs>
   @override
   void initState() {
     super.initState();
-    controller = TabController(length: 3, vsync: this);
+    controller = TabController(length: 2, vsync: this);
     controller.addListener(() {
       setState(() {});
     });
@@ -57,14 +60,12 @@ class _GuardTabsState extends State<GuardTabs>
 
   @override
   Widget build(BuildContext context) => DefaultTabController(
-        length: 3,
+        length: 2,
         child: Scaffold(
           appBar: AppBar(
             centerTitle: true,
             flexibleSpace: Container(
-              decoration: BoxDecoration(
-                  color:Colors.white
-              ),
+              decoration: BoxDecoration(color: hexToColor(guardColors[0])),
             ),
             leading: IconButton(
               icon: Icon(Icons.arrow_back, color: Color.fromARGB(255, 0, 0, 0)),
@@ -75,136 +76,109 @@ class _GuardTabsState extends State<GuardTabs>
             // backgroundColor: Color.fromARGB(255, 203, 202, 202),
             title: Column(
               children: [
-                enterExitHeader(),
+                // enterExitHeader(),
                 Text(
                   widget.location,
-                  style: TextStyle(
-                      color: Color.fromARGB(255, 0, 0, 0),
-                      fontWeight: FontWeight.bold),
+                  style: GoogleFonts.mPlusRounded1c(
+                      fontSize: 24,
+                      color: Colors.black,
+                      fontWeight: FontWeight.w900),
                 ),
               ],
             ),
 
             bottom: TabBar(
-              indicator: BoxDecoration(
-                color: Colors.grey.withOpacity(0.5),
-                borderRadius: BorderRadius.circular(
-                    10.0), // Set the border radius for rounded corners
+              indicator: UnderlineTabIndicator(
+                borderSide: BorderSide(
+                  color: hexToColor(guardColors[1]),
+                  width:5.0 )
               ),
+              // BoxDecoration(
+              //   color: hexToColor(guardColors[2]),
+              //   borderRadius: BorderRadius.circular(
+              //       18.0), // Set the border radius for rounded corners
+              // ),
               controller: controller,
-              unselectedLabelColor: Colors.white.withOpacity(0.5),
-              // indicatorPadding: EdgeInsets.only(left: 30, right: 30),
-              // indicator: ShapeDecoration(
-              //     color: Color.fromARGB(255, 255, 255, 255),
-              //     shape: BeveledRectangleBorder(
-              //         borderRadius: BorderRadius.circular(20),
-              //         side: BorderSide(
-              //           color: Color.fromARGB(255, 0, 0, 0),
-              //         ))),
-              // ignore: prefer_const_literals_to_create_immutables
+              unselectedLabelColor: Colors.black,
               indicatorSize: TabBarIndicatorSize.tab,
-              labelStyle: TextStyle(fontSize:16,
-              fontWeight:FontWeight.bold),
-              unselectedLabelStyle: TextStyle(
-                  // fontSize:15,
-              fontWeight: FontWeight.normal),
+              labelStyle: GoogleFonts.mPlusRounded1c(
+                color:
+                hexToColor(guardColors[1]),
+                // hexToColor(guardColors[2]),
+                fontSize: 12,
+                fontWeight: FontWeight.bold,
+              ),
+              unselectedLabelStyle: GoogleFonts.mPlusRounded1c(
+                color: Colors.black,
+                fontSize: 12,
+                fontWeight: FontWeight.w700,
+              ),
               tabs: [
                 Tab(
-                  icon: Icon(Icons.pending_actions, color: Colors.black),
-                  iconMargin: EdgeInsets.only(bottom: 4),
-                  child: Text(
-                    'Pending\nTickets',
-                    style: TextStyle(
-                      color: Color.fromARGB(255, 0, 0, 0),
-                      // fontWeight: FontWeight.bold,
-                      // fontSize: 16,
+                  // icon:
+                  // Icon(Icons.approval, color: hexToColor(guardColors[2])),
+                  // iconMargin: EdgeInsets.only(bottom: 4),
+                  child: SizedBox(
+                    width: MediaQuery.of(context).size.width * 0.45,
+                    child: Text(
+                      'Approved\nTickets',
+                      textAlign: TextAlign.center,
                     ),
-                    textAlign: TextAlign.center,
                   ),
                 ),
                 Tab(
-                  icon:
-                      Icon(Icons.approval, color: Color.fromARGB(255, 0, 0, 0)),
-                  iconMargin: EdgeInsets.only(bottom: 4),
-                  child: Text(
-                    'Approved\n Tickets',
-                    style: TextStyle(
-                      color: Color.fromARGB(255, 0, 0, 0),
-                      // fontWeight: FontWeight.bold,
-                      // fontSize: 16,
+                  // icon: Icon(Icons.cancel, color: Color.fromARGB(255, 0, 0, 0)),
+                  // iconMargin: EdgeInsets.only(bottom: 4),
+                  child: SizedBox(
+                    width: MediaQuery.of(context).size.width * 0.45,
+                    child: Text(
+                      'Rejected\nTickets',
+                      textAlign: TextAlign.center,
                     ),
-                    textAlign: TextAlign.center,
-                  ),
-                ),
-                Tab(
-                  icon: Icon(Icons.cancel, color: Color.fromARGB(255, 0, 0, 0)),
-                  iconMargin: EdgeInsets.only(bottom: 4),
-                  child: Text(
-                    'Rejected\n Tickets',
-                    style: TextStyle(
-                      color: Color.fromARGB(255, 0, 0, 0),
-                      // fontWeight: FontWeight.bold,
-                      // fontSize: 16,
-                    ),
-                    textAlign: TextAlign.center,
                   ),
                 )
               ],
             ),
           ),
-          body: TabBarView(
-            controller: controller,
-            children: [
-              // StreamSelectablePage(location: widget.location,),
-              SelectablePage(
-                  location: widget.location, enter_exit: widget.enter_exit),
-              // Present in file pending_guard_ticket_table.dart
-              // GuardTicketTable(location: widget.location, is_approved: "Approved",),
-              // GuardTicketTable(location: widget.location, is_approved: "Rejected",),
-              StreamGuardTicketTable(
-                location: widget.location,
-                is_approved: "Approved",
-                enter_exit: widget.enter_exit,
-                image_path: 'assets/images/approved.jpg',
+          body: 
+              TabBarView(
+                controller: controller,
+                children: [
+                  // StreamSelectablePage(location: widget.location,),
+
+                  // SelectablePage(
+                  //     location: widget.location, enter_exit: widget.enter_exit),
+                  // Present in file pending_guard_ticket_table.dart
+                  // GuardTicketTable(location: widget.location, is_approved: "Approved",),
+                  // GuardTicketTable(location: widget.location, is_approved: "Rejected",),
+
+                  // StreamGuardTicketTable(
+                  //   location: widget.location,
+                  //   is_approved: "Approved",
+                  //   enter_exit: widget.enter_exit,
+                  //   image_path: 'assets/images/approved.jpg',
+                  // ),
+                  // StreamGuardTicketTable(
+                  //     location: widget.location,
+                  //     is_approved: "Rejected",
+                  //     enter_exit: widget.enter_exit,
+                  //     image_path: 'assets/images/rejected.jpg'),
+
+                  TicketScreen(
+                    location:widget.location,
+                    isApproved:"Approved",
+                    enterExit:widget.enter_exit,
+                    imagePath: 'assets/images/approved.jpg',
+                  ),
+                  TicketScreen(
+                    location:widget.location,
+                    isApproved:"Rejected",
+                    enterExit:widget.enter_exit,
+                    imagePath: 'assets/images/rejected.jpg',
+                  )
+                  
+                ],
               ),
-              StreamGuardTicketTable(
-                  location: widget.location,
-                  is_approved: "Rejected",
-                  enter_exit: widget.enter_exit,
-                  image_path: 'assets/images/rejected.jpg'),
-            ],
-          ),
         ),
       );
-
-  // PopupMenuItem<MenuItem> buildItem(MenuItem item) => PopupMenuItem<MenuItem>(
-  //       value: item,
-  //       child: Row(
-  //         children: [
-  //           Icon(item.icon, size: 20),
-  //           const SizedBox(width: 12),
-  //           Text(item.text),
-  //         ],
-  //       ),
-  //     );
-
-  // void onSelected(BuildContext context, MenuItem item) {
-  //   switch (item) {
-  //     case MenuItems.itemProfile:
-  //       Navigator.of(context).push(
-  //         // MaterialPageRoute(builder: (context) => ProfileController()),
-  //         // MaterialPageRoute(builder: (context) => GuardProfilePage(email: LoggedInDetails.getEmail())),
-  //         MaterialPageRoute(
-  //             builder: (context) =>
-  //                 GuardProfilePage(email: LoggedInDetails.getEmail())),
-  //       );
-  //       break;
-  //     case MenuItems.itemLogOut:
-  //       LoggedInDetails.setEmail("");
-  //       Navigator.of(context).pushReplacement(
-  //         MaterialPageRoute(builder: (context) => AuthScreen()),
-  //       );
-  //       break;
-  //   }
-  // }
 }

@@ -1,0 +1,78 @@
+Flutter crash report.
+Please report a bug at https://github.com/flutter/flutter/issues.
+
+## command
+
+flutter run --machine --dart-define=flutter.inspector.structuredErrors=false -d emulator-5554 --profile --devtools-server-address http://127.0.0.1:9100/ --target /Users/chavdajayrajsinhharisinh/Documents/GitHub/T13-GateApp/my_gate_app/lib/main.dart
+
+## exception
+
+String: failed to connect to http://127.0.0.1:53646/MNALt-2ny48=/
+
+```
+#0      DartDevelopmentServiceImpl.startService (package:dds/src/dds_impl.dart:136:7)
+<asynchronous suspension>
+#1      DartDevelopmentService.startDartDevelopmentService (package:dds/dds.dart:97:5)
+<asynchronous suspension>
+#2      DartDevelopmentService.startDartDevelopmentService (package:flutter_tools/src/base/dds.dart:55:22)
+<asynchronous suspension>
+#3      FlutterDevice.connect.<anonymous closure> (package:flutter_tools/src/resident_runner.dart:296:11)
+<asynchronous suspension>
+```
+
+## flutter doctor
+
+```
+[✓] Flutter (Channel stable, 3.19.0, on macOS 14.3.1 23D60 darwin-arm64, locale en-IN)
+    • Flutter version 3.19.0 on channel stable at /Users/chavdajayrajsinhharisinh/development/flutter
+    • Upstream repository https://github.com/flutter/flutter.git
+    • Framework revision bae5e49bc2 (4 weeks ago), 2024-02-13 17:46:18 -0800
+    • Engine revision 04817c99c9
+    • Dart version 3.3.0
+    • DevTools version 2.31.1
+
+[✓] Android toolchain - develop for Android devices (Android SDK version 34.0.0)
+    • Android SDK at /Users/chavdajayrajsinhharisinh/Library/Android/sdk
+    • Platform android-34, build-tools 34.0.0
+    • Java binary at: /Applications/Android Studio.app/Contents/jbr/Contents/Home/bin/java
+    • Java version OpenJDK Runtime Environment (build 17.0.7+0-17.0.7b1000.6-10550314)
+    • All Android licenses accepted.
+
+[✗] Xcode - develop for iOS and macOS
+    ✗ Xcode installation is incomplete; a full installation is necessary for iOS and macOS development.
+      Download at: https://developer.apple.com/xcode/
+      Or install Xcode via the App Store.
+      Once installed, run:
+        sudo xcode-select --switch /Applications/Xcode.app/Contents/Developer
+        sudo xcodebuild -runFirstLaunch
+    ✗ CocoaPods not installed.
+        CocoaPods is used to retrieve the iOS and macOS platform side's plugin code that responds to your plugin usage on the Dart side.
+        Without CocoaPods, plugins will not work on iOS or macOS.
+        For more info, see https://flutter.dev/platform-plugins
+      To install see https://guides.cocoapods.org/using/getting-started.html#installation for instructions.
+
+[✓] Chrome - develop for the web
+    • Chrome at /Applications/Google Chrome.app/Contents/MacOS/Google Chrome
+
+[✓] Android Studio (version 2023.1)
+    • Android Studio at /Applications/Android Studio.app/Contents
+    • Flutter plugin can be installed from:
+      🔨 https://plugins.jetbrains.com/plugin/9212-flutter
+    • Dart plugin can be installed from:
+      🔨 https://plugins.jetbrains.com/plugin/6351-dart
+    • Java version OpenJDK Runtime Environment (build 17.0.7+0-17.0.7b1000.6-10550314)
+
+[✓] VS Code (version 1.87.2)
+    • VS Code at /Applications/Visual Studio Code.app/Contents
+    • Flutter extension version 3.84.0
+
+[✓] Connected device (3 available)
+    • sdk gphone64 arm64 (mobile) • emulator-5554 • android-arm64  • Android 14 (API 34) (emulator)
+    • macOS (desktop)             • macos         • darwin-arm64   • macOS 14.3.1 23D60 darwin-arm64
+    • Chrome (web)                • chrome        • web-javascript • Google Chrome 122.0.6261.129
+
+[✓] Network resources
+    • All expected network resources are available.
+
+! Doctor found issues in 1 category.
+```

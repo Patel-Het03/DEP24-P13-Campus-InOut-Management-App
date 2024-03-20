@@ -25,33 +25,41 @@ class StreamGuardTicketTable extends StatefulWidget {
 class _StreamGuardTicketTableState extends State<StreamGuardTicketTable> {
   @override
   Widget build(BuildContext context) {
-    return StreamBuilder(
-      stream: databaseInterface.get_tickets_for_guard_stream(
-          widget.location, widget.is_approved, widget.enter_exit),
-      builder: (context, snapshot) {
-        switch (snapshot.connectionState) {
-          case ConnectionState.waiting:
-            return const Center(child: CircularProgressIndicator());
-          default:
-            if (snapshot.hasError) {
-              return const Text("Error",
-                  style: TextStyle(fontSize: 24, color: Colors.red));
-            } else {
-              // String in_or_out = snapshot.data.toString();
-              List<ResultObj> tickets = [];
-              if (snapshot.hasData) {
-                tickets = snapshot.data as List<ResultObj>;
+    return Column(
+      children: [
+
+        Container(
+          height:MediaQuery.of(context).size.height,
+          child: StreamBuilder(
+            stream: databaseInterface.get_tickets_for_guard_stream(
+                widget.location, widget.is_approved, widget.enter_exit),
+            builder: (context, snapshot) {
+              switch (snapshot.connectionState) {
+                case ConnectionState.waiting:
+                  return const Center(child: CircularProgressIndicator());
+                default:
+                  if (snapshot.hasError) {
+                    return const Text("Error",
+                        style: TextStyle(fontSize: 24, color: Colors.red));
+                  } else {
+                    // String in_or_out = snapshot.data.toString();
+                    List<ResultObj> tickets = [];
+                    if (snapshot.hasData) {
+                      tickets = snapshot.data as List<ResultObj>;
+                    }
+                    return  GuardTicketTable(
+                      location: widget.location,
+                      is_approved: widget.is_approved,
+                      tickets: tickets,
+                      image_path: widget.image_path,
+                      enter_exit:widget.enter_exit,
+                    );
+                  }
               }
-              return  GuardTicketTable(
-                location: widget.location,
-                is_approved: widget.is_approved,
-                tickets: tickets,
-                image_path: widget.image_path,
-                enter_exit:widget.enter_exit,
-              );
-            }
-        }
-      },
+            },
+          ),
+        ),
+      ],
     );
   }
 }

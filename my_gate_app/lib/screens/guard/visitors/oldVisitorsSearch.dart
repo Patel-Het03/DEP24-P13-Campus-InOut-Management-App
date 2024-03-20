@@ -6,6 +6,7 @@ import 'package:my_gate_app/screens/admin/utils/submit_button.dart';
 import 'package:my_gate_app/screens/admin/utils/textbox.dart';
 import 'package:my_gate_app/screens/utils/custom_snack_bar.dart';
 import 'package:my_gate_app/screens/utils/scrollable_widget.dart';
+import 'package:my_gate_app/screens/guard/utils/UI_statics.dart';
 
 class oldVisitorSeacrch extends StatefulWidget {
   const oldVisitorSeacrch({
@@ -29,7 +30,7 @@ class _oldVisitorSeacrchState extends State<oldVisitorSeacrch> {
   String car_number = "";
   List<String> authorities = [];
   String purpose = "";
-  String num_additional="";
+  String num_additional = "";
 
   List<String> duration = ["30 min", "1 hour", "2 hours", "> 2 hours"];
 
@@ -82,166 +83,160 @@ class _oldVisitorSeacrchState extends State<oldVisitorSeacrch> {
         //             colors: <Color>[Colors.purple, Colors.blue])),
         //   ),
         // ),
-        body: ScrollableWidget(
-          child: SingleChildScrollView(
-            child: Container(
-              height: MediaQuery.of(context).size.height,
-              width: MediaQuery.of(context).size.width,
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                    colors: const [
-                      Color.fromARGB(255, 255, 255, 255),
-                      Color.fromARGB(255, 255, 255, 255)
-                    ]),
-              ),
-              child: Column(children: [
-                (widget.userid != null)
-                    ? Text(
-                        "Visitor ID: ${widget.userid}",
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 18,
-                          color: Colors.black,
-                        ),
-                      )
-                    : Column(),
-                Text(
-                  widget.username,
+        body: SingleChildScrollView(
+      child: Container(
+        height: MediaQuery.of(context).size.height,
+        width: MediaQuery.of(context).size.width,
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            colors: [hexToColor(guardColors[0]), hexToColor(guardColors[1])],
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+          ),
+        ),
+        child: Column(children: [
+          (widget.userid != null)
+              ? Text(
+                  "Visitor ID: ${widget.userid}",
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
-                    fontSize: 30,
+                    fontSize: 18,
                     color: Colors.black,
                   ),
-                ),
-                SizedBox(height: 5),
-                Text(
-                  'Phone number: ${widget.phonenumber}',
-                  style: TextStyle(
-                    color: Colors.black,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                SizedBox(
-                  height: 10,
-                ),
-                SizedBox(
-                  height: 10,
-                ),
-                dropdown(
-                  context,
-                  authorities,
-                  (String? s) {
-                    if (s != null) {
-                      int idx = s.indexOf("\n");
-                      var list_authority = [
-                        s.substring(0, idx).trim(),
-                        s.substring(idx + 1).trim()
-                      ];
-                      idx = list_authority[0].indexOf(", ");
-                      var list_auth_name_design = [
-                        list_authority[0].substring(0, idx).trim(),
-                        list_authority[0].substring(idx + 1).trim()
-                      ];
-          
-                      authority_name = list_auth_name_design[0];
-                      authority_designation = list_auth_name_design[1];
-                      authority_email = list_authority[1];
-                    }
-                  },
-                  "Choose Authority",
-                  Icon(
-                    Icons.person,
-                    color: Colors.black,
-                  ),
-                ),
-                SizedBox(
-                  height: 25,
-                ),
-                dropdown(
-                  context,
-                  duration,
-                  (String? s) {
-                    if (s != null) {
-                      duration_of_stay = s;
-                    }
-                  },
-                  "Duration of stay",
-                  Icon(
-                    Icons.access_time_outlined,
-                    color: Colors.black,
-                  ),
-                ),
-                SizedBox(
-                  height: 25,
-                ),
-                TextBoxCustom(
-                  labelText: "Vehicle Number",
-                  onChangedFunction: (value) {
-                    car_number = value!;
-                  },
-                  icon: const Icon(
-                    Icons.directions_car_outlined,
-                    color: Colors.black,
-                  ),
-                ),
-                SizedBox(
-                  height: 25,
-                ),
-                TextBoxCustom(
-                  labelText: "Purpose of visit",
-                  onChangedFunction: (value) {
-                    purpose = value!;
-                  },
-                  icon: const Icon(
-                    Icons.message,
-                    color: Colors.black,
-                  ),
-                ),
-                SizedBox(
-                  height: 25,
-                ),
-                 
-                TextBoxCustom(
-                  labelText: "Number of additional visitors",
-                  onChangedFunction: (value) {
-                    num_additional = value!;
-                  },
-                  icon: const Icon(
-                    Icons.add,
-                    color: Colors.black,
-                  ),
-                ),
-                
-                SubmitButton(
-                  button_text: "Generate",
-                  submit_function: () async {
-                    print("purpose=$purpose,number=$num_additional");
-                    int statusCode =
-                        await databaseInterface.insert_in_visitors_ticket_table(
-                            visitor_name,
-                            mobile_number,
-                            car_number,
-                            authority_name,
-                            authority_email,
-                            authority_designation,
-                            purpose,
-                            "enter",
-                            duration_of_stay,
-                            num_additional,
-                            "aabbcc@gmail.com"); /*don't touch the dummy id*/
-                    display_further_status(
-                        statusCode); // Used to display the snackbar
-                  },
-                ),
-                SizedBox(
-                  height: 25,
-                ),
-              ]),
+                )
+              : Column(),
+          Text(
+            widget.username,
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+              fontSize: 30,
+              color: Colors.black,
             ),
           ),
-        ));
+          SizedBox(height: 5),
+          Text(
+            'Phone number: ${widget.phonenumber}',
+            style: TextStyle(
+              color: Colors.black,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          SizedBox(
+            height: 10,
+          ),
+          SizedBox(
+            height: 10,
+          ),
+          dropdown(
+            context,
+            authorities,
+            (String? s) {
+              if (s != null) {
+                int idx = s.indexOf("\n");
+                var list_authority = [
+                  s.substring(0, idx).trim(),
+                  s.substring(idx + 1).trim()
+                ];
+                idx = list_authority[0].indexOf(", ");
+                var list_auth_name_design = [
+                  list_authority[0].substring(0, idx).trim(),
+                  list_authority[0].substring(idx + 1).trim()
+                ];
+
+                authority_name = list_auth_name_design[0];
+                authority_designation = list_auth_name_design[1];
+                authority_email = list_authority[1];
+              }
+            },
+            "Choose Authority",
+            Icon(
+              Icons.person,
+              color: Colors.black,
+            ),
+          ),
+          SizedBox(
+            height: 25,
+          ),
+          dropdown(
+            context,
+            duration,
+            (String? s) {
+              if (s != null) {
+                duration_of_stay = s;
+              }
+            },
+            "Duration of stay",
+            Icon(
+              Icons.access_time_outlined,
+              color: Colors.black,
+            ),
+          ),
+          SizedBox(
+            height: 25,
+          ),
+          TextBoxCustom(
+            labelText: "Vehicle Number",
+            onChangedFunction: (value) {
+              car_number = value!;
+            },
+            icon: const Icon(
+              Icons.directions_car_outlined,
+              color: Colors.black,
+            ),
+          ),
+          SizedBox(
+            height: 25,
+          ),
+          TextBoxCustom(
+            labelText: "Purpose of visit",
+            onChangedFunction: (value) {
+              purpose = value!;
+            },
+            icon: const Icon(
+              Icons.message,
+              color: Colors.black,
+            ),
+          ),
+          SizedBox(
+            height: 25,
+          ),
+          TextBoxCustom(
+            labelText: "Number of additional visitors",
+            onChangedFunction: (value) {
+              num_additional = value!;
+            },
+            icon: const Icon(
+              Icons.add,
+              color: Colors.black,
+            ),
+          ),
+          SizedBox(height:MediaQuery.of(context).size.height*0.01),
+          SubmitButton(
+            button_text: "Generate",
+            submit_function: () async {
+              print("purpose=$purpose,number=$num_additional");
+              int statusCode =
+                  await databaseInterface.insert_in_visitors_ticket_table(
+                      visitor_name,
+                      mobile_number,
+                      car_number,
+                      authority_name,
+                      authority_email,
+                      authority_designation,
+                      purpose,
+                      "enter",
+                      duration_of_stay,
+                      num_additional,
+                      "aabbcc@gmail.com"); /*don't touch the dummy id*/
+              display_further_status(
+                  statusCode); // Used to display the snackbar
+            },
+          ),
+          SizedBox(
+            height: 25,
+          ),
+        ]),
+      ),
+    ));
   }
 }
-
