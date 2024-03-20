@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:my_gate_app/database/database_interface.dart';
 import 'package:my_gate_app/screens/profile2/model/user.dart';
@@ -138,13 +139,15 @@ class _ProfilePageState extends State<ProfilePage> {
         children: [
           Text(
             user.name,
-            style: const TextStyle(
+            style:  GoogleFonts.mPlusRounded1c(
                 fontWeight: FontWeight.bold, fontSize: 24, color: Colors.black),
           ),
           const SizedBox(height: 4),
           Text(
             user.email,
-            style: TextStyle(color: Colors.black.withOpacity(0.7)),
+            style: TextStyle(
+                color: Colors.black.withOpacity(0.7)
+            ),
           )
         ],
       );
@@ -156,7 +159,7 @@ class _ProfilePageState extends State<ProfilePage> {
         children: [
           Text(
             label,
-            style: const TextStyle(
+            style: GoogleFonts.mPlusRounded1c(
                 fontWeight: FontWeight.bold, fontSize: 16, color: Colors.black),
           ),
           const SizedBox(height: 8),
@@ -164,11 +167,15 @@ class _ProfilePageState extends State<ProfilePage> {
             style: const TextStyle(color: Colors.black),
             enabled: enabled,
             controller: controller,
+
             decoration: InputDecoration(
+
               disabledBorder: OutlineInputBorder(
                 borderSide: const BorderSide(color: Colors.black, width: 1.0),
                 borderRadius: BorderRadius.circular(12),
+
               ),
+
               labelStyle: TextStyle(
                 color: Color(int.parse("0xFF344953")),
               ),
@@ -185,7 +192,7 @@ class _ProfilePageState extends State<ProfilePage> {
         children: [
           Text(
             label,
-            style: const TextStyle(
+            style: GoogleFonts.mPlusRounded1c(
                 fontWeight: FontWeight.bold, fontSize: 16, color: Colors.black),
           ),
           const SizedBox(height: 8),

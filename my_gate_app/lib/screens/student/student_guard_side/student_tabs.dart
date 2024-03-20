@@ -1,6 +1,8 @@
 // ignore_for_file: prefer_const_constructors
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:my_gate_app/screens/student/student_guard_side/stream_student_status.dart';
 import 'package:my_gate_app/screens/student/student_guard_side/stream_student_ticket_table.dart';
 
@@ -44,30 +46,76 @@ class _StudentTabsState extends State<StudentTabs>
         child: Scaffold(
           appBar: AppBar(
             backgroundColor: Colors.white,
+            elevation: 8,
             title: Text(
               widget.location,
-              style: TextStyle(color: Colors.black,fontWeight: FontWeight.w800),
+              style: GoogleFonts.mPlusRounded1c(color: Colors.black,fontWeight: FontWeight.w900),
             ),
             iconTheme: IconThemeData(color: Colors.black),
             centerTitle: true,
             bottom: TabBar(
               controller: controller,
+
               indicatorSize: TabBarIndicatorSize.tab,
-              indicator: BoxDecoration(
-                color: Colors.grey.withOpacity(0.5),
-                borderRadius: BorderRadius.circular(
-                    10.0), // Set the border radius for rounded corners
-              ), // Set the indicator color to white with opacity
-              labelStyle: TextStyle(fontSize: 16,color: Colors.black,fontWeight: FontWeight.w900),
-              unselectedLabelStyle: TextStyle(fontSize: 12,color: Colors.black),
-              tabs: const [
+
+              // indicator: BoxDecoration(
+              //   color: Colors.grey.withOpacity(0.5),
+              //
+              //   borderRadius: BorderRadius.circular(
+              //       10.0), // Set the border radius for rounded corners
+              // ), // Set the indicator color to white with opacity
+              indicator: UnderlineTabIndicator( // Use UnderlineTabIndicator for underline indicator
+                borderSide: BorderSide(
+                  width: 4, // Set the thickness of the underline
+                  color: Colors.black, // Set the color of the underline
+                ),
+              ),
+              labelStyle: TextStyle(
+                  fontSize: 16,
+                  color: Colors.black,
+                  fontWeight: FontWeight.w800
+              ),
+              unselectedLabelStyle: TextStyle(
+                  fontSize: 16,
+                  color: Colors.grey[700],
+                  fontWeight: FontWeight.w800
+              ),
+              tabs:  [
                 Tab(
-                  text: 'Status',
-                  icon: Icon(Icons.account_circle),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(Icons.account_circle),
+                      SizedBox(width: 10), // Adjust the width between icon and text
+                      Text(
+                          'Status',
+                        style: GoogleFonts.mPlusRounded1c(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black,
+                        ),
+
+                      ),
+                    ],
+                  ),
                 ),
                 Tab(
-                  text: 'History',
-                  icon: Icon(Icons.history),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(Icons.history),
+                      SizedBox(width: 10), // Adjust the width between icon and text
+                      Text(
+                          'History',
+                        style: GoogleFonts.mPlusRounded1c(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black,
+                        ),
+
+                      ),
+                    ],
+                  ),
                 ),
               ],
             ),

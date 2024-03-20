@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:my_gate_app/screens/student/student_authorities_side/generate_preapproval_ticket.dart';
 import 'package:my_gate_app/screens/student/student_authorities_side/stream_student_authorities_ticket_table.dart';
 
@@ -40,7 +41,7 @@ class _StudentAuthoritiesTabsState extends State<StudentAuthoritiesTabs>
             backgroundColor: Colors.white, // Set the app bar background color to black
             title: Text(
               widget.location,
-              style: const TextStyle( color: Colors.black , fontWeight: FontWeight.w800), // Set the title text color to white
+              style: GoogleFonts.mPlusRounded1c( color: Colors.black , fontWeight: FontWeight.w900), // Set the title text color to white
             ),
             centerTitle: true,
             iconTheme: IconThemeData(color: Colors.black),
@@ -48,22 +49,53 @@ class _StudentAuthoritiesTabsState extends State<StudentAuthoritiesTabs>
               // padding: EdgeInsets.symmetric(vertical: 7),
               controller: controller,
               indicatorSize: TabBarIndicatorSize.tab,
-              indicator: BoxDecoration(
-                color: Colors.grey.withOpacity(0.5),
-                borderRadius: BorderRadius.circular(
-                    10.0), // Set the border radius for rounded corners
-              ), // Set the indicator color to white with opacity
-              labelStyle: TextStyle(fontSize: 16,color: Colors.black,fontWeight: FontWeight.w900),
-              unselectedLabelStyle: TextStyle(fontSize: 12,color: Colors.black),
-              tabs: const [
-                Tab(
+              indicator: UnderlineTabIndicator(
+                borderSide: BorderSide(
+                  width: 3,
+                  color: Colors.black,
+                ),
+              ),
+              labelStyle: TextStyle(fontSize: 16,color: Colors.black,fontWeight: FontWeight.w800),
+              unselectedLabelStyle: TextStyle(fontSize: 16,color: Colors.grey[700],fontWeight: FontWeight.w800),
+              tabs:  [
 
-                  text: 'Generate\n  Ticket',
-                  icon: Icon(Icons.add),
+                Tab(
+                  child: Center(
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center, // Center icon and text horizontally
+                      children: [
+                        Icon(Icons.add),
+                        SizedBox(width: 10), // Adjust the width between icon and text
+                        Text(
+                            'Generate\n  Ticket',
+                          style: GoogleFonts.mPlusRounded1c(
+                            fontSize: 15,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
                 ),
                 Tab(
-                  text: '  Past\nTickets',
-                  icon: Icon(Icons.history),
+                  child: Center(
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center, // Center icon and text horizontally
+                      children: [
+                        Icon(Icons.history),
+                        SizedBox(width: 10), // Adjust the width between icon and text
+                        Text(
+                          ' Past\nTickets',
+                          style: GoogleFonts.mPlusRounded1c(
+                            fontSize: 15,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
                 ),
               ],
             ),

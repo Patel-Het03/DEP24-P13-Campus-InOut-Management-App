@@ -115,7 +115,7 @@ WSGI_APPLICATION = 'django_backend.wsgi.application'
         'ENGINE'  : 'django.db.backends.mysql', 
         'NAME'    : 'mygateapp',               
         'USER'    : 'root',                   
-        'PASSWORD': 'mysql',         
+        'PASSWORD': '123@123',         
         'HOST'    : 'localhost',              
         'PORT'    : '3306',
     }
