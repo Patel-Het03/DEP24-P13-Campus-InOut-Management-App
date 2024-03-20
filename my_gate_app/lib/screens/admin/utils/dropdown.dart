@@ -28,21 +28,22 @@ Widget dropdown(BuildContext context, List<String> parentLocations,
               floatingLabelStyle: TextStyle(color: Colors.black),
               prefixStyle: TextStyle(color: Colors.black),
               fillColor: Colors.deepOrange,
-              // enabledBorder: OutlineInputBorder(
-              //   borderRadius: BorderRadius.all(Radius.circular(border_radius)),
-              //   borderSide: BorderSide(
-              //     color: Colors.black,
-              //     width: 2,
-              //   ),
-              // ),
-              // focusedBorder: OutlineInputBorder(
-              //   borderRadius: BorderRadius.all(Radius.circular(border_radius)),
-              //   borderSide: BorderSide(
-              //     color: Colors.black,
-              //     width: 2,
-              //   ),
-              // ),
-              prefixIcon: icon),
+              enabledBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.all(Radius.circular(border_radius)),
+                borderSide: BorderSide(
+                  color: Colors.black,
+                  width: 2,
+                ),
+              ),
+              focusedBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.all(Radius.circular(border_radius)),
+                borderSide: BorderSide(
+                  color: Colors.black,
+                  width: 2,
+                ),
+              ),
+              prefixIcon: icon
+          ),
         ),
         // dropdownSearchDecoration: InputDecoration (
         //     labelStyle: TextStyle(color: Colors.black),

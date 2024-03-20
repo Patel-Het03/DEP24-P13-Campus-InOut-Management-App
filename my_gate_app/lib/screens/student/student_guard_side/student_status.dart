@@ -2,6 +2,7 @@
 
 import 'dart:core';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:my_gate_app/database/database_interface.dart';
 import 'package:my_gate_app/get_email.dart';
 import 'package:my_gate_app/screens/utils/custom_snack_bar.dart';
@@ -34,7 +35,8 @@ class _StudentStatusState extends State<StudentStatus> {
   String choosen_authority_ticket = "None";
   List<String> enter_authorities_tickets = [];
   List<String> exit_authorities_tickets = [];
-  final TextEditingController _destinationAddressController = TextEditingController();
+  final TextEditingController _destinationAddressController =
+      TextEditingController();
   final TextEditingController _vehicleRegisterationController =
       TextEditingController();
 
@@ -108,7 +110,7 @@ class _StudentStatusState extends State<StudentStatus> {
   @override
   Widget build(BuildContext context) {
     return Container(
-        color: Colors.orange.shade100, // Change the color of background
+        color: Colors.white, // Change the color of background
 
         // ///////////////////////////
         //       decoration: BoxDecoration(
@@ -139,51 +141,107 @@ class _StudentStatusState extends State<StudentStatus> {
 
         // ///////////////////////////
 
-        child: ListView(
-          children: [
-            Center(
-              child: Wrap(
-                children: [
-                  getStatusSection(),
-                  if (widget.pre_approval_required) getDropDownMenu(),
-                  getButtonSection(),
-                  // Center(
-                  //   child: RaisedButton(
-                  //     onPressed: () {
-                  //       /*generate QR*/
-                  //       generateQRButton(
-                  //           "NA", LoggedInDetails.getEmail(), "NA", "enter");
-                  //     },
-                  //     shape: RoundedRectangleBorder(
-                  //         borderRadius: BorderRadius.circular(80.0)),
-                  //     padding: EdgeInsets.all(0.0),
-                  //     child: Ink(
-                  //       decoration: BoxDecoration(
-                  //         gradient: LinearGradient(
-                  //           // colors: [Color(0xff374ABE), Color(0xff64B6FF)],
-                  //           colors: [Colors.black, Colors.black],
-                  //           begin: Alignment.centerLeft,
-                  //           end: Alignment.centerRight,
-                  //         ),
-                  //         borderRadius: BorderRadius.circular(30.0),
-                  //       ),
-                  //       child: Container(
-                  //         constraints:
-                  //             BoxConstraints(maxWidth: 250.0, minHeight: 50.0),
-                  //         alignment: Alignment.center,
-                  //         child: Text(
-                  //           "Generate QR",
-                  //           textAlign: TextAlign.center,
-                  //           style: TextStyle(color: Colors.white),
-                  //         ),
-                  //       ),
-                  //     ),
-                  //   ),
-                  // ),
-                ],
+        child: SingleChildScrollView(
+          child: Column(
+            children: [
+              Container(
+                height: MediaQuery.of(context).size.height /
+                    2.6, // Half of the screen height
+                width: double.infinity,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.only(
+                    bottomLeft:
+                        Radius.circular(10), // Adjust the radius as needed
+                    bottomRight: Radius.circular(10),
+
+                    // Adjust the radius as needed
+                  ),
+                  image: DecorationImage(
+                    image:
+                        AssetImage('assets/images/spiral.jpg'), // Your image path
+                    fit: BoxFit.cover,
+                  ),
+                ),
               ),
-            ),
-          ],
+              Center(
+                child: Wrap(
+                  children: [
+                    getStatusSection(),
+                    Row(
+                      children:  [
+                        SizedBox(
+                          width:MediaQuery.of(context).size.width*1,
+                          child: Center(
+                            child: ListTile(
+                              leading: Icon(
+                                Icons.location_on,
+                                color: Colors.black,
+                              ),
+                              title: Text(
+                                'Floor 202,Room 302 Ramanujan Block', // Update with your address text
+                                style: TextStyle(
+                                  fontSize: 15,
+                                  color: Colors.black,
+                                ),
+
+                              ),
+                            ),
+                          ),
+                        ),
+          
+                      ],
+                    ),
+                    // ListTile(
+                    //   title: Text(
+                    //     '8:00 AM - 9:00 PM', // Time text
+                    //     style: TextStyle(
+                    //       fontSize: 15,
+                    //       color: Colors.black,
+                    //     ),
+                    //   ),
+                    // ),
+                    if (widget.pre_approval_required) getDropDownMenu(),
+
+                    getButtonSection(),
+
+                    // Center(
+                    //   child: RaisedButton(
+                    //     onPressed: () {
+                    //       /*generate QR*/
+                    //       generateQRButton(
+                    //           "NA", LoggedInDetails.getEmail(), "NA", "enter");
+                    //     },
+                    //     shape: RoundedRectangleBorder(
+                    //         borderRadius: BorderRadius.circular(80.0)),
+                    //     padding: EdgeInsets.all(0.0),
+                    //     child: Ink(
+                    //       decoration: BoxDecoration(
+                    //         gradient: LinearGradient(
+                    //           // colors: [Color(0xff374ABE), Color(0xff64B6FF)],
+                    //           colors: [Colors.black, Colors.black],
+                    //           begin: Alignment.centerLeft,
+                    //           end: Alignment.centerRight,
+                    //         ),
+                    //         borderRadius: BorderRadius.circular(30.0),
+                    //       ),
+                    //       child: Container(
+                    //         constraints:
+                    //             BoxConstraints(maxWidth: 250.0, minHeight: 50.0),
+                    //         alignment: Alignment.center,
+                    //         child: Text(
+                    //           "Generate QR",
+                    //           textAlign: TextAlign.center,
+                    //           style: TextStyle(color: Colors.white),
+                    //         ),
+                    //       ),
+                    //     ),
+                    //   ),
+                    // ),
+                  ],
+                ),
+              ),
+            ],
+          ),
         ));
   }
 
@@ -250,14 +308,14 @@ class _StudentStatusState extends State<StudentStatus> {
                 enabledBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.all(Radius.circular(5)),
                   borderSide: BorderSide(
-                    color: Colors.blue,
+                    color: Colors.black,
                     width: 2,
                   ),
                 ),
                 focusedBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.all(Radius.circular(5)),
                   borderSide: BorderSide(
-                    color: Colors.red,
+                    color: Colors.black,
                     width: 2,
                   ),
                 ),
@@ -276,14 +334,14 @@ class _StudentStatusState extends State<StudentStatus> {
                 enabledBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.all(Radius.circular(5)),
                   borderSide: BorderSide(
-                    color: Colors.blue,
+                    color: Colors.black,
                     width: 2,
                   ),
                 ),
                 focusedBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.all(Radius.circular(5)),
                   borderSide: BorderSide(
-                    color: Colors.red,
+                    color: Colors.black,
                     width: 2,
                   ),
                 ),
@@ -323,10 +381,11 @@ class _StudentStatusState extends State<StudentStatus> {
       if (widget.inside_parent_location == "true") {
         return Column(
           children: [
-            EnterButton(
-              enter_function: show_popup,
-              enter_message: this.ticket_raised_message,
-            ),
+            // EnterButton(
+            //   enter_function: show_popup,
+            //   enter_message: this.ticket_raised_message,
+            // ),
+            SizedBox(height: 30),
             Center(
               child: MaterialButton(
                 onPressed: () {
@@ -335,45 +394,65 @@ class _StudentStatusState extends State<StudentStatus> {
                       "NA", LoggedInDetails.getEmail(), "NA", "enter");
                 },
                 shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(80.0)),
+                    borderRadius: BorderRadius.circular(10.0)),
                 padding: EdgeInsets.all(0.0),
+                color: Colors.black,
                 child: Ink(
-                  decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      // colors: [Color(0xff374ABE), Color(0xff64B6FF)],
-                      colors: const [Colors.black, Colors.black],
-                      begin: Alignment.centerLeft,
-                      end: Alignment.centerRight,
-                    ),
-                    borderRadius: BorderRadius.circular(30.0),
-                  ),
                   child: Container(
                     constraints:
                         BoxConstraints(maxWidth: 250.0, minHeight: 50.0),
                     alignment: Alignment.center,
-                    child: Text(
-                      "Generate QR",
-                      textAlign: TextAlign.center,
-                      style: TextStyle(color: Colors.white),
+                    child:
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(
+                          Icons.qr_code,
+                          color: Colors.white,
+                          size: 24, // Adjust the size as needed
+                        ),
+                        SizedBox(width:10 ),
+                        Text(
+                          "Generate QR",
+                          textAlign: TextAlign.center,
+                          style: GoogleFonts.mPlusRounded1c(
+                            color: Colors.white,
+                            fontSize: 20.0,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+
+
+                      ],
                     ),
                   ),
                 ),
               ),
             ),
+            SizedBox(height:20 ),
+
           ],
         );
       } else {
         return Text(
-            "Cannot enter this location if not entered its parent location - ${parent_location}");
+          "Cannot enter this location if not entered its parent location - ${parent_location}",
+          textAlign: TextAlign.center,
+          style: GoogleFonts.mPlusRounded1c(
+            color: Colors.black,
+            fontSize: 20.0,
+            fontWeight: FontWeight.bold,
+          ),
+        );
       }
     } else if (widget.in_or_out == 'in') {
       if (widget.exited_all_children == "true") {
         return Column(
           children: [
-            ExitButton(
-              exit_function: show_popup,
-              exit_message: this.exit_ticket_raised_message,
-            ),
+            // ExitButton(
+            //   exit_function: show_popup,
+            //   exit_message: this.exit_ticket_raised_message,
+            // ),
+            SizedBox(height: 30),
             Center(
               child: MaterialButton(
                 onPressed: () {
@@ -385,36 +464,52 @@ class _StudentStatusState extends State<StudentStatus> {
                       "exit");
                 },
                 shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(80.0)),
+                    borderRadius: BorderRadius.circular(10.0)),
                 padding: EdgeInsets.all(0.0),
+                color: Colors.black,
                 child: Ink(
-                  decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      // colors: [Color(0xff374ABE), Color(0xff64B6FF)],
-                      colors: const [Colors.black, Colors.black],
-                      begin: Alignment.centerLeft,
-                      end: Alignment.centerRight,
-                    ),
-                    borderRadius: BorderRadius.circular(30.0),
-                  ),
                   child: Container(
-                    constraints:
-                        BoxConstraints(maxWidth: 250.0, minHeight: 50.0),
-                    alignment: Alignment.center,
-                    child: Text(
-                      "Generate QR",
-                      textAlign: TextAlign.center,
-                      style: TextStyle(color: Colors.white),
-                    ),
-                  ),
+                      constraints:
+                          BoxConstraints(maxWidth: 250.0, minHeight: 50.0),
+                      alignment: Alignment.center,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(
+                            Icons.qr_code,
+                            color: Colors.white,
+                            size: 24, // Adjust the size as needed
+                          ),
+                          SizedBox(width:10 ),
+
+                          Text(
+                            "Generate QR",
+                            textAlign: TextAlign.center,
+                            style: GoogleFonts.mPlusRounded1c(
+                              color: Colors.white,
+                              fontSize: 20.0,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+
+                        ],
+                      )),
                 ),
               ),
             ),
+            SizedBox(height:20 ),
           ],
         );
       } else {
         return Text(
-            "Cannot exit this location if not exited all its children location");
+          "Cannot exit this location if not exited all its children location",
+          textAlign: TextAlign.center,
+          style: GoogleFonts.mPlusRounded1c(
+            color: Colors.black,
+            fontSize: 20.0,
+            fontWeight: FontWeight.bold,
+          ),
+        );
       }
     } else {
       return Text("");
@@ -551,7 +646,6 @@ class _StudentStatusState extends State<StudentStatus> {
   //     }
   //   });
   // }
-
 }
 
 // Displays the checked out image
@@ -562,8 +656,8 @@ class StatusOUT extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: const EdgeInsets.all(15.0),
-      padding: const EdgeInsets.only(top: 25),
+      margin: const EdgeInsets.fromLTRB(0.0, 10.0, 0.0, 20.0),
+      padding: const EdgeInsets.only(top: 15),
       // padding: const EdgeInsets.all(80),
 
       // padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 5),
@@ -573,32 +667,16 @@ class StatusOUT extends StatelessWidget {
       // ),
       child: Column(
         children: [
-          SizedBox(
-            height: 10,
-          ),
           Center(
-            child: FittedBox(
-              fit: BoxFit.fill,
-              child: Container(
-                margin: EdgeInsets.all(10),
-                // margin: EdgeInsets.only(top:20),
-                height: 200,
-                child: Image.asset("assets/images/checked_out_2.jpg"),
-                // child: Image.asset("assets/images/checked_out_2.png"),
+            child: Text(
+              "Status : Out",
+              textAlign: TextAlign.center,
+              style: GoogleFonts.mPlusRounded1c(
+                color: Colors.black,
+                fontWeight: FontWeight.bold,
+                fontSize: 25,
               ),
             ),
-          ),
-          SizedBox(
-            height: 10,
-          ),
-          Text(
-            "Status: Outside ${location}",
-            textAlign: TextAlign.center,
-            style: TextStyle(
-                color: Colors.black,
-                fontSize: 20,
-                fontStyle: FontStyle.italic,
-                fontFamily: 'roboto'),
           ),
         ],
       ),
@@ -614,8 +692,8 @@ class StatusIN extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: const EdgeInsets.all(15.0),
-      padding: const EdgeInsets.only(top: 25),
+      margin: const EdgeInsets.fromLTRB(0.0, 10.0, 0.0, 20.0),
+      padding: const EdgeInsets.only(top: 15),
       // padding: const EdgeInsets.all(80),
 
       // decoration: BoxDecoration(
@@ -624,30 +702,16 @@ class StatusIN extends StatelessWidget {
       // ),
       child: Column(
         children: [
-          SizedBox(
-            height: 10,
-          ),
           Center(
-            child: FittedBox(
-              fit: BoxFit.fill,
-              child: Container(
-                margin: EdgeInsets.all(10),
-                height: 200,
-                child: Image.asset("assets/images/checked_in.png"),
+            child: Text(
+              "Status : In",
+              textAlign: TextAlign.center,
+              style: GoogleFonts.mPlusRounded1c(
+                color: Colors.black,
+                fontWeight: FontWeight.bold,
+                fontSize: 25,
               ),
             ),
-          ),
-          SizedBox(
-            height: 10,
-          ),
-          Text(
-            "Status: Inside ${location}",
-            textAlign: TextAlign.center,
-            style: TextStyle(
-                color: Colors.black,
-                fontSize: 20,
-                fontStyle: FontStyle.italic,
-                fontFamily: 'roboto'),
           ),
         ],
       ),
@@ -662,9 +726,8 @@ class StatusPendingEntry extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: const EdgeInsets.all(15.0),
-      // padding: const EdgeInsets.all(80),
-      padding: const EdgeInsets.only(top: 25),
+      margin: const EdgeInsets.fromLTRB(0.0, 10.0, 0.0, 20.0),
+      padding: const EdgeInsets.only(top: 15),
 
       // decoration: BoxDecoration(
       //   border: Border.all(color: Colors.blueAccent),
@@ -675,27 +738,14 @@ class StatusPendingEntry extends StatelessWidget {
           SizedBox(
             height: 10,
           ),
-          Center(
-            child: FittedBox(
-              fit: BoxFit.fill,
-              child: Container(
-                margin: EdgeInsets.all(10),
-                height: 200,
-                child: Image.asset("assets/images/pending.jpg"),
-              ),
-            ),
-          ),
-          SizedBox(
-            height: 10,
-          ),
           Text(
-            "Status: Pending Entry Request for ${location}",
+            "Status : Pending Entry",
             textAlign: TextAlign.center,
-            style: TextStyle(
-                color: Colors.black,
-                fontSize: 20,
-                fontStyle: FontStyle.italic,
-                fontFamily: 'roboto'),
+            style: GoogleFonts.mPlusRounded1c(
+              color: Colors.black,
+              fontWeight: FontWeight.bold,
+              fontSize: 25,
+            ),
           ),
         ],
       ),
@@ -710,9 +760,8 @@ class StatusPendingExit extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: const EdgeInsets.all(15.0),
-      // padding: const EdgeInsets.all(80),
-      padding: const EdgeInsets.only(top: 25),
+      margin: const EdgeInsets.fromLTRB(0.0, 10.0, 0.0, 20.0),
+      padding: const EdgeInsets.only(top: 15),
       // decoration: BoxDecoration(
       //   border: Border.all(color: Colors.blueAccent),
       //   borderRadius: BorderRadius.circular(10),
@@ -722,27 +771,14 @@ class StatusPendingExit extends StatelessWidget {
           SizedBox(
             height: 10,
           ),
-          Center(
-            child: FittedBox(
-              fit: BoxFit.fill,
-              child: Container(
-                margin: EdgeInsets.all(10),
-                height: 200,
-                child: Image.asset("assets/images/pending.jpg"),
-              ),
-            ),
-          ),
-          SizedBox(
-            height: 10,
-          ),
           Text(
-            "Status: Pending Exit request for ${location}",
+            "Status : Pending Exit",
             textAlign: TextAlign.center,
-            style: TextStyle(
-                color: Colors.black,
-                fontSize: 20,
-                fontStyle: FontStyle.italic,
-                fontFamily: 'roboto'),
+            style: GoogleFonts.mPlusRounded1c(
+              color: Colors.black,
+              fontWeight: FontWeight.bold,
+              fontSize: 25,
+            ),
           ),
         ],
       ),

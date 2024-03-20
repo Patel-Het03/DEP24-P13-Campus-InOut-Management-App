@@ -74,7 +74,7 @@ class _NotificationsPageState extends State<NotificationsPage> {
       body: Container(
         // color: Colors.white,
         decoration: BoxDecoration(
-          color: Colors.orange.shade100,
+          color: Colors.grey[200],
           borderRadius: BorderRadius.only(
             topLeft: Radius.circular(35.0), // Adjust the radius as needed
             topRight: Radius.circular(35.0), // Adjust the radius as needed
@@ -94,40 +94,53 @@ class _NotificationsPageState extends State<NotificationsPage> {
           itemCount: notifications.length,
           itemBuilder: (BuildContext context, int index) {
             final List<String> notification = notifications[index];
-            return ListTile(
-              leading: const CircleAvatar(
-                child: Icon(Icons.notifications),
-              ),
-              title: Text(
-                "From = ${notification[1]}\nLocation = ${notification[2]}\nMessage = ${notification[3]}\nTicket Type = ${notification[5]}",
-                style: TextStyle(
-                  color: _selectedIndices.contains(index)
-                      ? Colors.grey
-                      : Colors.black,
+            return Column(
+              children: [
+                ListTile(
+                  leading: const CircleAvatar(
+                    backgroundColor: Colors.blueGrey,
+                    child: Icon(Icons.notifications),
+
+                  ),
+                  title: Text(
+                    "From : ${notification[1]}\nLocation : ${notification[2]}\nMessage : ${notification[3]}\nTicket Type : ${notification[5]}",
+                    style: TextStyle(
+                      color: _selectedIndices.contains(index)
+                          ? Colors.grey
+                          : Colors.black,
+                    ),
+                  ),
+                  subtitle: Text(
+                    return_date_time(notification[4]),
+                    style: TextStyle(
+                      color: _selectedIndices.contains(index)
+                          ? Colors.grey
+                          : Colors.black,
+                    ),
+                  ),
+
+                  trailing: const Icon(Icons.more_vert),
+                  onTap: () async {
+                    await databaseInterface.mark_individual_notification(
+                        notification[0], LoggedInDetails.getEmail());
+                    setState(() {
+                      if (_selectedIndices.contains(index)) {
+                        // _selectedIndices.remove(index);
+                      } else {
+                        _selectedIndices.add(index);
+                        widget.notificationCount--;
+                      }
+                    });
+                    /* Navigator.pop(context, widget.notificationCount); */
+                  },
                 ),
-              ),
-              subtitle: Text(
-                return_date_time(notification[4]),
-                style: TextStyle(
-                  color: _selectedIndices.contains(index)
-                      ? Colors.grey
-                      : Colors.black,
+                Divider(
+                  color: Colors.grey[600], // Set the color of the divider
+                  thickness: 1, // Set the thickness of the divider
+                  indent: 16, // Set the indentation of the divider from the leading edge
+                  endIndent: 16, // Set the indentation of the divider from the trailing edge
                 ),
-              ),
-              trailing: const Icon(Icons.more_vert),
-              onTap: () async {
-                await databaseInterface.mark_individual_notification(
-                    notification[0], LoggedInDetails.getEmail());
-                setState(() {
-                  if (_selectedIndices.contains(index)) {
-                    // _selectedIndices.remove(index);
-                  } else {
-                    _selectedIndices.add(index);
-                    widget.notificationCount--;
-                  }
-                });
-                /* Navigator.pop(context, widget.notificationCount); */
-              },
+              ],
             );
           },
         ),

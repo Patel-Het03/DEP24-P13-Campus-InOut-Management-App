@@ -1,6 +1,7 @@
 // ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables, deprecated_member_use, non_constant_identifier_names
 
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:my_gate_app/screens/student/student_authorities_side/student_authorities_tabs.dart';
 import 'package:my_gate_app/screens/student/student_guard_side/student_tabs.dart';
 
@@ -25,7 +26,7 @@ class _RaiseTicketForGuardOrAuthoritiesState
         title: Text(
           textAlign: TextAlign.center,
           "Raise Request",
-          style: TextStyle(color: Colors.black,fontWeight: FontWeight.w800),
+          style: GoogleFonts.mPlusRounded1c(color: Colors.black,fontWeight: FontWeight.w900),
         ),
         backgroundColor: Colors.white,
         iconTheme: IconThemeData(color: Colors.black),
@@ -33,11 +34,7 @@ class _RaiseTicketForGuardOrAuthoritiesState
       body: Container(
 
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.only(
-            topLeft: Radius.circular(35.0),
-            topRight: Radius.circular(35.0),
-          ),
-          color: Colors.orange.shade100,
+          color: Colors.white,
           boxShadow: [
             BoxShadow(
               color: Colors.orange.withOpacity(0.3),
@@ -51,6 +48,8 @@ class _RaiseTicketForGuardOrAuthoritiesState
           child: Column(
             // add Column
             // mainAxisAlignment: MainAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.center,
+            // crossAxisAlignment: CrossAxisAlignment.stretch,
             children: <Widget>[
               // Text('Welcome', style: TextStyle( // your text
               //     fontSize: 50.0,
@@ -64,7 +63,25 @@ class _RaiseTicketForGuardOrAuthoritiesState
               // }, child: Text('Raise Ticket for Guard'),
               // ), // your button beneath text
               // Image.asset('assets/images/security-guard.png'),
+              Text(
+                'Welcome to the Ticket Page!',
+                textAlign: TextAlign.center,
+                style: GoogleFonts.mPlusRounded1c(
+                  fontSize: 24,
+                  color: Colors.grey[800],
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              SizedBox(height: 20),
+              Text(
+                'Here you can raise tickets for various purposes. Choose an option below:',
+                textAlign: TextAlign.center,
+                style: GoogleFonts.mPlusRounded1c(
+                  fontSize: 16,
+                  color: Colors.grey[800],
 
+                ),
+              ),
               SizedBox(
                 height: 100,
               ),
@@ -81,14 +98,14 @@ class _RaiseTicketForGuardOrAuthoritiesState
                   );
                 },
                 shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(20.0),
+                  borderRadius: BorderRadius.circular(10.0),
                 ),
                 padding: EdgeInsets.all(0.0),
                 elevation: 6,
                 color: Colors.black,
                 textColor: Colors.white,
                 child: Container(
-                  constraints: BoxConstraints(maxWidth: 250.0, minHeight: 50.0),
+                  constraints: BoxConstraints(maxWidth: 250.0, minHeight: 60.0),
                   alignment: Alignment.center,
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -101,7 +118,7 @@ class _RaiseTicketForGuardOrAuthoritiesState
                       Text(
                         "Raise Ticket for Guard",
                         textAlign: TextAlign.center,
-                        style: TextStyle(color: Colors.white),
+                        style: GoogleFonts.mPlusRounded1c(color: Colors.white),
                       ),
                     ],
                   ),
@@ -121,14 +138,14 @@ class _RaiseTicketForGuardOrAuthoritiesState
                   );
                 },
                 shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(20.0),
+                  borderRadius: BorderRadius.circular(10.0),
                 ),
                 padding: EdgeInsets.all(0.0),
                 elevation: 6,
                 color: Colors.black,
                 textColor: Colors.white,
                 child: Container(
-                  constraints: BoxConstraints(maxWidth: 250.0, minHeight: 50.0),
+                  constraints: BoxConstraints(maxWidth: 250.0, minHeight: 60.0),
                   alignment: Alignment.center,
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -141,7 +158,9 @@ class _RaiseTicketForGuardOrAuthoritiesState
                       Text(
                         "Raise Ticket for Authorities",
                         textAlign: TextAlign.center,
-                        style: TextStyle(color: Colors.white),
+                        style: GoogleFonts.mPlusRounded1c(
+                            color: Colors.white
+                        ),
                       ),
                     ],
                   ),

@@ -166,12 +166,12 @@ class databaseInterface {
 
   static List<String> getLocationImagesPaths() {
     final List<String> entries = [
-      'assets/images/gate.png',
-      'assets/images/computer.png',
-      'assets/images/mess.jpg',
-      'assets/images/hostel.png',
-      'assets/images/lab.png',
-      'assets/images/library2.jpg',
+      'assets/images/spiral.jpg',
+      'assets/images/spiral.jpg',
+      'assets/images/spiral.jpg',
+      'assets/images/spiral.jpg',
+      'assets/images/spiral.jpg',
+      'assets/images/spiral.jpg',
     ];
     return entries;
   }
