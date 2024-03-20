@@ -1,7 +1,7 @@
 // ignore_for_file: prefer_const_constructors
 
 import 'package:flutter/material.dart';
-
+import 'package:google_fonts/google_fonts.dart';
 class TextBoxCustom extends StatelessWidget {
   TextBoxCustom({
     super.key,
@@ -24,8 +24,12 @@ class TextBoxCustom extends StatelessWidget {
         textTheme: TextTheme(titleMedium: TextStyle(color: Colors.black)),
       ),
       child: Container(
-        width: MediaQuery.of(context).size.width / 1.5,
-        color: Colors.white,
+        width: MediaQuery.of(context).size.width * 0.72,
+        height: 50.0, // Adjust the height as needed
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(8.0),
+          color: Colors.white,
+        ),
         child: Form(
           key: form_key,
           child: TextFormField(
@@ -41,24 +45,15 @@ class TextBoxCustom extends StatelessWidget {
             onSaved: onSavedFunction,
             onChanged: onChangedFunction,
             decoration: InputDecoration(
-                labelStyle: TextStyle(color: Colors.black),
-                floatingLabelStyle: TextStyle(color: Colors.black),
                 prefixStyle: TextStyle(color: Colors.black),
-                fillColor: Colors.deepOrange,
-                enabledBorder: OutlineInputBorder(
-                  borderSide: BorderSide(color: Colors.blue, width: 2),
-                ),
-                focusedBorder: OutlineInputBorder(
-                  borderSide: BorderSide(color: Colors.red, width: 2),
-                ),
-                prefixIcon: icon,
 
-                // border: OutlineInputBorder(
-                //   borderRadius: new BorderRadius.circular(8.0),
-                //   borderSide: const BorderSide(),
-                // ),
-                labelText: labelText //"Enter New Location",
-                // labelStyle: GoogleFonts.roboto(),
+                contentPadding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 10.0),
+                      border: InputBorder.none,
+                      hintText: labelText,
+                      hintStyle: GoogleFonts.lato(color: Colors.grey),
+                prefixIcon: icon,
+                
+               
                 ),
           ),
         ),

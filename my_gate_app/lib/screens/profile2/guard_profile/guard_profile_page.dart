@@ -1,6 +1,10 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:my_gate_app/database/database_interface.dart';
+import 'package:my_gate_app/screens/guard/utils/UI_statics.dart';
 import 'package:my_gate_app/screens/profile2/model/user.dart';
 import 'package:my_gate_app/screens/profile2/utils/user_preferences.dart';
 
@@ -66,16 +70,7 @@ class _GuardProfilePageState extends State<GuardProfilePage> {
         iconTheme:
             const IconThemeData(color: Colors.black), // Set the back arrow color
         flexibleSpace: Container(
-          decoration: const BoxDecoration(
-            gradient: LinearGradient(
-              begin: Alignment.centerLeft,
-              end: Alignment.centerRight,
-              colors: <Color>[
-                Colors.purple,
-                Colors.blue
-              ], // Set the gradient colors
-            ),
-          ),
+          color: hexToColor(guardColors[0]),
         ),
         title: const Text(
           "Guard Profile Page",
@@ -112,16 +107,18 @@ class _GuardProfilePageState extends State<GuardProfilePage> {
         children: [
           Text(
             user.name,
-            style: TextStyle(
-                fontWeight: FontWeight.bold,
+            style: GoogleFonts.mPlusRounded1c(
+                fontWeight: FontWeight.w800,
                 fontSize: 24,
                 color: Color(int.parse("0xFF344953"))),
           ),
-          const SizedBox(height: 4),
+          // const SizedBox(height: 4),
           Text(
             user.email,
-            style: TextStyle(
-                color: Color(int.parse("0xFF344953")).withOpacity(0.5)),
+            style: GoogleFonts.lato(
+                fontWeight: FontWeight.w500,
+                fontSize: 15,
+                color: Color(int.parse("0xFF304053")).withOpacity(0.6)),
           )
         ],
       );
@@ -140,10 +137,17 @@ class _GuardProfilePageState extends State<GuardProfilePage> {
           ),
           const SizedBox(height: 8),
           TextField(
-            style: TextStyle(color: Color(int.parse("0xFF344953"))),
+            
+            style: GoogleFonts.lato(
+              
+              fontWeight:FontWeight.w900,
+              fontSize:16,
+              color:Colors.grey[800],
+            ),
             enabled: enabled,
             controller: controller,
             decoration: InputDecoration(
+              contentPadding: EdgeInsets.symmetric(horizontal: 20,vertical: 0),
               disabledBorder: OutlineInputBorder(
                 borderSide: const BorderSide(color: Colors.black, width: 1.0),
                 borderRadius: BorderRadius.circular(12),

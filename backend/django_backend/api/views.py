@@ -4093,6 +4093,7 @@ def insert_in_visitors_ticket_table(request):
         visitor_name = request.data['visitor_name']
         mobile_no = request.data['mobile_no']
         car_number = request.data['car_number']
+        guard_status=request.data['guard_status']
        
         purpose = request.data['purpose']
         ticket_type = request.data['ticket_type']
@@ -4176,6 +4177,7 @@ def insert_in_visitors_ticket_table(request):
                 duration_of_stay=duration_of_stay,
                 num_additional=num_additional,
                 student_entry_no=student,
+                guard_status=guard_status
             )
         
 

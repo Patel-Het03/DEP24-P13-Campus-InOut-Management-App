@@ -1554,6 +1554,7 @@ class databaseInterface {
           'num_additional': num_additional,
           'student_email': student_id,
           'type':'student',
+          'guard_status':"Approved"
         },
       );
       var data = json.decode(response.body);
@@ -2016,7 +2017,7 @@ class databaseInterface {
     //   is_approved = "Pending";
     //   enter_exit = "enter";
     // }
-
+    print("!@!@!");
     var uri =
         Uri.parse("$complete_base_url_static/guards/get_visitor_tickets");
     try {

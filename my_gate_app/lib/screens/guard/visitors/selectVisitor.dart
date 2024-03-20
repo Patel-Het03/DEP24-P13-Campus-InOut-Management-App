@@ -103,13 +103,14 @@ class _selectVisitorState extends State<selectVisitor> {
                     });
                   },
                   decoration: InputDecoration(
-                      contentPadding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+                      contentPadding:
+                          EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
                       border: InputBorder.none,
                       hintText: 'Name',
                       hintStyle: GoogleFonts.lato(color: Colors.grey)),
                   style: GoogleFonts.lato(
-                    color:Colors.black,
-                    fontSize:20,
+                    color: Colors.black,
+                    fontSize: 20,
                   ),
                 ),
               ),
@@ -131,14 +132,15 @@ class _selectVisitorState extends State<selectVisitor> {
                   },
                   textAlignVertical: TextAlignVertical.center,
                   decoration: InputDecoration(
-                      contentPadding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+                      contentPadding:
+                          EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
                       border: InputBorder.none,
                       hintText: 'Phone Number',
                       hintStyle: GoogleFonts.lato(color: Colors.grey)),
-                      style: GoogleFonts.lato(
-                        color:Colors.black,
-                        fontSize:20,
-                      ),
+                  style: GoogleFonts.lato(
+                    color: Colors.black,
+                    fontSize: 20,
+                  ),
                 ),
               ),
               SizedBox(height: MediaQuery.of(context).size.height * 0.04),
@@ -177,13 +179,12 @@ class _selectVisitorState extends State<selectVisitor> {
                   backgroundColor: MaterialStateProperty.all<Color>(
                       hexToColor(guardColors[2])),
                   shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                      RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(5.0), // Set the border radius here
-                      ),
+                    RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(
+                          5.0), // Set the border radius here
+                    ),
                   ),
-
                 ),
-
                 onPressed: () async {
                   if (_name.isNotEmpty && _phoneNumber.isNotEmpty) {
                     Navigator.push(
@@ -214,20 +215,20 @@ class _selectVisitorState extends State<selectVisitor> {
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    Icon(Icons.add,
-                    color: Colors.white,),
+                    Icon(
+                      Icons.add,
+                      color: Colors.white,
+                    ),
                     SizedBox(width: 8.0),
                     Text("New User",
                         style: GoogleFonts.lato(
-                            color: Colors.white,
-                                fontSize:18,
+                          color: Colors.white,
+                          fontSize: 18,
                         )),
                   ],
                 ),
               ),
-              SizedBox(
-                height:MediaQuery.of(context).size.height*0.03
-              )
+              SizedBox(height: MediaQuery.of(context).size.height * 0.03)
             ],
           ),
         ),

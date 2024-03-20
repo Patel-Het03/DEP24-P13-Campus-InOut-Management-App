@@ -6,6 +6,7 @@ import 'package:my_gate_app/screens/guard/pending_guard_ticket_table.dart';
 import 'package:my_gate_app/screens/guard/stream_guard_ticket_table.dart';
 import 'package:my_gate_app/screens/guard/utils/UI_statics.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:my_gate_app/screens/guard/ticket_screen.dart';
 
 class GuardTabs extends StatefulWidget {
   const GuardTabs({
@@ -87,16 +88,23 @@ class _GuardTabsState extends State<GuardTabs>
             ),
 
             bottom: TabBar(
-              indicator: BoxDecoration(
-                color: hexToColor(guardColors[2]),
-                borderRadius: BorderRadius.circular(
-                    18.0), // Set the border radius for rounded corners
+              indicator: UnderlineTabIndicator(
+                borderSide: BorderSide(
+                  color: hexToColor(guardColors[1]),
+                  width:5.0 )
               ),
+              // BoxDecoration(
+              //   color: hexToColor(guardColors[2]),
+              //   borderRadius: BorderRadius.circular(
+              //       18.0), // Set the border radius for rounded corners
+              // ),
               controller: controller,
               unselectedLabelColor: Colors.black,
-              indicatorSize: TabBarIndicatorSize.label,
+              indicatorSize: TabBarIndicatorSize.tab,
               labelStyle: GoogleFonts.mPlusRounded1c(
-                color: Colors.white,
+                color:
+                hexToColor(guardColors[1]),
+                // hexToColor(guardColors[2]),
                 fontSize: 12,
                 fontWeight: FontWeight.bold,
               ),
@@ -137,22 +145,38 @@ class _GuardTabsState extends State<GuardTabs>
                 controller: controller,
                 children: [
                   // StreamSelectablePage(location: widget.location,),
+
                   // SelectablePage(
                   //     location: widget.location, enter_exit: widget.enter_exit),
                   // Present in file pending_guard_ticket_table.dart
                   // GuardTicketTable(location: widget.location, is_approved: "Approved",),
                   // GuardTicketTable(location: widget.location, is_approved: "Rejected",),
-                  StreamGuardTicketTable(
-                    location: widget.location,
-                    is_approved: "Approved",
-                    enter_exit: widget.enter_exit,
-                    image_path: 'assets/images/approved.jpg',
+
+                  // StreamGuardTicketTable(
+                  //   location: widget.location,
+                  //   is_approved: "Approved",
+                  //   enter_exit: widget.enter_exit,
+                  //   image_path: 'assets/images/approved.jpg',
+                  // ),
+                  // StreamGuardTicketTable(
+                  //     location: widget.location,
+                  //     is_approved: "Rejected",
+                  //     enter_exit: widget.enter_exit,
+                  //     image_path: 'assets/images/rejected.jpg'),
+
+                  TicketScreen(
+                    location:widget.location,
+                    isApproved:"Approved",
+                    enterExit:widget.enter_exit,
+                    imagePath: 'assets/images/approved.jpg',
                   ),
-                  StreamGuardTicketTable(
-                      location: widget.location,
-                      is_approved: "Rejected",
-                      enter_exit: widget.enter_exit,
-                      image_path: 'assets/images/rejected.jpg'),
+                  TicketScreen(
+                    location:widget.location,
+                    isApproved:"Rejected",
+                    enterExit:widget.enter_exit,
+                    imagePath: 'assets/images/rejected.jpg',
+                  )
+                  
                 ],
               ),
         ),
