@@ -202,7 +202,7 @@ class _AuthFormState extends State<AuthForm> {
   @override
   Widget build(BuildContext context) {
     return Container(
-        color: Colors.black,
+        color: Colors.white,
         height: MediaQuery.of(context).size.height,
 
 

@@ -18,7 +18,7 @@ class _AuthScreenState extends State<AuthScreen> {
       // appBar: AppBar(title: Text('Authentication'),
       appBar: AppBar(
       // backgroundColor: Color(0x44000000),
-      backgroundColor: Colors.transparent,
+      backgroundColor: Colors.white,
       elevation: 0,
       toolbarHeight: 30,
       ),
