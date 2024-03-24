@@ -1,26 +1,60 @@
 from django.db import models
 from django.contrib.auth.hashers import *
 import datetime
-from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
+from django.contrib.auth.models import AbstractUser
 # If we delete anything, change the value of is_present to False
 default_password = 'IIT_Ropar'
 default_encrypted_password = make_password(default_password)
 
-class UserManager(BaseUserManager):
-    def create_user(self, email, password=None, **extra_fields):
+TYPES=(("student", "Student"), ("guard", "Guard"), ("authority", "Authority"), ("admin", "Admin"))
+
+from django.contrib.auth.models import BaseUserManager
+
+class CustomUserManager(BaseUserManager):
+    def create_user(self, email, password=default_password, **extra_fields):
         if not email:
             raise ValueError('The Email field must be set')
         email = self.normalize_email(email)
         user = self.model(email=email, **extra_fields)
         user.set_password(password)
-        user.save()
+        user.save(using=self._db)
         return user
-
+    def create(self, email, password=default_password, **extra_fields):
+        return self.create_user(email, password, **extra_fields)
+    
+    def update_user(self, user, password=None, **extra_fields):
+        if password:
+            user.set_password(password)
+        for field, value in extra_fields.items():
+            setattr(user, field, value)
+        user.save(using=self._db)
+        return user
+    
     def create_superuser(self, email, password=None, **extra_fields):
         extra_fields.setdefault('is_staff', True)
         extra_fields.setdefault('is_superuser', True)
-
+        if extra_fields.get('is_staff') is not True:
+            raise ValueError('Superuser must have is_staff=True.')
+        if extra_fields.get('is_superuser') is not True:
+            raise ValueError('Superuser must have is_superuser=True.')
         return self.create_user(email, password, **extra_fields)
+
+
+# class UserManager(BaseUserManager):
+#     def create_user(self, email, password=None, **extra_fields):
+#         if not email:
+#             raise ValueError('The Email field must be set')
+#         email = self.normalize_email(email)
+#         user = self.model(email=email, **extra_fields)
+#         user.set_password(password)
+#         user.save()
+#         return user
+
+#     def create_superuser(self, email, password=None, **extra_fields):
+#         extra_fields.setdefault('is_staff', True)
+#         extra_fields.setdefault('is_superuser', True)
+
+#         return self.create_user(email, password, **extra_fields)
 
 
 # class User(AbstractBaseUser, PermissionsMixin):
@@ -38,6 +72,17 @@ class UserManager(BaseUserManager):
 #     def __str__(self):
 #         return self.email
 
+class User(AbstractUser):
+    email=models.CharField(max_length=255,unique=True)
+    password=models.CharField(max_length=255)
+    type=models.CharField(max_length=255,default='student',null=False,choices=TYPES)
+    username=None
+
+    USERNAME_FIELD='email' 
+
+    REQUIRED_FIELDS=[]
+
+    objects = CustomUserManager()
 
 
 class Location(models.Model):
