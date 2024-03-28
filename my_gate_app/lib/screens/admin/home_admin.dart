@@ -177,7 +177,6 @@ class _HomeAdminState extends State<HomeAdmin> {
                             context,
                             "View Statistics",
                             StatisticsTabs(),
-                            "0",
                             "assets/images/admin.jpg",
                             MediaQuery.of(context).size.height * 0.2,
                             MediaQuery.of(context).size.width * 5 / 12,
@@ -218,7 +217,6 @@ class _HomeAdminState extends State<HomeAdmin> {
                                     "Mobile",
                                   ],
                                 ),
-                                "1",
                                 "assets/images/Students_Admin.png",
                                 MediaQuery.of(context).size.height * 72 / 800,
                                 MediaQuery.of(context).size.width * 5 / 12,
@@ -241,7 +239,6 @@ class _HomeAdminState extends State<HomeAdmin> {
                                       "Location",
                                       "Email",
                                     ]),
-                                "0",
                                 "assets/images/Pie_Graph.png",
                                 MediaQuery.of(context).size.height * 72 / 800,
                                 MediaQuery.of(context).size.width * 5 / 12,
@@ -262,7 +259,6 @@ class _HomeAdminState extends State<HomeAdmin> {
                           data_entity: "Admins",
                           column_names: ["Name", "Email"],
                         ),
-                        "1",
                         "assets/images/Pie_Graph.png",
                         MediaQuery.of(context).size.height * 7 / 80,
                         MediaQuery.of(context).size.width * 11 / 12,
@@ -289,7 +285,6 @@ class _HomeAdminState extends State<HomeAdmin> {
                                     "Automatic Exit",
                                   ],
                                 ),
-                                "0",
                                 "assets/images/Pie_Graph.png",
                                 MediaQuery.of(context).size.height * 72 / 800,
                                 MediaQuery.of(context).size.width * 5 / 12,
@@ -315,7 +310,6 @@ class _HomeAdminState extends State<HomeAdmin> {
                                     "Hostel Name",
                                   ],
                                 ),
-                                "1",
                                 "assets/images/Pie_Graph.png",
                                 MediaQuery.of(context).size.height * 72 / 800,
                                 MediaQuery.of(context).size.width * 5 / 12,
@@ -340,7 +334,6 @@ class _HomeAdminState extends State<HomeAdmin> {
                                 "Email",
                               ],
                             ),
-                            "0",
                             "assets/images/Pie_Graph.png",
                             MediaQuery.of(context).size.height * 0.2,
                             MediaQuery.of(context).size.width * 5 / 12,
@@ -366,7 +359,6 @@ class _HomeAdminState extends State<HomeAdmin> {
                             "Department Name",
                           ],
                         ),
-                        "1",
                         "assets/images/Pie_Graph.png",
                         MediaQuery.of(context).size.height * 7 / 80,
                         MediaQuery.of(context).size.width * 11 / 12,
@@ -391,7 +383,6 @@ class _HomeAdminState extends State<HomeAdmin> {
                             "Degree Duration",
                           ],
                         ),
-                        "1",
                         "assets/images/Pie_Graph.png",
                         MediaQuery.of(context).size.height * 7 / 80,
                         MediaQuery.of(context).size.width * 11 / 12,
@@ -443,17 +434,16 @@ class _HomeAdminState extends State<HomeAdmin> {
 }
 
 Widget AdminButton(BuildContext context, String ButtonText, Widget NextPage,
-    String order, String ImagePath, double h, double w) {
+    String ImagePath, double h, double w) {
   return InkWell(
     onTap: () {
       Navigator.push(
           context, MaterialPageRoute(builder: (context) => NextPage));
     },
-    child: Container (
+    child: Container(
       height: h,
       width: w,
       alignment: Alignment.center,
-      // margin: EdgeInsets.all(20),
       decoration: BoxDecoration(
         shape: BoxShape.rectangle,
         borderRadius: BorderRadius.circular(20),
@@ -466,42 +456,15 @@ Widget AdminButton(BuildContext context, String ButtonText, Widget NextPage,
           ),
         ],
         color: Colors.orange.shade400,
+        image: DecorationImage(
+          image: AssetImage(ImagePath),
+          fit: BoxFit.cover,
+        ),
       ),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        // crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          // SizedBox(
-          //   height: 5,
-          // ),
-          ClipRRect(
-            borderRadius: BorderRadius.circular(20),
-            child: Image.asset(
-              ImagePath,
-              fit: BoxFit.cover,
-              // width: 50,
-              // height: 50,
-            ),
-          ),
-          Center(
-            child: Padding(
-              padding: const EdgeInsets.all(0.0),
-              child: Align(
-                alignment: Alignment.center,
-                child: FittedBox(
-                  fit: BoxFit.contain,
-                  child: Text(
-                    ButtonText,
-                    style: GoogleFonts.roboto(
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.black),
-                  ),
-                ),
-              ),
-            ),
-          ),
-        ],
+      child: Text(
+        ButtonText,
+        style: GoogleFonts.roboto(
+            fontSize: 20, fontWeight: FontWeight.bold, color: Colors.black),
       ),
     ),
   );
