@@ -13,7 +13,15 @@ import 'dart:typed_data';
 import 'database_objects.dart';
 import 'package:http_parser/http_parser.dart';
 import 'package:image_picker/image_picker.dart';
-// import 'package:my_gate_app/screens/student/result_obj.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
+enum HttpMethod {
+  GET,
+  POST,
+  PUT,
+  DELETE,
+  // Add more HTTP methods as needed
+}
 
 class databaseInterface {
   static int REFRESH_RATE = 1;
@@ -23,7 +31,7 @@ class databaseInterface {
       // "http://localhost:$PORT_NO_static";
       // "http://31.220.57.173:" + PORT_NO_static.toString();
       "http://10.0.2.2:" + PORT_NO_static.toString();
-    // "http://192.168.64.111:"+PORT_NO_static.toString();
+  //   "http://192.168.68.111:"+PORT_NO_static.toString();
   databaseInterface();
 
   static Future<String> get_welcome_message(String email) async {
@@ -38,6 +46,141 @@ class databaseInterface {
     } catch (e) {
       print("Exception in get_welcome_message: $e");
       return "Welcome";
+    }
+  }
+
+//   // Import required packages
+// import 'dart:convert';
+// import 'package:http/http.dart' as http;
+// import 'package:flutter/material.dart';
+
+// Function to get access token from shared preferences
+// Function to get access token from shared preferences
+  static Future<String> getAccessToken() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    return prefs.getString('access_token') as Future<String>;
+  }
+
+// Function to get refresh token from shared preferences
+  static Future<String> getRefreshToken() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    return prefs.getString('refresh_token') as Future<String>;
+  }
+
+// Function to save access token to shared preferences
+  static Future<void> saveAccessToken(String accessToken) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setString('access_token', accessToken);
+  }
+
+  static Future<http.Response> makeAuthenticatedRequest(
+      Uri url, HttpMethod method,
+      {required Map<String, dynamic> body}) async {
+    // Get access token
+    String accessToken = await getAccessToken();
+
+    // Add access token to headers
+    Map<String, String> headers = {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer $accessToken',
+    };
+
+    // Make API request based on the specified method
+    http.Response response;
+    switch (method) {
+      case HttpMethod.GET:
+        response = await _makeGetRequest(url, headers);
+      case HttpMethod.POST:
+        response = await _makePostRequest(url, headers, body);
+      case HttpMethod.PUT:
+        response = await _makePutRequest(url, headers, body);
+      case HttpMethod.DELETE:
+        response = await _makeDeleteRequest(url, headers);
+      // Add more cases for other HTTP methods if needed
+    }
+    if (response == null) {
+      throw Exception('Error while making the request ${url.toString()}');
+    }
+    return response;
+  }
+
+  static Future<http.Response> _makeGetRequest(
+      Uri url, Map<String, String> headers) async {
+    final response = await http.get(url, headers: headers);
+    await _handleResponse(response);
+    return response;
+  }
+
+  static Future<http.Response> _makePostRequest(
+      Uri url, Map<String, String> headers, Map<String, dynamic> body) async {
+    final response =
+        await http.post(url, headers: headers, body: jsonEncode(body));
+    await _handleResponse(response);
+    return response;
+  }
+
+  static Future<http.Response> _makePutRequest(
+      Uri url, Map<String, String> headers, Map<String, dynamic> body) async {
+    final response =
+        await http.put(url, headers: headers, body: jsonEncode(body));
+     await _handleResponse(response);
+     return response;
+  }
+
+  static Future<http.Response> _makeDeleteRequest(
+      Uri url, Map<String, String> headers) async {
+    final response = await http.delete(url, headers: headers);
+    await _handleResponse(response);
+    return response;
+  }
+
+  static Future<void> _handleResponse(http.Response response) async {
+    if (response.statusCode == 200) {
+      // return response;
+    } else if (response.statusCode == 401) {
+      // Access token expired, try refreshing token
+      bool success =
+          await refreshToken(); // Call your refreshToken function here
+      if (success) {
+        // Retry the request after token refresh
+        // It's recommended to use a retry mechanism to avoid infinite loops
+        // You can use libraries like 'retry' to implement this.
+        // For simplicity, we will not implement retry mechanism here.
+        // Retry without changing HTTP method (assuming original request was POST)
+        // return _makePostRequest(response.request!.url, response.request!.headers, response.request!.body);
+      } else {
+        // Redirect to login page or handle token refresh failure
+        // redirectToLoginPage();
+        // return response;
+      }
+    } else {
+      // throw Exception(
+      //     'Failed to make authenticated request: ${response.reasonPhrase}');
+    }
+  
+  }
+
+// Function to refresh token
+  static Future<bool> refreshToken() async {
+    String refreshToken = await getRefreshToken();
+    var url = "$complete_base_url_static/refresh_token";
+    // Make request to refresh token endpoint
+    final response = await http.post(
+      Uri.parse(url),
+      body: {
+        'refresh_token': refreshToken,
+      },
+    );
+
+    // Parse response
+    if (response.statusCode == 200) {
+      // Save new access token
+      Map<String, dynamic> data = json.decode(response.body);
+      String accessToken = data['access_token'];
+      await saveAccessToken(accessToken);
+      return true;
+    } else {
+      return false;
     }
   }
 
@@ -1666,8 +1809,9 @@ class databaseInterface {
     List<String> output = [];
     try {
       print("location ids in db=$location_ids");
-      var response = await http.post(
+      var response = await makeAuthenticatedRequest(
         Uri.parse(uri),
+        HttpMethod.POST,
         body: {
           'email': email,
           'location_ids': json.encode(location_ids),
@@ -2079,6 +2223,44 @@ class databaseInterface {
   static Stream<int> get_notification_count_stream(String email) =>
       Stream.periodic(Duration(seconds: REFRESH_RATE * 5))
           .asyncMap((_) => return_total_notification_count_guard(email));
+
+  static Future<void> jwt_login(String email, String password) async {
+    var url = "$complete_base_url_static/login";
+    try {
+      final response = await http.post(
+        Uri.parse(url),
+        body: {
+          'email': email,
+          'password': password,
+        },
+      );
+
+      if (response.statusCode == 200) {
+        // Parse response body
+        final Map<String, dynamic> data = json.decode(response.body);
+        final String accessToken = data['access_token'];
+        final String refreshToken = data['refresh_token'];
+        final String type = data['type'];
+
+        // Save tokens to shared preferences
+        SharedPreferences prefs = await SharedPreferences.getInstance();
+        await prefs.setString('access_token', accessToken);
+        await prefs.setString('refresh_token', refreshToken);
+        await prefs.setString('email', email);
+        await prefs.setString('type', type);
+        LoggedInDetails.setEmail(email);
+        print("shared preference set");
+      } else {
+        // Handle error
+        print("Error in login");
+        final Map<String, dynamic> data = json.decode(response.body);
+        print("Error at backend: ${data['error']}");
+      }
+    } catch (e) {
+      print("Error while logging in, these error was catched at frontend");
+      print("ERROR : ${e.toString()}");
+    }
+  }
 
   Future<int> GenerateRelativesTicket(
       String Student,
