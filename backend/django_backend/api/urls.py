@@ -45,7 +45,7 @@ urlpatterns = [
     path("students/add_student", add_student),
     path("students/get_tickets_for_student", get_tickets_for_student),
     path("students/get_student_status", get_student_status),
-    path("students/get_student_by_email", get_student_by_email),
+    path("students/get_student_by_email", get_student_by_email.as_view()),
     path("students/get_student_by_id", get_student_by_id),
     path(
         "students/get_authority_tickets_for_students",

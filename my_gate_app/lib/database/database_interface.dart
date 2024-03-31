@@ -31,8 +31,15 @@ class databaseInterface {
       // "http://localhost:$PORT_NO_static";
       // "http://31.220.57.173:" + PORT_NO_static.toString();
       "http://10.0.2.2:" + PORT_NO_static.toString();
+
   //   "http://192.168.68.111:"+PORT_NO_static.toString();
+  static Map<String, dynamic> retry={
+    "try":1,
+    "ifretry":false,
+  };
   databaseInterface();
+
+
 
   static Future<String> get_welcome_message(String email) async {
     var uri = "$complete_base_url_static/get_welcome_message";
@@ -56,15 +63,15 @@ class databaseInterface {
 
 // Function to get access token from shared preferences
 // Function to get access token from shared preferences
-  static Future<String> getAccessToken() async {
+  static Future<String?> getAccessToken() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    return prefs.getString('access_token') as Future<String>;
+    return prefs.getString('access_token');
   }
 
 // Function to get refresh token from shared preferences
-  static Future<String> getRefreshToken() async {
+  static Future<String?> getRefreshToken() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    return prefs.getString('refresh_token') as Future<String>;
+    return prefs.getString('refresh_token');
   }
 
 // Function to save access token to shared preferences
@@ -76,8 +83,19 @@ class databaseInterface {
   static Future<http.Response> makeAuthenticatedRequest(
       Uri url, HttpMethod method,
       {required Map<String, dynamic> body}) async {
-    // Get access token
-    String accessToken = await getAccessToken();
+        retry['try']=1;
+        retry['retry']=false;
+        http.Response response= await makeTry(url,method,body:body);
+        if(retry['try']<=1 && retry['retry']==true){
+          response= await makeTry(url,method,body:body);
+        }
+        return response;
+  }
+
+  static Future<http.Response>  makeTry (Uri url, HttpMethod method,
+      {required Map<String, dynamic> body}) async {
+        // Get access token
+    String? accessToken = await getAccessToken();
 
     // Add access token to headers
     Map<String, String> headers = {
@@ -102,6 +120,7 @@ class databaseInterface {
       throw Exception('Error while making the request ${url.toString()}');
     }
     return response;
+
   }
 
   static Future<http.Response> _makeGetRequest(
@@ -135,34 +154,24 @@ class databaseInterface {
   }
 
   static Future<void> _handleResponse(http.Response response) async {
-    if (response.statusCode == 200) {
-      // return response;
-    } else if (response.statusCode == 401) {
+   if (response.statusCode == 401) {
       // Access token expired, try refreshing token
       bool success =
           await refreshToken(); // Call your refreshToken function here
       if (success) {
-        // Retry the request after token refresh
-        // It's recommended to use a retry mechanism to avoid infinite loops
-        // You can use libraries like 'retry' to implement this.
-        // For simplicity, we will not implement retry mechanism here.
-        // Retry without changing HTTP method (assuming original request was POST)
-        // return _makePostRequest(response.request!.url, response.request!.headers, response.request!.body);
+        retry['retry']=true;
       } else {
         // Redirect to login page or handle token refresh failure
         // redirectToLoginPage();
         // return response;
       }
-    } else {
-      // throw Exception(
-      //     'Failed to make authenticated request: ${response.reasonPhrase}');
-    }
+    } 
   
   }
 
 // Function to refresh token
   static Future<bool> refreshToken() async {
-    String refreshToken = await getRefreshToken();
+    String? refreshToken = await getRefreshToken();
     var url = "$complete_base_url_static/refresh_token";
     // Make request to refresh token endpoint
     final response = await http.post(
@@ -1330,7 +1339,7 @@ class databaseInterface {
   Future<User> get_student_by_email(String? email_) async {
     var uri = "$complete_base_url_static/students/get_student_by_email";
     try {
-      var response = await http.post(Uri.parse(uri), body: {"email": email_});
+      var response = await makeAuthenticatedRequest(Uri.parse(uri),HttpMethod.POST, body: {"email": email_});
       print('Response status GET STUDENT BY EMAIL: ${response.statusCode}');
       // print('Response body: ${response.body}');
       var data = json.decode(response.body);

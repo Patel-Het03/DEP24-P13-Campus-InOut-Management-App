@@ -1798,55 +1798,57 @@ def get_welcome_message(request):
         return Response(res, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
-@api_view(["POST"])
-def get_student_by_email(request):
-    try:
-        data = request.data
-        print(request.data)
-        email_ = data["email"]
 
-        queryset = Student.objects.get(email=email_)
+class get_student_by_email(APIView):
+    permission_classes = (IsAuthenticated,)
+    def post(self,request):
+        try:
+            data = request.data
+            print(request.data)
+            email_ = data["email"]
 
-        serializer = StudentSerializer(queryset, many=False)
+            queryset = Student.objects.get(email=email_)
 
-        _dept_id = serializer.data["dept_id"]
+            serializer = StudentSerializer(queryset, many=False)
 
-        query_set_department = Department.objects.get(dept_id=_dept_id)
+            _dept_id = serializer.data["dept_id"]
 
-        dept_name = DepartmentSerializer(query_set_department, many=False).data[
-            "dept_name"
-        ]
+            query_set_department = Department.objects.get(dept_id=_dept_id)
 
-        _degree_id = serializer.data["degree_id"]
+            dept_name = DepartmentSerializer(query_set_department, many=False).data[
+                "dept_name"
+            ]
 
-        query_set_department = Program.objects.get(degree_id=_degree_id)
+            _degree_id = serializer.data["degree_id"]
 
-        degree_name = ProgramSerializer(query_set_department, many=False).data[
-            "degree_name"
-        ]
+            query_set_department = Program.objects.get(degree_id=_degree_id)
 
-        image_path = serializer.data["profile_img"]
-        print("0000000000000000000000000000000000000000000000000000000000000000000")
-        with open(str(settings.BASE_DIR) + image_path, "rb") as image_file:
-            encoded_image = base64.b64encode(image_file.read()).decode("utf-8")
+            degree_name = ProgramSerializer(query_set_department, many=False).data[
+                "degree_name"
+            ]
 
-        res = {
-            "name": serializer.data["st_name"],
-            "email": serializer.data["email"],
-            "gender": serializer.data["gender"],
-            "year_of_entry": str(serializer.data["year_of_entry"]),
-            "department": dept_name,
-            "mobile_no": serializer.data["mobile_no"],
-            "profile_img": encoded_image,
-            "image_path": image_path,
-            "degree": degree_name,
-        }
-        print("------------------------------------------------")
-        return Response(res, status=status.HTTP_200_OK)
+            image_path = serializer.data["profile_img"]
+            print("0000000000000000000000000000000000000000000000000000000000000000000")
+            with open(str(settings.BASE_DIR) + image_path, "rb") as image_file:
+                encoded_image = base64.b64encode(image_file.read()).decode("utf-8")
 
-    except Exception as e:
-        print("Exception in get_student_by_email: " + str(e))
-        return Response(status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            res = {
+                "name": serializer.data["st_name"],
+                "email": serializer.data["email"],
+                "gender": serializer.data["gender"],
+                "year_of_entry": str(serializer.data["year_of_entry"]),
+                "department": dept_name,
+                "mobile_no": serializer.data["mobile_no"],
+                "profile_img": encoded_image,
+                "image_path": image_path,
+                "degree": degree_name,
+            }
+            print("------------------------------------------------")
+            return Response(res, status=status.HTTP_200_OK)
+
+        except Exception as e:
+            print("Exception in get_student_by_email: " + str(e))
+            return Response(status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
 @api_view(["POST"])
