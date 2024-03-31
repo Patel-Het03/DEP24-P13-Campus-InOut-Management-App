@@ -113,9 +113,9 @@ WSGI_APPLICATION = 'django_backend.wsgi.application'
 """ DATABASES = {
     'default': {
         'ENGINE'  : 'django.db.backends.mysql', 
-        'NAME'    : 'mygateapp',               
+        'NAME'    : '',               
         'USER'    : 'root',                   
-        'PASSWORD': '123@123',         
+        'PASSWORD': '1125',         
         'HOST'    : 'localhost',              
         'PORT'    : '3306',
     }
@@ -126,7 +126,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'NAME': 'MyGateAppDB',
         'USER': 'postgres',
-        'PASSWORD': '123@123',
+        'PASSWORD': '1125',
         'HOST': 'localhost',
         'PORT': '5432',
     }
