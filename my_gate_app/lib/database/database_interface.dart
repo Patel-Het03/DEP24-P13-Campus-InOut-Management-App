@@ -13,6 +13,7 @@ import 'dart:typed_data';
 import 'database_objects.dart';
 import 'package:http_parser/http_parser.dart';
 import 'package:image_picker/image_picker.dart';
+// import 'package:my_gate_app/screens/student/result_obj.dart';
 
 class databaseInterface {
   static int REFRESH_RATE = 1;
@@ -389,6 +390,72 @@ class databaseInterface {
       // return Future.error(e);
     }
   }
+
+   Future<int> GenerateRelativesTicket(
+       String Student,
+       String Name,
+       String Relationship,
+       String Contact,
+       String Purpose
+       )async{
+     var uri = "$complete_base_url_static/generate_relatives_ticket";
+     try{
+       var response = await http.post(
+         Uri.parse(uri),
+         body: {
+           'student': Student,
+           'invitee_name': Name,
+           'invitee_relationship': Relationship,
+           'invitee_contact': Contact,
+           'purpose': Purpose,
+         },
+       );
+       print('Response status: ${response.statusCode}');
+       print('Response body: ${response.body}');
+       return response.statusCode.toInt();
+     }
+     catch (e) {
+       print("post request error");
+       print(e.toString());
+       return 500;
+       // return Future.error(e);
+     }
+   }
+
+   Future<List<RelativeResultObj>>  GetStudentRelativeTickets(
+       String student
+       )async{
+     var uri = "$complete_base_url_static/getStudentRelativeTickets";
+
+     try{
+       final response = await http.post(
+         Uri.parse(uri),
+         body: {
+           'student': student,
+         },
+       );
+       if (response.statusCode == 200) {
+         List<dynamic> data = json.decode(response.body);
+         List<RelativeResultObj> result = data.map((item) => RelativeResultObj.fromJson(item)).toList();
+         return result;
+         print(result);
+       } else {
+         throw Exception('Failed to load data');
+       }
+
+     }
+     catch (e) {
+       print("post request error");
+       print(e.toString());
+       throw Exception('Failed to load data');
+
+       // return Future.error(e);
+     }
+
+
+   }
+
+
 
   static Future<int> insert_in_authorities_ticket_table(
       String chosen_authority,

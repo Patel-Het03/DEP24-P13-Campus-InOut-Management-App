@@ -1011,7 +1011,11 @@ class _HomeStudentState extends State<HomeStudent> {
                 },
                 child: Text(
                   'Invite Guest',
-                  style: TextStyle(fontSize: 18),
+                  style: GoogleFonts.mPlusRounded1c(
+                      fontSize: 20,
+                    color:Colors.white,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
                 style: ElevatedButton.styleFrom(
                   padding: EdgeInsets.all(15),
