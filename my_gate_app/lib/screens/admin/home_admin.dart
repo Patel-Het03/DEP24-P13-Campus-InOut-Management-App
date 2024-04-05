@@ -1,5 +1,6 @@
 // ignore_for_file: prefer_const_literals_to_create_immutables, prefer_const_constructors, non_constant_identifier_names, avoid_print
 
+
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:my_gate_app/auth/authscreen.dart';
@@ -51,9 +52,9 @@ class _HomeAdminState extends State<HomeAdmin> {
   Widget build(BuildContext context) {
     return Center(
       child: Scaffold(
-          backgroundColor: Colors.white,
+        backgroundColor: Colors.white,
           appBar: AppBar(
-            backgroundColor: Color(0xFFD9D9D9),
+            backgroundColor: Colors.white,
             title: Column(
               children: [
                 Center(
@@ -141,188 +142,168 @@ class _HomeAdminState extends State<HomeAdmin> {
                 width: MediaQuery.of(context).size.width,
                 decoration: BoxDecoration(
                   color: Colors.orange.shade100,
+                  borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(35.0), // Adjust the radius as needed
+                    topRight: Radius.circular(35.0), // Adjust the radius as needed
+                  ),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.orange.withOpacity(0.3),
+                      blurRadius: 0,
+                      spreadRadius: 2,
+                      offset: Offset(0,3),
+
+                    ),
+
+                  ],
                 ),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     SizedBox(
-                      height: MediaQuery.of(context).size.height * 13 / 800,
+                      height: 20,
                     ),
                     ClipRRect(
-                      borderRadius: BorderRadius.circular(20),
-                      child: Container(
-                        height: MediaQuery.of(context).size.height * 0.25,
-                        width: MediaQuery.of(context).size.width * 0.9,
-                        decoration: BoxDecoration(
-                          color: Colors.blue, // Change color as per your need
-                        ),
-                        child: Image.asset(
-                          'assets/images/admin.jpg', // Replace with your image URL
-                          fit: BoxFit.cover,
-                        ),
-                      ),
+                      borderRadius: BorderRadius.circular(50),
+                      // child: Image.asset(
+                      //   'assets/images/admin.jpg',
+                      //   height: 210,
+                      //   width: MediaQuery.of(context).size.width,
+                      // ),
                     ),
+
                     SizedBox(
-                      height: MediaQuery.of(context).size.height * 13 / 800,
+                      height: 20,
                     ),
+                    //
                     Row(
                       // mainAxisSize: MainAxisSize.min,
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       // crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
+
                         Container(
-                          margin: EdgeInsets.all(0.0),
-                          padding: EdgeInsets.all(0.0),
+                          margin: new EdgeInsets.all(0.0),
                           child: AdminButton(
                             context,
                             "View Statistics",
                             StatisticsTabs(),
                             "0",
-                            "assets/images/admin.jpg",
-                            MediaQuery.of(context).size.height * 0.2,
-                            MediaQuery.of(context).size.width * 5 / 12,
+                            "assets/images/Pie_Graph.png",
                           ),
                         ),
-                        // statistics
+                        //statistics
                         // Spacer(),
                         // AdminButton(context,"Manage Student", Colors.amber,ManageStudentsTabs()),
-                        Column(
-                          // mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          // mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          // crossAxisAlignment: CrossAxisAlignment.stretch,
-                          children: [
-                            Container(
-                              margin: EdgeInsets.all(0.0),
-                              padding: EdgeInsets.all(0.0),
-                              child: AdminButton(
-                                context,
-                                "Manage Student",
-                                ManageExcelTabs(
-                                  appbar_title: "Manage Students",
-                                  add_url: "/files/add_students_from_file",
-                                  modify_url: "/files/add_students_from_file",
-                                  delete_url:
-                                      "/files/delete_students_from_file\n/files/delete_students_from_file_individual",
-                                  entity: "Student",
-                                  data_entity: "Student",
-                                  column_names: [
-                                    "Name",
-                                    "Entry No.",
-                                    "Email",
-                                    "Gender",
-                                    "Dept.",
-                                    "Degree",
-                                    "Hostel",
-                                    "Room",
-                                    "Year",
-                                    "Mobile",
-                                  ],
-                                ),
-                                "1",
-                                "assets/images/Students_Admin.png",
-                                MediaQuery.of(context).size.height * 72 / 800,
-                                MediaQuery.of(context).size.width * 5 / 12,
-                              ),
+                        Container(
+                          margin: new EdgeInsets.all(0.0),
+                          child: AdminButton(
+                            context,
+                            "Manage Student",
+                            ManageExcelTabs(
+                              appbar_title: "Manage Students",
+                              add_url: "/files/add_students_from_file",
+                              modify_url: "/files/add_students_from_file",
+                              delete_url:
+                                  "/files/delete_students_from_file\n/files/delete_students_from_file_individual",
+                              entity: "Student",
+                              data_entity: "Student",
+                              column_names: [
+                                "Name",
+                                "Entry No.",
+                                "Email",
+                                "Gender",
+                                "Dept.",
+                                "Degree",
+                                "Hostel",
+                                "Room",
+                                "Year",
+                                "Mobile",
+                              ],
                             ),
-                            SizedBox(
-                              height:
-                                  MediaQuery.of(context).size.height * 16 / 800,
-                            ),
-                            Container(
-                              margin: EdgeInsets.all(0.0),
-                              padding: EdgeInsets.all(0.0),
-                              child: AdminButton(
-                                context,
-                                "Manage Guards",
-                                ManageGuardsTabs(
-                                    data_entity: "Guard",
-                                    column_names: [
-                                      "Name",
-                                      "Location",
-                                      "Email",
-                                    ]),
-                                "0",
-                                "assets/images/Pie_Graph.png",
-                                MediaQuery.of(context).size.height * 72 / 800,
-                                MediaQuery.of(context).size.width * 5 / 12,
-                              ),
-                            ),
-                          ],
-                        )
-                      ],
-                    ),
-                    SizedBox(
-                      height: MediaQuery.of(context).size.height * 13 / 800,
-                    ),
-                    Container(
-                      child: AdminButton(
-                        context,
-                        "Manage Admins",
-                        ManageAdminTabs(
-                          data_entity: "Admins",
-                          column_names: ["Name", "Email"],
+                            "1",
+                            "assets/images/Students_Admin.png",
+                          ),
                         ),
-                        "1",
-                        "assets/images/Pie_Graph.png",
-                        MediaQuery.of(context).size.height * 7 / 80,
-                        MediaQuery.of(context).size.width * 11 / 12,
-                      ),
-                    ),
-                    SizedBox(
-                      height: MediaQuery.of(context).size.height * 13 / 800,
+                      ],
                     ),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
-                        Column(
-                          children: [
-                            Container(
-                              child: AdminButton(
-                                context,
-                                "Manage Locations",
-                                ManageLocationTabs(
-                                  data_entity: "Locations",
-                                  column_names: [
-                                    "Location",
-                                    "Parent Location",
-                                    "Pre Approval",
-                                    "Automatic Exit",
-                                  ],
-                                ),
-                                "0",
-                                "assets/images/Pie_Graph.png",
-                                MediaQuery.of(context).size.height * 72 / 800,
-                                MediaQuery.of(context).size.width * 5 / 12,
-                              ),
-                            ),
-                            SizedBox(
-                              height:
-                                  MediaQuery.of(context).size.height * 13 / 800,
-                            ),
-                            //locations
-                            Container(
-                              child: AdminButton(
-                                context,
-                                "Manage Hostels",
-                                ManageExcelTabs(
-                                  appbar_title: "Manage Hostels",
-                                  add_url: "/files/add_hostels_from_file",
-                                  modify_url: "/files/add_hostels_from_file",
-                                  delete_url: "/files/delete_hostels_from_file",
-                                  entity: "Hostel",
-                                  data_entity: "Hostels",
-                                  column_names: [
-                                    "Hostel Name",
-                                  ],
-                                ),
-                                "1",
-                                "assets/images/Pie_Graph.png",
-                                MediaQuery.of(context).size.height * 72 / 800,
-                                MediaQuery.of(context).size.width * 5 / 12,
-                              ),
-                            ),
-                          ],
+                        Container(
+                          child: AdminButton(
+                            context,
+                            "Manage Guards",
+                            ManageGuardsTabs(
+                                data_entity: "Guard",
+                                column_names: [
+                                  "Name",
+                                  "Location",
+                                  "Email",
+                                ]),
+                            "0",
+                            "assets/images/Pie_Graph.png",
+                          ),
                         ),
+                        Container(
+                          child: AdminButton(
+                            context,
+                            "Manage Admins",
+                            ManageAdminTabs(
+                              data_entity: "Admins",
+                              column_names: ["Name", "Email"],
+                            ),
+                            "1",
+                            "assets/images/Pie_Graph.png",
+                          ),
+                        ),
+                      ],
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        Container(
+                          child: AdminButton(
+                            context,
+                            "Manage Locations",
+                            ManageLocationTabs(
+                              data_entity: "Locations",
+                              column_names: [
+                                "Location",
+                                "Parent Location",
+                                "Pre Approval",
+                                "Automatic Exit",
+                              ],
+                            ),
+                            "0",
+                            "assets/images/Pie_Graph.png",
+                          ),
+                        ),
+                        //locations
+                        Container(
+                          child: AdminButton(
+                            context,
+                            "Manage Hostels",
+                            ManageExcelTabs(
+                              appbar_title: "Manage Hostels",
+                              add_url: "/files/add_hostels_from_file",
+                              modify_url: "/files/add_hostels_from_file",
+                              delete_url: "/files/delete_hostels_from_file",
+                              entity: "Hostel",
+                              data_entity: "Hostels",
+                              column_names: [
+                                "Hostel Name",
+                              ],
+                            ),
+                            "1",
+                            "assets/images/Pie_Graph.png",
+                          ),
+                        ),
+                      ],
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
                         Container(
                           child: AdminButton(
                             context,
@@ -342,63 +323,47 @@ class _HomeAdminState extends State<HomeAdmin> {
                             ),
                             "0",
                             "assets/images/Pie_Graph.png",
-                            MediaQuery.of(context).size.height * 0.2,
-                            MediaQuery.of(context).size.width * 5 / 12,
+                          ),
+                        ),
+                        Container(
+                          child: AdminButton(
+                            context,
+                            "Manage Departments",
+                            ManageExcelTabs(
+                              appbar_title: "Manage Departments",
+                              add_url: "/files/add_departments_from_file",
+                              modify_url: "/files/add_departments_from_file",
+                              delete_url: "/files/delete_departments_from_file",
+                              entity: "Departments",
+                              data_entity: "Departments",
+                              column_names: [
+                                "Department Name",
+                              ],
+                            ),
+                            "1",
+                            "assets/images/Pie_Graph.png",
                           ),
                         ),
                       ],
                     ),
-                    SizedBox(
-                      height: MediaQuery.of(context).size.height * 13 / 800,
-                    ),
-                    Container(
-                      child: AdminButton(
-                        context,
-                        "Manage Departments",
-                        ManageExcelTabs(
-                          appbar_title: "Manage Departments",
-                          add_url: "/files/add_departments_from_file",
-                          modify_url: "/files/add_departments_from_file",
-                          delete_url: "/files/delete_departments_from_file",
-                          entity: "Departments",
-                          data_entity: "Departments",
-                          column_names: [
-                            "Department Name",
-                          ],
-                        ),
-                        "1",
-                        "assets/images/Pie_Graph.png",
-                        MediaQuery.of(context).size.height * 7 / 80,
-                        MediaQuery.of(context).size.width * 11 / 12,
+
+                    //guard
+
+                    AdminButton_1(
+                      context,
+                      "Manage Programs",
+                      ManageExcelTabs(
+                        appbar_title: "Manage Programs",
+                        add_url: "/files/add_programs_from_file",
+                        modify_url: "/files/add_programs_from_file",
+                        delete_url: "/files/delete_programs_from_file",
+                        entity: "Programs",
+                        data_entity: "Programs",
+                        column_names: [
+                          "Degree Name",
+                          "Degree Duration",
+                        ],
                       ),
-                    ),
-                    SizedBox(
-                      height: MediaQuery.of(context).size.height * 13 / 800,
-                    ),
-                    Container(
-                      child: AdminButton(
-                        context,
-                        "Manage Programs",
-                        ManageExcelTabs(
-                          appbar_title: "Manage Programs",
-                          add_url: "/files/add_programs_from_file",
-                          modify_url: "/files/add_programs_from_file",
-                          delete_url: "/files/delete_programs_from_file",
-                          entity: "Programs",
-                          data_entity: "Programs",
-                          column_names: [
-                            "Degree Name",
-                            "Degree Duration",
-                          ],
-                        ),
-                        "1",
-                        "assets/images/Pie_Graph.png",
-                        MediaQuery.of(context).size.height * 7 / 80,
-                        MediaQuery.of(context).size.width * 11 / 12,
-                      ),
-                    ),
-                    SizedBox(
-                      height: MediaQuery.of(context).size.height * 13 / 800,
                     ),
                   ],
                 ),
@@ -443,17 +408,17 @@ class _HomeAdminState extends State<HomeAdmin> {
 }
 
 Widget AdminButton(BuildContext context, String ButtonText, Widget NextPage,
-    String order, String ImagePath, double h, double w) {
+    String order, String ImagePath) {
   return InkWell(
     onTap: () {
       Navigator.push(
           context, MaterialPageRoute(builder: (context) => NextPage));
     },
-    child: Container (
-      height: h,
-      width: w,
+    child: Container(
+      height: MediaQuery.of(context).size.height / 6,
+      width: MediaQuery.of(context).size.height/6,
       alignment: Alignment.center,
-      // margin: EdgeInsets.all(20),
+      margin: EdgeInsets.all(20),
       decoration: BoxDecoration(
         shape: BoxShape.rectangle,
         borderRadius: BorderRadius.circular(20),
@@ -465,27 +430,37 @@ Widget AdminButton(BuildContext context, String ButtonText, Widget NextPage,
             offset: Offset(0, 3),
           ),
         ],
+        // gradient: LinearGradient(
+        //   begin: Alignment.topCenter,
+        //   end: Alignment.bottomCenter,
+        //   colors: [
+        //     // // Color(0xFF212130),
+        //     // // Color(0xFF39304A),
+        //     // Colors.white,Colors.white,
+        //     Color(0xff0f0c29), Color(0xff302b63), Color(0xff24243e)
+        //     ],
+        // ),
         color: Colors.orange.shade400,
       ),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
-        // crossAxisAlignment: CrossAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          // SizedBox(
-          //   height: 5,
-          // ),
-          ClipRRect(
-            borderRadius: BorderRadius.circular(20),
-            child: Image.asset(
-              ImagePath,
-              fit: BoxFit.cover,
-              // width: 50,
-              // height: 50,
-            ),
+          SizedBox(
+            height: 5,
           ),
+          // ClipRRect(
+          //   borderRadius: BorderRadius.circular(120),
+          //   child: Image.asset(
+          //     ImagePath,
+          //     fit: BoxFit.cover,
+          //     width: 50,
+          //     height: 50,
+          //   ),
+          // ),
           Center(
             child: Padding(
-              padding: const EdgeInsets.all(0.0),
+              padding: const EdgeInsets.all(8.0),
               child: Align(
                 alignment: Alignment.center,
                 child: FittedBox(
