@@ -275,14 +275,4 @@ class NotificationTable(models.Model):
     display_message = models.CharField(max_length=200,default=None)
     date_time = models.DateTimeField(default=datetime.datetime.now())
 
-
-class InviteRequest(models.Model):
-    ticket_id = models.AutoField(primary_key=True)
-    student = models.ForeignKey(Student, on_delete=models.CASCADE)
-    invitee_name = models.CharField(max_length=100)
-    invitee_relationship = models.CharField(max_length=100)
-    invitee_contact = models.CharField(max_length=100)
-    purpose = models.TextField()
-    status = models.CharField(max_length=20, default='Pending')
-    created_at = models.DateTimeField(auto_now_add=True)
     
