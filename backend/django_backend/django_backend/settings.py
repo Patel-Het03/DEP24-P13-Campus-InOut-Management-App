@@ -120,7 +120,7 @@ WSGI_APPLICATION = 'django_backend.wsgi.application'
 """ DATABASES = {
     'default': {
         'ENGINE'  : 'django.db.backends.mysql', 
-        'NAME'    : '',               
+        'NAME'    : 'mygateapp',               
         'USER'    : 'root',                   
         'PASSWORD': '123@123',         
         'HOST'    : 'localhost',              
