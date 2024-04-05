@@ -46,7 +46,6 @@ INSTALLED_APPS = [
     'api',
     'corsheaders',
     'django_extensions',
-    'myauth',
 ]
 # REST_FRAMEWORK = {
 #     'DEFAULT_PERMISSION_CLASSES': [
@@ -59,12 +58,6 @@ INSTALLED_APPS = [
 
 
 # AUTH_USER_MODEL = "api.Person"
-REST_FRAMEWORK = {
-    'DEFAULT_AUTHENTICATION_CLASSES': [
-        'rest_framework_simplejwt.authentication.JWTAuthentication',
-    ],
-}
-
 
 SIMPLE_JWT = {
     'ACCESS_TOKEN_LIFETIME': timedelta(minutes=60),
@@ -212,7 +205,3 @@ EMAIL_PORT = 587
 # EMAIL_HOST_PASSWORD = 'kagsfshwcfahakavfahaksvajalavsksv'
 EMAIL_HOST_USER = 'depproject37@gmail.com'
 EMAIL_HOST_PASSWORD = 'xcmx udim fabi crjk'
-
-
-
-AUTH_USER_MODEL='api.User'

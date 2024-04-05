@@ -117,9 +117,8 @@ class _TicketScreenState extends State<TicketScreen> {
   }
 
   void resetFilter(String query){
-    chosen_start_date= DateTime.now().subtract(Duration(days:2)).toString();
-    chosen_end_date= DateTime.now().add(Duration.zero).toString();
-    enableDateFilter=true;
+    chosen_start_date= DateTime.now().subtract(Duration(days:1)).toString();
+    chosen_end_date= DateTime.now().toString();
     filterTickets(query);
   }
   void onSearchQueryChanged(String query) {
@@ -156,7 +155,6 @@ class _TicketScreenState extends State<TicketScreen> {
     super.initState();
 
     init();
-
   }
 
   Future<List<ResultObj>> get_tickets_for_guard() async {
@@ -191,10 +189,6 @@ class _TicketScreenState extends State<TicketScreen> {
       tickets_visitors = tickets_local_2;
     });
     print("tickets_visitors set\n${tickets_visitors}");
-    print("GGRR@");
-    filterTickets('');
-    print("ticketsFiltered ${ticketsFiltered}");
-    print("tickets_visitorsFiltered ${tickets_visitorsFiltered}");
     // filterTickets(searchQuery);
   }
 
@@ -383,7 +377,41 @@ class _TicketScreenState extends State<TicketScreen> {
     // mytickets.isEmpty
     //     ? Center(child: CircularProgressIndicator())
     //     :
-        
+        //  Expanded(
+        //     child: ListView.builder(
+        //       itemCount: mytickets.length,
+        //       itemBuilder: (BuildContext context, int index) {
+        //         final bool isExpanded = index == selectedIndex;
+        //         return Column(
+        //           children: <Widget>[
+        //             ListTile(
+        //               title: Text(mytickets[index].student_name,
+        //                   style: GoogleFonts.lato(
+        //                     fontWeight: FontWeight.w600,
+        //                     color: Colors.black,
+        //                   )),
+        //               subtitle: Text(mytickets[index].date_time.toString()),
+        //               onTap: () => toggleExpansion(index),
+        //             ),
+        //             if (isExpanded)
+        //               Padding(
+        //                 padding: EdgeInsets.symmetric(horizontal: 16.0),
+        //                 child: Column(
+        //                     mainAxisAlignment: MainAxisAlignment.start,
+        //                     children: [
+        //                       Text("Email : ${mytickets[index].email}"),
+        //                       Text(
+        //                           "Destination Address : ${mytickets[index].destination_address}"),
+        //                       Text(
+        //                           "Vehicle Number : ${mytickets[index].vehicle_number}"),
+        //                     ]),
+        //               ),
+        //             Divider(), // Add divider between list items
+        //           ],
+        //         );
+        //       },
+        //     ),
+        //   );
         Expanded(
             child: SizedBox(
               width: MediaQuery.of(context).size.width * 0.95,
