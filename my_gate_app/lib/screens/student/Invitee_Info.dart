@@ -382,10 +382,12 @@ class _InviteeStatusState extends State<InviteeStatus> {
       final QrCode? qrCode = qrValidationResult.qrCode;
       final QrPainter qrPainter = QrPainter.withQr(
         qr: qrCode!,
-        color: Colors.black,
+        color:Colors.blue,
         dataModuleStyle: const QrDataModuleStyle(
-          dataModuleShape: QrDataModuleShape.circle,
+          dataModuleShape: QrDataModuleShape.square,
         ),
+
+
       );
       final ByteData? bytes = await qrPainter.toImageData(
         200,
@@ -411,8 +413,9 @@ class _InviteeStatusState extends State<InviteeStatus> {
 
     if (file != null) {
       print("sharing QR");
+      print("${file.path}");
 
-      await myshare.Share.shareXFiles([myshare.XFile(file.path)]);
+      await myshare.Share.shareXFiles([myshare.XFile(file.path, mimeType: "image/jpg")]);
     }
   }
 
