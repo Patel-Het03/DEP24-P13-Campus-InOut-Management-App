@@ -20,7 +20,7 @@ import 'dart:async';
 import 'package:my_gate_app/screens/profile2/model/user.dart';
 import 'package:my_gate_app/screens/profile2/utils/user_preferences.dart';
 import 'package:my_gate_app/screens/notificationPage/notification.dart';
-
+import 'Invitee_Info.dart';
 // This file calls StudentTicketTable
 
 class HomeStudent extends StatefulWidget {
@@ -96,16 +96,16 @@ class _HomeStudentState extends State<HomeStudent> {
 
   // Map<String, String> location_images_paths = databaseInterface.getLocationImagesPaths();
   final List<String> location_images_paths =
-      databaseInterface.getLocationImagesPaths();
+  databaseInterface.getLocationImagesPaths();
   //final List<int> colorCodes = <int>[600, 500, 100,600, 500, 100,600, 500, 100,600, 500, 100,600, 500, 100,600, 500, 100,600, 500, 100,];
 
   Future<void> get_welcome_message() async {
     String welcome_message_local =
-        await databaseInterface.get_welcome_message(LoggedInDetails.getEmail());
+    await databaseInterface.get_welcome_message(LoggedInDetails.getEmail());
 
     List<String> studentStatusDB =
-        await databaseInterface.get_student_status_for_all_locations_2(
-            LoggedInDetails.getEmail(), location_id);
+    await databaseInterface.get_student_status_for_all_locations_2(
+        LoggedInDetails.getEmail(), location_id);
     print("welcome_message_local: $welcome_message_local");
     print("studentStatusDB:${studentStatusDB}");
     // print(studentStatusDB);
@@ -160,8 +160,8 @@ class _HomeStudentState extends State<HomeStudent> {
     }
 
     List<String> status =
-        await databaseInterface.get_student_status_for_all_locations_2(
-            LoggedInDetails.getEmail(), location_id);
+    await databaseInterface.get_student_status_for_all_locations_2(
+        LoggedInDetails.getEmail(), location_id);
 
     setState(() {
       in_count = count;
@@ -236,10 +236,10 @@ class _HomeStudentState extends State<HomeStudent> {
 
           elevation: 0,
           shape: RoundedRectangleBorder(
-              // borderRadius: BorderRadius.vertical(
-              //   bottom: Radius.circular(30.0),
-              // )
-              ),
+            // borderRadius: BorderRadius.vertical(
+            //   bottom: Radius.circular(30.0),
+            // )
+          ),
           centerTitle: true,
           title: Padding(
             padding: EdgeInsets.only(top: 35.0, bottom: 35.0),
@@ -334,25 +334,25 @@ class _HomeStudentState extends State<HomeStudent> {
                         top: 10,
                         child: notificationCount > 0
                             ? Container(
-                                padding: EdgeInsets.all(1),
-                                decoration: BoxDecoration(
-                                  color: Colors.grey,
-                                  borderRadius: BorderRadius.circular(8),
-                                ),
-                                constraints: BoxConstraints(
-                                  minWidth: 16,
-                                  minHeight: 16,
-                                ),
-                                child: Text(
-                                  '$notificationCount',
-                                  style: TextStyle(
-                                    // color: Color.fromARGB(225, 255, 255, 255),
-                                    color: Colors.black,
-                                    fontSize: 10,
-                                  ),
-                                  textAlign: TextAlign.center,
-                                ),
-                              )
+                          padding: EdgeInsets.all(1),
+                          decoration: BoxDecoration(
+                            color: Colors.grey,
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          constraints: BoxConstraints(
+                            minWidth: 16,
+                            minHeight: 16,
+                          ),
+                          child: Text(
+                            '$notificationCount',
+                            style: TextStyle(
+                              // color: Color.fromARGB(225, 255, 255, 255),
+                              color: Colors.black,
+                              fontSize: 10,
+                            ),
+                            textAlign: TextAlign.center,
+                          ),
+                        )
                             : Container(),
                       );
                     } else {
@@ -720,9 +720,9 @@ class _HomeStudentState extends State<HomeStudent> {
                       context,
                       MaterialPageRoute(
                           builder: (context) => StudentTabs(
-                                location: entries[0],
-                                pre_approval_required: pre_approvals[0],
-                              ))).then((value) => fetchData());
+                            location: entries[0],
+                            pre_approval_required: pre_approvals[0],
+                          ))).then((value) => fetchData());
                 }
               },
               child: Container(
@@ -766,10 +766,10 @@ class _HomeStudentState extends State<HomeStudent> {
                       height: 100,
                       decoration: BoxDecoration(
                           borderRadius:
-                              BorderRadius.circular(10), // Add border radius
+                          BorderRadius.circular(10), // Add border radius
                           border: Border.all(color: Colors.white),
                           color: Colors.white // Add border
-                          ),
+                      ),
                       child: ClipRRect(
                         // ClipRRect for applying border radius to the image
                         borderRadius: BorderRadius.circular(
@@ -874,7 +874,7 @@ class _HomeStudentState extends State<HomeStudent> {
               child: Row(
                 children: List.generate(
                   entries_length,
-                  (index) => Padding(
+                      (index) => Padding(
                     padding: const EdgeInsets.all(5.0),
                     child: Card(
                       color: Color(0xFFF3F3F3),
@@ -887,10 +887,10 @@ class _HomeStudentState extends State<HomeStudent> {
                               MaterialPageRoute(
                                 builder: (context) =>
                                     RaiseTicketForGuardOrAuthorities(
-                                  location: entries[index + 1],
-                                  pre_approval_required:
+                                      location: entries[index + 1],
+                                      pre_approval_required:
                                       pre_approvals[index + 1],
-                                ),
+                                    ),
                               ),
                             ).then((value) => fetchData());
                           } else {
@@ -900,7 +900,7 @@ class _HomeStudentState extends State<HomeStudent> {
                                 builder: (context) => StudentTabs(
                                   location: entries[index + 1],
                                   pre_approval_required:
-                                      pre_approvals[index + 1],
+                                  pre_approvals[index + 1],
                                 ),
                               ),
                             ).then((value) => fetchData());
@@ -916,7 +916,7 @@ class _HomeStudentState extends State<HomeStudent> {
                                 padding: const EdgeInsets.all(8.0),
                                 child: Container(
                                   width:
-                                      150, // Set the desired width of the image
+                                  150, // Set the desired width of the image
                                   height: 150,
                                   decoration: BoxDecoration(
                                     borderRadius: BorderRadius.circular(
@@ -967,7 +967,7 @@ class _HomeStudentState extends State<HomeStudent> {
                                           ),
                                           SizedBox(
                                               height:
-                                                  4), // Add some space between "Status" and its answer
+                                              4), // Add some space between "Status" and its answer
                                           Text(
                                             "${studentStatus[index + 1].toUpperCase()}",
                                             style: GoogleFonts.mPlusRounded1c(
@@ -1000,6 +1000,29 @@ class _HomeStudentState extends State<HomeStudent> {
                 ),
               ),
             ),
+            Padding(
+              padding: EdgeInsets.symmetric(vertical: 20, horizontal: 40),
+              child: ElevatedButton(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => InviteeInfoPage()),
+                  );
+                },
+                child: Text(
+                  'Invite Guest',
+                  style: GoogleFonts.mPlusRounded1c(
+                      fontSize: 20,
+                    color:Colors.white,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                style: ElevatedButton.styleFrom(
+                  padding: EdgeInsets.all(15),
+                ),
+              ),
+
+            ),
           ],
         ),
       ),
@@ -1008,15 +1031,15 @@ class _HomeStudentState extends State<HomeStudent> {
 
   // Function for Popup Menu Items
   PopupMenuItem<MenuItem> buildItem(MenuItem item) => PopupMenuItem<MenuItem>(
-        value: item,
-        child: Row(
-          children: [
-            Icon(item.icon, size: 20),
-            const SizedBox(width: 12),
-            Text(item.text),
-          ],
-        ),
-      );
+    value: item,
+    child: Row(
+      children: [
+        Icon(item.icon, size: 20),
+        const SizedBox(width: 12),
+        Text(item.text),
+      ],
+    ),
+  );
 
   void onSelected(BuildContext context, MenuItem item) async {
     switch (item) {
