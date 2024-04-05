@@ -13,7 +13,7 @@ import 'dart:typed_data';
 import 'database_objects.dart';
 import 'package:http_parser/http_parser.dart';
 import 'package:image_picker/image_picker.dart';
-// import 'package:my_gate_app/screens/student/result_obj.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class databaseInterface {
   static int REFRESH_RATE = 1;
@@ -40,6 +40,86 @@ class databaseInterface {
       return "Welcome";
     }
   }
+
+//   // Import required packages
+// import 'dart:convert';
+// import 'package:http/http.dart' as http;
+// import 'package:flutter/material.dart';
+
+
+// Function to get access token from shared preferences
+// Function to get access token from shared preferences
+Future<String> getAccessToken() async {
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  return prefs.getString('access_token') as Future<String>;
+}
+
+// Function to get refresh token from shared preferences
+Future<String> getRefreshToken() async {
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  return prefs.getString('refresh_token') as Future<String>;
+}
+
+// Function to save access token to shared preferences
+Future<void> saveAccessToken(String accessToken) async {
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  prefs.setString('access_token', accessToken);
+}
+
+// Function to make authenticated API request
+Future<Map<String, dynamic>> makeAuthenticatedRequest(String path, {required Map<String, dynamic> body}) async {
+  // Get access token
+  String accessToken = await getAccessToken();
+  
+  // Add access token to headers
+  Map<String, String> headers = {
+    'Content-Type': 'application/json',
+    'Authorization': 'Bearer $accessToken',
+  };
+
+  // Make API request
+  final response = await http.post(
+    Uri.parse('http://your-api-url/$path'),
+    headers: headers,
+    body: jsonEncode(body),
+  );
+
+  // Parse response
+  if (response.statusCode == 200) {
+    return json.decode(response.body);
+  } else if (response.statusCode == 401) {
+    // Access token expired, try to refresh token
+    await refreshToken();
+    // Retry the API request
+    return makeAuthenticatedRequest(path, body: body);
+  } else {
+    throw Exception('Failed to make authenticated request: ${response.reasonPhrase}');
+  }
+}
+
+// Function to refresh token
+Future<void> refreshToken() async {
+  String refreshToken = await getRefreshToken();
+  
+  // Make request to refresh token endpoint
+  final response = await http.post(
+    Uri.parse('http://your-api-url/refresh_token/'),
+    body: {
+      'refresh_token': refreshToken,
+    },
+  );
+
+  // Parse response
+  if (response.statusCode == 200) {
+    // Save new access token
+    Map<String, dynamic> data = json.decode(response.body);
+    String accessToken = data['access_token'];
+    await saveAccessToken(accessToken);
+  } else {
+    throw Exception('Failed to refresh access token');
+  }
+}
+
 
   static List<String> getLoctions() {
     // TODO: get this list from the backend
@@ -390,72 +470,6 @@ class databaseInterface {
       // return Future.error(e);
     }
   }
-
-   Future<int> GenerateRelativesTicket(
-       String Student,
-       String Name,
-       String Relationship,
-       String Contact,
-       String Purpose
-       )async{
-     var uri = "$complete_base_url_static/generate_relatives_ticket";
-     try{
-       var response = await http.post(
-         Uri.parse(uri),
-         body: {
-           'student': Student,
-           'invitee_name': Name,
-           'invitee_relationship': Relationship,
-           'invitee_contact': Contact,
-           'purpose': Purpose,
-         },
-       );
-       print('Response status: ${response.statusCode}');
-       print('Response body: ${response.body}');
-       return response.statusCode.toInt();
-     }
-     catch (e) {
-       print("post request error");
-       print(e.toString());
-       return 500;
-       // return Future.error(e);
-     }
-   }
-
-   Future<List<RelativeResultObj>>  GetStudentRelativeTickets(
-       String student
-       )async{
-     var uri = "$complete_base_url_static/getStudentRelativeTickets";
-
-     try{
-       final response = await http.post(
-         Uri.parse(uri),
-         body: {
-           'student': student,
-         },
-       );
-       if (response.statusCode == 200) {
-         List<dynamic> data = json.decode(response.body);
-         List<RelativeResultObj> result = data.map((item) => RelativeResultObj.fromJson(item)).toList();
-         return result;
-         print(result);
-       } else {
-         throw Exception('Failed to load data');
-       }
-
-     }
-     catch (e) {
-       print("post request error");
-       print(e.toString());
-       throw Exception('Failed to load data');
-
-       // return Future.error(e);
-     }
-
-
-   }
-
-
 
   static Future<int> insert_in_authorities_ticket_table(
       String chosen_authority,

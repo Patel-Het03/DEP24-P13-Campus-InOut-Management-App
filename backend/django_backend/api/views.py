@@ -15,7 +15,6 @@ from django.conf import settings
 from django.core import serializers
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.hashers import *
-from django.contrib.auth.models import User
 from django.core.files.base import ContentFile
 from django.core.mail import send_mail
 from rest_framework import status
@@ -26,8 +25,8 @@ from rest_framework.permissions import (AllowAny, BasePermission,
                                         IsAuthenticated)
 from rest_framework.renderers import JSONRenderer, TemplateHTMLRenderer
 from rest_framework.response import Response
-from rest_framework.views import APIView
-from rest_framework_simplejwt.tokens import RefreshToken
+
+
 from django.shortcuts import get_object_or_404
 from rest_framework_simplejwt.views import TokenObtainPairView
 from rest_framework_simplejwt.tokens import AccessToken
@@ -39,6 +38,8 @@ from functools import wraps
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework.authentication import SessionAuthentication, BasicAuthentication
 
+from rest_framework_simplejwt.tokens import RefreshToken
+
 
 from .models import *
 from .serializers import *
@@ -47,6 +48,7 @@ from .thread import *
 # Password storing work
 # encrypted = make_password("Vasu")
 # check_password("Vasu", encrypted)
+
 
 headers= {
 "Access-Control-Allow-Origin": "*",
@@ -73,6 +75,7 @@ THREAD_ACTIVATED = False
 #     except:
 #         return Response(status = status.HTTP_500_INTERNAL_SERVER_ERROR)
 
+#commented by jayraj
 
 # def jwt_auth_middleware(view_func):
 #     def wrapper(request, *args, **kwargs):
@@ -105,42 +108,45 @@ THREAD_ACTIVATED = False
 #     return Response({'message': 'Hello, world!'})
 
 
-def get_token(user):
-    token = AccessToken.for_user(user)
-    return str(token)
+# def get_token(user):
+#     token = AccessToken.for_user(user)
+#     return str(token)
 
 
-class CustomTokenObtainPairView(TokenObtainPairView):
-    def post(self, request, *args, **kwargs):
-        response = super().post(request, *args, **kwargs)
-        if response.status_code == status.HTTP_200_OK:
-            user = request.user
-            token = get_token(user)
-            response.data['token'] = token
-        return response
+# class CustomTokenObtainPairView(TokenObtainPairView):
+#     def post(self, request, *args, **kwargs):
+#         response = super().post(request, *args, **kwargs)
+#         if response.status_code == status.HTTP_200_OK:
+#             user = request.user
+#             token = get_token(user)
+#             response.data['token'] = token
+#         return response
 
 
-@api_view(['GET'])
-@permission_classes([IsAuthenticated])
-def protect_route(request):
-    return Response({"data": "You are inside protected route"}, status=status.HTTP_200_OK)
 
 
-@api_view(['GET'])
-@authentication_classes([JWTAuthentication])
-@permission_classes([IsAuthenticated])
-def protected_endpoint(request):
-    # Your API endpoint logic here
-    return Response({"message": "You are authenticated"})
+# @api_view(['GET'])
+# @permission_classes([IsAuthenticated])
+# def protect_route(request):
+#     return Response({"data": "You are inside protected route"}, status=status.HTTP_200_OK)
 
-@api_view(['POST'])
-def register_user(request):
-    serializer = UserSerializer(data=request.data)
-    if serializer.is_valid():
-        serializer.save()
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
-    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+# @api_view(['GET'])
+# @authentication_classes([JWTAuthentication])
+# @permission_classes([IsAuthenticated])
+# def protected_endpoint(request):
+#     # Your API endpoint logic here
+#     return Response({"message": "You are authenticated"})
+
+# @api_view(['POST'])
+# def register_user(request):
+#     serializer = UserSerializer(data=request.data)
+#     if serializer.is_valid():
+#         serializer.save()
+#         return Response(serializer.data, status=status.HTTP_201_CREATED)
+#     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+#end
 
 @api_view(('POST',))
 def delete_student(request):
@@ -149,7 +155,7 @@ def delete_student(request):
     for student in data:
         email = student['email']
         Student.objects.filter(email=email).update(is_present=False)
-        Person.objects.filter(email=email).update(is_present=False)
+        User.objects.filter(email=email).update(is_present=False)
     return Response(res, status=status.HTTP_200_OK)
 
 
@@ -160,7 +166,7 @@ def delete_guard(request):
     for guard in data:
         email = guard['email']
         Guard.objects.filter(email=email).update(is_present=False)
-        Person.objects.filter(email=email).update(is_present=False)
+        User.objects.filter(email=email).update(is_present=False)
     return Response(res, status=status.HTTP_200_OK)
 
 
@@ -171,7 +177,7 @@ def delete_authority(request):
     for authority in data:
         email = authority['email']
         Authorities.objects.filter(email=email).update(is_present=False)
-        Person.objects.filter(email=email).update(is_present=False)
+        User.objects.filter(email=email).update(is_present=False)
     return Response(res, status=status.HTTP_200_OK)
 
 
@@ -223,87 +229,87 @@ def delete_program_web(request):
     return Response(res, status=status.HTTP_200_OK)
 
 
-def authenticate(email, password):
+# def authenticate(email, password):
 
-    try:
-        # email = data['email']
-        # password = data['password']
-        queryset_password = Password.objects.get(email=email)
-        print(queryset_password)
-        serializer_password = PasswordSerializer(queryset_password, many=False)
-        encrypted_password = serializer_password.data['password']
+#     try:
+#         # email = data['email']
+#         # password = data['password']
+#         queryset_password = Password.objects.get(email=email)
+#         print(queryset_password)
+#         serializer_password = PasswordSerializer(queryset_password, many=False)
+#         encrypted_password = serializer_password.data['password']
 
-        queryset_person = Admin.objects.filter(email=email, is_present=True)
-        serializer_person = PersonSerializer(queryset_person, many=True)
-        person_not_present = len(queryset_person) == 0
+#         queryset_person = Admin.objects.filter(email=email, is_present=True)
+#         serializer_person = PersonSerializer(queryset_person, many=True)
+#         person_not_present = len(queryset_person) == 0
 
-        if person_not_present:
-            res = {
-                "message": "Invalid Email",
-                "person_type": "NA",
-            }
-            print("User not Found")
-            return Response(res, status=status.HTTP_200_OK)
+#         if person_not_present:
+#             res = {
+#                 "message": "Invalid Email",
+#                 "person_type": "NA",
+#             }
+#             print("User not Found")
+#             return Response(res, status=status.HTTP_200_OK)
 
-            person_type = serializer_person.data[0]['person_type']
+#         person_type = serializer_person.data[0]['person_type']
 
-            if check_password(password, encrypted_password):
-                res = {
-                    "message": "Login Successful",
-                    "person_type": person_type,
-                }
-                print("Password Matched")
-                return Response(res, status=status.HTTP_200_OK)
+#         if check_password(password, encrypted_password):
+#             res = {
+#                 "message": "Login Successful",
+#                 "person_type": person_type,
+#             }
+#             print("Password Matched")
+#             return Response(res, status=status.HTTP_200_OK)
 
-            else:
-                res = {
-                    "message": "Invalid Password",
-                    "person_type": "NA"
-                }
-                print("Password Different")
-                return Response(res, status=status.HTTP_200_OK)
+#         else:
+#             res = {
+#                 "message": "Invalid Password",
+#                 "person_type": "NA"
+#             }
+#             print("Password Different")
+#             return Response(res, status=status.HTTP_200_OK)
 
-    except Exception as e:
-        print("Exception in login user")
-        print(e)
-        res = {
-            "message": "Error: An error occured while logging in",
-            "person_type": "NA"
-        }
+#     except Exception as e:
+#         print("Exception in login user")
+#         print(e)
+#         res = {
+#             "message": "Error: An error occured while logging in",
+#             "person_type": "NA"
+#         }
 
-        return Response(res, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-
-
+#         return Response(res, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
-@api_view(['POST'])
-def login_admin_test(request):
-    data = request.data
-    try:
-        email = data['email']
-        password = data['password']
-        user = authenticate(email=email, password=password)
-        print(user)
-        if user is not None:
-            refresh = RefreshToken.for_user(user)
-            res = {
-                "message": "Login Successful",
-                "refresh_token": str(refresh),
-                "access_token": str(refresh.access_token),
-            }
-            return Response(res, status=status.HTTP_200_OK)
-        else:
-            res = {
-                "message": "Invalid email or password",
-            }
-            return Response(res, status=status.HTTP_401_UNAUTHORIZED)
-    except Exception as e:
-        print("Exception in login user")
-        print(e)
-        res = {
-            "message": "Error: An error occured while logging in",
-        }
-        return Response(res, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+# @api_view(['POST'])
+# def login_admin_test(request):
+#     data = request.data
+#     try:
+#         email = data['email']
+#         password = data['password']
+#         user = authenticate(email=email, password=password)
+#         print(user)
+#         if user is not None:
+#             refresh = RefreshToken.for_user(user)
+#             res = {
+#                 "message": "Login Successful",
+#                 "refresh_token": str(refresh),
+#                 "access_token": str(refresh.access_token),
+#             }
+#             return Response(res, status=status.HTTP_200_OK)
+#         else:
+#             res = {
+#                 "message": "Invalid email or password",
+#             }
+#             return Response(res, status=status.HTTP_401_UNAUTHORIZED)
+#     except Exception as e:
+#         print("Exception in login user")
+#         print(e)
+#         res = {
+#             "message": "Error: An error occured while logging in",
+#         }
+#         return Response(res, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
 @api_view(('GET',))
@@ -376,6 +382,7 @@ def clear_db(request):
     Hostel.objects.all().delete()
     Program.objects.all().delete()
     Department.objects.all().delete()
+    User.objects.all().delete()
     Person.objects.all().delete()
     Password.objects.all().delete()
     Admin.objects.all().delete()
@@ -383,58 +390,59 @@ def clear_db(request):
     return Response(status=status.HTTP_200_OK)
 
 
-@api_view(['POST'])
-def login_user(request):
-    data = request.data
-    print("ashish\n\n\n\n", data)
-    try:
-        email = data['email']
 
-        password = data['password']
-        queryset_password = Password.objects.get(email=email)
-        print(queryset_password)
-        serializer_password = PasswordSerializer(queryset_password, many=False)
-        encrypted_password = serializer_password.data['password']
+# @api_view(['POST'])
+# def login_user(request):
+#     data = request.data
+#     print("ashish\n\n\n\n", data)
+#     try:
+#         email = data['email']
 
-        queryset_person = Person.objects.filter(email=email, is_present=True)
-        serializer_person = PersonSerializer(queryset_person, many=True)
-        person_not_present = len(queryset_person) == 0
+#         password = data['password']
+#         queryset_password = Password.objects.get(email=email)
+#         print(queryset_password)
+#         serializer_password = PasswordSerializer(queryset_password, many=False)
+#         encrypted_password = serializer_password.data['password']
 
-        if person_not_present:
-            res = {
-                "message": "Invalid Email",
-                "person_type": "NA",
-            }
-            print("User not Found")
-            return Response(res, status=status.HTTP_200_OK)
+#         queryset_person = Person.objects.filter(email=email, is_present=True)
+#         serializer_person = PersonSerializer(queryset_person, many=True)
+#         person_not_present = len(queryset_person) == 0
 
-        person_type = serializer_person.data[0]['person_type']
+#         if person_not_present:
+#             res = {
+#                 "message": "Invalid Email",
+#                 "person_type": "NA",
+#             }
+#             print("User not Found")
+#             return Response(res, status=status.HTTP_200_OK)
 
-        if check_password(password, encrypted_password):
-            res = {
-                "message": "Login Successful",
-                "person_type": person_type,
-            }
-            print("Password Matched")
-            return Response(res, status=status.HTTP_200_OK)
+#         person_type = serializer_person.data[0]['person_type']
 
-        else:
-            res = {
-                "message": "Invalid Password",
-                "person_type": "NA"
-            }
-            print("Password Different")
-            return Response(res, status=status.HTTP_200_OK)
+#         if check_password(password, encrypted_password):
+#             res = {
+#                 "message": "Login Successful",
+#                 "person_type": person_type,
+#             }
+#             print("Password Matched")
+#             return Response(res, status=status.HTTP_200_OK)
 
-    except Exception as e:
-        print("Exception in login user")
-        print(e)
-        res = {
-            "message": "Error: An error occured while logging in",
-            "person_type": "NA"
-        }
+#         else:
+#             res = {
+#                 "message": "Invalid Password",
+#                 "person_type": "NA"
+#             }
+#             print("Password Different")
+#             return Response(res, status=status.HTTP_200_OK)
 
-        return Response(res, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+#     except Exception as e:
+#         print("Exception in login user")
+#         print(e)
+#         res = {
+#             "message": "Error: An error occured while logging in",
+#             "person_type": "NA"
+#         }
+
+#         return Response(res, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
 @api_view(['POST'])
@@ -899,13 +907,31 @@ def add_students_from_file(request):
         curr_student = data[i]
         # print(curr_student)
         """ print(curr_student, len(curr_student)) """
+
+        
         if (len(curr_student)):
+
+            user = User.objects.filter(
+                email=curr_student[2], type="Student").first()
+            
+            if user is None:
+                print(f'## {curr_student}')
+                User.objects.create_user(
+                    email=curr_student[2],
+                    type="Studnet"
+                )
+            else:
+                print(f"**")
+                User.objects.filter(
+                    email=curr_student[2], type="Student").update_user()
+            
             is_student_present = len(
                 Student.objects.filter(entry_no=curr_student[1])) != 0
 
             print("inside insert student data")
             print(f"{curr_student[0]} {curr_student[1]} {curr_student[2]} {curr_student[3]} {curr_student[4]} {curr_student[5]} {curr_student[6]} {curr_student[7]} {curr_student[8]}")
 
+            
             if is_student_present:
                 Student.objects.filter(entry_no=curr_student[1]).update(
                     st_name=curr_student[0],
@@ -948,26 +974,17 @@ def add_students_from_file(request):
                             location_id=each_queryset_location_table,
                         )
 
-            person_not_present = len(Person.objects.filter(
-                email=curr_student[2], person_type="Student")) == 0
-            if person_not_present:
-                Person.objects.create(
-                    email=curr_student[2],
-                    person_type="Student"
-                )
-            else:
-                Person.objects.filter(
-                    email=curr_student[2], person_type="Student").update(is_present=True)
+            
 
-            password_not_present = len(
-                Password.objects.filter(email=curr_student[2])) == 0
-            if password_not_present:
-                Password.objects.create(
-                    email=curr_student[2]
-                )
-            else:
-                Password.objects.filter(
-                    email=curr_student[2]).update(is_present=True)
+            # password_not_present = len(
+            #     Password.objects.filter(email=curr_student[2])) == 0
+            # if password_not_present:
+            #     Password.objects.create(
+            #         email=curr_student[2]
+            #     )
+            # else:
+            #     Password.objects.filter(
+            #         email=curr_student[2]).update(is_present=True)
 
     return Response(status=status.HTTP_200_OK)
 
