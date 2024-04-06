@@ -2,7 +2,7 @@
 
 // ignore_for_file: non_constant_identifier_names, avoid_print, unused_local_variable
 import 'dart:io';
-
+import 'package:my_gate_app/myglobals.dart' as myglobals;
 import 'package:flutter/material.dart';
 import 'package:my_gate_app/get_email.dart';
 import 'package:my_gate_app/screens/profile2/utils/user_preferences.dart';
@@ -2258,6 +2258,7 @@ class databaseInterface {
         await prefs.setString('email', email);
         await prefs.setString('type', type);
         LoggedInDetails.setEmail(email);
+        myglobals.auth!.login();
         print("shared preference set");
       } else {
         // Handle error

@@ -14,7 +14,7 @@ import 'package:my_gate_app/screens/profile2/model/menu_item.dart';
 import 'package:my_gate_app/screens/profile2/utils/menu_items.dart';
 import 'package:my_gate_app/screens/student/student_guard_side/student_tabs.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
+import 'package:my_gate_app/myglobals.dart' as myglobals;
 import 'dart:async';
 
 import 'package:my_gate_app/screens/profile2/model/user.dart';
@@ -1042,10 +1042,13 @@ class _HomeStudentState extends State<HomeStudent> {
         LoggedInDetails.setEmail("");
         SharedPreferences prefs = await SharedPreferences.getInstance();
         prefs.clear();
-        Navigator.of(context).pop(); // pop the current page
-        Navigator.of(context).push(
-          MaterialPageRoute(builder: (context) => AuthScreen()),
-        );
+        // Navigator.of(context).pop(); // pop the current page
+        // Navigator.of(context).push(
+        //   MaterialPageRoute(builder: (context) => AuthScreen()),
+        // );
+        print("lets logout and notify");
+        myglobals.auth!.logout();
+        // print(myglobals.auth!.loggedIn);
         break;
       case MenuItems.itemAboutUs:
         Navigator.of(context).push(

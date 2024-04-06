@@ -15,6 +15,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:my_gate_app/screens/admin/utils/submit_button.dart';
 import 'package:flutter_otp_text_field/flutter_otp_text_field.dart';
 import 'package:flutter/services.dart';
+import 'package:my_gate_app/myglobals.dart' as myglobals;
 
 import 'dart:async';
 
@@ -547,6 +548,7 @@ class _AuthFormState extends State<AuthForm> {
                                     builder: (context) => HomeStudent(
                                         email: LoggedInDetails.getEmail())),
                               );
+                              myglobals.auth!.login();
                             } else if (is_authenticated.person_type ==
                                 "Guard") {
                               await guardLocation();
