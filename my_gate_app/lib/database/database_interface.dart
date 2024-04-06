@@ -22,8 +22,8 @@ class databaseInterface {
   static String complete_base_url_static =
       // "http://localhost:$PORT_NO_static";
       // "http://31.220.57.173:" + PORT_NO_static.toString();
-      "http://10.0.2.2:"+PORT_NO_static.toString();
-      //   "http://192.168.68.111:"+PORT_NO_static.toString();
+      "http://10.0.2.2:" + PORT_NO_static.toString();
+  //   "http://192.168.68.111:"+PORT_NO_static.toString();
   databaseInterface();
 
   static Future<String> get_welcome_message(String email) async {
@@ -232,8 +232,7 @@ class databaseInterface {
 
   // Called by the guard to get the list of entry numbers
   static Future<List<String>> get_list_of_entry_numbers(String route) async {
-    var url =
-        "$complete_base_url_static/$route/get_list_of_entry_numbers";
+    var url = "$complete_base_url_static/$route/get_list_of_entry_numbers";
     try {
       var response = await http.post(Uri.parse(url));
       var data = json.decode(response.body) as List;
@@ -284,7 +283,8 @@ class databaseInterface {
 
   static Future<List<String>> get_authority_tickets_with_status_accepted(
       String email, String location, String ticket_type) async {
-    var url = "$complete_base_url_static/authorities/get_authority_tickets_with_status_accepted";
+    var url =
+        "$complete_base_url_static/authorities/get_authority_tickets_with_status_accepted";
     try {
       var response = await http.post(Uri.parse(url), body: {
         "email": email,
@@ -391,72 +391,6 @@ class databaseInterface {
     }
   }
 
-   Future<int> GenerateRelativesTicket(
-       String Student,
-       String Name,
-       String Relationship,
-       String Contact,
-       String Purpose
-       )async{
-     var uri = "$complete_base_url_static/generate_relatives_ticket";
-     try{
-       var response = await http.post(
-         Uri.parse(uri),
-         body: {
-           'student': Student,
-           'invitee_name': Name,
-           'invitee_relationship': Relationship,
-           'invitee_contact': Contact,
-           'purpose': Purpose,
-         },
-       );
-       print('Response status: ${response.statusCode}');
-       print('Response body: ${response.body}');
-       return response.statusCode.toInt();
-     }
-     catch (e) {
-       print("post request error");
-       print(e.toString());
-       return 500;
-       // return Future.error(e);
-     }
-   }
-
-   Future<List<RelativeResultObj>>  GetStudentRelativeTickets(
-       String student
-       )async{
-     var uri = "$complete_base_url_static/getStudentRelativeTickets";
-
-     try{
-       final response = await http.post(
-         Uri.parse(uri),
-         body: {
-           'student': student,
-         },
-       );
-       if (response.statusCode == 200) {
-         List<dynamic> data = json.decode(response.body);
-         List<RelativeResultObj> result = data.map((item) => RelativeResultObj.fromJson(item)).toList();
-         return result;
-         print(result);
-       } else {
-         throw Exception('Failed to load data');
-       }
-
-     }
-     catch (e) {
-       print("post request error");
-       print(e.toString());
-       throw Exception('Failed to load data');
-
-       // return Future.error(e);
-     }
-
-
-   }
-
-
-
   static Future<int> insert_in_authorities_ticket_table(
       String chosen_authority,
       String ticket_type,
@@ -464,7 +398,8 @@ class databaseInterface {
       String email,
       String date_time,
       String location) async {
-    var uri = "$complete_base_url_static/authorities/insert_in_authorities_ticket_table";
+    var uri =
+        "$complete_base_url_static/authorities/insert_in_authorities_ticket_table";
     try {
       var response = await http.post(
         Uri.parse(uri),
@@ -547,7 +482,8 @@ class databaseInterface {
 
   static Future<List<ResultObj7>> get_authority_tickets_for_student_util(
       String email, String location) async {
-    var uri = "$complete_base_url_static/students/get_authority_tickets_for_students";
+    var uri =
+        "$complete_base_url_static/students/get_authority_tickets_for_students";
     try {
       var response = await http
           .post(Uri.parse(uri), body: {'email': email, 'location': location});
@@ -575,8 +511,7 @@ class databaseInterface {
 
   static Future<List<ResultObj>> get_pending_tickets_for_guard_stream_util(
       String location) async {
-    var uri =
-        "$complete_base_url_static/guards/get_pending_tickets_for_guard";
+    var uri = "$complete_base_url_static/guards/get_pending_tickets_for_guard";
     try {
       var response =
           await http.post(Uri.parse(uri), body: {'location': location});
@@ -604,8 +539,7 @@ class databaseInterface {
 
   static Future<List<ResultObj>> get_pending_tickets_for_guard(
       String location, String enter_exit) async {
-    var uri =
-        "$complete_base_url_static/guards/get_pending_tickets_for_guard";
+    var uri = "$complete_base_url_static/guards/get_pending_tickets_for_guard";
     try {
       var response = await http.post(Uri.parse(uri),
           body: {'location': location, 'enter_exit': enter_exit});
@@ -663,7 +597,8 @@ class databaseInterface {
   // To get pending visitor tickets on the authority side
   static Future<List<ResultObj4>> get_pending_visitor_tickets_for_authorities(
       String authority_email) async {
-    var uri = "$complete_base_url_static/visitors/get_pending_visitor_tickets_for_authorities";
+    var uri =
+        "$complete_base_url_static/visitors/get_pending_visitor_tickets_for_authorities";
     try {
       var response = await http
           .post(Uri.parse(uri), body: {'authority_email': authority_email});
@@ -690,7 +625,8 @@ class databaseInterface {
   // To get past visitor tickets on the authority side
   static Future<List<ResultObj4>> get_past_visitor_tickets_for_authorities(
       String authority_email) async {
-    var uri = "$complete_base_url_static/visitors/get_past_visitor_tickets_for_authorities";
+    var uri =
+        "$complete_base_url_static/visitors/get_past_visitor_tickets_for_authorities";
     try {
       var response = await http
           .post(Uri.parse(uri), body: {'authority_email': authority_email});
@@ -715,7 +651,8 @@ class databaseInterface {
 
   static Future<List<ResultObj2>> get_pending_tickets_for_authorities(
       String authority_email) async {
-    var uri = "$complete_base_url_static/authorities/get_pending_tickets_for_authorities";
+    var uri =
+        "$complete_base_url_static/authorities/get_pending_tickets_for_authorities";
     try {
       var response = await http
           .post(Uri.parse(uri), body: {'authority_email': authority_email});
@@ -989,7 +926,7 @@ class databaseInterface {
     }
   }
 
-   Future<int> accept_selected_tickets(List<ResultObj> selectedTickets) async {
+  Future<int> accept_selected_tickets(List<ResultObj> selectedTickets) async {
     var uri = complete_base_url_static + "/guards/accept_selected_tickets";
     Map<String, String> headers = {
       'Content-type': 'application/json',
@@ -1067,7 +1004,8 @@ class databaseInterface {
 
   Future<int> accept_selected_tickets_authorities(
       List<ResultObj2> selectedTickets) async {
-    var uri = "$complete_base_url_static/authorities/accept_selected_tickets_authorities";
+    var uri =
+        "$complete_base_url_static/authorities/accept_selected_tickets_authorities";
     Map<String, String> headers = {
       'Content-type': 'application/json',
       'Accept': 'application/json',
@@ -1196,7 +1134,8 @@ class databaseInterface {
 
   Future<int> reject_selected_tickets_authorities(
       List<ResultObj2> selectedTickets) async {
-    var uri = "$complete_base_url_static/authorities/reject_selected_tickets_authorities";
+    var uri =
+        "$complete_base_url_static/authorities/reject_selected_tickets_authorities";
     Map<String, String> headers = {
       'Content-type': 'application/json',
       'Accept': 'application/json',
@@ -1466,15 +1405,14 @@ class databaseInterface {
       var request = http.MultipartRequest("POST", url);
       request.fields['email'] = email;
       request.files.add(http.MultipartFile.fromBytes('image', iterable_data,
-          contentType: MediaType('image', 'jpg'),
-          filename: 'image_file.jpg'));
+          contentType: MediaType('image', 'jpg'), filename: 'image_file.jpg'));
       var response = await request.send();
       print(response.statusCode);
     } catch (e) {
       print("post request error");
       print(e.toString());
     }
-    }
+  }
 
   static Future<String> add_guard(
       String name, String email, String location) async {
@@ -1532,7 +1470,8 @@ class databaseInterface {
 
   static Future<List<StatisticsResultObj>> get_statistics_data_by_location(
       String location, String filter, String status) async {
-    var uri = "$complete_base_url_static/statistics/get_statistics_data_by_location";
+    var uri =
+        "$complete_base_url_static/statistics/get_statistics_data_by_location";
     try {
       var response = await http.post(Uri.parse(uri),
           body: {"location": location, "filter": filter, "status": status});
@@ -1560,7 +1499,8 @@ class databaseInterface {
       String filter,
       String start_date,
       String end_date) async {
-    var uri = "$complete_base_url_static/statistics/get_piechart_statistics_by_location";
+    var uri =
+        "$complete_base_url_static/statistics/get_piechart_statistics_by_location";
 
     try {
       var response = await http.post(Uri.parse(uri), body: {
@@ -1620,8 +1560,8 @@ class databaseInterface {
           'duration_of_stay': duration_of_stay,
           'num_additional': num_additional,
           'student_email': student_id,
-          'type':'student',
-          'guard_status':"Approved"
+          'type': 'student',
+          'guard_status': "Approved"
         },
       );
       var data = json.decode(response.body);
@@ -1643,7 +1583,8 @@ class databaseInterface {
     String authority_status,
     ResultObj4 ticket_visitor,
   ) async {
-    var uri = "$complete_base_url_static/visitors/insert_in_visitors_ticket_table_2";
+    var uri =
+        "$complete_base_url_static/visitors/insert_in_visitors_ticket_table_2";
     try {
       String visitor_ticket_id = ticket_visitor.visitor_ticket_id.toString();
       String authority_message = ticket_visitor.authority_message;
@@ -1672,8 +1613,7 @@ class databaseInterface {
 //useless function
   static Future<List<String>> get_student_status_for_all_locations(
       String email) async {
-    var uri =
-        "$complete_base_url_static/students/get_status_for_all_locations";
+    var uri = "$complete_base_url_static/students/get_status_for_all_locations";
     List<String> output = [];
     try {
       var response = await http.post(
@@ -1722,8 +1662,7 @@ class databaseInterface {
 
   static Future<List<String>> get_student_status_for_all_locations_2(
       String email, List<int> location_ids) async {
-    var uri =
-        "$complete_base_url_static/students/get_status_for_all_locations";
+    var uri = "$complete_base_url_static/students/get_status_for_all_locations";
     List<String> output = [];
     try {
       print("location ids in db=$location_ids");
@@ -1882,7 +1821,8 @@ class databaseInterface {
       String message) async {
     print("Inside insert notification database interface");
     print("$from_whom,$for_whom,$ticket_type,$location,$message");
-    var uri = "$complete_base_url_static/notification/insert_notification_guard_accept_reject/";
+    var uri =
+        "$complete_base_url_static/notification/insert_notification_guard_accept_reject/";
     try {
       //post request
       var response_noti = await http.post(Uri.parse(uri), body: {
@@ -1903,8 +1843,8 @@ class databaseInterface {
 
   static Future<int> return_total_notification_count_guard(String email) async {
     // print("Email yo=${email}");
-    var uri = Uri.parse(
-        "$complete_base_url_static/notification/count_notification/");
+    var uri =
+        Uri.parse("$complete_base_url_static/notification/count_notification/");
     late http.Response response;
     try {
       response = await http.get(uri.replace(queryParameters: {"email": email}));
@@ -1933,8 +1873,7 @@ class databaseInterface {
   }
 
   static Future<String> loc_from_loc_id(String loc_id) async {
-    var uri =
-        Uri.parse("$complete_base_url_static/location/loc_from_loc_id/");
+    var uri = Uri.parse("$complete_base_url_static/location/loc_from_loc_id/");
     try {
       var response =
           await http.get(uri.replace(queryParameters: {"loc_id": loc_id}));
@@ -1986,7 +1925,8 @@ class databaseInterface {
     // int tick_id = int.parse(ticket_id);
     // print(tick_id);
     print(email);
-    var uri = "$complete_base_url_static/notification/mark_individual_notification/";
+    var uri =
+        "$complete_base_url_static/notification/mark_individual_notification/";
     try {
       var response = await http.post(
         Uri.parse(uri),
@@ -2061,19 +2001,16 @@ class databaseInterface {
     myobj.destination_address = "NO DEST ADDRESS";
     myobj.vehicle_number = "PB XX";
 
-
     List<ResultObj> selectedTickets = [];
     selectedTickets.add(myobj);
     print("accept_QR@2@");
     // print("${}");
-    if (is_approved == "Approved"){
+    if (is_approved == "Approved") {
       await databaseInterface().accept_selected_tickets(selectedTickets);
-  }
-  else if(is_approved == "Rejected"){
+    } else if (is_approved == "Rejected") {
       await databaseInterface().reject_selected_tickets(selectedTickets);
-    }
-  else{
-    print("NO Accepted Or Rejected ");
+    } else {
+      print("NO Accepted Or Rejected ");
     }
     print("accept_QR@3@");
   }
@@ -2085,10 +2022,10 @@ class databaseInterface {
     //   enter_exit = "enter";
     // }
     print("!@!@!");
-    var uri =
-        Uri.parse("$complete_base_url_static/guards/get_visitor_tickets");
+    var uri = Uri.parse("$complete_base_url_static/guards/get_visitor_tickets");
     try {
-      var response = await http.post(uri,body:{"is_approved":is_approved,"enter_exit":enter_exit});
+      var response = await http.post(uri,
+          body: {"is_approved": is_approved, "enter_exit": enter_exit});
       print(
           "00000000000000000000000000000000000000000000000000000000000000000000000000000000");
 
@@ -2142,4 +2079,68 @@ class databaseInterface {
   static Stream<int> get_notification_count_stream(String email) =>
       Stream.periodic(Duration(seconds: REFRESH_RATE * 5))
           .asyncMap((_) => return_total_notification_count_guard(email));
+
+  Future<int> GenerateRelativesTicket(
+      String Student,
+      String Name,
+      String Relationship,
+      String Contact,
+      String Purpose
+      )async{
+    var uri = "$complete_base_url_static/generate_relatives_ticket";
+    try{
+      var response = await http.post(
+        Uri.parse(uri),
+        body: {
+          'student': Student,
+          'invitee_name': Name,
+          'invitee_relationship': Relationship,
+          'invitee_contact': Contact,
+          'purpose': Purpose,
+        },
+      );
+      print('Response status: ${response.statusCode}');
+      print('Response body: ${response.body}');
+      return response.statusCode.toInt();
+    }
+    catch (e) {
+      print("post request error");
+      print(e.toString());
+      return 500;
+      // return Future.error(e);
+    }
+  }
+
+  Future<List<RelativeResultObj>>  GetStudentRelativeTickets(
+      String student
+      )async{
+    var uri = "$complete_base_url_static/getStudentRelativeTickets";
+
+    try{
+      final response = await http.post(
+        Uri.parse(uri),
+        body: {
+          'student': student,
+        },
+      );
+      if (response.statusCode == 200) {
+        List<dynamic> data = json.decode(response.body);
+        List<RelativeResultObj> result = data.map((item) => RelativeResultObj.fromJson(item)).toList();
+        return result;
+        print(result);
+      } else {
+        throw Exception('Failed to load data');
+      }
+
+    }
+    catch (e) {
+      print("post request error");
+      print(e.toString());
+      throw Exception('Failed to load data');
+
+      // return Future.error(e);
+    }
+
+
+  }
 }

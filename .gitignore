@@ -5,3 +5,9 @@ my_gate_app/build/
 backend/venv/
 backend/InOutMgmt_Python3_Env/
 backend/.InOutMgmt_Python3_Env/
+backend/django_backend/api/__pycache__
+backend/django_backend/api/migrations
+backend/django_backend/django_backend/__pycache__
+backend/django_backend/django_backend/migrations
+
+
