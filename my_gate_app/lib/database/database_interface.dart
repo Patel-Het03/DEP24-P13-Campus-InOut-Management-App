@@ -2143,4 +2143,47 @@ class databaseInterface {
 
 
   }
+  static Future<Map<String,String>> getInviteeRequestByTicketID(String ticket_id) async {
+    var uri = "$complete_base_url_static/generate_relatives_ticket";
+    try{
+      final response=await http.post(Uri.parse(uri),body:{
+        ticket_id:ticket_id,
+      });
+      if (response.statusCode == 200) {
+        Map<String,dynamic> data_ = json.decode(response.body);
+        Map<String,String> data={};
+        data_.forEach((key,value){data[key]=value.toString();});
+        return data;
+        // print(result);
+      } else {
+        throw Exception('Failed to load data');
+      }
+    }
+    catch(e){
+      print("post request error in getInviteeRequestByTicketID");
+      print(e.toString());
+      throw Exception('Failed to load data');
+    }  
+  }
+  static Future<int> guardApproveInviteeTicket(String ticket_id,String vehicle_number,String enter_exit) async {
+    var uri = "$complete_base_url_static/generate_relatives_ticket";
+    try{
+      final response=await http.post(Uri.parse(uri),body:{
+        "ticket_id":ticket_id,
+        "vehicle_number":vehicle_number,
+        "enter_exit":enter_exit,
+      });
+      if (response.statusCode == 200) {
+        return response.statusCode;
+      } else {
+        throw Exception('Failed to load data');
+      }
+    }
+    catch(e){
+      print("post request error in getInviteeRequestByTicketID");
+      print(e.toString());
+      throw Exception('Failed to load data');
+    } 
+
+  }
 }

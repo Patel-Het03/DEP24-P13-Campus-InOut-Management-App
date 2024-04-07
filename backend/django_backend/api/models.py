@@ -243,4 +243,10 @@ class InviteRequest(models.Model):
     purpose = models.TextField()
     status = models.CharField(max_length=20, default='Pending')
     created_at = models.DateTimeField(auto_now_add=True)
+    enter_time=models.DateTimeField(null=True)
+    exit_time=models.DateTimeField(null=True)
+    guard_status = models.CharField(max_length=20, default='Pending')
+    vehicle_number = models.CharField(max_length=100, default=None) # Optional field
+    
+
     

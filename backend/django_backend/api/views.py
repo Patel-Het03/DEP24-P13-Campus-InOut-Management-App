@@ -5150,3 +5150,206 @@ def get_location_by_id(request):
     except Exception as e:
         print("Error: ", e)
         return Response({'error': 'Internal server error.'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+class GenerateRelativesTicketAPIView(APIView):
+    # permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        data = request.data
+
+        # Assuming student_name is obtained from the authenticated user
+        # student_name = request.user.username
+        # data['student_name'] = 
+
+        serializer = InviteRequestSerializer(data=data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class GetStudentRelativeTicketsAPIView(APIView):
+    # permission_classes = [IsAuthenticated]
+    
+
+    def post(self, request):
+        # print("**")
+        # Extract status and student name from query parameters
+        print(request.data)
+        # data = json.loads(request.body)
+       
+        student = request.data.get('student')
+       
+        print(student)
+
+        # Validate parameters
+        # if not status_param or not student_name:
+        #     return Response("Status and student_name are required parameters.", status=status.HTTP_400_BAD_REQUEST)
+
+        # Filter tickets based on status and student name
+        tickets = InviteRequest.objects.filter(student=student)
+
+        # Serialize the ticket data
+        serializer = InviteRequestSerializer(tickets, many=True)
+
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+class AdminTicketStatusAPIView(APIView):
+    
+    def post(self, request):
+        # Extract status and student name from query parameters
+        print(request.data)
+        # data = json.loads(request.body)
+        status_param = request.data.get('status')
+        print(status_param)
+
+       
+        # Filter tickets based on status and student name
+        tickets = InviteRequest.objects.filter(status=status_param)
+
+        # Serialize the ticket data
+        serializer = InviteRequestSerializer(tickets, many=True)
+
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+class AcceptTicketAPIView(APIView):
+    # permission_classes = [IsAdminUser]  # Assuming only admins can access this API
+
+    def post(self, request):
+        ticket_id = request.data.get('ticket_id')
+
+        # Check if ticket exists
+        try:
+            ticket = InviteRequest.objects.get(ticket_id=ticket_id)
+        except InviteRequest.DoesNotExist:
+            return Response({"error": "Ticket not found"}, status=status.HTTP_404_NOT_FOUND)
+
+        print(ticket)
+        # Check if the ticket status is pending or rejected
+        if ticket.status in ['Pending', 'Rejected']:
+            # Update the ticket status to Accepted
+            ticket.status = 'Accepted'
+            ticket.save()
+            return Response({"message": "Ticket accepted successfully"}, status=status.HTTP_200_OK)
+        else:
+            print("Ticket status cannot be changed to Accepted")
+            return Response({"error": "Ticket status cannot be changed to Accepted"}, status=status.HTTP_400_BAD_REQUEST)
+
+class RejectTicketAPIView(APIView):
+    # permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        ticket_id = request.data.get('ticket_id')
+        try:
+            ticket = InviteRequest.objects.get(ticket_id=ticket_id)
+        except InviteRequest.DoesNotExist:
+            return Response({"message": "Ticket not found."}, status=status.HTTP_404_NOT_FOUND)
+        
+        # Check if the ticket status is pending or rejected
+        if ticket.status in ['Pending']:
+            ticket.status = 'Rejected'
+            ticket.save()
+            return Response({"message": "Ticket rejected successfully."}, status=status.HTTP_200_OK)
+        else:
+            return Response({"message": "Ticket cannot be rejected as it is already approved."}, status=status.HTTP_400_BAD_REQUEST)
+        
+class GuardApproveInviteeEntryRequest(APIView):
+    # permission_classes = (IsAuthenticated,IsGuard)  # Assuming only admins can access this API
+    def post(self,request):
+        try:
+            try:
+                ticket_id=request.data.get('ticket_id')
+                vehicle_number=request.data.get("vehicle_number")
+                enter_exit=request.data.get("enter_exit")
+            except:
+                jsonresponse={
+                    "ok":False,
+                    "error":"invalid input. required ticket_id , ",
+                }
+                return Response(jsonresponse,status=status.HTTP_400_BAD_REQUEST)
+            try:
+                invite_request=InviteRequest.objects.get(ticket_id=ticket_id)
+            except InviteRequest.DoesNotExist:
+                jsonresponse={
+                    "ok":False,
+                    "error":"Ticket not found",
+                }
+                return Response(jsonresponse,status=status.HTTP_400_BAD_REQUEST)
+            if invite_request.status!="Approved":
+                jsonresponse={
+                    "ok":False,
+                    "error":f"Ticket Status By Authority : {invite_request.status}",
+                }
+                return Response(jsonresponse,status=status.HTTP_400_BAD_REQUEST)
+            if enter_exit=="enter":
+                invite_request.vehicle_number=vehicle_number
+                invite_request.enter_time=datetime.now()
+                invite_request.save()
+                jsonresponse={
+                    "ok":True,
+                    "message":"Entry succesfull",
+                }
+                return Response(jsonresponse,status=status.HTTP_200_OK)
+                
+            elif enter_exit=='exit' :
+                invite_request.exit_time=datetime.now()
+                jsonresponse={
+                    "ok":True,
+                    "message":"Exit succesfull",
+                }
+                return Response(jsonresponse,status=status.HTTP_200_OK)
+            jsonresponse={
+                "ok":False,
+                "error":f"you request for <{enter_exit}>Not recognised",
+            }
+            return Response(jsonresponse,status=status.HTTP_400_BAD_REQUEST)
+        except Exception as e:
+            jsonresponse={
+                "ok":False,
+                "error":str(e),
+            }
+            return Response(jsonresponse,status.HTTP_400_BAD_REQUEST)
+
+class GetInviteeRequestByTicketID(APIView):
+    def post(self,request):
+        try:
+            try:
+                ticket_id=request.data.get('ticket_id')
+            except:
+                jsonresponse={
+                    "ok":False,
+                    "error":"invalid input. required ticket_id , ",
+                }
+                return Response(jsonresponse,status=status.HTTP_400_BAD_REQUEST)
+            try:
+                invite_request=InviteRequest.objects.get(ticket_id=ticket_id)
+            except InviteRequest.DoesNotExist:
+                jsonresponse={
+                    "ok":False,
+                    "error":"Ticket not found",
+                }
+                return Response(jsonresponse,status=status.HTTP_400_BAD_REQUEST)
+            try:
+                student=Student.objects.get(entry_no=invite_request.student)
+            except InviteRequest.DoesNotExist:
+                jsonresponse={
+                    "ok":False,
+                    "error":"Student not found",
+                }
+                return Response(jsonresponse,status=status.HTTP_400_BAD_REQUEST)
+            
+            jsonresponse={
+                "ok":True,
+                "invitee_name":invite_request.invitee_name,
+                "student_name":student.st_name,
+                "relationship_with_student":invite_request.invitee_relationship,
+            }
+            return Response(jsonresponse,status.HTTP_200_OK)       
+        except Exception as e:
+            jsonresponse={
+                "ok":False,
+                "error":str(e),
+            }
+            return Response(jsonresponse,status.HTTP_400_BAD_REQUEST)
