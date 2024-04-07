@@ -1,5 +1,6 @@
 // ignore_for_file: unnecessary_new, deprecated_member_use, non_constant_identifier_names, prefer_const_constructors, unnecessary_this, unnecessary_brace_in_string_interps, avoid_unnecessary_containers, must_be_immutable
 
+import 'dart:convert';
 import 'dart:core';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -69,8 +70,16 @@ class _StudentStatusState extends State<StudentStatus> {
 
   void generateQRButton(
       String address, String email, String veh_num, String ticket_type) {
-    String qrData =
-        "$address\n$email\n$veh_num\n$ticket_type\n${widget.location}";
+        //to reduce the data length of hte qr data for quick error less scan 
+        Map<String,String> obj={
+          "type":"student",
+          "add":address,
+          "eml":email,
+          "v_n":veh_num,
+          "tic_ty":ticket_type,
+          "s_lc":widget.location,
+        };
+    String qrData =jsonEncode(obj);
     print("Location of student=${widget.location}");
 
     showModalBottomSheet(

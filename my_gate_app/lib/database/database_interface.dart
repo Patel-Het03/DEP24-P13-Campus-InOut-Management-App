@@ -22,8 +22,8 @@ class databaseInterface {
   static String complete_base_url_static =
       // "http://localhost:$PORT_NO_static";
       // "http://31.220.57.173:" + PORT_NO_static.toString();
-      "http://10.0.2.2:" + PORT_NO_static.toString();
-  //   "http://192.168.68.111:"+PORT_NO_static.toString();
+      // "http://10.0.2.2:" + PORT_NO_static.toString();
+    "http://192.168.64.111:"+PORT_NO_static.toString();
   databaseInterface();
 
   static Future<String> get_welcome_message(String email) async {
@@ -2111,7 +2111,7 @@ class databaseInterface {
     }
   }
 
-  Future<List<RelativeResultObj>>  GetStudentRelativeTickets(
+  static Future<List<RelativeResultObj>>  GetStudentRelativeTickets(
       String student
       )async{
     var uri = "$complete_base_url_static/getStudentRelativeTickets";
@@ -2127,7 +2127,7 @@ class databaseInterface {
         List<dynamic> data = json.decode(response.body);
         List<RelativeResultObj> result = data.map((item) => RelativeResultObj.fromJson(item)).toList();
         return result;
-        print(result);
+        // print(result);
       } else {
         throw Exception('Failed to load data');
       }
