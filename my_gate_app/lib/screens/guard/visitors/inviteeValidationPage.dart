@@ -4,6 +4,7 @@ import 'package:my_gate_app/screens/admin/utils/textbox.dart';
 import 'package:my_gate_app/screens/admin/utils/dropdown.dart';
 import 'package:my_gate_app/screens/admin/utils/submit_button.dart';
 import 'package:my_gate_app/database/database_interface.dart';
+import 'package:my_gate_app/screens/utils/custom_snack_bar.dart';
 
 class InviteeValidationPage extends StatefulWidget {
   final String ticket_id;
@@ -20,19 +21,34 @@ class _InviteeValidationPageState extends State<InviteeValidationPage> {
   String relationship_with_student = "Loading ...";
   String enter_exit = "";
 
-  Future<void> getTicketDetails() async{
-    Map<String,String> data= await databaseInterface.getInviteeRequestByTicketID(widget.ticket_id);
-    invitee_name= data['invitee_name']!;
-    student_name= data['student_name']!;
-    relationship_with_student= data['relationship_with_student']!;
+  Future<void> getTicketDetails() async {
+    Map<String, String> data =
+        await databaseInterface.getInviteeRequestByTicketID(widget.ticket_id);
+    setState(() {
+      invitee_name = data['invitee_name']!;
+      student_name = data['student_name']!;
+      relationship_with_student = data['relationship_with_student']!;
+      vehicle_number=data['vehicle_number']!;
+    });
   }
-
+  void display_further_status(int statusCode) {
+    Navigator.of(context).pop();
+    if (statusCode == 200) {
+      final snackBar =
+          get_snack_bar("Request Accepted", Colors.green);
+      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+    } else {
+      final snackBar = get_snack_bar("Request Failed", Colors.red);
+      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+    }
+  }
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
     getTicketDetails();
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -60,74 +76,74 @@ class _InviteeValidationPageState extends State<InviteeValidationPage> {
             ),
             child: SingleChildScrollView(
               child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [Container(
-                  margin: EdgeInsets.fromLTRB(30, 0, 0, 0),
-                  
-                    child:Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        SizedBox(height: 30),
-                        _buildLabel("Invitee Name"),
-                        SizedBox(height: 5),
-                        _buildTextField("$invitee_name",
-                            MediaQuery.of(context).size.width * 0.7),
-                        SizedBox(height: 25),
-                        _buildLabel("Student name (Invited by)"),
-                        SizedBox(height: 5),
-                        _buildTextField("$student_name",
-                            MediaQuery.of(context).size.width * 0.7),
-                        SizedBox(height: 25),
-                        _buildLabel("Relationship with student"),
-                        SizedBox(height: 5),
-                        _buildTextField("$relationship_with_student",
-                            MediaQuery.of(context).size.width * 0.7),
-                        SizedBox(height: 30),
-                        TextBoxCustom(
-                          labelText: "Vehicle Number",
-                          onChangedFunction: (value) {
-                            vehicle_number = value!;
-                          },
-                          icon: const Icon(
-                            Icons.directions_car_outlined,
-                            color: Colors.black,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Container(
+                      margin: EdgeInsets.fromLTRB(30, 0, 0, 0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          SizedBox(height: 30),
+                          _buildLabel("Invitee Name"),
+                          SizedBox(height: 5),
+                          _buildTextField("$invitee_name",
+                              MediaQuery.of(context).size.width * 0.7),
+                          SizedBox(height: 25),
+                          _buildLabel("Student name (Invited by)"),
+                          SizedBox(height: 5),
+                          _buildTextField("$student_name",
+                              MediaQuery.of(context).size.width * 0.7),
+                          SizedBox(height: 25),
+                          _buildLabel("Relationship with student"),
+                          SizedBox(height: 5),
+                          _buildTextField("$relationship_with_student",
+                              MediaQuery.of(context).size.width * 0.7),
+                          SizedBox(height: 30),
+                          TextBoxCustom(
+                            labelText: "Vehicle Number",
+                            onChangedFunction: (value) {
+                              vehicle_number = value!;
+                            },
+                            icon: const Icon(
+                              Icons.directions_car_outlined,
+                              color: Colors.black,
+                            ),
                           ),
-                        ),
-                        SizedBox(
-                          height: 25,
-                        ),
-                        dropdown(
-                          context,
-                          ["Enter", "Exit"],
-                          (String? s) {
-                            if (s != null) {
-                              if (s == 'Enter') {
-                                enter_exit = "enter";
-                              } else if (s == "Exit") {
-                                enter_exit = "exit";
+                          SizedBox(
+                            height: 25,
+                          ),
+                          dropdown(
+                            context,
+                            ["Enter", "Exit"],
+                            (String? s) {
+                              if (s != null) {
+                                if (s == 'Enter') {
+                                  enter_exit = "enter";
+                                } else if (s == "Exit") {
+                                  enter_exit = "exit";
+                                }
                               }
-                            }
-                          },
-                          "Enter or Exit Request",
-                          Icon(
-                            Icons.access_time_outlined,
-                            color: Colors.black,
+                            },
+                            "Enter or Exit Request",
+                            Icon(
+                              Icons.access_time_outlined,
+                              color: Colors.black,
+                            ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
-                  ),
-                  SizedBox(height:35),
-                  SubmitButton(
+                    SizedBox(height: 35),
+                    SubmitButton(
                       button_text: "Accept",
                       submit_function: () async {
-                        int statusCode=
-                        await databaseInterface.guardApproveInviteeTicket(widget.ticket_id,vehicle_number,enter_exit);
+                        int statusCode =
+                            await databaseInterface.guardApproveInviteeTicket(
+                                widget.ticket_id, vehicle_number, enter_exit);
+                                display_further_status(statusCode);
                       },
                     ),
-
-                  ]
-                  ),
+                  ]),
             )));
   }
 }

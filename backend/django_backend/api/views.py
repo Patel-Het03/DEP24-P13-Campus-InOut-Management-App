@@ -10,7 +10,7 @@ import traceback
 from datetime import date, datetime, timedelta
 from unicodedata import category
 from django.contrib.auth.backends import BaseBackend
-
+from django.utils import timezone
 from django.conf import settings
 from django.core import serializers
 from django.contrib.auth.decorators import login_required
@@ -3150,7 +3150,7 @@ def accept_selected_tickets_visitors(request):
                 VisitorTicketTable.objects.filter(
                     visitor_ticket_id=visitor_ticket_id).update(
                         guard_status="Approved",
-                        date_time_guard=datetime.now())
+                        date_time_guard=timezone.now())
 
                 Visitor.objects.filter(visitor_id=visitor_id).update(
                     current_status="pending_exit"
@@ -3162,7 +3162,7 @@ def accept_selected_tickets_visitors(request):
                     visitor_ticket_id=visitor_ticket_id).update(
                         guard_status="Approved",
                         # ticket_type = "enter",
-                        date_time_guard=datetime.now())
+                        date_time_guard=timezone.now())
 
                 Visitor.objects.filter(visitor_id=visitor_id).update(
                     current_status="out"
@@ -3302,7 +3302,7 @@ def reject_selected_tickets_visitors(request):
                     visitor_ticket_id=visitor_ticket_id).update(
                         guard_status="Rejected",
                         # ticket_type = "exit",
-                        date_time_guard=datetime.now())
+                        date_time_guard=timezone.now())
 
                 Visitor.objects.filter(visitor_id=visitor_id).update(
                     current_status="out"
@@ -3314,7 +3314,7 @@ def reject_selected_tickets_visitors(request):
                     visitor_ticket_id=visitor_ticket_id).update(
                         guard_status="Rejected",
                         # ticket_type = "enter",
-                        date_time_guard=datetime.now())
+                        date_time_guard=timezone.now())
 
                 Visitor.objects.filter(visitor_id=visitor_id).update(
                     current_status="in"
@@ -3817,7 +3817,7 @@ def change_profile_picture_of_student(request):
 
             ext = upFile.name.split(".")[-1]
 
-            curr_time = datetime.now()
+            curr_time = timezone.now()
             custom_name = str(student.entry_no) + "_" + \
                 str(curr_time) + "." + ext
             upFile.name = custom_name
@@ -3850,7 +3850,7 @@ def change_profile_picture_of_guard(request):
 
             ext = upFile.name.split(".")[-1]
 
-            curr_time = datetime.now()
+            curr_time = timezone.now()
             custom_name = str(guard.email) + "_" + str(curr_time) + "." + ext
             upFile.name = custom_name
 
@@ -3881,7 +3881,7 @@ def change_profile_picture_of_authority(request):
 
             ext = upFile.name.split(".")[-1]
 
-            curr_time = datetime.now()
+            curr_time = timezone.now()
             custom_name = str(authority.email) + "_" + \
                 str(curr_time) + "." + ext
             upFile.name = custom_name
@@ -3913,7 +3913,7 @@ def change_profile_picture_of_admin(request):
 
             ext = upFile.name.split(".")[-1]
 
-            curr_time = datetime.now()
+            curr_time = timezone.now()
             custom_name = str(admin.email) + "_" + str(curr_time) + "." + ext
             upFile.name = custom_name
 
@@ -4208,7 +4208,7 @@ def insert_in_visitors_ticket_table_2(request):
         VisitorTicketTable.objects.filter(visitor_ticket_id=visitor_ticket_id).update(
             authority_status=authority_status,
             authority_message=authority_message,
-            date_time_authority=datetime.now(),
+            date_time_authority=timezone.now(),
         )
 
         res["status"] = True
@@ -5277,7 +5277,7 @@ class GuardApproveInviteeEntryRequest(APIView):
                     "error":"Ticket not found",
                 }
                 return Response(jsonresponse,status=status.HTTP_400_BAD_REQUEST)
-            if invite_request.status!="Approved":
+            if invite_request.status!="Accepted":
                 jsonresponse={
                     "ok":False,
                     "error":f"Ticket Status By Authority : {invite_request.status}",
@@ -5285,7 +5285,7 @@ class GuardApproveInviteeEntryRequest(APIView):
                 return Response(jsonresponse,status=status.HTTP_400_BAD_REQUEST)
             if enter_exit=="enter":
                 invite_request.vehicle_number=vehicle_number
-                invite_request.enter_time=datetime.now()
+                invite_request.enter_time=timezone.now()
                 invite_request.save()
                 jsonresponse={
                     "ok":True,
@@ -5294,7 +5294,8 @@ class GuardApproveInviteeEntryRequest(APIView):
                 return Response(jsonresponse,status=status.HTTP_200_OK)
                 
             elif enter_exit=='exit' :
-                invite_request.exit_time=datetime.now()
+                invite_request.exit_time=timezone.now()
+                invite_request.save()
                 jsonresponse={
                     "ok":True,
                     "message":"Exit succesfull",
@@ -5312,7 +5313,7 @@ class GuardApproveInviteeEntryRequest(APIView):
             }
             return Response(jsonresponse,status.HTTP_400_BAD_REQUEST)
 
-class GetInviteeRequestByTicketID(APIView):
+class GetInviteRequestByTicketID(APIView):
     def post(self,request):
         try:
             try:
@@ -5332,7 +5333,8 @@ class GetInviteeRequestByTicketID(APIView):
                 }
                 return Response(jsonresponse,status=status.HTTP_400_BAD_REQUEST)
             try:
-                student=Student.objects.get(entry_no=invite_request.student)
+                
+                student=Student.objects.get(entry_no=invite_request.student.entry_no)
             except InviteRequest.DoesNotExist:
                 jsonresponse={
                     "ok":False,

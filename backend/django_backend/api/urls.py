@@ -245,7 +245,7 @@ urlpatterns = [
     path('accept_ticket/', AcceptTicketAPIView.as_view(), name='accept_ticket'),
     path('reject_ticket/', RejectTicketAPIView.as_view(), name='reject_ticket'),
 
-    path('getInviteeRequestByTicketID',GetInviteeRequestByTicketID.as_view(),name='get_invited_request_ticket_id'),
+    path('getInviteRequestByTicketID',GetInviteRequestByTicketID.as_view(),name='get_invited_request_ticket_id'),
     path('guardApproveInviteeEntryRequest',GuardApproveInviteeEntryRequest.as_view()),
 
     path('register', register_user, name='register'),

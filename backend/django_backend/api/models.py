@@ -6,6 +6,7 @@ from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, Permis
 default_password = 'IIT_Ropar'
 default_encrypted_password = make_password(default_password)
 import uuid 
+from django.utils import timezone
 
 class UserManager(BaseUserManager):
     def create_user(self, email, password=None, **extra_fields):
@@ -229,7 +230,7 @@ class NotificationTable(models.Model):
     ticket_type = models.CharField(max_length=100,default=None)
     location_id = models.IntegerField()
     display_message = models.CharField(max_length=200,default=None)
-    date_time = models.DateTimeField(default=datetime.datetime.now())
+    date_time = models.DateTimeField(default=timezone.now)
 
 
 class InviteRequest(models.Model):
@@ -243,10 +244,10 @@ class InviteRequest(models.Model):
     purpose = models.TextField()
     status = models.CharField(max_length=20, default='Pending')
     created_at = models.DateTimeField(auto_now_add=True)
-    enter_time=models.DateTimeField(null=True)
-    exit_time=models.DateTimeField(null=True)
+    enter_time=models.DateTimeField(null=True,blank=True)
+    exit_time=models.DateTimeField(null=True, blank=True)
     guard_status = models.CharField(max_length=20, default='Pending')
-    vehicle_number = models.CharField(max_length=100, default=None) # Optional field
+    vehicle_number = models.CharField(max_length=100,null=True,blank=True, default=None) # Optional field
     
 
     

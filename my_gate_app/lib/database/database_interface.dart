@@ -22,8 +22,8 @@ class databaseInterface {
   static String complete_base_url_static =
       // "http://localhost:$PORT_NO_static";
       // "http://31.220.57.173:" + PORT_NO_static.toString();
-      // "http://10.0.2.2:" + PORT_NO_static.toString();
-    "http://192.168.64.111:"+PORT_NO_static.toString();
+      "http://10.0.2.2:" + PORT_NO_static.toString();
+    // "http://192.168.64.111:"+PORT_NO_static.toString();
   databaseInterface();
 
   static Future<String> get_welcome_message(String email) async {
@@ -2144,10 +2144,10 @@ class databaseInterface {
 
   }
   static Future<Map<String,String>> getInviteeRequestByTicketID(String ticket_id) async {
-    var uri = "$complete_base_url_static/generate_relatives_ticket";
+    var uri = "$complete_base_url_static/getInviteRequestByTicketID";
     try{
       final response=await http.post(Uri.parse(uri),body:{
-        ticket_id:ticket_id,
+        "ticket_id":ticket_id,
       });
       if (response.statusCode == 200) {
         Map<String,dynamic> data_ = json.decode(response.body);
@@ -2156,6 +2156,7 @@ class databaseInterface {
         return data;
         // print(result);
       } else {
+        print(" #%error ${json.decode(response.body)["error"]}");
         throw Exception('Failed to load data');
       }
     }
@@ -2166,7 +2167,7 @@ class databaseInterface {
     }  
   }
   static Future<int> guardApproveInviteeTicket(String ticket_id,String vehicle_number,String enter_exit) async {
-    var uri = "$complete_base_url_static/generate_relatives_ticket";
+    var uri = "$complete_base_url_static/guardApproveInviteeEntryRequest";
     try{
       final response=await http.post(Uri.parse(uri),body:{
         "ticket_id":ticket_id,
@@ -2176,6 +2177,7 @@ class databaseInterface {
       if (response.statusCode == 200) {
         return response.statusCode;
       } else {
+        print("error ${json.decode(response.body)["error"]}");
         throw Exception('Failed to load data');
       }
     }
