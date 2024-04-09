@@ -55,18 +55,18 @@ class AuthWrapper extends StatelessWidget {
     return Consumer<AuthState>(
       builder: (context, authStatus, _) {
         if (!authStatus.loggedIn) {
-          print("&& Build AuthWrapper");
-          WidgetsBinding.instance.addPostFrameCallback((_) {
-            Navigator.of(context).pushAndRemoveUntil(
-              MaterialPageRoute(builder: (context) => AuthScreen()),
-              (Route<dynamic> route) => false,
-            );
-          });
+          // print("&& Build AuthWrapper");
+          // WidgetsBinding.instance.addPostFrameCallback((_) {
+          //   Navigator.of(context).pushAndRemoveUntil(
+          //     MaterialPageRoute(builder: (context) => AuthScreen()),
+          //     (Route<dynamic> route) => false,
+          //   );
+          // });
+          return AuthScreen();
         }
         else{
           return Home();
         }
-        return Text("Loading ...");
       },
     );
   }

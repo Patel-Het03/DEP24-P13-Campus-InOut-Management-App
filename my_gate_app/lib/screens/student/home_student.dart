@@ -1042,10 +1042,10 @@ class _HomeStudentState extends State<HomeStudent> {
         LoggedInDetails.setEmail("");
         SharedPreferences prefs = await SharedPreferences.getInstance();
         prefs.clear();
-        // Navigator.of(context).pop(); // pop the current page
-        // Navigator.of(context).push(
-        //   MaterialPageRoute(builder: (context) => AuthScreen()),
-        // );
+        Navigator.of(context).pop(); // pop the current page
+        Navigator.of(context).push(
+          MaterialPageRoute(builder: (context) => AuthScreen()),
+        );
         print("lets logout and notify");
         myglobals.auth!.logout();
         // print(myglobals.auth!.loggedIn);

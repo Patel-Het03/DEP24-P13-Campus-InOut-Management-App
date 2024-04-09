@@ -823,29 +823,16 @@ def add_authorities_from_file(request):
                     authority_designation=curr_authority[1],
                     is_present=True,
                 )
+            
+            user = User.objects.filter(email=curr_authority[2], type="Authority").first()
 
-            person_not_present = (
-                len(
-                    Person.objects.filter(
-                        email=curr_authority[2], person_type="Authority"
-                    )
-                )
-                == 0
-            )
-            if person_not_present:
-                Person.objects.create(email=curr_authority[2], person_type="Authority")
+            if user is None:
+                print(f"## {curr_authority}")
+                User.objects.create_user(email=curr_authority[2], type="Authority")
             else:
-                Person.objects.filter(
-                    email=curr_authority[2], person_type="Authority"
-                ).update(is_present=True)
+                print(f"**")
+                User.objects.filter(email=curr_authority[2], type="Authority").update_user()
 
-            password_not_present = (
-                len(Password.objects.filter(email=curr_authority[2])) == 0
-            )
-            if password_not_present:
-                Password.objects.create(email=curr_authority[2])
-            else:
-                Password.objects.filter(email=curr_authority[2]).update(is_present=True)
 
     return Response(status=status.HTTP_200_OK)
 
@@ -886,25 +873,15 @@ def add_guards_from_file(request):
                 Guard.objects.filter(email=curr_guard[2]).update(
                     guard_name=curr_guard[0], location_id=_location_id, is_present=True
                 )
-            person_not_present = (
-                len(Person.objects.filter(email=curr_guard[2], person_type="Guard"))
-                == 0
-            )
-            if person_not_present:
-                Person.objects.create(email=curr_guard[2], person_type="Guard")
-            else:
-                Person.objects.filter(email=curr_guard[2], person_type="Guard").update(
-                    is_present=True
-                )
+            user = User.objects.filter(email=curr_guard[2], type="Guard").first()
 
-            password_not_present = (
-                len(Password.objects.filter(email=curr_guard[2])) == 0
-            )
-            if password_not_present:
-                Password.objects.create(email=curr_guard[2])
+            if user is None:
+                print(f"## {curr_guard}")
+                User.objects.create_user(email=curr_guard[2], type="Guard")
             else:
-                Password.objects.filter(email=curr_guard[2]).update(is_present=True)
-
+                print(f"**")
+                User.objects.filter(email=curr_guard[2], type="Guard").update_user()
+            
     return Response(status=status.HTTP_200_OK)
 
 
@@ -1159,10 +1136,9 @@ def delete_authorities_from_file(request):
         if len(curr_authority):
             # checking for all the three parameters as two authority can have same name, authority can get promoted, and hence his/her email will be changed in that case
             Authorities.objects.filter(email=curr_authority[2]).update(is_present=False)
-            Person.objects.filter(
-                email=curr_authority[2], person_type="Authority"
-            ).update(is_present=False)
-            Password.objects.filter(email=curr_authority[2]).update(is_present=False)
+            User.objects.filter(
+                email=curr_authority[2], type="Authority"
+            ).delete()
 
     return Response(status=status.HTTP_200_OK)
 
@@ -1185,12 +1161,8 @@ def delete_guards_from_file(request):
     for i in range(1, len(data)):
         curr_guard = data[i]
         if len(curr_guard):
-            Guard.objects.filter(email=curr_guard[2]).update(is_present=False)
-            Person.objects.filter(email=curr_guard[2], person_type="Guard").update(
-                is_present=False
-            )
-            Password.objects.filter(email=curr_guard[2]).update(is_present=False)
-
+            Guard.objects.filter(email=curr_guard[2]).delete()
+            User.objects.filter(email=curr_guard[2], type="Guard").delete()
     return Response(status=status.HTTP_200_OK)
 
 
@@ -1223,10 +1195,10 @@ def delete_students_from_file(request):
                 StatusTable.objects.filter(entry_no=curr_student[1]).update(
                     is_present=False
                 )
-                Person.objects.filter(
-                    email=curr_student[2], person_type="Student"
-                ).update(is_present=False)
-                Password.objects.filter(email=curr_student[2]).update(is_present=False)
+                User.objects.filter(
+                    email=curr_student[2], type="Student"
+                ).delete()
+                
 
     return Response(status=status.HTTP_200_OK)
 
@@ -1261,16 +1233,14 @@ def add_guard_form(request):
                     is_present=True,
                 )
 
-                Person.objects.filter(email=_email).update(is_present=True)
-                Password.objects.filter(email=_email).update(is_present=True)
+                User.objects.filter(email=_email,type='Guard' ).update()
                 response_str = "Guard Created Sucessfully"
                 return Response(response_str, status.HTTP_200_OK)
         else:
             Guard.objects.create(
                 guard_name=_name, location_id=query_set_location, email=_email
             )
-            Person.objects.create(email=_email, person_type="Guard")
-            Password.objects.create(email=_email)
+            User.objects.create(email=_email, type="Guard")
             response_str = "Guard Created Sucessfully"
             return Response(response_str, status.HTTP_200_OK)
 
@@ -1292,9 +1262,7 @@ def add_admin_form(request):
 
         Admin.objects.create(email=email, admin_name=admin_name)
 
-        Person.objects.create(email=email, person_type="Admin")
-
-        Password.objects.create(email=email)
+        User.objects.create(email=email, type="Admin")
 
         response_str = "Admin created successfully"
 
@@ -1332,8 +1300,7 @@ def modify_guard_form(request):
             location_id=_location_id, is_present=True
         )
 
-        Person.objects.filter(email=_email).update(is_present=True)
-        Password.objects.filter(email=_email).update(is_present=True)
+        User.objects.filter(email=_email,type="Guard").update()
 
         response_str = "Guard updated sucessfully"
         return Response(response_str, status.HTTP_200_OK)
@@ -1354,8 +1321,7 @@ def delete_guard_form(request):
     is_guard_present = len(Guard.objects.filter(email=_email, is_present=True)) != 0
     if is_guard_present:
         Guard.objects.filter(email=_email).update(is_present=False)
-        Person.objects.filter(email=_email).update(is_present=False)
-        Password.objects.filter(email=_email).update(is_present=False)
+        User.objects.filter(email=_email).delete()
 
         response_str = "Guard Deleted sucessfully"
         return Response(response_str, status.HTTP_200_OK)
@@ -1752,11 +1718,12 @@ def get_welcome_message(request):
 
         name = ""
 
-        queryset_person = Person.objects.get(email=email, is_present=True)
+        user = User.objects.get(email=email)
+        
 
-        serializer_person = PersonSerializer(queryset_person, many=False)
+        
 
-        person_type = serializer_person.data["person_type"]
+        person_type = user.type
 
         if person_type == "Student":
             queryset = Student.objects.get(email=email, is_present=True)
@@ -4997,12 +4964,10 @@ def add_student2(request):
 
         student = Student(**student_data)
         student.save()
-        person_data = {"email": data["email"], "person_type": "Student"}
-        person = Person(**person_data)
-        person.save()
-        person_data = {"email": data["email"]}
-        pss = Password(**person_data)
-        pss.save()
+        user_data = {"email": data["email"], "type": "Student"}
+        user = User(**user_data)
+        user.save()
+        
 
         queryset_location_table = Location.objects.all()
         queryset_entry_no = Student.objects.get(entry_no=data["entry_no"])
@@ -5043,12 +5008,11 @@ def add_guard_single(request):
 
         guard = Guard(**guard_data)
         guard.save()
-        person_data = {"email": data["email"], "person_type": "Guard"}
-        person = Person(**person_data)
-        person.save()
-        person_data = {"email": data["email"]}
-        pss = Password(**person_data)
-        pss.save()
+        user_data = {"email": data["email"], "person_type": "Guard"}
+        user = User(**user_data)
+        user.save()
+        
+
 
         response_str = "Guard Added Successfully"
         return Response(response_str, status=status.HTTP_200_OK)
@@ -5072,12 +5036,9 @@ def add_authority_single(request):
 
         authority = Authorities(**authority_data)
         authority.save()
-        person_data = {"email": data["email"], "person_type": "Authority"}
-        person = Person(**person_data)
-        person.save()
-        person_data = {"email": data["email"]}
-        pss = Password(**person_data)
-        pss.save()
+        user_data = {"email": data["email"], "person_type": "Authority"}
+        user = User(**user_data)
+        user.save()
 
         response_str = "Authority Added Successfully"
         return Response(response_str, status=status.HTTP_200_OK)
