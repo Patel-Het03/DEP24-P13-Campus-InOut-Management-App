@@ -25,7 +25,7 @@ class TicketScreen extends StatefulWidget {
   State<TicketScreen> createState() => _TicketScreenState();
 }
 
-enum User { student, visitor }
+enum User { student, visitor,invitee }
 
 class _TicketScreenState extends State<TicketScreen> {
   String searchQuery = '';
@@ -252,7 +252,7 @@ class _TicketScreenState extends State<TicketScreen> {
               //   width: MediaQuery.of(context).size.width * 0.07,
               // ),
               SizedBox(
-                width: MediaQuery.of(context).size.width * 0.35,
+                width: MediaQuery.of(context).size.width * 0.29,
                 height: MediaQuery.of(context).size.height * 0.03,
                 child: ElevatedButton(
                   onPressed: () {
@@ -285,7 +285,7 @@ class _TicketScreenState extends State<TicketScreen> {
               //   width: MediaQuery.of(context).size.width * 0.07,
               // ),
               SizedBox(
-                width: MediaQuery.of(context).size.width * 0.35,
+                width: MediaQuery.of(context).size.width * 0.29,
                 height: MediaQuery.of(context).size.height * 0.03,
                 child: ElevatedButton(
                   onPressed: () {
@@ -303,6 +303,36 @@ class _TicketScreenState extends State<TicketScreen> {
                   child: Text(
                     "Visitor",
                     style: (_person == User.visitor)
+                        ? GoogleFonts.mPlusRounded1c(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w800,
+                            color: Colors.black)
+                        : GoogleFonts.mPlusRounded1c(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w800,
+                            color: Colors.white),
+                  ),
+                ),
+              ),
+              SizedBox(
+                width: MediaQuery.of(context).size.width * 0.29,
+                height: MediaQuery.of(context).size.height * 0.03,
+                child: ElevatedButton(
+                  onPressed: () {
+                    _togglePerson(User.invitee);
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: (_person == User.invitee)
+                        ? hexToColor(guardColors[1])
+                        : Colors.grey,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(
+                          10.0), // Adjust the radius as needed
+                    ),
+                  ),
+                  child: Text(
+                    "Invitee",
+                    style: (_person == User.invitee)
                         ? GoogleFonts.mPlusRounded1c(
                             fontSize: 16,
                             fontWeight: FontWeight.w800,
