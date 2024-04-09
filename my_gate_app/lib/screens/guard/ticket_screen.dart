@@ -7,6 +7,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:my_gate_app/screens/guard/utils/UI_statics.dart';
 import 'package:my_gate_app/database/database_objects.dart';
 import 'package:my_gate_app/database/database_interface.dart';
+import 'dart:async';
 
 class TicketScreen extends StatefulWidget {
   const TicketScreen(
@@ -41,6 +42,7 @@ class _TicketScreenState extends State<TicketScreen> {
   bool enableDateFilter = true;
   bool isFieldEmpty = true;
   User _person = User.student;
+  Timer? _debounce;
 
   int selectedIndex = -1;
 
@@ -50,16 +52,6 @@ class _TicketScreenState extends State<TicketScreen> {
         _person = input;
       });
     }
-  }
-
-  void toggleExpansion(int index) {
-    setState(() {
-      if (selectedIndex == index) {
-        selectedIndex = -1; // Collapse if already expanded
-      } else {
-        selectedIndex = index; // Expand if not expanded
-      }
-    });
   }
 
   Widget header(String input) {
@@ -85,11 +77,22 @@ class _TicketScreenState extends State<TicketScreen> {
   }
 
   void filterTickets(String query) {
+    if (_person == User.student) {
+      filterStudentTickets(query);
+    } else if (_person == User.visitor) {
+      filterVisitorTickets(query);
+    }
+  }
+
+  void filterStudentTickets(String query) {
     if (enableDateFilter) {
       if (query.isEmpty) {
         ticketsFiltered = tickets
-            .where((ticket) => DateTime.parse(ticket.date_time).isBefore(
-                DateTime.parse(chosen_end_date).add(Duration(days: 1))))
+            .where((ticket) =>
+                DateTime.parse(ticket.date_time).isBefore(
+                    DateTime.parse(chosen_end_date).add(Duration(days: 1))) &&
+                DateTime.parse(ticket.date_time)
+                    .isAfter(DateTime.parse(chosen_start_date)))
             .toList();
       } else {
         ticketsFiltered = tickets
@@ -116,6 +119,43 @@ class _TicketScreenState extends State<TicketScreen> {
     }
   }
 
+  void filterVisitorTickets(String query) {
+    if (enableDateFilter) {
+      if (query.isEmpty) {
+        tickets_visitorsFiltered = tickets_visitors
+            .where((ticket) =>
+                DateTime.parse(ticket.date_time_of_ticket_raised).isBefore(
+                    DateTime.parse(chosen_end_date)
+                        .add(const Duration(days: 1))) &&
+                DateTime.parse(ticket.date_time_of_ticket_raised)
+                    .isAfter(DateTime.parse(chosen_start_date)))
+            .toList();
+      } else {
+        tickets_visitorsFiltered = tickets_visitors
+            .where((ticket) =>
+                ticket.visitor_name
+                    .toLowerCase()
+                    .contains(query.toLowerCase()) &&
+                DateTime.parse(ticket.date_time_of_ticket_raised)
+                    .isAfter(DateTime.parse(chosen_start_date)) &&
+                DateTime.parse(ticket.date_time_of_ticket_raised).isBefore(
+                    DateTime.parse(chosen_end_date)
+                        .add(const Duration(days: 1))))
+            .toList();
+        print(chosen_end_date);
+      }
+    } else {
+      if (query.isEmpty) {
+        tickets_visitorsFiltered = tickets_visitors;
+      } else {
+        tickets_visitorsFiltered = tickets_visitors
+            .where((ticket) =>
+                ticket.visitor_name.toLowerCase().contains(query.toLowerCase()))
+            .toList();
+      }
+    }
+  }
+
   void resetFilter(String query) {
     chosen_start_date = DateTime.now().subtract(Duration(days: 1)).toString();
     chosen_end_date = DateTime.now().toString();
@@ -123,11 +163,13 @@ class _TicketScreenState extends State<TicketScreen> {
   }
 
   void onSearchQueryChanged(String query) {
+    if (_debounce?.isActive ?? false) _debounce!.cancel();
+  _debounce = Timer(const Duration(milliseconds: 500), () {
     setState(() {
-      searchQuery = query;
+      searchQuery = query.toLowerCase();
       filterTickets(searchQuery);
-      ticketsFiltered = ticketsFiltered;
     });
+  });
   }
 
   Future<void> _selectDateRange(BuildContext context) async {
@@ -147,6 +189,7 @@ class _TicketScreenState extends State<TicketScreen> {
         chosen_end_date = selectedDateRange.end.toString();
         filterTickets(searchQuery);
         ticketsFiltered = ticketsFiltered;
+        tickets_visitorsFiltered = tickets_visitorsFiltered;
       });
       print("### ${ticketsFiltered}");
     }
@@ -289,35 +332,36 @@ class _TicketScreenState extends State<TicketScreen> {
                 color: Colors.grey[350],
                 borderRadius: BorderRadius.circular(30.0),
               ),
-              child: TextField(
-                style: GoogleFonts.lato(
-                  color: Colors.black,
-                  fontSize: 20,
-                ),
-                onChanged: (text) {
-                  isFieldEmpty = text.isEmpty;
-
-                  onSearchQueryChanged(text);
-                },
-                decoration: InputDecoration(
-                  contentPadding: EdgeInsets.fromLTRB(5.0, 0, 0, 14.0),
-                  hintText: 'Search by Name',
-                  border: InputBorder.none,
-                  prefixIcon: Icon(Icons.search, color: Colors.black),
-                  suffixIcon: IconButton(
-                    padding: EdgeInsets.zero,
-                    icon: Icon(Icons.clear, color: Colors.black),
-                    onPressed: () {
-                      // Clear search field
-                    },
-                  ),
-                  hintStyle: GoogleFonts.lato(
-                    color: Colors.black87,
-                    fontSize: 16.0,
-                    fontWeight: FontWeight.normal,
-                  ),
-                ),
-              ),
+              child:buildSearchTextField(),
+              // child: TextField(
+              //   style: GoogleFonts.lato(
+              //     color: Colors.black,
+              //     fontSize: 20,
+              //   ),
+              //   onChanged: (text) {
+              //     isFieldEmpty = text.isEmpty;
+              //     print("$text");
+              //     onSearchQueryChanged(text);
+              //   },
+              //   decoration: InputDecoration(
+              //     contentPadding: EdgeInsets.fromLTRB(5.0, 0, 0, 14.0),
+              //     hintText: 'Search by Name',
+              //     border: InputBorder.none,
+              //     prefixIcon: Icon(Icons.search, color: Colors.black),
+              //     suffixIcon: IconButton(
+              //       padding: EdgeInsets.zero,
+              //       icon: Icon(Icons.clear, color: Colors.black),
+              //       onPressed: () {
+              //         // Clear search field
+              //       },
+              //     ),
+              //     hintStyle: GoogleFonts.lato(
+              //       color: Colors.black87,
+              //       fontSize: 16.0,
+              //       fontWeight: FontWeight.normal,
+              //     ),
+              //   ),
+              // ),
             ),
             SizedBox(
               width: MediaQuery.of(context).size.width * 0.02,
@@ -368,8 +412,56 @@ class _TicketScreenState extends State<TicketScreen> {
           ),
           (_person == User.student)
               ? studentList(ticketsFiltered)
-              : visitorList(tickets_visitors),
+              : visitorList(tickets_visitorsFiltered),
         ]));
+  }
+
+  TextField buildSearchTextField() {
+    TextEditingController _searchController = TextEditingController();
+
+    // Initialize controller value only if searchQuery is not empty
+    if (searchQuery.isNotEmpty) {
+      _searchController.text = searchQuery;
+      _searchController.selection = TextSelection.fromPosition(
+          TextPosition(offset: _searchController.text.length));
+    }
+
+    return TextField(
+      controller: _searchController,
+      style: GoogleFonts.lato(
+        color: Colors.black,
+        fontSize: 20,
+      ),
+      onChanged: (text) {
+        
+        onSearchQueryChanged(text);
+       
+      },
+      decoration: InputDecoration(
+        contentPadding: EdgeInsets.fromLTRB(5.0, 0, 0, 14.0),
+        hintText: 'Search by Name',
+        border: InputBorder.none,
+        prefixIcon: Icon(Icons.search, color: Colors.black),
+        suffixIcon: _searchController.text.isNotEmpty
+            ? IconButton(
+                padding: EdgeInsets.zero,
+                icon: Icon(Icons.clear, color: Colors.black),
+                onPressed: () {
+                  setState(() {
+                    _searchController.clear();
+                    searchQuery = '';
+                    filterTickets('');
+                  });
+                },
+              )
+            : null,
+        hintStyle: GoogleFonts.lato(
+          color: Colors.black87,
+          fontSize: 16.0,
+          fontWeight: FontWeight.normal,
+        ),
+      ),
+    );
   }
 
   Widget studentList(List<ResultObj> mytickets) {
@@ -425,41 +517,24 @@ class _TicketScreenState extends State<TicketScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Container(
-                      decoration: BoxDecoration(
-                        color: hexToColor(guardColors[1]),
-                        borderRadius: BorderRadius.circular(
-                            15), // Adjust the radius as needed
-                      ),
-                      child: Column(
-                        children: <Widget>[
-                          ListTile(
-                            title: Text(
-                              mytickets[index].student_name,
-                              style: GoogleFonts.lato(
-                                fontWeight: FontWeight.w800,
-                                color: Colors.white,
-                                fontSize: 18,
-                              ),
+                        decoration: BoxDecoration(
+                          color: hexToColor(guardColors[1]),
+                          borderRadius: BorderRadius.circular(
+                              15), // Adjust the radius as needed
+                        ),
+                        child: ExpansionTile(
+                          title: Text(
+                            mytickets[index].student_name,
+                            style: GoogleFonts.lato(
+                              fontWeight: FontWeight.w800,
+                              color: Colors.white,
+                              fontSize: 18,
                             ),
-                            // subtitle: Text(mytickets[index]
-                            // .date_time_guard
-                            // .toString()),
-                            onTap: () => toggleExpansion(index),
                           ),
-
-                          AnimatedCrossFade(
-                            firstChild: Container(),
-                            secondChild: StudentDetails(mytickets[index]),
-                            crossFadeState: isExpanded
-                                ? CrossFadeState.showFirst
-                                : CrossFadeState.showSecond,
-                            duration: const Duration(seconds: 3),
-                          )
-
-                          // Add divider between list items
-                        ],
-                      ),
-                    ),
+                          children: <Widget>[
+                            StudentDetails(mytickets[index]),
+                          ],
+                        )),
                     SizedBox(
                       height: 5,
                     ),
@@ -515,41 +590,24 @@ class _TicketScreenState extends State<TicketScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Container(
-                    decoration: BoxDecoration(
-                      color: hexToColor(guardColors[1]),
-                      borderRadius: BorderRadius.circular(
-                          15), // Adjust the radius as needed
-                    ),
-                    child: Column(
-                      children: <Widget>[
-                        ListTile(
-                          title: Text(
-                            mytickets[index].visitor_name,
-                            style: GoogleFonts.lato(
-                              fontWeight: FontWeight.w800,
-                              color: Colors.white,
-                              fontSize: 18,
-                            ),
+                      decoration: BoxDecoration(
+                        color: hexToColor(guardColors[1]),
+                        borderRadius: BorderRadius.circular(
+                            15), // Adjust the radius as needed
+                      ),
+                      child: ExpansionTile(
+                        title: Text(
+                          mytickets[index].visitor_name,
+                          style: GoogleFonts.lato(
+                            fontWeight: FontWeight.w800,
+                            color: Colors.white,
+                            fontSize: 18,
                           ),
-                          subtitle:
-                              Text(mytickets[index].date_time_guard.toString()),
-                          onTap: () => toggleExpansion(index),
                         ),
-                        AnimatedCrossFade(
-                            firstChild: Container(),
-                            secondChild: VisitorDetails(mytickets[index]),
-                            crossFadeState: isExpanded
-                                ? CrossFadeState.showFirst
-                                : CrossFadeState.showSecond,
-                            duration: const Duration(milliseconds: 100),
-                          ),
-                        
-                          
-
-                        // Add divider between list items
-                      ],
-                    ),
-                  ),
+                        children: <Widget>[
+                          VisitorDetails(mytickets[index]),
+                        ],
+                      )),
                   SizedBox(
                     height: 5,
                   ),
@@ -559,44 +617,36 @@ class _TicketScreenState extends State<TicketScreen> {
       ),
     );
   }
-  Widget VisitorDetails(ResultObj4 ticket){
+
+  Widget VisitorDetails(ResultObj4 ticket) {
     return Container(
-                            child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                      "Duration :${ticket.duration_of_stay}",
-                                      style: GoogleFonts.lato(
-                                        fontWeight: FontWeight.w600,
-                                        color: Colors.black,
-                                        fontSize: 15,
-                                      )),
-                                  Text(
-                                      "Mobile Number :${ticket.mobile_no}",
-                                      style: GoogleFonts.lato(
-                                        fontWeight: FontWeight.w600,
-                                        color: Colors.black,
-                                        fontSize: 15,
-                                      )),
-                                  Text(
-                                      "Additonal Visitors :${ticket.num_additional}",
-                                      style: GoogleFonts.lato(
-                                        fontWeight: FontWeight.w600,
-                                        color: Colors.black,
-                                        fontSize: 15,
-                                      )),
-                                  Text(
-                                      "Car Number: ${ticket.car_number}",
-                                      style: GoogleFonts.lato(
-                                        fontWeight: FontWeight.w600,
-                                        color: Colors.black,
-                                        fontSize: 15,
-                                      )),
-                                  SizedBox(
-                                      height:
-                                          MediaQuery.of(context).size.height *
-                                              0.01)
-                                ]),
-                          );
+      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+        Text("Duration :${ticket.duration_of_stay}",
+            style: GoogleFonts.lato(
+              fontWeight: FontWeight.w600,
+              color: Colors.black,
+              fontSize: 15,
+            )),
+        Text("Mobile Number :${ticket.mobile_no}",
+            style: GoogleFonts.lato(
+              fontWeight: FontWeight.w600,
+              color: Colors.black,
+              fontSize: 15,
+            )),
+        Text("Additonal Visitors :${ticket.num_additional}",
+            style: GoogleFonts.lato(
+              fontWeight: FontWeight.w600,
+              color: Colors.black,
+              fontSize: 15,
+            )),
+        Text("Car Number: ${ticket.car_number}",
+            style: GoogleFonts.lato(
+              fontWeight: FontWeight.w600,
+              color: Colors.black,
+              fontSize: 15,
+            )),
+        SizedBox(height: MediaQuery.of(context).size.height * 0.01)
+      ]),
+    );
   }
 }
