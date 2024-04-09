@@ -2233,7 +2233,7 @@ class databaseInterface {
       Stream.periodic(Duration(seconds: REFRESH_RATE * 5))
           .asyncMap((_) => return_total_notification_count_guard(email));
 
-  static Future<void> jwt_login(String email, String password) async {
+  static Future<String> jwt_login(String email, String password) async {
     var url = "$complete_base_url_static/login";
     try {
       final response = await http.post(
@@ -2260,15 +2260,18 @@ class databaseInterface {
         LoggedInDetails.setEmail(email);
         myglobals.auth!.login();
         print("shared preference set");
+        return("Login Successful");
       } else {
         // Handle error
         print("Error in login");
         final Map<String, dynamic> data = json.decode(response.body);
         print("Error at backend: ${data['error']}");
+        return data['error']?? "Login Failed";
       }
     } catch (e) {
       print("Error while logging in, these error was catched at frontend");
       print("ERROR : ${e.toString()}");
+      return "Login Failed";
     }
   }
 

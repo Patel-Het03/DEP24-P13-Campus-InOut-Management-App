@@ -159,6 +159,68 @@ class _AuthFormState extends State<AuthForm> {
     }
   }
 
+  void LoginScaffold(String message){
+    print("@@ $message");
+    final scaffoldMessenger=ScaffoldMessenger.of(context);
+    if(message=="Login Successful"){
+      scaffoldMessenger.showSnackBar(
+        SnackBar(
+          content: Text(
+            message,
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          backgroundColor: Colors.green,
+        ),
+      );
+    }
+    else if(message=="user not found"){
+      scaffoldMessenger.showSnackBar(
+        SnackBar(
+          content: Text(
+            message,
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          backgroundColor: Colors.red,
+        ),
+      );
+    }
+    else if(message=="Invalid username or password"){
+      scaffoldMessenger.showSnackBar(
+        SnackBar(
+          content: Text(
+            message,
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          backgroundColor: Colors.red,
+        ),
+      );
+    }
+    else{
+      scaffoldMessenger.showSnackBar(
+        SnackBar(
+          content: Text(
+            "Login Failed",
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          backgroundColor: Colors.red,
+        ),
+      );
+    }
+
+  }
+
   Future<void> startauthentication() async {
     final validity = _formkey.currentState?.validate();
     FocusScope.of(context).unfocus();
@@ -167,12 +229,14 @@ class _AuthFormState extends State<AuthForm> {
       _formkey.currentState?.save();
       // Add basic checks for email and password in the frontend
 
-      await databaseInterface.jwt_login(_email, _password);
+      String message= await databaseInterface.jwt_login(_email, _password);
+      LoginScaffold(message);
 
       SharedPreferences prefs = await SharedPreferences.getInstance();
       is_authenticated.person_type =await prefs.getString("type")!;
     }
   }
+  
 
   Future<void> guardLocation() async {
     databaseInterface db = new databaseInterface();

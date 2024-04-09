@@ -18,36 +18,43 @@ class LoginView(APIView):
     permission_classes = (AllowAny,)
 
     def post(self, request):
-        print("$%$$")
-        email = request.data.get("email")
-        password = request.data.get("password")
+        try:
+            print("$%$$")
+            email = request.data.get("email")
+            password = request.data.get("password")
 
-        user = User.objects.filter(email=email).first()
-        if user is None:
-            jsonresponse = {"ok": False, "error": "user not found"}
-            return Response(jsonresponse, status=status.HTTP_400_BAD_REQUEST)
+            user = User.objects.filter(email=email).first()
+            if user is None:
+                jsonresponse = {"ok": False, "error": "user not found"}
+                return Response(jsonresponse, status=status.HTTP_400_BAD_REQUEST)
 
-        if user is None or not user.check_password(password):
-            jsonresponse={'ok':False,"error": "Invalid username or password"}
+            if user is None or not user.check_password(password):
+                jsonresponse={'ok':False,"error": "Invalid username or password"}
+                return Response(
+                    jsonresponse,
+                    status=status.HTTP_401_UNAUTHORIZED,
+                )
+
+            refresh = RefreshToken.for_user(user)
+
+            jsonresponse={
+                "ok":True,
+                "access_token": str(refresh.access_token),
+                "refresh_token": str(refresh),
+                "type":str(user.type),
+                }
+            print(jsonresponse)
+            print(user.type)
             return Response(
                 jsonresponse,
-                status=status.HTTP_401_UNAUTHORIZED,
+                status=status.HTTP_200_OK
             )
-
-        refresh = RefreshToken.for_user(user)
-
-        jsonresponse={
-            "ok":True,
-            "access_token": str(refresh.access_token),
-            "refresh_token": str(refresh),
-            "type":str(user.type),
+        except Exception as e:
+            jsonresponse={
+                "ok":False,
+                "error":str(e)
             }
-        print(jsonresponse)
-        print(user.type)
-        return Response(
-            jsonresponse,
-            status=status.HTTP_200_OK
-        )
+            return Response(jsonresponse,status=status.HTTP_400_BAD_REQUEST)
     
 class RefreshMyToken(APIView):
     permission_classes = (AllowAny,)
