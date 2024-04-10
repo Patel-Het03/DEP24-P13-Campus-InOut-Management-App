@@ -1,7 +1,7 @@
 from django.db import models
 from django.contrib.auth.hashers import *
 import datetime
-from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
+from django.contrib.auth.models import BaseUserManager
 # If we delete anything, change the value of is_present to False
 default_password = 'IIT_Ropar'
 default_encrypted_password = make_password(default_password)
