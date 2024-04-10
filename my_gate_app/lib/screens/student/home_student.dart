@@ -16,7 +16,7 @@ import 'package:my_gate_app/screens/student/student_guard_side/student_tabs.dart
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:my_gate_app/myglobals.dart' as myglobals;
 import 'dart:async';
-
+import 'package:my_gate_app/screens/student/Invitee_Info.dart';
 import 'package:my_gate_app/screens/profile2/model/user.dart';
 import 'package:my_gate_app/screens/profile2/utils/user_preferences.dart';
 import 'package:my_gate_app/screens/notificationPage/notification.dart';
@@ -999,6 +999,29 @@ class _HomeStudentState extends State<HomeStudent> {
                   ),
                 ),
               ),
+            ),
+            Padding(
+              padding: EdgeInsets.symmetric(vertical: 20, horizontal: 40),
+              child: ElevatedButton(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => InviteeInfoPage()),
+                  );
+                },
+                child: Text(
+                  'Invite Guest',
+                  style: GoogleFonts.mPlusRounded1c(
+                      fontSize: 20,
+                    color:Colors.white,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                style: ElevatedButton.styleFrom(
+                  padding: EdgeInsets.all(15),
+                ),
+              ),
+
             ),
           ],
         ),

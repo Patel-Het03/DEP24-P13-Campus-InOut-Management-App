@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:my_gate_app/get_email.dart';
 import 'package:qr_flutter/qr_flutter.dart';
-import 'package:share/share.dart';
 // import 'package:my_gate_app/screens/guard/utils/UI_statics.dart'; // Import necessary dependencies
 import 'package:share_plus/share_plus.dart' as myshare;
 import 'package:path_provider/path_provider.dart';

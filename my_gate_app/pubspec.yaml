@@ -65,7 +65,6 @@ dependencies:
   flutter_datetime_picker_plus: ^2.1.0
   retry: ^3.1.2
   provider: ^6.1.2
-  share: ^2.0.4
   share_plus: ^8.0.3
 
 dev_dependencies:

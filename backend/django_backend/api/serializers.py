@@ -140,3 +140,8 @@ class NotificationTableSerializer(serializers.ModelSerializer):
     class Meta:
         model = NotificationTable
         fields = "__all__"
+
+class InviteRequestSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = InviteRequest
+        fields = '__all__'
