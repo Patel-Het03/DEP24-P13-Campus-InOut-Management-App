@@ -90,7 +90,28 @@
     @override
     void initState() {
       super.initState();
-      init();
+      // init();
+      filtered_tickets_visitors.add(ResultObj4.constructor1(
+        'Visitor 1',
+        '123456789',
+        'Status 1',
+        'Car 1',
+        'Authority 1',
+        'authority@example.com',
+        'Designation 1',
+        'Purpose 1',
+        'Status 1',
+        'Message 1',
+        '2024-03-15 12:00:00',
+        '2024-03-15 12:00:00',
+        '2024-03-15 12:00:00',
+        '2024-03-15 12:00:00',
+        'Guard Status 1',
+        'Ticket Type 1',
+        1,
+        'Duration 1',
+        'Additional 1',
+      ));
     }
 
     Future init() async {
@@ -127,13 +148,9 @@
           }
         },
         child: Scaffold(
+          backgroundColor: Color(0xffFFF0D2),
           body: Container(
-            decoration: const BoxDecoration(
-              gradient: LinearGradient(
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
-                  colors: [Colors.white, Colors.white]),
-            ),
+
             // color: Colors.bla,
             child: Column(
               children: [
@@ -163,7 +180,7 @@
                         // helperStyle: TextStyle(color: Colors.grey),
                         enabledBorder: OutlineInputBorder(
                           borderSide:
-                              BorderSide(color: Color.fromARGB(255, 29, 40, 204)),
+                              BorderSide(color: Colors.black),
                         ),
                         focusedBorder: OutlineInputBorder(
                           borderSide: BorderSide(
@@ -208,15 +225,15 @@
                           width: 40,
                           margin: const EdgeInsets.all(20),
                           decoration: BoxDecoration(
-                            color: Colors.white, // Set white background color
+                            color: Color(0xffEDC882), // Set white background color
                             borderRadius:
-                                const BorderRadius.all(Radius.circular(10)),
+                                const BorderRadius.all(Radius.circular(5)),
                             border: Border.all(color: Colors.black),
                             boxShadow: [
                               BoxShadow(
                                 color: Colors.grey.withOpacity(0.6),
-                                spreadRadius: 5,
-                                blurRadius: 7,
+                                spreadRadius: 2,
+                                blurRadius: 2,
                                 offset: const Offset(
                                     0, 3), // changes position of shadow
                               ),
@@ -246,10 +263,10 @@
                                       alignment: Alignment.topLeft,
                                       child: Text(
                                         filtered_tickets_visitors[index].visitor_name,
-                                        style: GoogleFonts.roboto(
+                                        style: GoogleFonts.mPlusRounded1c(
                                           fontSize: 25,
                                           fontWeight: FontWeight.bold,
-                                          color: const Color.fromARGB(255, 0, 98, 255),
+                                          color:  Colors.black,
                                         ),
                                       ),
                                     ),
@@ -260,7 +277,7 @@
                                         style: GoogleFonts.roboto(
                                           fontSize: 15,
                                           fontWeight: FontWeight.bold,
-                                          color: const Color.fromARGB(255, 0, 98, 255),
+                                          color: Colors.black,
                                         ),
                                       ),
                                     ),
@@ -271,8 +288,8 @@
                                         style: GoogleFonts.roboto(
                                           fontSize: 12,
                                           fontWeight: FontWeight.bold,
-                                          color:
-                                              const Color.fromARGB(255, 102, 102, 102),
+                                          color:Colors.black,
+
                                         ),
                                       ),
                                     ),
@@ -282,7 +299,7 @@
                               const Spacer(),
                               const Icon(
                                 Icons.arrow_right,
-                                color: Colors.lightBlue,
+                                color: Colors.black38,
                                 size: 50.0,
                               ),
                             ],

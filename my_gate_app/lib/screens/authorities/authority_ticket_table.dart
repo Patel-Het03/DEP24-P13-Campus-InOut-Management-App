@@ -6,6 +6,7 @@ import 'package:my_gate_app/database/database_objects.dart';
 import 'package:my_gate_app/screens/profile2/profile_page.dart';
 import 'package:my_gate_app/screens/utils/scrollable_widget.dart';
 import 'package:my_gate_app/get_email.dart';
+import 'package:my_gate_app/screens/utils/custom_snack_bar.dart';
 
 // We pass to this class the value of "is_approved" which takes the value "Accepted"|"Rejected"
 
@@ -36,34 +37,67 @@ class _AuthorityTicketTableState extends State<AuthorityTicketTable> {
   bool enableDateFilter = false;
   bool isFieldEmpty = true;
   String searchQuery = '';
+  int selectedIndex = -1;
+  List<ResultObj2> selectedTickets_action = [];
+
 
   @override
   void initState() {
     super.initState();
-    init();
+      init();
   }
 
   Future<List<ResultObj2>> get_tickets_for_authority() async {
     String authority_email = LoggedInDetails.getEmail();
+    print(widget.is_approved);
     return await databaseInterface.get_tickets_for_authorities(
         authority_email, widget.is_approved);
   }
+  Future<void> reject_action_tickets_authorities() async {
+    databaseInterface db = new databaseInterface();
+    int status_code =
+    await db.reject_selected_tickets_authorities(selectedTickets_action);
+    print("The status code is $status_code");
+    if (status_code == 200) {
+      await init();
+      final snackBar = get_snack_bar("Ticket rejected", Colors.green);
+      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+    } else {
+      final snackBar = get_snack_bar("Failed to reject the ticket", Colors.red);
+      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+    }
+  }
+  Future<void> accept_action_tickets_authorities() async {
+    databaseInterface db = new databaseInterface();
+    int status_code =
+    await db.accept_selected_tickets_authorities(selectedTickets_action);
+    if (status_code == 200) {
+      await init();
+      final snackBar = get_snack_bar("Ticket accepted", Colors.green);
+      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+    } else {
+      final snackBar = get_snack_bar("Failed to accept the ticket", Colors.red);
+      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+    }
+  }
+  void toggleExpansion(int index) {
+    setState(() {
+      if (selectedIndex == index) {
+        selectedIndex = -1; // Collapse if already expanded
+      } else {
+        selectedIndex = index; // Expand if not expanded
+      }
+    });
+  }
 
   Future init() async {
-    final tickets = await get_tickets_for_authority();
+    final Bactickets = await get_tickets_for_authority();
     setState(() {
-      widget.tickets = tickets;
-      // int len = tickets.length;
-      // if(len == 0){
-      //   TicketResultObj obj = new TicketResultObj.constructor1();
-      //   obj.empty_table_entry(obj);
-      //   this.tickets = [];
-      //   // this.tickets.add(obj);
-      // }else{
-      //   this.tickets = tickets;
-      // }
+      tickets = Bactickets;
+
     });
     filterTickets(searchQuery);
+
   }
 
   void filterTickets(String query) {
@@ -127,212 +161,270 @@ class _AuthorityTicketTableState extends State<AuthorityTicketTable> {
 
   @override
   Widget build(BuildContext context) => Scaffold(
-        backgroundColor: Color.fromARGB(255, 255, 255, 255),
+        backgroundColor: Color(0xffFFF0D2),
         body: SingleChildScrollView(
           child: SizedBox(
             height: MediaQuery.of(context).size.height,
             child: Column(
               children: [
-                Image.asset(
-                  'assets/images/authority.png',
-                  height: 200,
-                ),
-                SizedBox(
-                  height: 10,
-                ),
-                Center(
-                  child: Container(
-                    padding: EdgeInsets.all(1),
-                    child: Text(
-                      // "Ticket Table",
-                      "",
-                      style: GoogleFonts.roboto(
-                          fontSize: 20, fontWeight: FontWeight.bold),
+                Row(children: [
+                  SizedBox(
+                    width: MediaQuery.of(context).size.width * 0.03,
+                  ),
+                  Container(
+                    // margin: EdgeInsets.all(16.0),
+                    width: MediaQuery.of(context).size.width * 0.73,
+                    height: 35,
+                    decoration: BoxDecoration(
+                      color: Colors.transparent,
+                      borderRadius: BorderRadius.circular(5.0),
+                      border:
+                      Border(bottom: BorderSide(color: Colors.black, width: 2.0)),
+                    ),
+                    child: TextField(
+                      style: GoogleFonts.lato(
+                        color: Colors.black,
+                        fontSize: 20,
+                      ),
+                      onChanged: (text) {
+                        // isFieldEmpty = text.isEmpty;
+                        // onSearchQueryChanged(text);
+                      },
+                      decoration: InputDecoration(
+                        contentPadding: EdgeInsets.fromLTRB(5.0, 0, 0, 14.0),
+                        hintText: 'Search by Name',
+                        border: InputBorder.none,
+                        prefixIcon: Icon(Icons.search, color: Colors.black),
+                        suffixIcon: IconButton(
+                          padding: EdgeInsets.zero,
+                          icon: Icon(Icons.clear, color: Colors.black),
+                          onPressed: () {
+                            // Clear search field
+                          },
+                        ),
+                        hintStyle: GoogleFonts.lato(
+                          color: Colors.black87,
+                          fontSize: 16.0,
+                          fontWeight: FontWeight.normal,
+                        ),
+                      ),
                     ),
                   ),
-                ),
-                SizedBox(
-                  height: 2,
-                ),
-                // ClipRRect(
-                //   borderRadius: BorderRadius.circular(20),
-                //   child: Image.asset(
-                //     widget.image_path,
-                //     height: 150,
-                //   ),
-                // ),
-                // SizedBox(
-                //   height: 20,
-                // ),
-                SizedBox(
-                  height: 20,
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    SizedBox(
-                      width: 20,
+                  SizedBox(
+                    width: MediaQuery.of(context).size.width * 0.02,
+                  ),
+                  Container(
+                    height: 30,
+                    width: MediaQuery.of(context).size.width * 0.08,
+                    decoration: BoxDecoration(
+                      color: Colors.transparent,
+                      borderRadius: BorderRadius.circular(3.0),
                     ),
-                    SizedBox(
-                      width: MediaQuery.of(context).size.width / 1.4,
-                      child: InputDecorator(
-                        isEmpty:
-                            isFieldEmpty, // if true, the hint text is shown
-                        decoration: InputDecoration(
-                          hintText: '    Search by Name',
-                          hintStyle: TextStyle(
-                              color: Color.fromARGB(255, 96, 96,
-                                  96)), // Set the desired color for the hint text
-                        ),
+                    child: IconButton(
+                      padding: EdgeInsets.zero,
+                      icon: Icon(Icons.filter_alt,
+                          color: Colors.black87), // Filter icon
+                      onPressed: () {
+                        // enableDateFilter=true;
+                        // _selectDateRange(context);
+                      },
+                    ),
+                  ),
+                  SizedBox(
+                    width: MediaQuery.of(context).size.width * 0.02,
+                  ),
+                  Container(
+                    height: 30,
+                    width: MediaQuery.of(context).size.width * 0.08,
+                    decoration: BoxDecoration(
+                      color: Colors.transparent,
+                      borderRadius: BorderRadius.circular(8.0),
+                    ),
+                    child: IconButton(
+                      padding: EdgeInsets.zero,
+                      icon: Icon(Icons.filter_alt_off,
+                          color: Colors.black87), // Filter icon
+                      onPressed: () {
+                        // setState(() {
+                        //   enableDateFilter = !enableDateFilter;
+                        //   resetFilter(searchQuery);
+                        //   // filterTickets(searchQuery);
+                        // });
+                      },
+                    ),
+                  ),
+                ]),
+                SizedBox(
+                  height: MediaQuery.of(context).size.height * 0.03,
+                ),
 
-                        child: TextField(
-                          style: TextStyle(color: Color.fromARGB(255, 0, 0, 0)),
-                          decoration: InputDecoration(
-                            // labelText: "Name",
-                            // hintText: "Enter name to filter tickets",
-                            // hintStyle: TextStyle(color: Colors.grey),
-                            // helperText: "Enter name to filter tickets",
-                            // helperStyle: TextStyle(color: Colors.grey),
-                            enabledBorder: OutlineInputBorder(
-                              borderSide: BorderSide(color: Colors.red),
-                            ),
-                            focusedBorder: OutlineInputBorder(
-                              borderSide: BorderSide(color: Colors.red),
-                            ),
-                          ),
-                          onChanged: (text) {
-                            isFieldEmpty = text.isEmpty;
 
-                            onSearchQueryChanged(text);
-                          },
-                        ),
-                      ),
-                    ),
-
-                    SizedBox(
-                      width: 3,
-                    ),
-                    IconButton(
-                      icon: Icon(
-                        Icons.filter_list,
-                        color: Color.fromARGB(255, 0, 0, 0),
-                        size: 30.0,
-                      ),
-                      onPressed: () => _selectDateRange(context),
-                    ),
-                    // IconButton(
-                    //   icon: Icon(
-                    //     Icons.search,
-                    //     color: Color.fromARGB(255, 0, 0, 0),
-                    //     size: 24.0,
-                    //   ),
-                    //   onPressed: () {
-                    //     print(this.chosen_entry_number);
-                    //     print(this.chosen_start_date);
-                    //     print(this.chosen_end_date);
-                    //     print(this.isSelected);
-                    //   },
-                    // ),
-                    // SizedBox(
-                    //   width: 340,
-                    // )
-                  ],
-                ),
-                SizedBox(
-                  height: 25,
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    SizedBox(
-                      width: 20,
-                    ),
-                    IntrinsicWidth(
-                      child: Container(
-                        decoration: BoxDecoration(
-                          border: Border.all(
-                              color:
-                                  Colors.grey), // Set the desired border color
-                          borderRadius: BorderRadius.circular(
-                              8.0), // Set the desired border radius
-                        ),
-                        child: InkWell(
-                          onTap: () {
-                            setState(() {
-                              enableDateFilter = !enableDateFilter;
-                              print("sssssssssssssssssssssssssssssssssssssss");
-                              print(enableDateFilter);
-                              filterTickets(searchQuery);
-                            });
-                          },
-                          child: Row(
-                            children: [
-                              Theme(
-                                data: ThemeData(
-                                  unselectedWidgetColor: Colors
-                                      .black, // Set the desired outline color
-                                ),
-                                child: Radio<bool>(
-                                  activeColor: Colors
-                                      .red, // Set the desired color for the radio button
-                                  value: enableDateFilter,
-                                  groupValue: true,
-                                  onChanged: (value) {
-                                    // setState(() {
-                                    //   enableDateFilter = value!;
-                                    // });
-                                  },
-                                ),
-                              ),
-                              Text(
-                                'Date Filter  ',
-                                style: TextStyle(
-                                  color: enableDateFilter
-                                      ? Colors.blue
-                                      : Colors
-                                          .black, // Set the desired color for the label
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ),
-                    SizedBox(
-                      width: 20,
-                    ),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          "Start Date: ${chosen_start_date.split(" ")[0]}",
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 14,
-                            color: Colors.black,
-                          ),
-                        ),
-                        Text(
-                          "End Date: ${chosen_end_date.split(" ")[0]}",
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 14,
-                            color: Colors.black,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-                SizedBox(
-                  height: 20,
-                ),
-                Expanded(child: ScrollableWidget(child: buildDataTable())),
+                // Expanded(child: ScrollableWidget(child: buildDataTable())),
+                acceptedRejectedStudentList(tickets),
               ],
             ),
           ),
         ),
       );
+
+  Widget acceptedRejectedStudentList(List<ResultObj2> mytickets) {
+    print(mytickets);
+    return
+      // mytickets.isEmpty
+      //     ? Center(child: CircularProgressIndicator())
+      //     :
+
+      Expanded(
+        child: SizedBox(
+          width: MediaQuery.of(context).size.width * 0.95,
+          // height:MediaQuery.of(context).size.height*0.67,
+          child: ListView.builder(
+            itemCount: mytickets.length,
+            itemBuilder: (BuildContext context, int index) {
+              final bool isExpanded = index == selectedIndex;
+              return Container(
+                child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Container(
+                        decoration: BoxDecoration(
+                          color: Color(0xffEDC882),
+                          borderRadius: BorderRadius.circular(
+                              15), // Adjust the radius as needed
+                        ),
+                        child: Column(
+                          children: <Widget>[
+                            ListTile(
+                              title: Text(
+                                mytickets[index].student_name,
+                                style: GoogleFonts.lato(
+                                  fontWeight: FontWeight.w800,
+                                  color: Colors.white,
+                                  fontSize: 18,
+                                ),
+                              ),
+                              // subtitle: Text(mytickets[index]
+                              // .date_time_guard
+                              // .toString()),
+                              onTap: () => toggleExpansion(index),
+                            ),
+
+                            if (isExpanded)
+                              Container(
+                                child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.center,
+                                    children: [
+                                      Text(
+                                          "Student :${tickets[index].student_name}",
+                                          style: GoogleFonts.lato(
+                                            fontWeight: FontWeight.w600,
+                                            color: Colors.black,
+                                            fontSize: 15,
+                                          )),
+                                      Text("Location :${tickets[index].location}",
+                                          style: GoogleFonts.lato(
+                                            fontWeight: FontWeight.w600,
+                                            color: Colors.black,
+                                            fontSize: 15,
+                                          )),
+                                      Text(
+                                          "Time :${((tickets[index].date_time.split("T").last).split(".")[0].split(":").sublist(0, 2)).join(":")}",
+                                          style: GoogleFonts.lato(
+                                            fontWeight: FontWeight.w600,
+                                            color: Colors.black,
+                                            fontSize: 15,
+                                          )),
+                                      Text(
+                                          "Ticket_type :${tickets[index].ticket_type}",
+                                          style: GoogleFonts.lato(
+                                            fontWeight: FontWeight.w600,
+                                            color: Colors.black,
+                                            fontSize: 15,
+                                          )),
+                                      Text(
+                                          "Authority_message :${tickets[index].authority_message}",
+                                          style: GoogleFonts.lato(
+                                            fontWeight: FontWeight.w600,
+                                            color: Colors.black,
+                                            fontSize: 15,
+                                          )),
+                                      SizedBox(
+                                          height: 5
+                                      ),
+                                      Container(
+                                        width: MediaQuery.of(context).size.width * 0.8, // 80% of screen width
+                                        height: 1, // Height of the divider
+                                        color: Colors.black12, // Color of the divider
+                                      ),
+                                      SizedBox(
+                                          height: 5
+                                      ),
+                                      Row(
+                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        children: [
+                                          Visibility(
+                                            visible: tickets[index].is_approved == "Rejected",
+                                            child: ElevatedButton(
+                                              onPressed: () async{
+                                                selectedTickets_action.add(tickets[index]);
+                                                await accept_action_tickets_authorities();
+                                              },
+                                              style: ElevatedButton.styleFrom(
+                                                shape: RoundedRectangleBorder(
+                                                  borderRadius: BorderRadius.circular(5),
+                                                ),
+                                              ),
+                                              child: Text(
+                                                "Accept",
+                                                style: GoogleFonts.mPlusRounded1c(
+                                                  color: Colors.white,
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                          Visibility(
+                                            visible: tickets[index].is_approved == "Approved",
+                                            child: ElevatedButton(
+                                              onPressed: () async{
+                                                selectedTickets_action.add(tickets[index]);
+                                                await reject_action_tickets_authorities();
+                                              },
+                                              style: ElevatedButton.styleFrom(
+                                                shape: RoundedRectangleBorder(
+                                                  borderRadius: BorderRadius.circular(5),
+                                                ),
+                                              ),
+                                              child: Text(
+                                                "Reject",
+                                                style: GoogleFonts.mPlusRounded1c(
+                                                  color: Colors.white,
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ]),
+
+                              ),
+
+                          ],
+                        ),
+                      ),
+                      SizedBox(
+                        height: 5,
+                      ),
+                    ]
+
+                ),
+
+              );
+
+            },
+          ),
+        ),
+      );
+  }
 
   Widget buildDataTable() {
     // Fields returned from backend [is_approved, ticket_type, date_time, location, email, student_name, authority_message]

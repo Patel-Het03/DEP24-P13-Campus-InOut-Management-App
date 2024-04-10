@@ -62,14 +62,7 @@ class _AuthorityProfilePageState extends State<AuthorityProfilePage> {
       body: Container(
         padding: const EdgeInsets.only(top: 16.0),
         decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            colors: [
-              Color.fromARGB(255, 255, 255, 255),
-              Color.fromARGB(255, 241, 241, 241)
-            ],
-            begin: Alignment.bottomLeft,
-            end: Alignment.topRight,
-          ),
+          color: Colors.white,
         ),
         child: ListView(
           padding: const EdgeInsets.symmetric(horizontal: 32),
@@ -114,16 +107,36 @@ class _AuthorityProfilePageState extends State<AuthorityProfilePage> {
           ),
           const SizedBox(height: 8),
           TextField(
-            style: const TextStyle(color: Colors.black),
             enabled: enabled,
+            style: TextStyle(
+              color: Colors.black,
+              fontFamily: 'Roboto', // Change the font family as needed
+              fontSize: 16.0, // Adjust the font size as needed
+            ),
             controller: controller,
             decoration: InputDecoration(
-              disabledBorder: OutlineInputBorder(
-                borderSide: const BorderSide(color: Colors.black, width: 1.0),
-                borderRadius: BorderRadius.circular(12),
+              filled: true,
+              fillColor: Colors.grey[200], // Set the background color
+              contentPadding: EdgeInsets.symmetric(
+                  vertical: 14.0,
+                  horizontal: 16.0), // Adjust the padding as needed
+              enabledBorder: OutlineInputBorder(
+                borderSide: BorderSide.none,
+                borderRadius: BorderRadius.circular(
+                    8.0), // Adjust the border radius as needed
               ),
-              labelStyle: TextStyle(
-                color: Color(int.parse("0xFF344953")),
+              focusedBorder: OutlineInputBorder(
+                borderSide: BorderSide(
+                  color: Color.fromARGB(255, 36, 0, 108),
+                  width: 2.0,
+                ),
+                borderRadius: BorderRadius.circular(
+                    8.0), // Adjust the border radius as needed
+              ),
+              disabledBorder: OutlineInputBorder(
+                borderSide: BorderSide.none,
+                borderRadius: BorderRadius.circular(
+                    8.0), // Adjust the border radius as needed
               ),
             ),
             maxLines: maxLines,

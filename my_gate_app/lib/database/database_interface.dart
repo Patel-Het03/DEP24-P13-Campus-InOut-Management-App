@@ -1028,6 +1028,7 @@ class databaseInterface {
     var uri =
         "$complete_base_url_static/authorities/get_tickets_for_authorities";
     try {
+
       var response = await http.post(Uri.parse(uri), body: {
         'authority_email': authority_email,
         'is_approved': is_approved

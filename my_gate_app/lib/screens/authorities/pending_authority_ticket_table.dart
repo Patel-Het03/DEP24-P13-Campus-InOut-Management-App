@@ -1,4 +1,5 @@
 // ignore_for_file: prefer_const_literals_to_create_immutables, prefer_const_constructors, unnecessary_new, deprecated_member_use, non_constant_identifier_names, avoid_print, must_be_immutable
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:my_gate_app/database/database_interface.dart';
@@ -22,6 +23,7 @@ class _PendingAuthorityTicketTableState
   String ticket_rejected_message = '';
 
   List<ResultObj2> tickets = [];
+
   List<ResultObj2> ticketsFiltered = [];
   String searchQuery = '';
 
@@ -35,6 +37,17 @@ class _PendingAuthorityTicketTableState
   List<bool> isSelected = [true, true];
   bool enableDateFilter = false;
   bool isFieldEmpty = true;
+  int selectedIndex = -1;
+
+  void toggleExpansion(int index) {
+    setState(() {
+      if (selectedIndex == index) {
+        selectedIndex = -1; // Collapse if already expanded
+      } else {
+        selectedIndex = index; // Expand if not expanded
+      }
+    });
+  }
 
   Future<void> accept_selected_tickets_authorities() async {
     databaseInterface db = new databaseInterface();
@@ -199,306 +212,395 @@ class _PendingAuthorityTicketTableState
   }
 
   @override
-  Widget build(BuildContext context) => Scaffold(
-        backgroundColor: Colors.white,
-        body: SingleChildScrollView(
-          child: SizedBox(
-            height: MediaQuery.of(context).size.height,
-            child: Column(
-              children: [
-                Image.asset(
-                  'assets/images/authority.png',
-                  height: 200,
+  Widget build(BuildContext context) {
+    print(tickets.length);
+    return Scaffold(
+      backgroundColor: Color(0xffFFF0D2),
+      body: Column(
+        children: [
+          // // Image.asset(
+          // //   'assets/images/authority.png',
+          // //   height: 200,
+          // // ),
+          // SizedBox(
+          //   height: 10,
+          // ),
+          // Center(
+          //   child: Column(
+          //     mainAxisAlignment: MainAxisAlignment.center,
+          //     //Center Row contents horizontally,
+          //     crossAxisAlignment: CrossAxisAlignment.center,
+          //     //Center Row contents vertically,
+          //     children: [
+          //       Row(
+          //         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          //         //Center Row contents horizontally,
+          //         crossAxisAlignment: CrossAxisAlignment.center,
+          //         //Center Row contents vertically,
+          //         children: [
+          //           Column(
+          //             children: [
+          //               Container(
+          //                 width: MediaQuery.of(context).size.width / 4,
+          //                 padding: EdgeInsets.all(5),
+          //                 child: ElevatedButton.icon(
+          //                   icon: Icon(
+          //                     Icons.check_circle_outlined,
+          //                     color: Colors.white,
+          //                     size:
+          //                         MediaQuery.of(context).size.width / 15,
+          //                   ),
+          //                   style: ElevatedButton.styleFrom(
+          //                       textStyle: const TextStyle(fontSize: 20),
+          //                       backgroundColor: Color.fromARGB(255, 9, 216, 9)),
+          //                   onPressed: () async {
+          //                     accept_selected_tickets_authorities();
+          //                   },
+          //                   label: Text(
+          //                     '',
+          //                     style: GoogleFonts.roboto(),
+          //                   ),
+          //                 ),
+          //                 //decoration: Decoration(),
+          //               ),
+          //               // Text(
+          //               //   ticket_accepted_message,
+          //               //   style: TextStyle(color: Colors.white),
+          //               // ),
+          //             ],
+          //           ),
+          //           Column(
+          //             children: [
+          //               Container(
+          //                 width: MediaQuery.of(context).size.width / 4,
+          //                 padding: EdgeInsets.all(5),
+          //                 //color: Colors.green,
+          //                 child: ElevatedButton.icon(
+          //                   icon: Icon(
+          //                     Icons.cancel,
+          //                     color: Colors.white,
+          //                     size:
+          //                         MediaQuery.of(context).size.width / 15,
+          //                   ),
+          //                   style: ElevatedButton.styleFrom(
+          //                       textStyle: const TextStyle(fontSize: 20),
+          //                       backgroundColor: Colors.red),
+          //                   onPressed: () {
+          //                     reject_selected_tickets_authorities();
+          //                   },
+          //                   label: Text(
+          //                     '',
+          //                     style: GoogleFonts.roboto(),
+          //                   ),
+          //                 ),
+          //                 //decoration: Decoration(),
+          //               ),
+          //               // Text(
+          //               //   ticket_rejected_message,
+          //               //   style: TextStyle(color: Colors.white),
+          //               // ),
+          //             ],
+          //           ),
+          //           Column(
+          //             children: [
+          //               Container(
+          //                 width: MediaQuery.of(context).size.width / 4,
+          //                 padding: EdgeInsets.all(5),
+          //                 child: ElevatedButton.icon(
+          //                   icon: Icon(
+          //                     Icons.refresh,
+          //                     color: Colors.white,
+          //                     size:
+          //                         MediaQuery.of(context).size.width / 15,
+          //                   ),
+          //                   onPressed: () async {
+          //                     init();
+          //                   },
+          //                   label: Text(""),
+          //                 ),
+          //               ),
+          //             ],
+          //           )
+          //         ],
+          //       ),
+          //     ],
+          //   ),
+          // ),
+          //
+          // // Center(
+          // //   child: Container(
+          // //     padding: EdgeInsets.all(1),
+          // //     child: Text(
+          // //       // "Ticket Table",
+          // //       "",
+          // //       style: GoogleFonts.roboto(
+          // //           fontSize: 20, fontWeight: FontWeight.bold),
+          // //     ),
+          // //   ),
+          // // ),
+          // // SizedBox(
+          // //   height: 2,
+          // // ),
+          // // buildDataTable()
+          // // Text("No entries available in the ticket table"),
+          // // Testing()
+          // Row(
+          //   mainAxisAlignment: MainAxisAlignment.center,
+          //   children: [
+          //     SizedBox(
+          //       width: 20,
+          //     ),
+          //     SizedBox(
+          //       width: MediaQuery.of(context).size.width / 1.4,
+          //       child: InputDecorator(
+          //         isEmpty:
+          //             isFieldEmpty, // if true, the hint text is shown
+          //         decoration: InputDecoration(
+          //           hintText: '    Search by Name',
+          //           hintStyle: TextStyle(
+          //               color: Color.fromARGB(255, 96, 96,
+          //                   96)), // Set the desired color for the hint text
+          //         ),
+          //
+          //         child: TextField(
+          //           style: TextStyle(color: Color.fromARGB(255, 0, 0, 0)),
+          //           decoration: InputDecoration(
+          //             // labelText: "Name",
+          //             // hintText: "Enter name to filter tickets",
+          //             // hintStyle: TextStyle(color: Colors.grey),
+          //             // helperText: "Enter name to filter tickets",
+          //             // helperStyle: TextStyle(color: Colors.grey),
+          //             enabledBorder: OutlineInputBorder(
+          //               borderSide: BorderSide(color: Colors.red),
+          //             ),
+          //             focusedBorder: OutlineInputBorder(
+          //               borderSide: BorderSide(color: Colors.red),
+          //             ),
+          //           ),
+          //           onChanged: (text) {
+          //             isFieldEmpty = text.isEmpty;
+          //
+          //             onSearchQueryChanged(text);
+          //           },
+          //         ),
+          //       ),
+          //     ),
+          //
+          //     SizedBox(
+          //       width: 3,
+          //     ),
+          //     IconButton(
+          //       icon: Icon(
+          //         Icons.filter_list,
+          //         color: Color.fromARGB(255, 0, 0, 0),
+          //         size: 30.0,
+          //       ),
+          //       onPressed: () => _selectDateRange(context),
+          //     ),
+          //     // IconButton(
+          //     //   icon: Icon(
+          //     //     Icons.search,
+          //     //     color: Color.fromARGB(255, 0, 0, 0),
+          //     //     size: 24.0,
+          //     //   ),
+          //     //   onPressed: () {
+          //     //     print(this.chosen_entry_number);
+          //     //     print(this.chosen_start_date);
+          //     //     print(this.chosen_end_date);
+          //     //     print(this.isSelected);
+          //     //   },
+          //     // ),
+          //     // SizedBox(
+          //     //   width: 340,
+          //     // )
+          //   ],
+          // ),
+          // SizedBox(
+          //   height: 25,
+          // ),
+          // Row(
+          //   mainAxisAlignment: MainAxisAlignment.center,
+          //   children: [
+          //     SizedBox(
+          //       width: 20,
+          //     ),
+          //     IntrinsicWidth(
+          //       child: Container(
+          //         decoration: BoxDecoration(
+          //           border: Border.all(
+          //               color:
+          //                   Colors.grey), // Set the desired border color
+          //           borderRadius: BorderRadius.circular(
+          //               8.0), // Set the desired border radius
+          //         ),
+          //         child: InkWell(
+          //           onTap: () {
+          //             setState(() {
+          //               enableDateFilter = !enableDateFilter;
+          //               print(enableDateFilter);
+          //               filterTickets(searchQuery);
+          //             });
+          //           },
+          //           child: Row(
+          //             children: [
+          //               Theme(
+          //                 data: ThemeData(
+          //                   unselectedWidgetColor: Colors
+          //                       .black, // Set the desired outline color
+          //                 ),
+          //                 child: Radio<bool>(
+          //                   activeColor: Colors
+          //                       .red, // Set the desired color for the radio button
+          //                   value: enableDateFilter,
+          //                   groupValue: true,
+          //                   onChanged: (value) {
+          //                     // setState(() {
+          //                     //   enableDateFilter = value!;
+          //                     // });
+          //                   },
+          //                 ),
+          //               ),
+          //               Text(
+          //                 'Date Filter  ',
+          //                 style: TextStyle(
+          //                   color: enableDateFilter
+          //                       ? Colors.blue
+          //                       : Colors
+          //                           .black, // Set the desired color for the label
+          //                 ),
+          //               ),
+          //             ],
+          //           ),
+          //         ),
+          //       ),
+          //     ),
+          //     SizedBox(
+          //       width: 20,
+          //     ),
+          //     Column(
+          //       crossAxisAlignment: CrossAxisAlignment.start,
+          //       children: [
+          //         Text(
+          //           "Start Date: ${chosen_start_date.split(" ")[0]}",
+          //           style: TextStyle(
+          //             fontWeight: FontWeight.bold,
+          //             fontSize: 14,
+          //             color: Colors.black,
+          //           ),
+          //         ),
+          //         Text(
+          //           "End Date: ${chosen_end_date.split(" ")[0]}",
+          //           style: TextStyle(
+          //             fontWeight: FontWeight.bold,
+          //             fontSize: 14,
+          //             color: Colors.black,
+          //           ),
+          //         ),
+          //       ],
+          //     ),
+          //   ],
+          // ),
+          // SizedBox(
+          //   height: 20,
+          // ),
+          Row(children: [
+            SizedBox(
+              width: MediaQuery.of(context).size.width * 0.03,
+            ),
+            Container(
+              // margin: EdgeInsets.all(16.0),
+              width: MediaQuery.of(context).size.width * 0.73,
+              height: 35,
+              decoration: BoxDecoration(
+                color: Colors.transparent,
+                borderRadius: BorderRadius.circular(5.0),
+                border:
+                    Border(bottom: BorderSide(color: Colors.black, width: 2.0)),
+              ),
+              child: TextField(
+                style: GoogleFonts.lato(
+                  color: Colors.black,
+                  fontSize: 20,
                 ),
-                SizedBox(
-                  height: 10,
-                ),
-                Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    //Center Row contents horizontally,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    //Center Row contents vertically,
-                    children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        //Center Row contents horizontally,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        //Center Row contents vertically,
-
-                        children: [
-                          Column(
-                            children: [
-                              Container(
-                                width: MediaQuery.of(context).size.width / 4,
-                                padding: EdgeInsets.all(5),
-                                child: ElevatedButton.icon(
-                                  icon: Icon(
-                                    Icons.check_circle_outlined,
-                                    color: Colors.white,
-                                    size:
-                                        MediaQuery.of(context).size.width / 15,
-                                  ),
-                                  style: ElevatedButton.styleFrom(
-                                      textStyle: const TextStyle(fontSize: 20),
-                                      backgroundColor: Color.fromARGB(255, 9, 216, 9)),
-                                  onPressed: () async {
-                                    accept_selected_tickets_authorities();
-                                  },
-                                  label: Text(
-                                    '',
-                                    style: GoogleFonts.roboto(),
-                                  ),
-                                ),
-                                //decoration: Decoration(),
-                              ),
-                              // Text(
-                              //   ticket_accepted_message,
-                              //   style: TextStyle(color: Colors.white),
-                              // ),
-                            ],
-                          ),
-                          Column(
-                            children: [
-                              Container(
-                                width: MediaQuery.of(context).size.width / 4,
-                                padding: EdgeInsets.all(5),
-                                //color: Colors.green,
-                                child: ElevatedButton.icon(
-                                  icon: Icon(
-                                    Icons.cancel,
-                                    color: Colors.white,
-                                    size:
-                                        MediaQuery.of(context).size.width / 15,
-                                  ),
-                                  style: ElevatedButton.styleFrom(
-                                      textStyle: const TextStyle(fontSize: 20),
-                                      backgroundColor: Colors.red),
-                                  onPressed: () {
-                                    reject_selected_tickets_authorities();
-                                  },
-                                  label: Text(
-                                    '',
-                                    style: GoogleFonts.roboto(),
-                                  ),
-                                ),
-                                //decoration: Decoration(),
-                              ),
-                              // Text(
-                              //   ticket_rejected_message,
-                              //   style: TextStyle(color: Colors.white),
-                              // ),
-                            ],
-                          ),
-                          Column(
-                            children: [
-                              Container(
-                                width: MediaQuery.of(context).size.width / 4,
-                                padding: EdgeInsets.all(5),
-                                child: ElevatedButton.icon(
-                                  icon: Icon(
-                                    Icons.refresh,
-                                    color: Colors.white,
-                                    size:
-                                        MediaQuery.of(context).size.width / 15,
-                                  ),
-                                  onPressed: () async {
-                                    init();
-                                  },
-                                  label: Text(""),
-                                ),
-                              ),
-                            ],
-                          )
-                        ],
-                      ),
-                    ],
+                onChanged: (text) {
+                  // isFieldEmpty = text.isEmpty;
+                  //
+                  // onSearchQueryChanged(text);
+                },
+                decoration: InputDecoration(
+                  contentPadding: EdgeInsets.fromLTRB(5.0, 0, 0, 14.0),
+                  hintText: 'Search by Name',
+                  border: InputBorder.none,
+                  prefixIcon: Icon(Icons.search, color: Colors.black),
+                  suffixIcon: IconButton(
+                    padding: EdgeInsets.zero,
+                    icon: Icon(Icons.clear, color: Colors.black),
+                    onPressed: () {
+                      // Clear search field
+                    },
+                  ),
+                  hintStyle: GoogleFonts.lato(
+                    color: Colors.black87,
+                    fontSize: 16.0,
+                    fontWeight: FontWeight.normal,
                   ),
                 ),
-
-                // Center(
-                //   child: Container(
-                //     padding: EdgeInsets.all(1),
-                //     child: Text(
-                //       // "Ticket Table",
-                //       "",
-                //       style: GoogleFonts.roboto(
-                //           fontSize: 20, fontWeight: FontWeight.bold),
-                //     ),
-                //   ),
-                // ),
-                // SizedBox(
-                //   height: 2,
-                // ),
-                // buildDataTable()
-                // Text("No entries available in the ticket table"),
-                // Testing()
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    SizedBox(
-                      width: 20,
-                    ),
-                    SizedBox(
-                      width: MediaQuery.of(context).size.width / 1.4,
-                      child: InputDecorator(
-                        isEmpty:
-                            isFieldEmpty, // if true, the hint text is shown
-                        decoration: InputDecoration(
-                          hintText: '    Search by Name',
-                          hintStyle: TextStyle(
-                              color: Color.fromARGB(255, 96, 96,
-                                  96)), // Set the desired color for the hint text
-                        ),
-
-                        child: TextField(
-                          style: TextStyle(color: Color.fromARGB(255, 0, 0, 0)),
-                          decoration: InputDecoration(
-                            // labelText: "Name",
-                            // hintText: "Enter name to filter tickets",
-                            // hintStyle: TextStyle(color: Colors.grey),
-                            // helperText: "Enter name to filter tickets",
-                            // helperStyle: TextStyle(color: Colors.grey),
-                            enabledBorder: OutlineInputBorder(
-                              borderSide: BorderSide(color: Colors.red),
-                            ),
-                            focusedBorder: OutlineInputBorder(
-                              borderSide: BorderSide(color: Colors.red),
-                            ),
-                          ),
-                          onChanged: (text) {
-                            isFieldEmpty = text.isEmpty;
-
-                            onSearchQueryChanged(text);
-                          },
-                        ),
-                      ),
-                    ),
-
-                    SizedBox(
-                      width: 3,
-                    ),
-                    IconButton(
-                      icon: Icon(
-                        Icons.filter_list,
-                        color: Color.fromARGB(255, 0, 0, 0),
-                        size: 30.0,
-                      ),
-                      onPressed: () => _selectDateRange(context),
-                    ),
-                    // IconButton(
-                    //   icon: Icon(
-                    //     Icons.search,
-                    //     color: Color.fromARGB(255, 0, 0, 0),
-                    //     size: 24.0,
-                    //   ),
-                    //   onPressed: () {
-                    //     print(this.chosen_entry_number);
-                    //     print(this.chosen_start_date);
-                    //     print(this.chosen_end_date);
-                    //     print(this.isSelected);
-                    //   },
-                    // ),
-                    // SizedBox(
-                    //   width: 340,
-                    // )
-                  ],
-                ),
-                SizedBox(
-                  height: 25,
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    SizedBox(
-                      width: 20,
-                    ),
-                    IntrinsicWidth(
-                      child: Container(
-                        decoration: BoxDecoration(
-                          border: Border.all(
-                              color:
-                                  Colors.grey), // Set the desired border color
-                          borderRadius: BorderRadius.circular(
-                              8.0), // Set the desired border radius
-                        ),
-                        child: InkWell(
-                          onTap: () {
-                            setState(() {
-                              enableDateFilter = !enableDateFilter;
-                              print(enableDateFilter);
-                              filterTickets(searchQuery);
-                            });
-                          },
-                          child: Row(
-                            children: [
-                              Theme(
-                                data: ThemeData(
-                                  unselectedWidgetColor: Colors
-                                      .black, // Set the desired outline color
-                                ),
-                                child: Radio<bool>(
-                                  activeColor: Colors
-                                      .red, // Set the desired color for the radio button
-                                  value: enableDateFilter,
-                                  groupValue: true,
-                                  onChanged: (value) {
-                                    // setState(() {
-                                    //   enableDateFilter = value!;
-                                    // });
-                                  },
-                                ),
-                              ),
-                              Text(
-                                'Date Filter  ',
-                                style: TextStyle(
-                                  color: enableDateFilter
-                                      ? Colors.blue
-                                      : Colors
-                                          .black, // Set the desired color for the label
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ),
-                    SizedBox(
-                      width: 20,
-                    ),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          "Start Date: ${chosen_start_date.split(" ")[0]}",
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 14,
-                            color: Colors.black,
-                          ),
-                        ),
-                        Text(
-                          "End Date: ${chosen_end_date.split(" ")[0]}",
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 14,
-                            color: Colors.black,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-                SizedBox(
-                  height: 20,
-                ),
-                Expanded(child: ScrollableWidget(child: buildDataTable())),
-                // buildSubmit(),
-              ],
+              ),
             ),
+            SizedBox(
+              width: MediaQuery.of(context).size.width * 0.02,
+            ),
+            Container(
+              height: 30,
+              width: MediaQuery.of(context).size.width * 0.08,
+              decoration: BoxDecoration(
+                color: Colors.transparent,
+                borderRadius: BorderRadius.circular(3.0),
+              ),
+              child: IconButton(
+                padding: EdgeInsets.zero,
+                icon: Icon(Icons.filter_alt,
+                    color: Colors.black87), // Filter icon
+                onPressed: () {
+                  // enableDateFilter=true;
+                  // _selectDateRange(context);
+                },
+              ),
+            ),
+            SizedBox(
+              width: MediaQuery.of(context).size.width * 0.02,
+            ),
+            Container(
+              height: 30,
+              width: MediaQuery.of(context).size.width * 0.08,
+              decoration: BoxDecoration(
+                color: Colors.transparent,
+                borderRadius: BorderRadius.circular(8.0),
+              ),
+              child: IconButton(
+                padding: EdgeInsets.zero,
+                icon: Icon(Icons.filter_alt_off,
+                    color: Colors.black87), // Filter icon
+                onPressed: () {
+                  // setState(() {
+                  //   enableDateFilter = !enableDateFilter;
+                  //   resetFilter(searchQuery);
+                  //   // filterTickets(searchQuery);
+                  // });
+                },
+              ),
+            ),
+          ]),
+          SizedBox(
+            height: MediaQuery.of(context).size.height * 0.03,
           ),
-        ),
-      );
+
+          pendingStudentList(tickets),
+          // buildSubmit(),
+        ],
+      ),
+    );
+  }
 
   // Widget Testing() {
   //   int len = tickets.length;
@@ -519,6 +621,211 @@ class _PendingAuthorityTicketTableState
   //     rows: getRows(tickets),
   //   );
   // }
+  Widget pendingStudentList(List<ResultObj2> mytickets) {
+    return
+        // mytickets.isEmpty
+        //     ? Center(child: CircularProgressIndicator())
+        //     :
+
+        Expanded(
+      child: SizedBox(
+        width: MediaQuery.of(context).size.width * 0.95,
+        // height:MediaQuery.of(context).size.height*0.67,
+        child: ListView.builder(
+          itemCount: mytickets.length,
+          itemBuilder: (BuildContext context, int index) {
+            final bool isExpanded = index == selectedIndex;
+            return Container(
+              child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Container(
+                      decoration: BoxDecoration(
+                        color: Color(0xffEDC882),
+                        borderRadius: BorderRadius.circular(
+                            15), // Adjust the radius as needed
+                      ),
+                      child: Column(
+                        children: <Widget>[
+                          ListTile(
+                            title: Text(
+                              mytickets[index].student_name,
+                              style: GoogleFonts.lato(
+                                fontWeight: FontWeight.w800,
+                                color: Colors.white,
+                                fontSize: 18,
+                              ),
+                            ),
+                            // subtitle: Text(mytickets[index]
+                            // .date_time_guard
+                            // .toString()),
+                            onTap: () => toggleExpansion(index),
+                          ),
+
+                          if (isExpanded)
+                            Container(
+                              child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Text(
+                                        "Student :${tickets[index].student_name}",
+                                        style: GoogleFonts.lato(
+                                          fontWeight: FontWeight.w600,
+                                          color: Colors.black,
+                                          fontSize: 15,
+                                        )),
+                                    Text("Location :${tickets[index].location}",
+                                        style: GoogleFonts.lato(
+                                          fontWeight: FontWeight.w600,
+                                          color: Colors.black,
+                                          fontSize: 15,
+                                        )),
+                                    Text(
+                                        "Time :${((tickets[index].date_time.split("T").last).split(".")[0].split(":").sublist(0, 2)).join(":")}",
+                                        style: GoogleFonts.lato(
+                                          fontWeight: FontWeight.w600,
+                                          color: Colors.black,
+                                          fontSize: 15,
+                                        )),
+                                    Text(
+                                        "Ticket_type :${tickets[index].ticket_type}",
+                                        style: GoogleFonts.lato(
+                                          fontWeight: FontWeight.w600,
+                                          color: Colors.black,
+                                          fontSize: 15,
+                                        )),
+                                    // TextField(
+                                    //     onChanged: (text) {
+                                    //       this.tickets[index].authority_message = text;
+                                    //     },
+                                    //     "Authority_message :${tickets[index].authority_message}",
+                                    //     style: GoogleFonts.lato(
+                                    //       fontWeight: FontWeight.w600,
+                                    //       color: Colors.black,
+                                    //       fontSize: 15,
+                                    //     )),
+                                    SizedBox(
+                                        height: 5
+                                    ),
+                                    Container(
+                                      width: MediaQuery.of(context).size.width * 0.4, // 80% of screen width
+                                      height: 1, // Height of the divider
+                                      color: Colors.black12, // Color of the divider
+                                    ),
+                                    SizedBox(
+                                        height: 5
+                                    ),
+                                    Padding(
+                                      padding: EdgeInsets.fromLTRB(8.0, 0, 0, 0),
+                                      child: Row(
+                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        children: [
+                                          Text(
+                                            "Authority_Message: ",
+                                            style: GoogleFonts.lato(
+                                              fontWeight: FontWeight.w600,
+                                              color: Colors.black,
+                                              fontSize: 15,
+                                            ),
+                                          ),
+                                          Expanded(
+                                            child: TextField(
+                                              onChanged: (text) {
+                                                setState(() {
+                                                  tickets[index].authority_message = text;
+                                                });
+                                              },
+                                              decoration: InputDecoration(
+                                                hintText: "Enter Authority Message",
+                                                hintStyle: TextStyle(
+                                                  color: Colors.white54,
+                                                ),
+                                                border: InputBorder.none,
+                                              ),
+                                              style: GoogleFonts.lato(
+                                                fontWeight: FontWeight.w400,
+                                                color: Colors.black,
+                                                fontSize: 15,
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+
+
+                                    SizedBox(
+                                        height: 5
+                                    ),
+                                    Container(
+                                      width: MediaQuery.of(context).size.width * 0.8, // 80% of screen width
+                                      height: 1, // Height of the divider
+                                      color: Colors.black12, // Color of the divider
+                                    ),
+                                    SizedBox(
+                                        height: 5
+                                    ),
+                                    Row(
+                                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                      children: [
+                                        ElevatedButton(
+                                          onPressed: () async{
+                                            selectedTickets_action.add(tickets[index]);
+                                            await accept_action_tickets_authorities();
+                                          },
+                                          style: ElevatedButton.styleFrom(
+                                            shape: RoundedRectangleBorder(
+                                              borderRadius: BorderRadius.circular(5), // Adjust the radius as needed
+                                            ),
+                                          ),
+                                          child: Text(
+                                            "Accept",
+                                            style: GoogleFonts.mPlusRounded1c(
+                                              color: Colors.white,
+                                            ),
+                                          ),
+                                        ),
+                                        ElevatedButton(
+                                          onPressed: () async{
+                                            selectedTickets_action.add(tickets[index]);
+                                            await reject_action_tickets_authorities();
+                                          },
+                                          style: ElevatedButton.styleFrom(
+                                            shape: RoundedRectangleBorder(
+                                              borderRadius: BorderRadius.circular(5), // Adjust the radius as needed
+                                            ),
+                                          ),
+                                          child: Text(
+                                            "Reject",
+                                            style: GoogleFonts.mPlusRounded1c(
+                                              color: Colors.white,
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ]),
+
+                            ),
+
+                        ],
+                      ),
+                    ),
+                    SizedBox(
+                      height: 5,
+                    ),
+                  ]
+
+              ),
+
+            );
+
+          },
+        ),
+      ),
+    );
+  }
 
   Widget buildDataTable() {
     // Fields returned from backend [is_approved, ticket_type, date_time, location, email, student_name, authority_message]
@@ -606,11 +913,7 @@ class _PendingAuthorityTicketTableState
             style: TextStyle(color: Colors.black),
           )),
           DataCell(Text(
-            "    ${((ticket.date_time.split("T").last)
-                        .split(".")[0]
-                        .split(":")
-                        .sublist(0, 2))
-                    .join(":")}\n${ticket.date_time.split("T")[0]}",
+            "    ${((ticket.date_time.split("T").last).split(".")[0].split(":").sublist(0, 2)).join(":")}\n${ticket.date_time.split("T")[0]}",
             style: TextStyle(color: Colors.black),
           )),
           DataCell(Text(

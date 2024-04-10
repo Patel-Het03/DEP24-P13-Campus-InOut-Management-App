@@ -398,6 +398,7 @@ def clear_db(request):
     return Response(status=status.HTTP_200_OK)
 
 
+
 # @api_view(['POST'])
 # def login_user(request):
 #     data = request.data
@@ -410,7 +411,15 @@ def clear_db(request):
         print(queryset_password)
         serializer_password = PasswordSerializer(queryset_password, many=False)
         encrypted_password = serializer_password.data['password']
+        password = data['password']
+        queryset_password = Password.objects.get(email=email)
+        print(queryset_password)
+        serializer_password = PasswordSerializer(queryset_password, many=False)
+        encrypted_password = serializer_password.data['password']
 
+        queryset_person = Person.objects.filter(email=email, is_present=True)
+        serializer_person = PersonSerializer(queryset_person, many=True)
+        person_not_present = len(queryset_person) == 0
         queryset_person = Person.objects.filter(email=email, is_present=True)
         serializer_person = PersonSerializer(queryset_person, many=True)
         person_not_present = len(queryset_person) == 0
@@ -422,7 +431,15 @@ def clear_db(request):
             }
             print("User not Found")
             return Response(res, status=status.HTTP_200_OK)
+        if person_not_present:
+            res = {
+                "message": "Invalid Email",
+                "person_type": "NA",
+            }
+            print("User not Found")
+            return Response(res, status=status.HTTP_200_OK)
 
+        person_type = serializer_person.data[0]['person_type']
         person_type = serializer_person.data[0]['person_type']
 
         if check_password(password, encrypted_password):
@@ -432,7 +449,21 @@ def clear_db(request):
             }
             print("Password Matched")
             return Response(res, status=status.HTTP_200_OK)
+        if check_password(password, encrypted_password):
+            res = {
+                "message": "Login Successful",
+                "person_type": person_type,
+            }
+            print("Password Matched")
+            return Response(res, status=status.HTTP_200_OK)
 
+        else:
+            res = {
+                "message": "Invalid Password",
+                "person_type": "NA"
+            }
+            print("Password Different")
+            return Response(res, status=status.HTTP_200_OK)
         else:
             res = {
                 "message": "Invalid Password",
@@ -449,6 +480,7 @@ def clear_db(request):
             "person_type": "NA"
         }
 
+        return Response(res, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         return Response(res, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
@@ -2953,6 +2985,7 @@ def get_tickets_for_authorities(request):
             tickets_list.append(ResultObj)
 
         tickets_list.reverse()
+        print(tickets_list)
 
         # Thus the fields are [is_approved, ticket_type, date_time, location, email, student_name, authority_message]
         return Response(tickets_list)
