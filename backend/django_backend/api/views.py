@@ -239,55 +239,55 @@ def delete_program_web(request):
     return Response(res, status=status.HTTP_200_OK)
 
 
-def authenticate(email, password):
+# def authenticate(email, password):
 
-    try:
-        # email = data['email']
-        # password = data['password']
-        queryset_password = Password.objects.get(email=email)
-        print(queryset_password)
-        serializer_password = PasswordSerializer(queryset_password, many=False)
-        encrypted_password = serializer_password.data['password']
+#     try:
+#         # email = data['email']
+#         # password = data['password']
+#         queryset_password = Password.objects.get(email=email)
+#         print(queryset_password)
+#         serializer_password = PasswordSerializer(queryset_password, many=False)
+#         encrypted_password = serializer_password.data['password']
 
-        queryset_person = Admin.objects.filter(email=email, is_present=True)
-        serializer_person = PersonSerializer(queryset_person, many=True)
-        person_not_present = len(queryset_person) == 0
+#         queryset_person = Admin.objects.filter(email=email, is_present=True)
+#         serializer_person = PersonSerializer(queryset_person, many=True)
+#         person_not_present = len(queryset_person) == 0
 
-        if person_not_present:
-            res = {
-                "message": "Invalid Email",
-                "person_type": "NA",
-            }
-            print("User not Found")
-            return Response(res, status=status.HTTP_200_OK)
+#         if person_not_present:
+#             res = {
+#                 "message": "Invalid Email",
+#                 "person_type": "NA",
+#             }
+#             print("User not Found")
+#             return Response(res, status=status.HTTP_200_OK)
 
-            person_type = serializer_person.data[0]['person_type']
+#             person_type = serializer_person.data[0]['person_type']
 
-            if check_password(password, encrypted_password):
-                res = {
-                    "message": "Login Successful",
-                    "person_type": person_type,
-                }
-                print("Password Matched")
-                return Response(res, status=status.HTTP_200_OK)
+#             if check_password(password, encrypted_password):
+#                 res = {
+#                     "message": "Login Successful",
+#                     "person_type": person_type,
+#                 }
+#                 print("Password Matched")
+#                 return Response(res, status=status.HTTP_200_OK)
 
-            else:
-                res = {
-                    "message": "Invalid Password",
-                    "person_type": "NA"
-                }
-                print("Password Different")
-                return Response(res, status=status.HTTP_200_OK)
+#             else:
+#                 res = {
+#                     "message": "Invalid Password",
+#                     "person_type": "NA"
+#                 }
+#                 print("Password Different")
+#                 return Response(res, status=status.HTTP_200_OK)
 
-    except Exception as e:
-        print("Exception in login user")
-        print(e)
-        res = {
-            "message": "Error: An error occured while logging in",
-            "person_type": "NA"
-        }
+#     except Exception as e:
+#         print("Exception in login user")
+#         print(e)
+#         res = {
+#             "message": "Error: An error occured while logging in",
+#             "person_type": "NA"
+#         }
 
-        return Response(res, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+#         return Response(res, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
 
