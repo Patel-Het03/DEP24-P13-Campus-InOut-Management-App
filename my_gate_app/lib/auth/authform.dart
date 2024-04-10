@@ -15,9 +15,9 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:my_gate_app/screens/admin/utils/submit_button.dart';
 import 'package:flutter_otp_text_field/flutter_otp_text_field.dart';
 import 'package:flutter/services.dart';
+import 'package:my_gate_app/myglobals.dart' as myglobals;
 
 import 'dart:async';
-
 
 class AuthForm extends StatefulWidget {
   const AuthForm({super.key});
@@ -159,29 +159,84 @@ class _AuthFormState extends State<AuthForm> {
     }
   }
 
+  void LoginScaffold(String message){
+    print("@@ $message");
+    final scaffoldMessenger=ScaffoldMessenger.of(context);
+    if(message=="Login Successful"){
+      scaffoldMessenger.showSnackBar(
+        SnackBar(
+          content: Text(
+            message,
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          backgroundColor: Colors.green,
+        ),
+      );
+    }
+    else if(message=="user not found"){
+      scaffoldMessenger.showSnackBar(
+        SnackBar(
+          content: Text(
+            message,
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          backgroundColor: Colors.red,
+        ),
+      );
+    }
+    else if(message=="Invalid username or password"){
+      scaffoldMessenger.showSnackBar(
+        SnackBar(
+          content: Text(
+            message,
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          backgroundColor: Colors.red,
+        ),
+      );
+    }
+    else{
+      scaffoldMessenger.showSnackBar(
+        SnackBar(
+          content: Text(
+            "Login Failed",
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          backgroundColor: Colors.red,
+        ),
+      );
+    }
+
+  }
+
   Future<void> startauthentication() async {
     final validity = _formkey.currentState?.validate();
     FocusScope.of(context).unfocus();
 
-    bool otp_verify = await forgot_password(2);
-    if (!otp_verify) return;
-
     if (validity != null && validity) {
       _formkey.currentState?.save();
       // Add basic checks for email and password in the frontend
-      is_authenticated = await databaseInterface.login_user(_email, _password);
-      if (is_authenticated.person_type != "NA") {
-        LoggedInDetails.setEmail(_email);
 
-        SharedPreferences prefs = await SharedPreferences.getInstance();
-        await prefs.setString('email', _email);
-        await prefs.setString('password', _password);
-        await prefs.setString('type', is_authenticated.person_type);
+      String message= await databaseInterface.jwt_login(_email, _password);
+      LoginScaffold(message);
 
-        print("shared preference set");
-      }
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      is_authenticated.person_type =await prefs.getString("type")!;
     }
   }
+  
 
   Future<void> guardLocation() async {
     databaseInterface db = new databaseInterface();
@@ -205,7 +260,6 @@ class _AuthFormState extends State<AuthForm> {
         color: Colors.white,
         height: MediaQuery.of(context).size.height,
 
-
         // height: MediaQuery.of(context).size.height,
         // width: MediaQuery.of(context).size.width,
         // decoration: BoxDecoration(
@@ -223,7 +277,6 @@ class _AuthFormState extends State<AuthForm> {
         // ),
 
         child: ListView(
-
           children: [
             // Text(
             //   'Welcome to \nCampus-InOutMgmt\nIIT ROPAR',
@@ -329,8 +382,8 @@ class _AuthFormState extends State<AuthForm> {
                         suffixStyle: TextStyle(
                           color: Colors.grey[800],
                         ),
-                        contentPadding: EdgeInsets.symmetric(vertical: 12.0, horizontal: 16.0),
-
+                        contentPadding: EdgeInsets.symmetric(
+                            vertical: 12.0, horizontal: 16.0),
                       ),
                     ),
 
@@ -399,7 +452,8 @@ class _AuthFormState extends State<AuthForm> {
                         suffixStyle: TextStyle(
                           color: Colors.grey[800],
                         ),
-                        contentPadding: EdgeInsets.symmetric(vertical: 12.0, horizontal: 16.0),
+                        contentPadding: EdgeInsets.symmetric(
+                            vertical: 12.0, horizontal: 16.0),
                       ),
                     ),
                     // SizedBox(
@@ -488,7 +542,6 @@ class _AuthFormState extends State<AuthForm> {
                     // ),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.end,
-
                       children: [
                         SizedBox(width: 5),
                         TextButton(
@@ -530,29 +583,28 @@ class _AuthFormState extends State<AuthForm> {
                             borderRadius: BorderRadius.circular(15),
                           ),
                           color: Color(0xFF827397),
-
                           onPressed: () async {
                             /*  final email_validity =
                     //   this.email_form_key.currentState?.validate(); */
-                                FocusScope.of(context).unfocus();
-                                if (/* email_validity != null && email_validity */ true) {
-                                  print("Sending otp");
-                                  email_form_key.currentState?.save();
+                            FocusScope.of(context).unfocus();
+                            // if (/* email_validity != null && email_validity */ true) {
 
-                                  forgot_password(1);
-                                  print("Fetched Email=   $fetchedemail");
-                                  /* print("Fetched Email=   "+_email); */
-                                  print("otp sent to $fetchedemail");
-                                  setState(() {
-                                    otp_op = 2;
-                                    showOtpField = true;
-                                    startTimeout();
-                                    print("timer started");
-                                  });
-                                }
-                                entered_otp=111111;
+                            //   email_form_key.currentState?.save();
+
+                            //   forgot_password(1);
+                            //   print("Fetched Email=   $fetchedemail");
+                            //   /* print("Fetched Email=   "+_email); */
+                            //   print("otp sent to $fetchedemail");
+                            //   setState(() {
+                            //     otp_op = 2;
+                            //     showOtpField = true;
+                            //     startTimeout();
+                            //     print("timer started");
+                            //   });
+                            // }
+                            // entered_otp=111111;
                             await startauthentication();
-
+                            print("&&%## person_type: ${is_authenticated.person_type}");
                             if (is_authenticated.person_type == "Student") {
                               print("Inside Student");
                               Navigator.of(context).pushReplacement(
@@ -560,7 +612,9 @@ class _AuthFormState extends State<AuthForm> {
                                     builder: (context) => HomeStudent(
                                         email: LoggedInDetails.getEmail())),
                               );
-                            } else if (is_authenticated.person_type == "Guard") {
+                              myglobals.auth!.login();
+                            } else if (is_authenticated.person_type ==
+                                "Guard") {
                               await guardLocation();
                               // print("Inside Guard");
                               SharedPreferences prefs =
@@ -579,7 +633,8 @@ class _AuthFormState extends State<AuthForm> {
                                 MaterialPageRoute(
                                     builder: (context) => AuthorityMain()),
                               );
-                            } else if (is_authenticated.person_type == "Admin") {
+                            } else if (is_authenticated.person_type ==
+                                "Admin") {
                               Navigator.of(context).pushReplacement(
                                 MaterialPageRoute(
                                     builder: (context) => HomeAdmin()),
@@ -596,7 +651,7 @@ class _AuthFormState extends State<AuthForm> {
                           child: Text(
                             'SignIn',
                             style: GoogleFonts.kodchasan(
-                                fontSize: 20,
+                              fontSize: 20,
                               fontWeight: FontWeight.bold,
                             ),
                           ),

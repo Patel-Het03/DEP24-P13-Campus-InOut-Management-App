@@ -10,7 +10,8 @@ import traceback
 from datetime import date, datetime, timedelta
 from unicodedata import category
 from django.contrib.auth.backends import BaseBackend
-from django.utils import timezone
+from django.utils import timezonefrom rest_framework.views import APIView
+
 from django.conf import settings
 from django.core import serializers
 from django.contrib.auth.decorators import login_required
@@ -20,10 +21,13 @@ from django.core.files.base import ContentFile
 from django.core.mail import send_mail
 from rest_framework import status
 from rest_framework.authentication import TokenAuthentication
-from rest_framework.decorators import api_view, permission_classes, authentication_classes
+from rest_framework.decorators import (
+    api_view,
+    permission_classes,
+    authentication_classes,
+)
 from rest_framework.generics import ListAPIView
-from rest_framework.permissions import (AllowAny, BasePermission,
-                                        IsAuthenticated)
+from rest_framework.permissions import AllowAny, BasePermission, IsAuthenticated
 from rest_framework.renderers import JSONRenderer, TemplateHTMLRenderer
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -39,26 +43,35 @@ from functools import wraps
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework.authentication import SessionAuthentication, BasicAuthentication
 
+from rest_framework_simplejwt.tokens import RefreshToken
+from rest_framework.permissions import IsAuthenticated, AllowAny
+from .permissions import IsStudent
+
 
 from .models import *
 from .serializers import *
 from .thread import *
 
+
 # Password storing work
 # encrypted = make_password("Vasu")
 # check_password("Vasu", encrypted)
 
-headers= {
-"Access-Control-Allow-Origin": "*",
-"Access-Control-Allow-Credentials": True,
-"Access-Control-Allow-Headers": "Origin,Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token,locale",
-"Access-Control-Allow-Methods": "POST, OPTIONS"
+
+headers = {
+    "Access-Control-Allow-Origin": "*",
+    "Access-Control-Allow-Credentials": True,
+    "Access-Control-Allow-Headers": "Origin,Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token,locale",
+    "Access-Control-Allow-Methods": "POST, OPTIONS",
 }
 _Response = Response
+
+
 def Response(*arg, **kwarg):
     return _Response(*arg, **kwarg, headers=headers)
 
-initial_data = 'initial_data'
+
+initial_data = "initial_data"
 blank_value = "None"
 THREAD_ACTIVATED = False
 
@@ -73,6 +86,7 @@ THREAD_ACTIVATED = False
 #     except:
 #         return Response(status = status.HTTP_500_INTERNAL_SERVER_ERROR)
 
+# commented by jayraj
 
 # def jwt_auth_middleware(view_func):
 #     def wrapper(request, *args, **kwargs):
@@ -110,20 +124,20 @@ def get_token(user):
     return str(token)
 
 
-class CustomTokenObtainPairView(TokenObtainPairView):
-    def post(self, request, *args, **kwargs):
-        response = super().post(request, *args, **kwargs)
-        if response.status_code == status.HTTP_200_OK:
-            user = request.user
-            token = get_token(user)
-            response.data['token'] = token
-        return response
+# class CustomTokenObtainPairView(TokenObtainPairView):
+#     def post(self, request, *args, **kwargs):
+#         response = super().post(request, *args, **kwargs)
+#         if response.status_code == status.HTTP_200_OK:
+#             user = request.user
+#             token = get_token(user)
+#             response.data['token'] = token
+#         return response
 
 
-@api_view(['GET'])
-@permission_classes([IsAuthenticated])
-def protect_route(request):
-    return Response({"data": "You are inside protected route"}, status=status.HTTP_200_OK)
+# @api_view(['GET'])
+# @permission_classes([IsAuthenticated])
+# def protect_route(request):
+#     return Response({"data": "You are inside protected route"}, status=status.HTTP_200_OK)
 
 
 @api_view(['GET'])
@@ -141,83 +155,84 @@ def register_user(request):
         return Response(serializer.data, status=status.HTTP_201_CREATED)
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+#end
 
 @api_view(('POST',))
 def delete_student(request):
     data = request.data
-    res = {'output': 'ok'}
+    res = {"output": "ok"}
     for student in data:
-        email = student['email']
+        email = student["email"]
         Student.objects.filter(email=email).update(is_present=False)
         Person.objects.filter(email=email).update(is_present=False)
     return Response(res, status=status.HTTP_200_OK)
 
 
-@api_view(('POST',))
+@api_view(("POST",))
 def delete_guard(request):
     data = request.data
-    res = {'output': 'ok'}
+    res = {"output": "ok"}
     for guard in data:
-        email = guard['email']
+        email = guard["email"]
         Guard.objects.filter(email=email).update(is_present=False)
         Person.objects.filter(email=email).update(is_present=False)
     return Response(res, status=status.HTTP_200_OK)
 
 
-@api_view(('POST',))
+@api_view(("POST",))
 def delete_authority(request):
     data = request.data
-    res = {'output': 'ok'}
+    res = {"output": "ok"}
     for authority in data:
-        email = authority['email']
+        email = authority["email"]
         Authorities.objects.filter(email=email).update(is_present=False)
         Person.objects.filter(email=email).update(is_present=False)
     return Response(res, status=status.HTTP_200_OK)
 
 
-@api_view(('POST',))
+@api_view(("POST",))
 def delete_location_web(request):
     data = request.data
-    res = {'output': 'ok'}
+    res = {"output": "ok"}
     print(data)
     for location in data:
-        id = location.get('location_id', None)
+        id = location.get("location_id", None)
         if id is not None:
             Location.objects.filter(location_id=id).update(is_present=False)
     return Response(res, status=status.HTTP_200_OK)
 
 
-@api_view(('POST',))
+@api_view(("POST",))
 def delete_hostel_web(request):
     data = request.data
-    res = {'output': 'ok'}
+    res = {"output": "ok"}
     print(data)
     for hostel in data:
-        id = hostel.get('hostel_id', None)
+        id = hostel.get("hostel_id", None)
         if id is not None:
             Hostel.objects.filter(hostel_id=id).update(is_present=False)
     return Response(res, status=status.HTTP_200_OK)
 
 
-@api_view(('POST',))
+@api_view(("POST",))
 def delete_department_web(request):
     data = request.data
-    res = {'output': 'ok'}
+    res = {"output": "ok"}
     print(data)
     for department in data:
-        id = department.get('dept_id', None)
+        id = department.get("dept_id", None)
         if id is not None:
             Department.objects.filter(dept_id=id).update(is_present=False)
     return Response(res, status=status.HTTP_200_OK)
 
 
-@api_view(('POST',))
+@api_view(("POST",))
 def delete_program_web(request):
     data = request.data
-    res = {'output': 'ok'}
+    res = {"output": "ok"}
     print(data)
     for program in data:
-        id = program.get('degree_id', None)
+        id = program.get("degree_id", None)
         if id is not None:
             Program.objects.filter(degree_id=id).update(is_present=False)
     return Response(res, status=status.HTTP_200_OK)
@@ -306,13 +321,13 @@ def login_admin_test(request):
         return Response(res, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
-@api_view(('GET',))
+@api_view(("GET",))
 def testReact(request):
     res = {"message": "Hello msg from backend"}
     return Response(res, status=status.HTTP_200_OK)
 
 
-@api_view(['GET', 'POST'])
+@api_view(["GET", "POST"])
 def init_db(request):
     Department.objects.create(
         dept_name=initial_data,
@@ -364,7 +379,7 @@ def init_db(request):
     return Response(status=status.HTTP_200_OK)
 
 
-@api_view(['GET', 'POST'])
+@api_view(["GET", "POST"])
 def clear_db(request):
     StatusTable.objects.all().delete()
     TicketTable.objects.all().delete()
@@ -383,12 +398,12 @@ def clear_db(request):
     return Response(status=status.HTTP_200_OK)
 
 
-@api_view(['POST'])
-def login_user(request):
-    data = request.data
-    print("ashish\n\n\n\n", data)
-    try:
-        email = data['email']
+# @api_view(['POST'])
+# def login_user(request):
+#     data = request.data
+#     print("ashish\n\n\n\n", data)
+#     try:
+#         email = data['email']
 
         password = data['password']
         queryset_password = Password.objects.get(email=email)
@@ -437,13 +452,13 @@ def login_user(request):
         return Response(res, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
-@api_view(['POST'])
+@api_view(["POST"])
 def forgot_password(request):
     data = request.data
     try:
-        email = data['email']
+        email = data["email"]
 
-        op = int(data['op'])
+        op = int(data["op"])
 
         # print("op")
         # print(type(op))
@@ -454,19 +469,19 @@ def forgot_password(request):
             is_not_present = len(Person.objects.filter(email=email)) == 0
 
             if is_not_present:
-                response_str = 'User email not found in database'
+                response_str = "User email not found in database"
                 res = {
                     "message": response_str,
                 }
                 print(response_str)
                 return Response(res, status=status.HTTP_200_OK)
 
-            subject = 'Your Account verification OTP for MyGateApp is ...'
+            subject = "Your Account verification OTP for MyGateApp is ..."
 
             # otp = random.randint(100000, 999999)
-            otp=111111
+            otp = 111111
 
-            message = f'Your OTP is {otp}'
+            message = f"Your OTP is {otp}"
 
             email_from = settings.EMAIL_HOST
 
@@ -482,7 +497,7 @@ def forgot_password(request):
             else:
                 OTP.objects.filter(email=email).update(otp=otp)
 
-            response_str = 'OTP sent to email'
+            response_str = "OTP sent to email"
             res = {
                 "message": response_str,
             }
@@ -494,15 +509,15 @@ def forgot_password(request):
 
             serializer_otp = OTPSerializer(queryset_otp, many=False)
 
-            db_otp = serializer_otp.data['otp']
+            db_otp = serializer_otp.data["otp"]
 
-            entered_otp = int(data['entered_otp'])
+            entered_otp = int(data["entered_otp"])
 
             # print("entered_otp")
             # print(entered_otp)
 
             if entered_otp == db_otp:
-                response_str = 'OTP Matched'
+                response_str = "OTP Matched"
                 res = {
                     "message": response_str,
                 }
@@ -510,7 +525,7 @@ def forgot_password(request):
                 OTP.objects.filter(email=email).update(otp=-1)
                 return Response(res, status=status.HTTP_200_OK)
             else:
-                response_str = 'OTP Did not Match'
+                response_str = "OTP Did not Match"
                 res = {
                     "message": response_str,
                 }
@@ -519,7 +534,7 @@ def forgot_password(request):
 
     except Exception as e:
         print(e)
-        response_str = 'Exception in forgot password'
+        response_str = "Exception in forgot password"
         res = {
             "message": response_str,
         }
@@ -527,19 +542,18 @@ def forgot_password(request):
         return Response(response_str, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
-@api_view(['POST'])
+@api_view(["POST"])
 def reset_password(request):
     try:
         data = request.data
 
-        email = data['email']
+        email = data["email"]
 
-        password = data['password']
+        password = data["password"]
 
-        Password.objects.filter(email=email).update(
-            password=make_password(password))
+        Password.objects.filter(email=email).update(password=make_password(password))
 
-        response_str = 'Password RESET Successful'
+        response_str = "Password RESET Successful"
 
         res = {
             "message": response_str,
@@ -548,9 +562,9 @@ def reset_password(request):
         return Response(res, status=status.HTTP_200_OK)
 
     except Exception as e:
-        response_str = 'Password RESET Failed'
+        response_str = "Password RESET Failed"
 
-        print('Exception in reset_password: ' + str(e))
+        print("Exception in reset_password: " + str(e))
 
         res = {
             "message": response_str,
@@ -565,15 +579,16 @@ Note: send the file as a form-data file with attribute name as 'file' in postman
 """
 
 
-@api_view(['POST'])
+@api_view(["POST"])
 def add_departments_from_file(request):
-    upFile = request.FILES.get('file')
+    upFile = request.FILES.get("file")
     """ print(request.data) """
     context = {}
     if upFile.multiple_chunks():
-        context["uploadError"] = "Uploaded file is too big (%.2f MB)." % (
-            upFile.size,)
-        return Response(context['uploadError'], status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        context["uploadError"] = "Uploaded file is too big (%.2f MB)." % (upFile.size,)
+        return Response(
+            context["uploadError"], status=status.HTTP_500_INTERNAL_SERVER_ERROR
+        )
     else:
         context["uploadedFile"] = upFile.read()
     file_data = context["uploadedFile"].decode("UTF-8")
@@ -588,27 +603,28 @@ def add_departments_from_file(request):
     """ print("\n\n\n\n\n\n\n",data) """
     for i in range(1, len(data)):
         curr_department = data[i]
-        if (len(curr_department)):
-            is_department_present = len(Department.objects.filter(
-                dept_name=curr_department[0])) != 0
+        if len(curr_department):
+            is_department_present = (
+                len(Department.objects.filter(dept_name=curr_department[0])) != 0
+            )
             if is_department_present:
-                Department.objects.filter(
-                    dept_name=curr_department[0]).update(is_present=True)
-            else:
-                Department.objects.create(
-                    dept_name=curr_department[0]
+                Department.objects.filter(dept_name=curr_department[0]).update(
+                    is_present=True
                 )
+            else:
+                Department.objects.create(dept_name=curr_department[0])
     return Response(status=status.HTTP_200_OK)
 
 
-@api_view(['POST'])
+@api_view(["POST"])
 def add_programs_from_file(request):
     upFile = request.FILES.get("file")
     context = {}
     if upFile.multiple_chunks():
-        context["uploadError"] = "Uploaded file is too big (%.2f MB)." % (
-            upFile.size,)
-        return Response(context['uploadError'], status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        context["uploadError"] = "Uploaded file is too big (%.2f MB)." % (upFile.size,)
+        return Response(
+            context["uploadError"], status=status.HTTP_500_INTERNAL_SERVER_ERROR
+        )
     else:
         context["uploadedFile"] = upFile.read()
     file_data = context["uploadedFile"].decode("UTF-8")
@@ -617,31 +633,31 @@ def add_programs_from_file(request):
     data = list(csvreader)
     for i in range(1, len(data)):
         curr_program = data[i]
-        if (len(curr_program)):
-            is_program_present = len(Program.objects.filter(
-                degree_name=curr_program[0])) != 0
+        if len(curr_program):
+            is_program_present = (
+                len(Program.objects.filter(degree_name=curr_program[0])) != 0
+            )
             if is_program_present:
                 Program.objects.filter(degree_name=curr_program[0]).update(
-                    degree_duration=curr_program[1],
-                    is_present=True
+                    degree_duration=curr_program[1], is_present=True
                 )
             else:
                 Program.objects.create(
-                    degree_name=curr_program[0],
-                    degree_duration=curr_program[1]
+                    degree_name=curr_program[0], degree_duration=curr_program[1]
                 )
 
     return Response(status=status.HTTP_200_OK)
 
 
-@api_view(['POST'])
+@api_view(["POST"])
 def add_hostels_from_file(request):
     upFile = request.FILES.get("file")
     context = {}
     if upFile.multiple_chunks():
-        context["uploadError"] = "Uploaded file is too big (%.2f MB)." % (
-            upFile.size,)
-        return Response(context['uploadError'], status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        context["uploadError"] = "Uploaded file is too big (%.2f MB)." % (upFile.size,)
+        return Response(
+            context["uploadError"], status=status.HTTP_500_INTERNAL_SERVER_ERROR
+        )
     else:
         context["uploadedFile"] = upFile.read()
     file_data = context["uploadedFile"].decode("UTF-8")
@@ -650,29 +666,32 @@ def add_hostels_from_file(request):
     data = list(csvreader)
     for i in range(1, len(data)):
         curr_hostel = data[i]
-        if (len(curr_hostel)):
-            is_hostel_present = len(Hostel.objects.filter(
-                hostel_name=curr_hostel[0])) != 0
+        if len(curr_hostel):
+            is_hostel_present = (
+                len(Hostel.objects.filter(hostel_name=curr_hostel[0])) != 0
+            )
             if is_hostel_present:
-                Hostel.objects.filter(
-                    hostel_name=curr_hostel[0]).update(is_present=True)
-            else:
-                Hostel.objects.create(
-                    hostel_name=curr_hostel[0]
+                Hostel.objects.filter(hostel_name=curr_hostel[0]).update(
+                    is_present=True
                 )
+            else:
+                Hostel.objects.create(hostel_name=curr_hostel[0])
 
     return Response(status=status.HTTP_200_OK)
 
 
-@api_view(['POST'])
+@api_view(["POST"])
 def add_locations_from_file(request):
     try:
         upFile = request.FILES.get("file")
         context = {}
         if upFile.multiple_chunks():
             context["uploadError"] = "Uploaded file is too big (%.2f MB)." % (
-                upFile.size,)
-            return Response(context['uploadError'], status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+                upFile.size,
+            )
+            return Response(
+                context["uploadError"], status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
         else:
             context["uploadedFile"] = upFile.read()
         file_data = context["uploadedFile"].decode("UTF-8")
@@ -682,9 +701,10 @@ def add_locations_from_file(request):
 
         for i in range(1, len(data)):
             curr_location = data[i]
-            if (len(curr_location)):
-                location_already_exists = len(Location.objects.filter(
-                    location_name=curr_location[0])) != 0
+            if len(curr_location):
+                location_already_exists = (
+                    len(Location.objects.filter(location_name=curr_location[0])) != 0
+                )
 
                 _pre_approval_required = True
                 if curr_location[2] == "No":
@@ -698,10 +718,12 @@ def add_locations_from_file(request):
                 if curr_location[1] != "None":
                     try:
                         queryset_location_table = Location.objects.get(
-                            location_name=curr_location[1])
+                            location_name=curr_location[1]
+                        )
                         location_serializer = LocationSerializer(
-                            queryset_location_table, many=False)
-                        _parent_id = location_serializer.data['location_id']
+                            queryset_location_table, many=False
+                        )
+                        _parent_id = location_serializer.data["location_id"]
                     except:
                         pass
 
@@ -725,32 +747,40 @@ def add_locations_from_file(request):
 
                 queryset_student = Student.objects.all()
                 queryset_location_table = Location.objects.get(
-                    location_name=curr_location[0])
+                    location_name=curr_location[0]
+                )
 
                 for each_queryset_student in queryset_student:
-                    serializer = StudentSerializer(
-                        each_queryset_student, many=False)
-                    entry_no = serializer.data['entry_no']
+                    serializer = StudentSerializer(each_queryset_student, many=False)
+                    entry_no = serializer.data["entry_no"]
 
                     # If it is not a dummy student
-                    if (entry_no != initial_data):
+                    if entry_no != initial_data:
                         query_set_location_curr = Location.objects.get(
-                            location_name=curr_location[0])
+                            location_name=curr_location[0]
+                        )
 
-                        status_table_entry_not_present = len(StatusTable.objects.filter(
-                            location_id=query_set_location_curr,
-                            entry_no=each_queryset_student)) == 0
+                        status_table_entry_not_present = (
+                            len(
+                                StatusTable.objects.filter(
+                                    location_id=query_set_location_curr,
+                                    entry_no=each_queryset_student,
+                                )
+                            )
+                            == 0
+                        )
 
                         if status_table_entry_not_present:
                             StatusTable.objects.create(
                                 entry_no=each_queryset_student,
                                 location_id=queryset_location_table,
-                                current_status='out',
+                                current_status="out",
                             )
                         else:
                             StatusTable.objects.filter(
                                 location_id=query_set_location_curr,
-                                entry_no=each_queryset_student).update(is_present=True, current_status='out')
+                                entry_no=each_queryset_student,
+                            ).update(is_present=True, current_status="out")
 
         return Response(status=status.HTTP_200_OK)
 
@@ -759,14 +789,15 @@ def add_locations_from_file(request):
         return Response(status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
-@api_view(['POST'])
+@api_view(["POST"])
 def add_authorities_from_file(request):
     upFile = request.FILES.get("file")
     context = {}
     if upFile.multiple_chunks():
-        context["uploadError"] = "Uploaded file is too big (%.2f MB)." % (
-            upFile.size,)
-        return Response(context['uploadError'], status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        context["uploadError"] = "Uploaded file is too big (%.2f MB)." % (upFile.size,)
+        return Response(
+            context["uploadError"], status=status.HTTP_500_INTERNAL_SERVER_ERROR
+        )
     else:
         context["uploadedFile"] = upFile.read()
     file_data = context["uploadedFile"].decode("UTF-8")
@@ -775,55 +806,46 @@ def add_authorities_from_file(request):
     data = list(csvreader)
     for i in range(1, len(data)):
         curr_authority = data[i]
-        if (len(curr_authority)):
+        if len(curr_authority):
             # checking for all the three parameters as two authority can have same name, authority can get promoted, and hence his/her email will be changed in that case
-            authority_not_present = len(
-                Authorities.objects.filter(email=curr_authority[2])) == 0
+            authority_not_present = (
+                len(Authorities.objects.filter(email=curr_authority[2])) == 0
+            )
             if authority_not_present:
                 Authorities.objects.create(
                     authority_name=curr_authority[0],
                     authority_designation=curr_authority[1],
-                    email=curr_authority[2]
+                    email=curr_authority[2],
                 )
             else:
                 Authorities.objects.filter(email=curr_authority[2]).update(
                     authority_name=curr_authority[0],
                     authority_designation=curr_authority[1],
-                    is_present=True
+                    is_present=True,
                 )
+            
+            user = User.objects.filter(email=curr_authority[2], type="Authority").first()
 
-            person_not_present = len(Person.objects.filter(
-                email=curr_authority[2], person_type="Authority")) == 0
-            if person_not_present:
-                Person.objects.create(
-                    email=curr_authority[2],
-                    person_type="Authority"
-                )
+            if user is None:
+                print(f"## {curr_authority}")
+                User.objects.create_user(email=curr_authority[2], type="Authority")
             else:
-                Person.objects.filter(
-                    email=curr_authority[2], person_type="Authority").update(is_present=True)
+                print(f"**")
+                User.objects.filter(email=curr_authority[2], type="Authority").update_user()
 
-            password_not_present = len(
-                Password.objects.filter(email=curr_authority[2])) == 0
-            if password_not_present:
-                Password.objects.create(
-                    email=curr_authority[2]
-                )
-            else:
-                Password.objects.filter(
-                    email=curr_authority[2]).update(is_present=True)
 
     return Response(status=status.HTTP_200_OK)
 
 
-@api_view(['POST'])
+@api_view(["POST"])
 def add_guards_from_file(request):
     upFile = request.FILES.get("file")
     context = {}
     if upFile.multiple_chunks():
-        context["uploadError"] = "Uploaded file is too big (%.2f MB)." % (
-            upFile.size,)
-        return Response(context['uploadError'], status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        context["uploadError"] = "Uploaded file is too big (%.2f MB)." % (upFile.size,)
+        return Response(
+            context["uploadError"], status=status.HTTP_500_INTERNAL_SERVER_ERROR
+        )
     else:
         context["uploadedFile"] = upFile.read()
     file_data = context["uploadedFile"].decode("UTF-8")
@@ -832,59 +854,46 @@ def add_guards_from_file(request):
     data = list(csvreader)
     for i in range(1, len(data)):
         curr_guard = data[i]
-        if (len(curr_guard)):
-            guard_not_present = len(
-                Guard.objects.filter(email=curr_guard[2])) == 0
+        if len(curr_guard):
+            guard_not_present = len(Guard.objects.filter(email=curr_guard[2])) == 0
             if guard_not_present:
                 Guard.objects.create(
                     guard_name=curr_guard[0],
-                    location_id=Location.objects.get(
-                        location_name=curr_guard[1]),
-                    email=curr_guard[2]
+                    location_id=Location.objects.get(location_name=curr_guard[1]),
+                    email=curr_guard[2],
                 )
             else:
                 query_set_location_table = Location.objects.get(
-                    location_name=curr_guard[1])
+                    location_name=curr_guard[1]
+                )
                 query_set_location_table_serializer = LocationSerializer(
-                    query_set_location_table, many=False)
-                _location_id = query_set_location_table_serializer.data['location_id']
+                    query_set_location_table, many=False
+                )
+                _location_id = query_set_location_table_serializer.data["location_id"]
                 Guard.objects.filter(email=curr_guard[2]).update(
-                    guard_name=curr_guard[0],
-                    location_id=_location_id,
-                    is_present=True
+                    guard_name=curr_guard[0], location_id=_location_id, is_present=True
                 )
-            person_not_present = len(Person.objects.filter(
-                email=curr_guard[2], person_type="Guard")) == 0
-            if person_not_present:
-                Person.objects.create(
-                    email=curr_guard[2],
-                    person_type="Guard"
-                )
-            else:
-                Person.objects.filter(
-                    email=curr_guard[2], person_type="Guard").update(is_present=True)
+            user = User.objects.filter(email=curr_guard[2], type="Guard").first()
 
-            password_not_present = len(
-                Password.objects.filter(email=curr_guard[2])) == 0
-            if password_not_present:
-                Password.objects.create(
-                    email=curr_guard[2]
-                )
+            if user is None:
+                print(f"## {curr_guard}")
+                User.objects.create_user(email=curr_guard[2], type="Guard")
             else:
-                Password.objects.filter(
-                    email=curr_guard[2]).update(is_present=True)
-
+                print(f"**")
+                User.objects.filter(email=curr_guard[2], type="Guard").update_user()
+            
     return Response(status=status.HTTP_200_OK)
 
 
-@api_view(['POST'])
+@api_view(["POST"])
 def add_students_from_file(request):
     upFile = request.FILES.get("file")
     context = {}
     if upFile.multiple_chunks():
-        context["uploadError"] = "Uploaded file is too big (%.2f MB)." % (
-            upFile.size,)
-        return Response(context['uploadError'], status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        context["uploadError"] = "Uploaded file is too big (%.2f MB)." % (upFile.size,)
+        return Response(
+            context["uploadError"], status=status.HTTP_500_INTERNAL_SERVER_ERROR
+        )
     else:
         context["uploadedFile"] = upFile.read()
 
@@ -899,12 +908,26 @@ def add_students_from_file(request):
         curr_student = data[i]
         # print(curr_student)
         """ print(curr_student, len(curr_student)) """
-        if (len(curr_student)):
-            is_student_present = len(
-                Student.objects.filter(entry_no=curr_student[1])) != 0
+
+        if len(curr_student):
+
+            user = User.objects.filter(email=curr_student[2], type="Student").first()
+
+            if user is None:
+                print(f"## {curr_student}")
+                User.objects.create_user(email=curr_student[2], type="Student")
+            else:
+                print(f"**")
+                User.objects.filter(email=curr_student[2], type="Student").update_user()
+
+            is_student_present = (
+                len(Student.objects.filter(entry_no=curr_student[1])) != 0
+            )
 
             print("inside insert student data")
-            print(f"{curr_student[0]} {curr_student[1]} {curr_student[2]} {curr_student[3]} {curr_student[4]} {curr_student[5]} {curr_student[6]} {curr_student[7]} {curr_student[8]}")
+            print(
+                f"{curr_student[0]} {curr_student[1]} {curr_student[2]} {curr_student[3]} {curr_student[4]} {curr_student[5]} {curr_student[6]} {curr_student[7]} {curr_student[8]}"
+            )
 
             if is_student_present:
                 Student.objects.filter(entry_no=curr_student[1]).update(
@@ -917,7 +940,7 @@ def add_students_from_file(request):
                     hostel_id=Hostel.objects.get(hostel_name=curr_student[6]),
                     room_no=curr_student[7],
                     year_of_entry=curr_student[8],
-                    is_present=True
+                    is_present=True,
                 )
             else:
                 Student.objects.create(
@@ -934,54 +957,46 @@ def add_students_from_file(request):
 
                 # update the status table accordingly
                 queryset_location_table = Location.objects.all()
-                queryset_entry_no = Student.objects.get(
-                    entry_no=curr_student[1])
+                queryset_entry_no = Student.objects.get(entry_no=curr_student[1])
 
                 for each_queryset_location_table in queryset_location_table:
                     queryset_location_table_serializer = LocationSerializer(
-                        each_queryset_location_table, many=False)
-                    queryset_location_table_location_name = queryset_location_table_serializer.data[
-                        'location_name']
-                    if (queryset_location_table_location_name != initial_data):
+                        each_queryset_location_table, many=False
+                    )
+                    queryset_location_table_location_name = (
+                        queryset_location_table_serializer.data["location_name"]
+                    )
+                    if queryset_location_table_location_name != initial_data:
                         queryset_status_table = StatusTable.objects.create(
                             entry_no=queryset_entry_no,
                             location_id=each_queryset_location_table,
                         )
 
-            person_not_present = len(Person.objects.filter(
-                email=curr_student[2], person_type="Student")) == 0
-            if person_not_present:
-                Person.objects.create(
-                    email=curr_student[2],
-                    person_type="Student"
-                )
-            else:
-                Person.objects.filter(
-                    email=curr_student[2], person_type="Student").update(is_present=True)
-
-            password_not_present = len(
-                Password.objects.filter(email=curr_student[2])) == 0
-            if password_not_present:
-                Password.objects.create(
-                    email=curr_student[2]
-                )
-            else:
-                Password.objects.filter(
-                    email=curr_student[2]).update(is_present=True)
+            # password_not_present = len(
+            #     Password.objects.filter(email=curr_student[2])) == 0
+            # if password_not_present:
+            #     Password.objects.create(
+            #         email=curr_student[2]
+            #     )
+            # else:
+            #     Password.objects.filter(
+            #         email=curr_student[2]).update(is_present=True)
 
     return Response(status=status.HTTP_200_OK)
+
 
 # Deleting data from file
 
 
-@api_view(['POST'])
+@api_view(["POST"])
 def delete_departments_from_file(request):
-    upFile = request.FILES.get('file')
+    upFile = request.FILES.get("file")
     context = {}
     if upFile.multiple_chunks():
-        context["uploadError"] = "Uploaded file is too big (%.2f MB)." % (
-            upFile.size,)
-        return Response(context['uploadError'], status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        context["uploadError"] = "Uploaded file is too big (%.2f MB)." % (upFile.size,)
+        return Response(
+            context["uploadError"], status=status.HTTP_500_INTERNAL_SERVER_ERROR
+        )
     else:
         context["uploadedFile"] = upFile.read()
     file_data = context["uploadedFile"].decode("UTF-8")
@@ -990,21 +1005,23 @@ def delete_departments_from_file(request):
     data = list(csvreader)
     for i in range(1, len(data)):
         curr_department = data[i]
-        if (len(curr_department)):
-            Department.objects.filter(
-                dept_name=curr_department[0]).update(is_present=False)
+        if len(curr_department):
+            Department.objects.filter(dept_name=curr_department[0]).update(
+                is_present=False
+            )
 
     return Response(status=status.HTTP_200_OK)
 
 
-@api_view(['POST'])
+@api_view(["POST"])
 def delete_programs_from_file(request):
     upFile = request.FILES.get("file")
     context = {}
     if upFile.multiple_chunks():
-        context["uploadError"] = "Uploaded file is too big (%.2f MB)." % (
-            upFile.size,)
-        return Response(context['uploadError'], status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        context["uploadError"] = "Uploaded file is too big (%.2f MB)." % (upFile.size,)
+        return Response(
+            context["uploadError"], status=status.HTTP_500_INTERNAL_SERVER_ERROR
+        )
     else:
         context["uploadedFile"] = upFile.read()
     file_data = context["uploadedFile"].decode("UTF-8")
@@ -1013,21 +1030,23 @@ def delete_programs_from_file(request):
     data = list(csvreader)
     for i in range(1, len(data)):
         curr_program = data[i]
-        if (len(curr_program)):
+        if len(curr_program):
             Program.objects.filter(
-                degree_name=curr_program[0], degree_duration=curr_program[1]).update(is_present=False)
+                degree_name=curr_program[0], degree_duration=curr_program[1]
+            ).update(is_present=False)
 
     return Response(status=status.HTTP_200_OK)
 
 
-@api_view(['POST'])
+@api_view(["POST"])
 def delete_hostels_from_file(request):
     upFile = request.FILES.get("file")
     context = {}
     if upFile.multiple_chunks():
-        context["uploadError"] = "Uploaded file is too big (%.2f MB)." % (
-            upFile.size,)
-        return Response(context['uploadError'], status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        context["uploadError"] = "Uploaded file is too big (%.2f MB)." % (upFile.size,)
+        return Response(
+            context["uploadError"], status=status.HTTP_500_INTERNAL_SERVER_ERROR
+        )
     else:
         context["uploadedFile"] = upFile.read()
     file_data = context["uploadedFile"].decode("UTF-8")
@@ -1036,21 +1055,21 @@ def delete_hostels_from_file(request):
     data = list(csvreader)
     for i in range(1, len(data)):
         curr_hostel = data[i]
-        if (len(curr_hostel)):
-            Hostel.objects.filter(
-                hostel_name=curr_hostel[0]).update(is_present=False)
+        if len(curr_hostel):
+            Hostel.objects.filter(hostel_name=curr_hostel[0]).update(is_present=False)
 
     return Response(status=status.HTTP_200_OK)
 
 
-@api_view(['POST'])
+@api_view(["POST"])
 def delete_locations_from_file(request):
     upFile = request.FILES.get("file")
     context = {}
     if upFile.multiple_chunks():
-        context["uploadError"] = "Uploaded file is too big (%.2f MB)." % (
-            upFile.size,)
-        return Response(context['uploadError'], status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        context["uploadError"] = "Uploaded file is too big (%.2f MB)." % (upFile.size,)
+        return Response(
+            context["uploadError"], status=status.HTTP_500_INTERNAL_SERVER_ERROR
+        )
     else:
         context["uploadedFile"] = upFile.read()
     file_data = context["uploadedFile"].decode("UTF-8")
@@ -1060,7 +1079,7 @@ def delete_locations_from_file(request):
 
     for i in range(1, len(data)):
         curr_location = data[i]
-        if (len(curr_location)):
+        if len(curr_location):
 
             _pre_approval_required = True
             if curr_location[2] == "No":
@@ -1073,32 +1092,39 @@ def delete_locations_from_file(request):
             _parent_id = -1
             if curr_location[1] != "None":
                 queryset_location_table = Location.objects.get(
-                    location_name=curr_location[1])
+                    location_name=curr_location[1]
+                )
                 location_serializer = LocationSerializer(
-                    queryset_location_table, many=False)
-                _parent_id = location_serializer.data['location_id']
+                    queryset_location_table, many=False
+                )
+                _parent_id = location_serializer.data["location_id"]
 
             Location.objects.filter(
-                location_name=curr_location[0], parent_id=_parent_id,
+                location_name=curr_location[0],
+                parent_id=_parent_id,
                 pre_approval_required=_pre_approval_required,
-                automatic_exit_required=_automatic_exit_required).update(is_present=False)
+                automatic_exit_required=_automatic_exit_required,
+            ).update(is_present=False)
 
             queryset_location_table = Location.objects.get(
-                location_name=curr_location[0])
-            StatusTable.objects.filter(
-                location_id=queryset_location_table).update(is_present=False)
+                location_name=curr_location[0]
+            )
+            StatusTable.objects.filter(location_id=queryset_location_table).update(
+                is_present=False
+            )
 
     return Response(status=status.HTTP_200_OK)
 
 
-@api_view(['POST'])
+@api_view(["POST"])
 def delete_authorities_from_file(request):
     upFile = request.FILES.get("file")
     context = {}
     if upFile.multiple_chunks():
-        context["uploadError"] = "Uploaded file is too big (%.2f MB)." % (
-            upFile.size,)
-        return Response(context['uploadError'], status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        context["uploadError"] = "Uploaded file is too big (%.2f MB)." % (upFile.size,)
+        return Response(
+            context["uploadError"], status=status.HTTP_500_INTERNAL_SERVER_ERROR
+        )
     else:
         context["uploadedFile"] = upFile.read()
     file_data = context["uploadedFile"].decode("UTF-8")
@@ -1107,26 +1133,25 @@ def delete_authorities_from_file(request):
     data = list(csvreader)
     for i in range(1, len(data)):
         curr_authority = data[i]
-        if (len(curr_authority)):
+        if len(curr_authority):
             # checking for all the three parameters as two authority can have same name, authority can get promoted, and hence his/her email will be changed in that case
-            Authorities.objects.filter(
-                email=curr_authority[2]).update(is_present=False)
-            Person.objects.filter(
-                email=curr_authority[2], person_type="Authority").update(is_present=False)
-            Password.objects.filter(
-                email=curr_authority[2]).update(is_present=False)
+            Authorities.objects.filter(email=curr_authority[2]).update(is_present=False)
+            User.objects.filter(
+                email=curr_authority[2], type="Authority"
+            ).delete()
 
     return Response(status=status.HTTP_200_OK)
 
 
-@api_view(['POST'])
+@api_view(["POST"])
 def delete_guards_from_file(request):
     upFile = request.FILES.get("file")
     context = {}
     if upFile.multiple_chunks():
-        context["uploadError"] = "Uploaded file is too big (%.2f MB)." % (
-            upFile.size,)
-        return Response(context['uploadError'], status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        context["uploadError"] = "Uploaded file is too big (%.2f MB)." % (upFile.size,)
+        return Response(
+            context["uploadError"], status=status.HTTP_500_INTERNAL_SERVER_ERROR
+        )
     else:
         context["uploadedFile"] = upFile.read()
     file_data = context["uploadedFile"].decode("UTF-8")
@@ -1135,24 +1160,21 @@ def delete_guards_from_file(request):
     data = list(csvreader)
     for i in range(1, len(data)):
         curr_guard = data[i]
-        if (len(curr_guard)):
-            Guard.objects.filter(email=curr_guard[2]).update(is_present=False)
-            Person.objects.filter(
-                email=curr_guard[2], person_type="Guard").update(is_present=False)
-            Password.objects.filter(
-                email=curr_guard[2]).update(is_present=False)
-
+        if len(curr_guard):
+            Guard.objects.filter(email=curr_guard[2]).delete()
+            User.objects.filter(email=curr_guard[2], type="Guard").delete()
     return Response(status=status.HTTP_200_OK)
 
 
-@api_view(['POST'])
+@api_view(["POST"])
 def delete_students_from_file(request):
     upFile = request.FILES.get("file")
     context = {}
     if upFile.multiple_chunks():
-        context["uploadError"] = "Uploaded file is too big (%.2f MB)." % (
-            upFile.size,)
-        return Response(context['uploadError'], status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        context["uploadError"] = "Uploaded file is too big (%.2f MB)." % (upFile.size,)
+        return Response(
+            context["uploadError"], status=status.HTTP_500_INTERNAL_SERVER_ERROR
+        )
     else:
         context["uploadedFile"] = upFile.read()
     file_data = context["uploadedFile"].decode("UTF-8")
@@ -1162,42 +1184,44 @@ def delete_students_from_file(request):
     for i in range(1, len(data)):
         curr_student = data[i]
         # print(curr_student, len(curr_student))
-        if (len(curr_student)):
-            is_student_present = len(
-                Student.objects.filter(entry_no=curr_student[1])) != 0
+        if len(curr_student):
+            is_student_present = (
+                len(Student.objects.filter(entry_no=curr_student[1])) != 0
+            )
             if is_student_present:
-                Student.objects.filter(
-                    entry_no=curr_student[1]).update(is_present=False)
-                StatusTable.objects.filter(
-                    entry_no=curr_student[1]).update(is_present=False)
-                Person.objects.filter(
-                    email=curr_student[2], person_type="Student").update(is_present=False)
-                Password.objects.filter(
-                    email=curr_student[2]).update(is_present=False)
+                Student.objects.filter(entry_no=curr_student[1]).update(
+                    is_present=False
+                )
+                StatusTable.objects.filter(entry_no=curr_student[1]).update(
+                    is_present=False
+                )
+                User.objects.filter(
+                    email=curr_student[2], type="Student"
+                ).delete()
+                
 
     return Response(status=status.HTTP_200_OK)
 
 
 # add data using form
-@api_view(['POST'])
+@api_view(["POST"])
 def add_guard_form(request):
     data = request.data
 
     try:
-        _name = data['name']
-        _email = data['email']
-        _location_name = data['location_name']
+        _name = data["name"]
+        _email = data["email"]
+        _location_name = data["location_name"]
 
         query_set_location = Location.objects.get(location_name=_location_name)
-        _location_id = LocationSerializer(
-            query_set_location).data['location_id']
+        _location_id = LocationSerializer(query_set_location).data["location_id"]
 
         is_guard_present = len(Guard.objects.filter(email=_email)) != 0
         if is_guard_present:
             # check the is_present attribute of the guard
             query_set_guard = Guard.objects.get(email=_email)
             serializer = GuardSerializer(query_set_guard, many=False)
-            is_present = serializer.data['is_present']
+            is_present = serializer.data["is_present"]
             if is_present:
                 response_str = "A Guard Already Exists with this email id"
                 return Response(response_str, status.HTTP_200_OK)
@@ -1206,24 +1230,17 @@ def add_guard_form(request):
                     guard_name=_name,
                     email=_email,
                     location_id=_location_id,
-                    is_present=True
+                    is_present=True,
                 )
 
-                Person.objects.filter(email=_email).update(is_present=True)
-                Password.objects.filter(email=_email).update(is_present=True)
+                User.objects.filter(email=_email,type='Guard' ).update()
                 response_str = "Guard Created Sucessfully"
                 return Response(response_str, status.HTTP_200_OK)
         else:
             Guard.objects.create(
-                guard_name=_name,
-                location_id=query_set_location,
-                email=_email
+                guard_name=_name, location_id=query_set_location, email=_email
             )
-            Person.objects.create(
-                email=_email,
-                person_type="Guard"
-            )
-            Password.objects.create(email=_email)
+            User.objects.create(email=_email, type="Guard")
             response_str = "Guard Created Sucessfully"
             return Response(response_str, status.HTTP_200_OK)
 
@@ -1234,26 +1251,22 @@ def add_guard_form(request):
         return Response(response_str, status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
-@api_view(['POST'])
+@api_view(["POST"])
 def add_admin_form(request):
     data = request.data
 
     try:
-        admin_name = data['name']
+        admin_name = data["name"]
 
-        email = data['email']
+        email = data["email"]
 
         Admin.objects.create(email=email, admin_name=admin_name)
 
-        Person.objects.create(email=email, person_type='Admin')
-
-        Password.objects.create(email=email)
+        User.objects.create(email=email, type="Admin")
 
         response_str = "Admin created successfully"
 
-        res = {
-            "message": response_str
-        }
+        res = {"message": response_str}
 
         return Response(res, status.HTTP_200_OK)
 
@@ -1264,34 +1277,30 @@ def add_admin_form(request):
 
         response_str = "Error in creating admin"
 
-        res = {
-            "message": response_str
-        }
+        res = {"message": response_str}
         return Response(res, status.HTTP_500_INTERNAL_SERVER_ERROR)
+
 
 # modify data using form
 
 
-@api_view(['POST'])
+@api_view(["POST"])
 def modify_guard_form(request):
     data = request.data
     # _name = data['name']
-    _email = data['email']
-    _location_name = data['location_name']
+    _email = data["email"]
+    _location_name = data["location_name"]
 
     query_set_location = Location.objects.get(location_name=_location_name)
-    _location_id = LocationSerializer(query_set_location).data['location_id']
+    _location_id = LocationSerializer(query_set_location).data["location_id"]
 
-    is_guard_present = len(Guard.objects.filter(
-        email=_email, is_present=True)) != 0
+    is_guard_present = len(Guard.objects.filter(email=_email, is_present=True)) != 0
     if is_guard_present:
         Guard.objects.filter(email=_email).update(
-            location_id=_location_id,
-            is_present=True
+            location_id=_location_id, is_present=True
         )
 
-        Person.objects.filter(email=_email).update(is_present=True)
-        Password.objects.filter(email=_email).update(is_present=True)
+        User.objects.filter(email=_email,type="Guard").update()
 
         response_str = "Guard updated sucessfully"
         return Response(response_str, status.HTTP_200_OK)
@@ -1299,21 +1308,20 @@ def modify_guard_form(request):
     response_str = "No guard exists with this email id"
     return Response(response_str, status.HTTP_200_OK)
 
+
 # delete data using  form
 
 
-@api_view(['POST'])
+@api_view(["POST"])
 def delete_guard_form(request):
     data = request.data
     # _name = data['name']
-    _email = data['email']
+    _email = data["email"]
 
-    is_guard_present = len(Guard.objects.filter(
-        email=_email, is_present=True)) != 0
+    is_guard_present = len(Guard.objects.filter(email=_email, is_present=True)) != 0
     if is_guard_present:
         Guard.objects.filter(email=_email).update(is_present=False)
-        Person.objects.filter(email=_email).update(is_present=False)
-        Password.objects.filter(email=_email).update(is_present=False)
+        User.objects.filter(email=_email).delete()
 
         response_str = "Guard Deleted sucessfully"
         return Response(response_str, status.HTTP_200_OK)
@@ -1326,31 +1334,34 @@ def delete_guard_form(request):
 check_status = "in"
 
 
-@api_view(['POST'])
+@api_view(["POST"])
 def get_statistics_data_by_location(request):
     # print(request.data)
     data = request.data
-    _location_name = data['location']
-    _filter = data['filter']
-    check_status = data['status']
+    _location_name = data["location"]
+    _filter = data["filter"]
+    check_status = data["status"]
     print("Location Name: " + _location_name)
     if _filter == "Gender":
         category_list = {}
 
-        query_set_status_table = StatusTable.objects.filter(location_id=Location.objects.get(
-            location_name=_location_name), current_status=check_status, is_present=True)
-        print(f'shaurya bhai={query_set_status_table.__sizeof__}')
+        query_set_status_table = StatusTable.objects.filter(
+            location_id=Location.objects.get(location_name=_location_name),
+            current_status=check_status,
+            is_present=True,
+        )
+        print(f"shaurya bhai={query_set_status_table.__sizeof__}")
         for each_query_set in query_set_status_table:
             serializer = StatusTableSerializer(each_query_set, many=False)
-            entry_no = serializer.data['entry_no']
+            entry_no = serializer.data["entry_no"]
             # now I need to find out their gender
-            is_student_present = len(Student.objects.filter(
-                entry_no=entry_no, is_present=True)) != 0
+            is_student_present = (
+                len(Student.objects.filter(entry_no=entry_no, is_present=True)) != 0
+            )
             if is_student_present:
-                student = Student.objects.get(
-                    entry_no=entry_no, is_present=True)
+                student = Student.objects.get(entry_no=entry_no, is_present=True)
                 student_serializer = StudentSerializer(student, many=False)
-                gender = student_serializer.data['gender']
+                gender = student_serializer.data["gender"]
                 # print("Student Name: " + student_serializer.data['st_name'])
                 if gender in category_list:
                     category_list[gender] += 1
@@ -1359,8 +1370,7 @@ def get_statistics_data_by_location(request):
 
         res = []
         for key in category_list:
-            StatisticsResultObj = {
-                "category": key, "count": category_list[key]}
+            StatisticsResultObj = {"category": key, "count": category_list[key]}
             res.append(StatisticsResultObj)
 
         return Response({"output": res}, status.HTTP_200_OK)
@@ -1377,44 +1387,49 @@ def get_statistics_data_by_location(request):
 
             for each_department_query_set in departments_query_set:
                 department_serializer = DepartmentSerializer(
-                    each_department_query_set, many=False)
-                dept_name = department_serializer.data['dept_name']
+                    each_department_query_set, many=False
+                )
+                dept_name = department_serializer.data["dept_name"]
                 if dept_name != initial_data:
                     category_list[dept_name] = 0
 
-            query_set_status_table = StatusTable.objects.filter(location_id=Location.objects.get(
-                location_name=_location_name), current_status=check_status, is_present=True)
+            query_set_status_table = StatusTable.objects.filter(
+                location_id=Location.objects.get(location_name=_location_name),
+                current_status=check_status,
+                is_present=True,
+            )
             for each_query_set in query_set_status_table:
                 serializer = StatusTableSerializer(each_query_set, many=False)
-                entry_no = serializer.data['entry_no']
+                entry_no = serializer.data["entry_no"]
                 # now I need to find out their gender
-                is_student_present = len(Student.objects.filter(
-                    entry_no=entry_no, is_present=True)) != 0
+                is_student_present = (
+                    len(Student.objects.filter(entry_no=entry_no, is_present=True)) != 0
+                )
                 if is_student_present:
-                    student = Student.objects.get(
-                        entry_no=entry_no, is_present=True)
+                    student = Student.objects.get(entry_no=entry_no, is_present=True)
                     student_serializer = StudentSerializer(student, many=False)
-                    dept_id = student_serializer.data['dept_id']
+                    dept_id = student_serializer.data["dept_id"]
 
-                    department_not_present = len(Department.objects.filter(
-                        dept_id=dept_id, is_present=True)) == 0
+                    department_not_present = (
+                        len(Department.objects.filter(dept_id=dept_id, is_present=True))
+                        == 0
+                    )
                     if department_not_present:
                         res = []
                         print("Department not present")
                         return Response({"output": res}, status.HTTP_200_OK)
                     else:
                         # get name of the department
-                        department_query_set = Department.objects.get(
-                            dept_id=dept_id)
+                        department_query_set = Department.objects.get(dept_id=dept_id)
                         dept_name = DepartmentSerializer(
-                            department_query_set, many=False).data['dept_name']
+                            department_query_set, many=False
+                        ).data["dept_name"]
                         # print("Student Name: " + student_serializer.data['st_name'])
                         # print("Department: " + str(dept_name))
                         category_list[dept_name] += 1
             res = []
             for key in category_list:
-                StatisticsResultObj = {
-                    "category": key, "count": category_list[key]}
+                StatisticsResultObj = {"category": key, "count": category_list[key]}
                 res.append(StatisticsResultObj)
             return Response({"output": res}, status.HTTP_200_OK)
 
@@ -1429,64 +1444,74 @@ def get_statistics_data_by_location(request):
 
             for each_program_query_set in program_query_set:
                 program_serializer = ProgramSerializer(
-                    each_program_query_set, many=False)
-                degree_name = program_serializer.data['degree_name']
+                    each_program_query_set, many=False
+                )
+                degree_name = program_serializer.data["degree_name"]
                 if degree_name != initial_data:
                     category_list[degree_name] = 0
 
-            query_set_status_table = StatusTable.objects.filter(location_id=Location.objects.get(
-                location_name=_location_name), current_status=check_status, is_present=True)
+            query_set_status_table = StatusTable.objects.filter(
+                location_id=Location.objects.get(location_name=_location_name),
+                current_status=check_status,
+                is_present=True,
+            )
             for each_query_set in query_set_status_table:
                 serializer = StatusTableSerializer(each_query_set, many=False)
-                entry_no = serializer.data['entry_no']
+                entry_no = serializer.data["entry_no"]
                 # now I need to find out their gender
-                is_student_present = len(Student.objects.filter(
-                    entry_no=entry_no, is_present=True)) != 0
+                is_student_present = (
+                    len(Student.objects.filter(entry_no=entry_no, is_present=True)) != 0
+                )
                 if is_student_present:
-                    student = Student.objects.get(
-                        entry_no=entry_no, is_present=True)
+                    student = Student.objects.get(entry_no=entry_no, is_present=True)
                     student_serializer = StudentSerializer(student, many=False)
-                    degree_id = student_serializer.data['degree_id']
+                    degree_id = student_serializer.data["degree_id"]
 
-                    Program_not_present = len(Program.objects.filter(
-                        degree_id=degree_id, is_present=True)) == 0
+                    Program_not_present = (
+                        len(
+                            Program.objects.filter(degree_id=degree_id, is_present=True)
+                        )
+                        == 0
+                    )
                     if Program_not_present:
                         res = []
                         print("Program not present")
                         return Response({"output": res}, status.HTTP_200_OK)
                     else:
                         # get name of the department
-                        Program_query_set = Program.objects.get(
-                            degree_id=degree_id)
+                        Program_query_set = Program.objects.get(degree_id=degree_id)
                         degree_name = ProgramSerializer(
-                            Program_query_set, many=False).data['degree_name']
+                            Program_query_set, many=False
+                        ).data["degree_name"]
                         # print("Student Name: " + student_serializer.data['st_name'])
                         # print("Program: " + str(degree_name))
                         category_list[degree_name] += 1
             res = []
             for key in category_list:
-                StatisticsResultObj = {
-                    "category": key, "count": category_list[key]}
+                StatisticsResultObj = {"category": key, "count": category_list[key]}
                 res.append(StatisticsResultObj)
             return Response({"output": res}, status.HTTP_200_OK)
 
     elif _filter == "Year":
         category_list = {}
-        query_set_status_table = StatusTable.objects.filter(location_id=Location.objects.get(
-            location_name=_location_name), current_status=check_status, is_present=True)
+        query_set_status_table = StatusTable.objects.filter(
+            location_id=Location.objects.get(location_name=_location_name),
+            current_status=check_status,
+            is_present=True,
+        )
         for each_query_set in query_set_status_table:
             serializer = StatusTableSerializer(each_query_set, many=False)
-            entry_no = serializer.data['entry_no']
+            entry_no = serializer.data["entry_no"]
             # now I need to find out their gender
-            is_student_present = len(Student.objects.filter(
-                entry_no=entry_no, is_present=True)) != 0
+            is_student_present = (
+                len(Student.objects.filter(entry_no=entry_no, is_present=True)) != 0
+            )
             if is_student_present:
-                student = Student.objects.get(
-                    entry_no=entry_no, is_present=True)
+                student = Student.objects.get(entry_no=entry_no, is_present=True)
                 student_serializer = StudentSerializer(student, many=False)
-                year_of_entry = str(student_serializer.data['year_of_entry'])
+                year_of_entry = str(student_serializer.data["year_of_entry"])
 
-                print("Student Name: " + student_serializer.data['st_name'])
+                print("Student Name: " + student_serializer.data["st_name"])
                 print("Year of Entry: " + str(year_of_entry))
                 if year_of_entry in category_list:
                     category_list[year_of_entry] += 1
@@ -1494,8 +1519,7 @@ def get_statistics_data_by_location(request):
                     category_list[year_of_entry] = 1
         res = []
         for key in category_list:
-            StatisticsResultObj = {
-                "category": key, "count": category_list[key]}
+            StatisticsResultObj = {"category": key, "count": category_list[key]}
             res.append(StatisticsResultObj)
         return Response({"output": res}, status.HTTP_200_OK)
 
@@ -1505,34 +1529,45 @@ def get_statistics_data_by_location(request):
 _ticket_type = "enter"
 
 
-@api_view(['POST'])
+@api_view(["POST"])
 #
 def get_piechart_statistics_by_location(request):
     print(request.data)
     data = request.data
-    _location_name = data['location']
-    _filter = data['filter']
-    _start_date = data['start_date']
-    _end_date = data['end_date']
+    _location_name = data["location"]
+    _filter = data["filter"]
+    _start_date = data["start_date"]
+    _end_date = data["end_date"]
     category_list = {}
 
-    no_tickets = len(TicketTable.objects.filter(location_id=Location.objects.get(
-        location_name=_location_name), ticket_type=_ticket_type, is_approved="Approved")) == 0
+    no_tickets = (
+        len(
+            TicketTable.objects.filter(
+                location_id=Location.objects.get(location_name=_location_name),
+                ticket_type=_ticket_type,
+                is_approved="Approved",
+            )
+        )
+        == 0
+    )
     if no_tickets:
         res = []
         return Response({"output": res}, status.HTTP_200_OK)
 
-    all_tickets = TicketTable.objects.filter(location_id=Location.objects.get(
-        location_name=_location_name), ticket_type=_ticket_type, is_approved="Approved")
+    all_tickets = TicketTable.objects.filter(
+        location_id=Location.objects.get(location_name=_location_name),
+        ticket_type=_ticket_type,
+        is_approved="Approved",
+    )
 
     if _filter == "Hourly":
         for query_set in all_tickets:
             serializer = TicketTableSerializer(query_set, many=False)
-            date_time = serializer.data['date_time']
+            date_time = serializer.data["date_time"]
             _date = date_time.split("T")[0]
             _time = (date_time.split("T")[-1]).split(".")[0]
             _hour = _time.split(":")[0]
-            key = _hour+":00\n"+_date
+            key = _hour + ":00\n" + _date
             if _date <= _end_date and _date >= _start_date:
                 if key in category_list:
                     category_list[key] += 1
@@ -1540,15 +1575,14 @@ def get_piechart_statistics_by_location(request):
                     category_list[key] = 1
         res = []
         for key in category_list:
-            StatisticsResultObj = {
-                "category": key, "count": category_list[key]}
+            StatisticsResultObj = {"category": key, "count": category_list[key]}
             res.append(StatisticsResultObj)
         return Response({"output": res}, status.HTTP_200_OK)
 
     elif _filter == "Daily":
         for query_set in all_tickets:
             serializer = TicketTableSerializer(query_set, many=False)
-            date_time = serializer.data['date_time']
+            date_time = serializer.data["date_time"]
             _date = date_time.split("T")[0]
             if _date <= _end_date and _date >= _start_date:
                 if _date in category_list:
@@ -1557,8 +1591,7 @@ def get_piechart_statistics_by_location(request):
                     category_list[_date] = 1
         res = []
         for key in category_list:
-            StatisticsResultObj = {
-                "category": key, "count": category_list[key]}
+            StatisticsResultObj = {"category": key, "count": category_list[key]}
             res.append(StatisticsResultObj)
 
         return Response({"output": res}, status.HTTP_200_OK)
@@ -1566,7 +1599,7 @@ def get_piechart_statistics_by_location(request):
     elif _filter == "Monthly":
         for query_set in all_tickets:
             serializer = TicketTableSerializer(query_set, many=False)
-            date_time = serializer.data['date_time']
+            date_time = serializer.data["date_time"]
             _date = date_time.split("T")[0]
             l = _date.split("-")
             _month = "-".join(l[:-1])
@@ -1577,18 +1610,18 @@ def get_piechart_statistics_by_location(request):
                     category_list[_month] = 1
         res = []
         for key in category_list:
-            StatisticsResultObj = {
-                "category": key, "count": category_list[key]}
+            StatisticsResultObj = {"category": key, "count": category_list[key]}
             res.append(StatisticsResultObj)
 
         return Response({"output": res}, status.HTTP_200_OK)
 
     return Response(status.HTTP_200_OK)
 
+
 ########################################################################
 
 
-@api_view(['GET'])
+@api_view(["GET"])
 def get_students(request):
     queryset = Student.objects.all()
     serializer = StudentSerializer(queryset, many=True)
@@ -1596,7 +1629,7 @@ def get_students(request):
     return Response(serializer.data)
 
 
-@api_view(['GET', 'POST'])
+@api_view(["GET", "POST"])
 def get_all_students(request):
     res = []
     print(request.data)
@@ -1606,49 +1639,52 @@ def get_all_students(request):
         serializer = StudentSerializer(queryset, many=True)
 
         for each_student in serializer.data:
-            if each_student['st_name'] == initial_data:
+            if each_student["st_name"] == initial_data:
                 continue
-            entry_no = each_student['entry_no']
+            entry_no = each_student["entry_no"]
 
-            _dept_id = each_student['dept_id']
+            _dept_id = each_student["dept_id"]
 
             query_set_department = Department.objects.get(dept_id=_dept_id)
 
-            dept_name = DepartmentSerializer(
-                query_set_department, many=False).data['dept_name']
+            dept_name = DepartmentSerializer(query_set_department, many=False).data[
+                "dept_name"
+            ]
 
-            _degree_id = each_student['degree_id']
+            _degree_id = each_student["degree_id"]
 
             query_set_program = Program.objects.get(degree_id=_degree_id)
 
-            degree_name = ProgramSerializer(
-                query_set_program, many=False).data['degree_name']
+            degree_name = ProgramSerializer(query_set_program, many=False).data[
+                "degree_name"
+            ]
 
-            _hostel_id = each_student['hostel_id']
+            _hostel_id = each_student["hostel_id"]
 
             query_set_hostel = Hostel.objects.get(hostel_id=_hostel_id)
 
-            hostel_name = HostelSerializer(
-                query_set_hostel, many=False).data['hostel_name']
+            hostel_name = HostelSerializer(query_set_hostel, many=False).data[
+                "hostel_name"
+            ]
 
             item = {
-                'name': each_student['st_name'],
-                'entry_no': each_student['entry_no'],
-                'email': each_student['email'],
-                'gender': each_student['gender'],
-                'department': dept_name,
-                'degree_name': degree_name,
-                'hostel': hostel_name,
-                'room_no': each_student['room_no'],
-                'year_of_entry': str(each_student['year_of_entry']),
-                'mobile_no': each_student['mobile_no'],
-                'profile_img': each_student['profile_img'],
-                'degree_duration': '',
-                'location_name': '',
-                'parent_location': '',
-                'pre_approval_required': '',
-                'automatic_exit_required': '',
-                'designation': '',
+                "name": each_student["st_name"],
+                "entry_no": each_student["entry_no"],
+                "email": each_student["email"],
+                "gender": each_student["gender"],
+                "department": dept_name,
+                "degree_name": degree_name,
+                "hostel": hostel_name,
+                "room_no": each_student["room_no"],
+                "year_of_entry": str(each_student["year_of_entry"]),
+                "mobile_no": each_student["mobile_no"],
+                "profile_img": each_student["profile_img"],
+                "degree_duration": "",
+                "location_name": "",
+                "parent_location": "",
+                "pre_approval_required": "",
+                "automatic_exit_required": "",
+                "designation": "",
             }
 
             res.append(item)
@@ -1658,7 +1694,7 @@ def get_all_students(request):
         return Response(status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
-@api_view(['POST'])
+@api_view(["POST"])
 def delete_student_by_id(request):
     print("req body = ", request.body)
     # queryset = Student.objects.get(entry_no = entry_no)
@@ -1666,47 +1702,48 @@ def delete_student_by_id(request):
     return Response(status=status.HTTP_200_OK)
 
 
-@api_view(['GET'])
+@api_view(["GET"])
 def get_student_by_entry_no(request, entry_no):
     queryset = Student.objects.get(entry_no=entry_no)
     serializer = StudentSerializer(queryset, many=False)
     return Response(serializer.data)
 
 
-@api_view(['POST'])
+@api_view(["POST"])
 def get_welcome_message(request):
     try:
         data = request.data
 
-        email = data['email']
+        email = data["email"]
 
-        name = ''
+        name = ""
 
-        queryset_person = Person.objects.get(email=email, is_present=True)
+        user = User.objects.get(email=email)
+        
 
-        serializer_person = PersonSerializer(queryset_person, many=False)
+        
 
-        person_type = serializer_person.data['person_type']
+        person_type = user.type
 
-        if person_type == 'Student':
+        if person_type == "Student":
             queryset = Student.objects.get(email=email, is_present=True)
             serializer = StudentSerializer(queryset, many=False)
-            name = serializer.data['st_name']
+            name = serializer.data["st_name"]
 
-        elif person_type == 'Guard':
+        elif person_type == "Guard":
             queryset = Guard.objects.get(email=email, is_present=True)
             serializer = GuardSerializer(queryset, many=False)
-            name = serializer.data['guard_name']
+            name = serializer.data["guard_name"]
 
-        elif person_type == 'Authority':
+        elif person_type == "Authority":
             queryset = Authorities.objects.get(email=email, is_present=True)
             serializer = AuthoritiesSerializer(queryset, many=False)
-            name = serializer.data['authority_name']
+            name = serializer.data["authority_name"]
 
-        elif person_type == 'Admin':
+        elif person_type == "Admin":
             queryset = Admin.objects.get(email=email, is_present=True)
             serializer = AdminSerializer(queryset, many=False)
-            name = serializer.data['admin_name']
+            name = serializer.data["admin_name"]
 
         welcome_message = name
 
@@ -1728,100 +1765,106 @@ def get_welcome_message(request):
         return Response(res, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
-@api_view(['POST'])
-def get_student_by_email(request):
-    try:
-        data = request.data
-        print(request.data)
-        email_ = data['email']
 
-        queryset = Student.objects.get(email=email_)
+class get_student_by_email(APIView):
+    permission_classes = (IsAuthenticated,)
+    def post(self,request):
+        try:
+            data = request.data
+            print(request.data)
+            email_ = data["email"]
 
-        serializer = StudentSerializer(queryset, many=False)
+            queryset = Student.objects.get(email=email_)
 
-        _dept_id = serializer.data['dept_id']
+            serializer = StudentSerializer(queryset, many=False)
 
-        query_set_department = Department.objects.get(dept_id=_dept_id)
+            _dept_id = serializer.data["dept_id"]
 
-        dept_name = DepartmentSerializer(
-            query_set_department, many=False).data['dept_name']
+            query_set_department = Department.objects.get(dept_id=_dept_id)
 
-        _degree_id = serializer.data['degree_id']
+            dept_name = DepartmentSerializer(query_set_department, many=False).data[
+                "dept_name"
+            ]
 
-        query_set_department = Program.objects.get(degree_id=_degree_id)
+            _degree_id = serializer.data["degree_id"]
 
-        degree_name = ProgramSerializer(
-            query_set_department, many=False).data['degree_name']
+            query_set_department = Program.objects.get(degree_id=_degree_id)
 
-        image_path = serializer.data['profile_img']
-        print("0000000000000000000000000000000000000000000000000000000000000000000")
-        with open(str(settings.BASE_DIR) + image_path, "rb") as image_file:
-            encoded_image = base64.b64encode(image_file.read()).decode('utf-8')
+            degree_name = ProgramSerializer(query_set_department, many=False).data[
+                "degree_name"
+            ]
 
-        res = {
-            'name': serializer.data['st_name'],
-            'email': serializer.data['email'],
-            'gender': serializer.data['gender'],
-            'year_of_entry': str(serializer.data['year_of_entry']),
-            'department': dept_name,
-            'mobile_no': serializer.data['mobile_no'],
-            'profile_img': encoded_image,
-            'image_path': image_path,
-            'degree': degree_name
-        }
-        print("------------------------------------------------")
-        return Response(res, status=status.HTTP_200_OK)
+            image_path = serializer.data["profile_img"]
+            print("0000000000000000000000000000000000000000000000000000000000000000000")
+            with open(str(settings.BASE_DIR) + image_path, "rb") as image_file:
+                encoded_image = base64.b64encode(image_file.read()).decode("utf-8")
 
-    except Exception as e:
-        print("Exception in get_student_by_email: " + str(e))
-        return Response(status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            res = {
+                "name": serializer.data["st_name"],
+                "email": serializer.data["email"],
+                "gender": serializer.data["gender"],
+                "year_of_entry": str(serializer.data["year_of_entry"]),
+                "department": dept_name,
+                "mobile_no": serializer.data["mobile_no"],
+                "profile_img": encoded_image,
+                "image_path": image_path,
+                "degree": degree_name,
+            }
+            print("------------------------------------------------")
+            return Response(res, status=status.HTTP_200_OK)
+
+        except Exception as e:
+            print("Exception in get_student_by_email: " + str(e))
+            return Response(status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
-@api_view(['POST'])
+@api_view(["POST"])
 def get_student_by_id(request):
     try:
         data = request.data
         print(data)
-        if 'id' in data and 'id' in data['id']:
-            _entry_no = data['id']['id']
+        if "id" in data and "id" in data["id"]:
+            _entry_no = data["id"]["id"]
             # rest of the code here
         else:
-            res = {'error': 'Invalid request data'}
+            res = {"error": "Invalid request data"}
             return Response(res, status=status.HTTP_400_BAD_REQUEST)
         print("le beta data = ", _entry_no)
         queryset = Student.objects.get(entry_no=_entry_no)
 
         serializer = StudentSerializer(queryset, many=False)
 
-        _dept_id = serializer.data['dept_id']
+        _dept_id = serializer.data["dept_id"]
 
         query_set_department = Department.objects.get(dept_id=_dept_id)
 
-        dept_name = DepartmentSerializer(
-            query_set_department, many=False).data['dept_name']
+        dept_name = DepartmentSerializer(query_set_department, many=False).data[
+            "dept_name"
+        ]
 
-        _degree_id = serializer.data['degree_id']
+        _degree_id = serializer.data["degree_id"]
 
         query_set_department = Program.objects.get(degree_id=_degree_id)
 
-        degree_name = ProgramSerializer(
-            query_set_department, many=False).data['degree_name']
+        degree_name = ProgramSerializer(query_set_department, many=False).data[
+            "degree_name"
+        ]
 
-        image_path = serializer.data['profile_img']
+        image_path = serializer.data["profile_img"]
         print("0000000000000000000000000000000000000000000000000000000000000000000")
         with open(str(settings.BASE_DIR) + image_path, "rb") as image_file:
-            encoded_image = base64.b64encode(image_file.read()).decode('utf-8')
+            encoded_image = base64.b64encode(image_file.read()).decode("utf-8")
 
         res = {
-            'name': serializer.data['st_name'],
-            'email': serializer.data['email'],
-            'gender': serializer.data['gender'],
-            'year_of_entry': str(serializer.data['year_of_entry']),
-            'department': dept_name,
-            'mobile_no': serializer.data['mobile_no'],
-            'profile_img': encoded_image,
-            'image_path': image_path,
-            'degree': degree_name
+            "name": serializer.data["st_name"],
+            "email": serializer.data["email"],
+            "gender": serializer.data["gender"],
+            "year_of_entry": str(serializer.data["year_of_entry"]),
+            "department": dept_name,
+            "mobile_no": serializer.data["mobile_no"],
+            "profile_img": encoded_image,
+            "image_path": image_path,
+            "degree": degree_name,
         }
         print("------------------------------------------------")
         return Response(res, status=status.HTTP_200_OK)
@@ -1831,14 +1874,14 @@ def get_student_by_id(request):
         return Response(status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
-@api_view(['POST'])
+@api_view(["POST"])
 def add_student(request):
     data = request.data
 
     try:
-        st_name_ = data['st_name']
-        entry_no_ = data['entry_no']
-        email_ = data['email']
+        st_name_ = data["st_name"]
+        entry_no_ = data["entry_no"]
+        email_ = data["email"]
 
         queryset_student = Student.objects.create(
             st_name=st_name_,
@@ -1864,34 +1907,37 @@ def add_student(request):
         return Response(response_str)
 
 
-@api_view(['POST'])
+@api_view(["POST"])
 def add_new_location(request):
     data = request.data
 
     try:
-        new_location_name = data['new_location_name']
-        chosen_parent_location = data['chosen_parent_location']
-        chosen_pre_approval_needed = data['chosen_pre_approval_needed']
-        automatic_exit_required_str = data['automatic_exit_required']
+        new_location_name = data["new_location_name"]
+        chosen_parent_location = data["chosen_parent_location"]
+        chosen_pre_approval_needed = data["chosen_pre_approval_needed"]
+        automatic_exit_required_str = data["automatic_exit_required"]
 
         approval_flag = False
-        if chosen_pre_approval_needed == 'Yes':
+        if chosen_pre_approval_needed == "Yes":
             approval_flag = True
 
         parent_id = -1
-        if chosen_parent_location != 'None':
+        if chosen_parent_location != "None":
             queryset_location_table = Location.objects.get(
-                location_name=chosen_parent_location)
+                location_name=chosen_parent_location
+            )
             serializer_location_table = LocationSerializer(
-                queryset_location_table, many=False)
-            parent_id = serializer_location_table.data['location_id']
+                queryset_location_table, many=False
+            )
+            parent_id = serializer_location_table.data["location_id"]
 
         automatic_exit_required = False
-        if automatic_exit_required_str == 'Yes':
+        if automatic_exit_required_str == "Yes":
             automatic_exit_required = True
 
-        location_already_exists = len(Location.objects.filter(
-            location_name=new_location_name)) != 0
+        location_already_exists = (
+            len(Location.objects.filter(location_name=new_location_name)) != 0
+        )
 
         if location_already_exists:
             Location.objects.filter(location_name=new_location_name).update(
@@ -1912,14 +1958,13 @@ def add_new_location(request):
 
         queryset_student = Student.objects.all()
 
-        queryset_location_table = Location.objects.get(
-            location_name=new_location_name)
+        queryset_location_table = Location.objects.get(location_name=new_location_name)
 
         for each_queryset_student in queryset_student:
             StatusTable.objects.create(
                 entry_no=each_queryset_student,
                 location_id=queryset_location_table,
-                current_status='out',
+                current_status="out",
             )
 
         response_str = "New location added successfully"
@@ -1931,45 +1976,49 @@ def add_new_location(request):
         return Response(response_str, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
-@api_view(['POST'])
+@api_view(["POST"])
 def modify_locations(request):
     data = request.data
 
     try:
-        chosen_modify_location = data['chosen_modify_location']
-        chosen_parent_location = data['chosen_parent_location']
-        chosen_pre_approval_needed = data['chosen_pre_approval_needed']
-        automatic_exit_required_str = data['automatic_exit_required']
+        chosen_modify_location = data["chosen_modify_location"]
+        chosen_parent_location = data["chosen_parent_location"]
+        chosen_pre_approval_needed = data["chosen_pre_approval_needed"]
+        automatic_exit_required_str = data["automatic_exit_required"]
 
         approval_flag = False
-        if chosen_pre_approval_needed == 'Yes':
+        if chosen_pre_approval_needed == "Yes":
             approval_flag = True
 
         automatic_exit_required = False
-        if automatic_exit_required_str == 'Yes':
+        if automatic_exit_required_str == "Yes":
             automatic_exit_required = True
 
-        if chosen_parent_location == 'None':
+        if chosen_parent_location == "None":
             Location.objects.filter(location_name=chosen_modify_location).update(
                 parent_id=-1,
                 pre_approval_required=approval_flag,
-                automatic_exit_required=automatic_exit_required
+                automatic_exit_required=automatic_exit_required,
             )
 
         else:
             queryset_location_table = Location.objects.get(
-                location_name=chosen_modify_location)
+                location_name=chosen_modify_location
+            )
             serializer_location_table = LocationSerializer(
-                queryset_location_table, many=False)
-            chosen_modify_location_id = serializer_location_table.data['location_id']
+                queryset_location_table, many=False
+            )
+            chosen_modify_location_id = serializer_location_table.data["location_id"]
             # print("chosen_modify_location_id")
             # print(chosen_modify_location_id)
 
             queryset_location_table = Location.objects.get(
-                location_name=chosen_parent_location)
+                location_name=chosen_parent_location
+            )
             serializer_location_table = LocationSerializer(
-                queryset_location_table, many=False)
-            chosen_parent_location_id = serializer_location_table.data['location_id']
+                queryset_location_table, many=False
+            )
+            chosen_parent_location_id = serializer_location_table.data["location_id"]
             new_parent_id = chosen_parent_location_id
             # print("new_parent_id")
             # print(new_parent_id)
@@ -1978,10 +2027,12 @@ def modify_locations(request):
 
             while True:
                 queryset_location_table = Location.objects.get(
-                    location_id=chosen_parent_location_id)
+                    location_id=chosen_parent_location_id
+                )
                 serializer_location_table = LocationSerializer(
-                    queryset_location_table, many=False)
-                parent_location_id = serializer_location_table.data['parent_id']
+                    queryset_location_table, many=False
+                )
+                parent_location_id = serializer_location_table.data["parent_id"]
 
                 # print("parent_location_id")
                 # print(parent_location_id)
@@ -2002,7 +2053,7 @@ def modify_locations(request):
                 Location.objects.filter(location_name=chosen_modify_location).update(
                     parent_id=new_parent_id,
                     pre_approval_required=approval_flag,
-                    automatic_exit_required=automatic_exit_required
+                    automatic_exit_required=automatic_exit_required,
                 )
 
                 response_str = "Location updated successfully"
@@ -2010,7 +2061,9 @@ def modify_locations(request):
 
             else:
                 response_str = "Location data cannot be updated as a cycle is present"
-                return Response(response_str, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+                return Response(
+                    response_str, status=status.HTTP_500_INTERNAL_SERVER_ERROR
+                )
 
     except Exception as e:
         print("Exception in updating location data")
@@ -2018,19 +2071,19 @@ def modify_locations(request):
         return Response(response_str, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
-@api_view(['POST'])
+@api_view(["POST"])
 def delete_location(request):
     data = request.data
 
     try:
-        to_delete_location_name = data['chosen_delete_location']
+        to_delete_location_name = data["chosen_delete_location"]
 
-        Location.objects.filter(
-            location_name=to_delete_location_name).update(is_present=False)
+        Location.objects.filter(location_name=to_delete_location_name).update(
+            is_present=False
+        )
 
         StatusTable.objects.filter(
-            location_id=Location.objects.get(
-                location_name=to_delete_location_name),
+            location_id=Location.objects.get(location_name=to_delete_location_name),
         ).delete()
 
         response_str = "Location deleted successfully"
@@ -2042,6 +2095,7 @@ def delete_location(request):
         print(e)
         response_str = "Failed to delete location"
         return Response(response_str, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
 
 # @api_view(['GET'])
 # def get_tickets_from_guard_ticket_table(request):
@@ -2057,46 +2111,46 @@ def delete_location(request):
 #     return Response(serializer_ticket_table.data)
 
 
-@api_view(['POST'])
+@api_view(["POST"])
 def get_tickets_for_student(request):
     data = request.data
 
-    email_ = data['email']
+    email_ = data["email"]
     queryset_entry_no = Student.objects.get(email=email_)
 
-    location = data['location']
+    location = data["location"]
     queryset_location_table = Location.objects.get(location_name=location)
 
     queryset_ticket_table = TicketTable.objects.filter(
-        entry_no=queryset_entry_no,
-        location_id=queryset_location_table)
+        entry_no=queryset_entry_no, location_id=queryset_location_table
+    )
 
     tickets_list = []
 
     for queryset_ticket in queryset_ticket_table:
         ticket = TicketTableSerializer(queryset_ticket, many=False)
         ResultObj = {}
-        ResultObj['is_approved'] = ticket['is_approved'].value
-        ResultObj['ticket_type'] = ticket['ticket_type'].value
-        ResultObj['date_time'] = ticket['date_time'].value
-        location_id_ = ticket['location_id'].value
-        queryset_location_table = Location.objects.get(
-            location_id=location_id_)
+        ResultObj["is_approved"] = ticket["is_approved"].value
+        ResultObj["ticket_type"] = ticket["ticket_type"].value
+        ResultObj["date_time"] = ticket["date_time"].value
+        location_id_ = ticket["location_id"].value
+        queryset_location_table = Location.objects.get(location_id=location_id_)
         serializer_location_table = LocationSerializer(
-            queryset_location_table, many=False)
-        location_name = serializer_location_table.data['location_name']
-        ResultObj['location'] = location_name
-        ResultObj['destination_address'] = ticket['destination_address'].value
+            queryset_location_table, many=False
+        )
+        location_name = serializer_location_table.data["location_name"]
+        ResultObj["location"] = location_name
+        ResultObj["destination_address"] = ticket["destination_address"].value
 
-        entry_no_ = ticket['entry_no'].value
+        entry_no_ = ticket["entry_no"].value
         queryset_entry_no = Student.objects.get(entry_no=entry_no_)
         serializer_entry_no = StudentSerializer(queryset_entry_no, many=False)
-        email_ = serializer_entry_no.data['email']
-        student_name = serializer_entry_no.data['st_name']
-        ResultObj['email'] = email_
-        ResultObj['student_name'] = student_name
+        email_ = serializer_entry_no.data["email"]
+        student_name = serializer_entry_no.data["st_name"]
+        ResultObj["email"] = email_
+        ResultObj["student_name"] = student_name
 
-        ResultObj['authority_status'] = "NA"
+        ResultObj["authority_status"] = "NA"
 
         tickets_list.append(ResultObj)
 
@@ -2104,54 +2158,52 @@ def get_tickets_for_student(request):
     return Response(tickets_list)
 
 
-@api_view(['POST'])
+@api_view(["POST"])
 def get_authority_tickets_for_students(request):
     try:
         data = request.data
 
-        email_ = data['email']
+        email_ = data["email"]
 
-        location = data['location']
+        location = data["location"]
 
         queryset_entry_no = Student.objects.get(email=email_)
 
         queryset_location_table = Location.objects.get(location_name=location)
 
         queryset_ticket_table = AuthoritiesTicketTable.objects.filter(
-            entry_no=queryset_entry_no,
-            location_id=queryset_location_table)
+            entry_no=queryset_entry_no, location_id=queryset_location_table
+        )
 
         tickets_list = []
 
         for queryset_ticket in queryset_ticket_table:
-            ticket = AuthoritiesTicketTableSerializer(
-                queryset_ticket, many=False)
+            ticket = AuthoritiesTicketTableSerializer(queryset_ticket, many=False)
 
             ResultObj = {}
 
-            ResultObj['is_approved'] = ticket['is_approved'].value
+            ResultObj["is_approved"] = ticket["is_approved"].value
 
-            ResultObj['ticket_type'] = ticket['ticket_type'].value
+            ResultObj["ticket_type"] = ticket["ticket_type"].value
 
-            ResultObj['date_time'] = ticket['date_time'].value
+            ResultObj["date_time"] = ticket["date_time"].value
 
-            location_id_ = ticket['location_id'].value
-            queryset_location_table = Location.objects.get(
-                location_id=location_id_)
+            location_id_ = ticket["location_id"].value
+            queryset_location_table = Location.objects.get(location_id=location_id_)
             serializer_location_table = LocationSerializer(
-                queryset_location_table, many=False)
-            location_name = serializer_location_table.data['location_name']
-            ResultObj['location'] = location_name
+                queryset_location_table, many=False
+            )
+            location_name = serializer_location_table.data["location_name"]
+            ResultObj["location"] = location_name
 
-            entry_no_ = ticket['entry_no'].value
+            entry_no_ = ticket["entry_no"].value
             queryset_entry_no = Student.objects.get(entry_no=entry_no_)
-            serializer_entry_no = StudentSerializer(
-                queryset_entry_no, many=False)
-            email_ = serializer_entry_no.data['email']
-            student_name = serializer_entry_no.data['st_name']
+            serializer_entry_no = StudentSerializer(queryset_entry_no, many=False)
+            email_ = serializer_entry_no.data["email"]
+            student_name = serializer_entry_no.data["st_name"]
 
-            ResultObj['email'] = email_
-            ResultObj['student_name'] = student_name
+            ResultObj["email"] = email_
+            ResultObj["student_name"] = student_name
 
             authority_status = ""
 
@@ -2164,32 +2216,42 @@ def get_authority_tickets_for_students(request):
 
                 # auth_id = serializer_authorities_ticket_table.data['auth_id']
 
-                auth_id = ticket['auth_id'].value
+                auth_id = ticket["auth_id"].value
 
-                queryset_authorities_table = Authorities.objects.get(
-                    auth_id=auth_id)
+                queryset_authorities_table = Authorities.objects.get(auth_id=auth_id)
 
                 serializer_authorities = AuthoritiesSerializer(
-                    queryset_authorities_table, many=False)
+                    queryset_authorities_table, many=False
+                )
 
-                authority_name = serializer_authorities.data['authority_name']
+                authority_name = serializer_authorities.data["authority_name"]
 
-                authority_designation = serializer_authorities.data['authority_designation']
+                authority_designation = serializer_authorities.data[
+                    "authority_designation"
+                ]
 
-                authority_message = ticket['authority_message'].value
+                authority_message = ticket["authority_message"].value
 
-                is_approved = ticket['is_approved'].value
+                is_approved = ticket["is_approved"].value
 
-                authority_status = authority_name + ", " + authority_designation + \
-                    "\n" + is_approved + "\n" + "authority_message: " + authority_message
+                authority_status = (
+                    authority_name
+                    + ", "
+                    + authority_designation
+                    + "\n"
+                    + is_approved
+                    + "\n"
+                    + "authority_message: "
+                    + authority_message
+                )
 
             except:
                 authority_status = "NA"
 
-            ResultObj['authority_status'] = authority_status
+            ResultObj["authority_status"] = authority_status
 
             # Use if required
-            ResultObj['student_message'] = ticket['student_message'].value
+            ResultObj["student_message"] = ticket["student_message"].value
 
             tickets_list.append(ResultObj)
 
@@ -2202,21 +2264,22 @@ def get_authority_tickets_for_students(request):
         return Response(res, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
-@api_view(['POST'])
+@api_view(["POST"])
 def get_pending_tickets_for_guard(request):
     try:
         data = request.data
 
-        location = data['location']
-        enter_exit = data['enter_exit']
+        location = data["location"]
+        enter_exit = data["enter_exit"]
 
         queryset_location_table = Location.objects.get(location_name=location)
         # print(f'ashish={queryset_location_table},{enter_exit}')
 
         queryset_ticket_table = TicketTable.objects.filter(
             location_id=queryset_location_table,
-            is_approved='Pending',
-            ticket_type=enter_exit)
+            is_approved="Pending",
+            ticket_type=enter_exit,
+        )
 
         # queryset_ticket_table = TicketTable.objects.all()
 
@@ -2229,61 +2292,74 @@ def get_pending_tickets_for_guard(request):
             ticket = TicketTableSerializer(queryset_ticket, many=False)
             ResultObj = {}
             print(f"each ticket = {queryset_ticket}")
-            ResultObj['is_approved'] = ticket['is_approved'].value
-            ResultObj['ticket_type'] = ticket['ticket_type'].value
-            ResultObj['date_time'] = ticket['date_time'].value
-            location_id_ = ticket['location_id'].value
-            queryset_location_table = Location.objects.get(
-                location_id=location_id_)
+            ResultObj["is_approved"] = ticket["is_approved"].value
+            ResultObj["ticket_type"] = ticket["ticket_type"].value
+            ResultObj["date_time"] = ticket["date_time"].value
+            location_id_ = ticket["location_id"].value
+            queryset_location_table = Location.objects.get(location_id=location_id_)
             serializer_location_table = LocationSerializer(
-                queryset_location_table, many=False)
-            location_name = serializer_location_table.data['location_name']
-            ResultObj['location'] = location_name
-            ResultObj['destination_address'] = ticket['destination_address'].value
+                queryset_location_table, many=False
+            )
+            location_name = serializer_location_table.data["location_name"]
+            ResultObj["location"] = location_name
+            ResultObj["destination_address"] = ticket["destination_address"].value
 
-            entry_no_ = ticket['entry_no'].value
+            entry_no_ = ticket["entry_no"].value
             queryset_entry_no = Student.objects.get(entry_no=entry_no_)
-            serializer_entry_no = StudentSerializer(
-                queryset_entry_no, many=False)
-            email_ = serializer_entry_no.data['email']
-            student_name = serializer_entry_no.data['st_name']
-            ResultObj['email'] = email_
-            ResultObj['student_name'] = student_name
+            serializer_entry_no = StudentSerializer(queryset_entry_no, many=False)
+            email_ = serializer_entry_no.data["email"]
+            student_name = serializer_entry_no.data["st_name"]
+            ResultObj["email"] = email_
+            ResultObj["student_name"] = student_name
 
-            ref_id = ticket['ref_id'].value
+            ref_id = ticket["ref_id"].value
 
             authority_status = ""
 
             try:
 
                 queryset_authorities_ticket_table = AuthoritiesTicketTable.objects.get(
-                    ref_id=ref_id)
+                    ref_id=ref_id
+                )
 
                 serializer_authorities_ticket_table = AuthoritiesTicketTableSerializer(
-                    queryset_authorities_ticket_table, many=False)
+                    queryset_authorities_ticket_table, many=False
+                )
 
-                auth_id = serializer_authorities_ticket_table.data['auth_id']
+                auth_id = serializer_authorities_ticket_table.data["auth_id"]
 
-                queryset_authorities_table = Authorities.objects.get(
-                    auth_id=auth_id)
+                queryset_authorities_table = Authorities.objects.get(auth_id=auth_id)
 
                 serializer_authorities = AuthoritiesSerializer(
-                    queryset_authorities_table, many=False)
+                    queryset_authorities_table, many=False
+                )
 
-                authority_name = serializer_authorities.data['authority_name']
+                authority_name = serializer_authorities.data["authority_name"]
 
-                authority_designation = serializer_authorities.data['authority_designation']
+                authority_designation = serializer_authorities.data[
+                    "authority_designation"
+                ]
 
-                authority_message = serializer_authorities_ticket_table.data['authority_message']
-                is_approved = serializer_authorities_ticket_table.data['is_approved']
+                authority_message = serializer_authorities_ticket_table.data[
+                    "authority_message"
+                ]
+                is_approved = serializer_authorities_ticket_table.data["is_approved"]
 
-                authority_status = authority_name + ", " + authority_designation + \
-                    "\n" + is_approved + "\n" + "authority_message: " + authority_message
+                authority_status = (
+                    authority_name
+                    + ", "
+                    + authority_designation
+                    + "\n"
+                    + is_approved
+                    + "\n"
+                    + "authority_message: "
+                    + authority_message
+                )
 
             except:
                 authority_status = "NA"
 
-            ResultObj['authority_status'] = authority_status
+            ResultObj["authority_status"] = authority_status
 
             pending_tickets_list.append(ResultObj)
 
@@ -2296,62 +2372,71 @@ def get_pending_tickets_for_guard(request):
         pending_tickets_list = []
         print("Exception in get_pending_tickets_for_guard: " + str(e))
         traceback.print_exc()
-        return Response(pending_tickets_list, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        return Response(
+            pending_tickets_list, status=status.HTTP_500_INTERNAL_SERVER_ERROR
+        )
 
 
-@api_view(['POST'])
+@api_view(["POST"])
 def get_pending_tickets_for_visitors(request):
     try:
         data = request.data
 
-        enter_exit = data['enter_exit']
+        enter_exit = data["enter_exit"]
         queryset_visitor_ticket_table = VisitorTicketTable.objects.filter(
-            ticket_type=enter_exit, guard_status='Pending')
+            ticket_type=enter_exit, guard_status="Pending"
+        )
 
         serializer_visitor_ticket_table = VisitorTicketTableSerializer(
-            queryset_visitor_ticket_table, many=True)
+            queryset_visitor_ticket_table, many=True
+        )
 
         pending_tickets_list = []
 
         for visitor_tickets in serializer_visitor_ticket_table.data:
             ResultObj = {}
-            visitor_id = visitor_tickets['visitor_id']
+            visitor_id = visitor_tickets["visitor_id"]
             queryset_visitor = Visitor.objects.get(visitor_id=visitor_id)
-            serializer_visitor = VisitorSerializer(
-                queryset_visitor, many=False)
+            serializer_visitor = VisitorSerializer(queryset_visitor, many=False)
 
-            auth_id = visitor_tickets['auth_id']
+            auth_id = visitor_tickets["auth_id"]
             # print(auth_id)
-            if(auth_id):
+            if auth_id:
                 queryset_authorities = Authorities.objects.get(auth_id=auth_id)
                 serializer_authorities = AuthoritiesSerializer(
-                    queryset_authorities, many=False)
-                ResultObj['authority_name'] = serializer_authorities.data['authority_name']
-                ResultObj['authority_email'] = serializer_authorities.data['email']
-                ResultObj['authority_designation'] = serializer_authorities.data['authority_designation']
+                    queryset_authorities, many=False
+                )
+                ResultObj["authority_name"] = serializer_authorities.data[
+                    "authority_name"
+                ]
+                ResultObj["authority_email"] = serializer_authorities.data["email"]
+                ResultObj["authority_designation"] = serializer_authorities.data[
+                    "authority_designation"
+                ]
 
             else:
-                ResultObj['authority_name'] = ''
-                ResultObj['authority_email'] = ''
-                ResultObj['authority_designation'] = ''
-            
-            ResultObj['visitor_name'] = serializer_visitor.data['visitor_name']
-            ResultObj['mobile_no'] = serializer_visitor.data['mobile_no']
-            ResultObj['current_status'] = serializer_visitor.data['current_status']
-            ResultObj['car_number'] = visitor_tickets['car_number'] 
-            ResultObj['purpose'] = visitor_tickets['purpose']
-            ResultObj['authority_status'] = visitor_tickets['authority_status']
-            ResultObj['authority_message'] = visitor_tickets['authority_message']
-            ResultObj['date_time_of_ticket_raised'] = visitor_tickets['date_time_of_ticket_raised']
-            ResultObj['date_time_authority'] = visitor_tickets['date_time_authority']
-            ResultObj['date_time_guard'] = visitor_tickets['date_time_guard']
-            ResultObj['date_time_of_exit'] = visitor_tickets['date_time_of_exit']
-            ResultObj['guard_status'] = visitor_tickets['guard_status']
-            ResultObj['ticket_type'] = visitor_tickets['ticket_type']
-            ResultObj['visitor_ticket_id'] = visitor_tickets['visitor_ticket_id']
-            ResultObj['duration_of_stay'] = visitor_tickets['duration_of_stay']
-            ResultObj['num_additional'] = str(visitor_tickets['num_additional'])
-            
+                ResultObj["authority_name"] = ""
+                ResultObj["authority_email"] = ""
+                ResultObj["authority_designation"] = ""
+
+            ResultObj["visitor_name"] = serializer_visitor.data["visitor_name"]
+            ResultObj["mobile_no"] = serializer_visitor.data["mobile_no"]
+            ResultObj["current_status"] = serializer_visitor.data["current_status"]
+            ResultObj["car_number"] = visitor_tickets["car_number"]
+            ResultObj["purpose"] = visitor_tickets["purpose"]
+            ResultObj["authority_status"] = visitor_tickets["authority_status"]
+            ResultObj["authority_message"] = visitor_tickets["authority_message"]
+            ResultObj["date_time_of_ticket_raised"] = visitor_tickets[
+                "date_time_of_ticket_raised"
+            ]
+            ResultObj["date_time_authority"] = visitor_tickets["date_time_authority"]
+            ResultObj["date_time_guard"] = visitor_tickets["date_time_guard"]
+            ResultObj["date_time_of_exit"] = visitor_tickets["date_time_of_exit"]
+            ResultObj["guard_status"] = visitor_tickets["guard_status"]
+            ResultObj["ticket_type"] = visitor_tickets["ticket_type"]
+            ResultObj["visitor_ticket_id"] = visitor_tickets["visitor_ticket_id"]
+            ResultObj["duration_of_stay"] = visitor_tickets["duration_of_stay"]
+            ResultObj["num_additional"] = str(visitor_tickets["num_additional"])
 
             pending_tickets_list.append(ResultObj)
 
@@ -2362,65 +2447,75 @@ def get_pending_tickets_for_visitors(request):
     except Exception as e:
         pending_tickets_list = []
         print("Exception in get_pending_tickets_for_visitors: " + str(e))
-        return Response(pending_tickets_list, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        return Response(
+            pending_tickets_list, status=status.HTTP_500_INTERNAL_SERVER_ERROR
+        )
 
-@api_view(['POST'])
+
+@api_view(["POST"])
 def get_visitor_tickets(request):
     print("$$$")
     try:
         data = request.data
-        is_approved=data["is_approved"]
-        enter_exit = data['enter_exit']
+        is_approved = data["is_approved"]
+        enter_exit = data["enter_exit"]
         print(is_approved)
         print(enter_exit)
 
         queryset_visitor_ticket_table = VisitorTicketTable.objects.filter(
-            ticket_type=enter_exit, guard_status=str(is_approved))
+            ticket_type=enter_exit, guard_status=str(is_approved)
+        )
 
         serializer_visitor_ticket_table = VisitorTicketTableSerializer(
-            queryset_visitor_ticket_table, many=True)
+            queryset_visitor_ticket_table, many=True
+        )
 
         tickets_list = []
 
         for visitor_tickets in serializer_visitor_ticket_table.data:
             ResultObj = {}
-            visitor_id = visitor_tickets['visitor_id']
+            visitor_id = visitor_tickets["visitor_id"]
             queryset_visitor = Visitor.objects.get(visitor_id=visitor_id)
-            serializer_visitor = VisitorSerializer(
-                queryset_visitor, many=False)
+            serializer_visitor = VisitorSerializer(queryset_visitor, many=False)
 
-            auth_id = visitor_tickets['auth_id']
+            auth_id = visitor_tickets["auth_id"]
             # print(auth_id)
-            if(auth_id):
+            if auth_id:
                 queryset_authorities = Authorities.objects.get(auth_id=auth_id)
                 serializer_authorities = AuthoritiesSerializer(
-                    queryset_authorities, many=False)
-                ResultObj['authority_name'] = serializer_authorities.data['authority_name']
-                ResultObj['authority_email'] = serializer_authorities.data['email']
-                ResultObj['authority_designation'] = serializer_authorities.data['authority_designation']
+                    queryset_authorities, many=False
+                )
+                ResultObj["authority_name"] = serializer_authorities.data[
+                    "authority_name"
+                ]
+                ResultObj["authority_email"] = serializer_authorities.data["email"]
+                ResultObj["authority_designation"] = serializer_authorities.data[
+                    "authority_designation"
+                ]
 
             else:
-                ResultObj['authority_name'] = ''
-                ResultObj['authority_email'] = ''
-                ResultObj['authority_designation'] = ''
-            
-            ResultObj['visitor_name'] = serializer_visitor.data['visitor_name']
-            ResultObj['mobile_no'] = serializer_visitor.data['mobile_no']
-            ResultObj['current_status'] = serializer_visitor.data['current_status']
-            ResultObj['car_number'] = visitor_tickets['car_number'] 
-            ResultObj['purpose'] = visitor_tickets['purpose']
-            ResultObj['authority_status'] = visitor_tickets['authority_status']
-            ResultObj['authority_message'] = visitor_tickets['authority_message']
-            ResultObj['date_time_of_ticket_raised'] = visitor_tickets['date_time_of_ticket_raised']
-            ResultObj['date_time_authority'] = visitor_tickets['date_time_authority']
-            ResultObj['date_time_guard'] = visitor_tickets['date_time_guard']
-            ResultObj['date_time_of_exit'] = visitor_tickets['date_time_of_exit']
-            ResultObj['guard_status'] = visitor_tickets['guard_status']
-            ResultObj['ticket_type'] = visitor_tickets['ticket_type']
-            ResultObj['visitor_ticket_id'] = visitor_tickets['visitor_ticket_id']
-            ResultObj['duration_of_stay'] = visitor_tickets['duration_of_stay']
-            ResultObj['num_additional'] = str(visitor_tickets['num_additional'])
-            
+                ResultObj["authority_name"] = ""
+                ResultObj["authority_email"] = ""
+                ResultObj["authority_designation"] = ""
+
+            ResultObj["visitor_name"] = serializer_visitor.data["visitor_name"]
+            ResultObj["mobile_no"] = serializer_visitor.data["mobile_no"]
+            ResultObj["current_status"] = serializer_visitor.data["current_status"]
+            ResultObj["car_number"] = visitor_tickets["car_number"]
+            ResultObj["purpose"] = visitor_tickets["purpose"]
+            ResultObj["authority_status"] = visitor_tickets["authority_status"]
+            ResultObj["authority_message"] = visitor_tickets["authority_message"]
+            ResultObj["date_time_of_ticket_raised"] = visitor_tickets[
+                "date_time_of_ticket_raised"
+            ]
+            ResultObj["date_time_authority"] = visitor_tickets["date_time_authority"]
+            ResultObj["date_time_guard"] = visitor_tickets["date_time_guard"]
+            ResultObj["date_time_of_exit"] = visitor_tickets["date_time_of_exit"]
+            ResultObj["guard_status"] = visitor_tickets["guard_status"]
+            ResultObj["ticket_type"] = visitor_tickets["ticket_type"]
+            ResultObj["visitor_ticket_id"] = visitor_tickets["visitor_ticket_id"]
+            ResultObj["duration_of_stay"] = visitor_tickets["duration_of_stay"]
+            ResultObj["num_additional"] = str(visitor_tickets["num_additional"])
 
             tickets_list.append(ResultObj)
         print(tickets_list)
@@ -2433,58 +2528,65 @@ def get_visitor_tickets(request):
         print("Exception in get_visitor_tickets: " + str(e))
         return Response(tickets_list, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-@api_view(['POST'])
+
+@api_view(["POST"])
 def get_pending_visitor_tickets_for_authorities(request):
     try:
         data = request.data
 
-        authority_email = data['authority_email']
-        print("authority_email :"+authority_email)
-        queryset_authorities_table = Authorities.objects.get(
-            email=authority_email)
+        authority_email = data["authority_email"]
+        print("authority_email :" + authority_email)
+        queryset_authorities_table = Authorities.objects.get(email=authority_email)
 
         serializer_authorities_table = AuthoritiesSerializer(
-            queryset_authorities_table, many=False)
+            queryset_authorities_table, many=False
+        )
 
-        auth_id = serializer_authorities_table.data['auth_id']
-        print("auth_id :",auth_id)
+        auth_id = serializer_authorities_table.data["auth_id"]
+        print("auth_id :", auth_id)
         queryset_visitor_ticket_table = VisitorTicketTable.objects.filter(
-            auth_id=auth_id, authority_status='Pending')
+            auth_id=auth_id, authority_status="Pending"
+        )
 
         serializer_visitor_ticket_table = VisitorTicketTableSerializer(
-            queryset_visitor_ticket_table, many=True)
+            queryset_visitor_ticket_table, many=True
+        )
         print(serializer_visitor_ticket_table.data)
         pending_tickets_list = []
         for visitor_tickets in serializer_visitor_ticket_table.data:
             ResultObj = {}
-            visitor_id = visitor_tickets['visitor_id']
+            visitor_id = visitor_tickets["visitor_id"]
             queryset_visitor = Visitor.objects.get(visitor_id=visitor_id)
-            serializer_visitor = VisitorSerializer(
-                queryset_visitor, many=False)
+            serializer_visitor = VisitorSerializer(queryset_visitor, many=False)
 
-            auth_id = visitor_tickets['auth_id']
+            auth_id = visitor_tickets["auth_id"]
             queryset_authorities = Authorities.objects.get(auth_id=auth_id)
             serializer_authorities = AuthoritiesSerializer(
-                queryset_authorities, many=False)
+                queryset_authorities, many=False
+            )
 
-            ResultObj['visitor_name'] = serializer_visitor.data['visitor_name']
-            ResultObj['mobile_no'] = serializer_visitor.data['mobile_no']
-            ResultObj['current_status'] = serializer_visitor.data['current_status']
-            ResultObj['car_number'] = visitor_tickets['car_number']
-            ResultObj['authority_name'] = serializer_authorities.data['authority_name']
-            ResultObj['authority_email'] = serializer_authorities.data['email']
-            ResultObj['authority_designation'] = serializer_authorities.data['authority_designation']
-            ResultObj['purpose'] = visitor_tickets['purpose']
-            ResultObj['authority_status'] = visitor_tickets['authority_status']
-            ResultObj['authority_message'] = visitor_tickets['authority_message']
-            ResultObj['date_time_of_ticket_raised'] = visitor_tickets['date_time_of_ticket_raised']
-            ResultObj['date_time_authority'] = visitor_tickets['date_time_authority']
-            ResultObj['date_time_guard'] = visitor_tickets['date_time_guard']
-            ResultObj['date_time_of_exit'] = visitor_tickets['date_time_of_exit']
-            ResultObj['guard_status'] = visitor_tickets['guard_status']
-            ResultObj['ticket_type'] = visitor_tickets['ticket_type']
-            ResultObj['visitor_ticket_id'] = visitor_tickets['visitor_ticket_id']
-            ResultObj['duration_of_stay'] = visitor_tickets['duration_of_stay']
+            ResultObj["visitor_name"] = serializer_visitor.data["visitor_name"]
+            ResultObj["mobile_no"] = serializer_visitor.data["mobile_no"]
+            ResultObj["current_status"] = serializer_visitor.data["current_status"]
+            ResultObj["car_number"] = visitor_tickets["car_number"]
+            ResultObj["authority_name"] = serializer_authorities.data["authority_name"]
+            ResultObj["authority_email"] = serializer_authorities.data["email"]
+            ResultObj["authority_designation"] = serializer_authorities.data[
+                "authority_designation"
+            ]
+            ResultObj["purpose"] = visitor_tickets["purpose"]
+            ResultObj["authority_status"] = visitor_tickets["authority_status"]
+            ResultObj["authority_message"] = visitor_tickets["authority_message"]
+            ResultObj["date_time_of_ticket_raised"] = visitor_tickets[
+                "date_time_of_ticket_raised"
+            ]
+            ResultObj["date_time_authority"] = visitor_tickets["date_time_authority"]
+            ResultObj["date_time_guard"] = visitor_tickets["date_time_guard"]
+            ResultObj["date_time_of_exit"] = visitor_tickets["date_time_of_exit"]
+            ResultObj["guard_status"] = visitor_tickets["guard_status"]
+            ResultObj["ticket_type"] = visitor_tickets["ticket_type"]
+            ResultObj["visitor_ticket_id"] = visitor_tickets["visitor_ticket_id"]
+            ResultObj["duration_of_stay"] = visitor_tickets["duration_of_stay"]
 
             pending_tickets_list.append(ResultObj)
         pending_tickets_list.reverse()
@@ -2494,61 +2596,69 @@ def get_pending_visitor_tickets_for_authorities(request):
     except Exception as e:
         pending_tickets_list = []
         print("Exception in get_pending_visitor_tickets_for_authorities: " + str(e))
-        return Response(pending_tickets_list, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        return Response(
+            pending_tickets_list, status=status.HTTP_500_INTERNAL_SERVER_ERROR
+        )
 
 
-@api_view(['POST'])
+@api_view(["POST"])
 def get_past_visitor_tickets_for_authorities(request):
     try:
         data = request.data
 
-        authority_email = data['authority_email']
+        authority_email = data["authority_email"]
 
-        queryset_authorities_table = Authorities.objects.get(
-            email=authority_email)
+        queryset_authorities_table = Authorities.objects.get(email=authority_email)
 
         serializer_authorities_table = AuthoritiesSerializer(
-            queryset_authorities_table, many=False)
+            queryset_authorities_table, many=False
+        )
 
-        auth_id = serializer_authorities_table.data['auth_id']
+        auth_id = serializer_authorities_table.data["auth_id"]
 
         queryset_visitor_ticket_table = VisitorTicketTable.objects.filter(
-            auth_id=auth_id).exclude(authority_status='Pending')
+            auth_id=auth_id
+        ).exclude(authority_status="Pending")
 
         serializer_visitor_ticket_table = VisitorTicketTableSerializer(
-            queryset_visitor_ticket_table, many=True)
+            queryset_visitor_ticket_table, many=True
+        )
 
         past_tickets_list = []
         for visitor_tickets in serializer_visitor_ticket_table.data:
             ResultObj = {}
-            visitor_id = visitor_tickets['visitor_id']
+            visitor_id = visitor_tickets["visitor_id"]
             queryset_visitor = Visitor.objects.get(visitor_id=visitor_id)
-            serializer_visitor = VisitorSerializer(
-                queryset_visitor, many=False)
+            serializer_visitor = VisitorSerializer(queryset_visitor, many=False)
 
-            auth_id = visitor_tickets['auth_id']
+            auth_id = visitor_tickets["auth_id"]
             queryset_authorities = Authorities.objects.get(auth_id=auth_id)
             serializer_authorities = AuthoritiesSerializer(
-                queryset_authorities, many=False)
+                queryset_authorities, many=False
+            )
 
-            ResultObj['visitor_name'] = serializer_visitor.data['visitor_name']
-            ResultObj['mobile_no'] = serializer_visitor.data['mobile_no']
-            ResultObj['current_status'] = serializer_visitor.data['current_status']
-            ResultObj['car_number'] = visitor_tickets['car_number']
-            ResultObj['authority_name'] = serializer_authorities.data['authority_name']
-            ResultObj['authority_email'] = serializer_authorities.data['email']
-            ResultObj['authority_designation'] = serializer_authorities.data['authority_designation']
-            ResultObj['purpose'] = visitor_tickets['purpose']
-            ResultObj['authority_status'] = visitor_tickets['authority_status']
-            ResultObj['authority_message'] = visitor_tickets['authority_message']
-            ResultObj['date_time_of_ticket_raised'] = visitor_tickets['date_time_of_ticket_raised']
-            ResultObj['date_time_authority'] = visitor_tickets['date_time_authority']
-            ResultObj['date_time_guard'] = visitor_tickets['date_time_guard']
-            ResultObj['date_time_of_exit'] = visitor_tickets['date_time_of_exit']
-            ResultObj['guard_status'] = visitor_tickets['guard_status']
-            ResultObj['ticket_type'] = visitor_tickets['ticket_type']
-            ResultObj['visitor_ticket_id'] = visitor_tickets['visitor_ticket_id']
-            ResultObj['duration_of_stay'] = visitor_tickets['duration_of_stay']
+            ResultObj["visitor_name"] = serializer_visitor.data["visitor_name"]
+            ResultObj["mobile_no"] = serializer_visitor.data["mobile_no"]
+            ResultObj["current_status"] = serializer_visitor.data["current_status"]
+            ResultObj["car_number"] = visitor_tickets["car_number"]
+            ResultObj["authority_name"] = serializer_authorities.data["authority_name"]
+            ResultObj["authority_email"] = serializer_authorities.data["email"]
+            ResultObj["authority_designation"] = serializer_authorities.data[
+                "authority_designation"
+            ]
+            ResultObj["purpose"] = visitor_tickets["purpose"]
+            ResultObj["authority_status"] = visitor_tickets["authority_status"]
+            ResultObj["authority_message"] = visitor_tickets["authority_message"]
+            ResultObj["date_time_of_ticket_raised"] = visitor_tickets[
+                "date_time_of_ticket_raised"
+            ]
+            ResultObj["date_time_authority"] = visitor_tickets["date_time_authority"]
+            ResultObj["date_time_guard"] = visitor_tickets["date_time_guard"]
+            ResultObj["date_time_of_exit"] = visitor_tickets["date_time_of_exit"]
+            ResultObj["guard_status"] = visitor_tickets["guard_status"]
+            ResultObj["ticket_type"] = visitor_tickets["ticket_type"]
+            ResultObj["visitor_ticket_id"] = visitor_tickets["visitor_ticket_id"]
+            ResultObj["duration_of_stay"] = visitor_tickets["duration_of_stay"]
 
             past_tickets_list.append(ResultObj)
         past_tickets_list.reverse()
@@ -2561,54 +2671,51 @@ def get_past_visitor_tickets_for_authorities(request):
         return Response(past_tickets_list, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
-@api_view(['POST'])
+@api_view(["POST"])
 def get_pending_tickets_for_authorities(request):
     try:
         data = request.data
 
-        authority_email = data['authority_email']
+        authority_email = data["authority_email"]
 
-        queryset_authorities_table = Authorities.objects.get(
-            email=authority_email)
+        queryset_authorities_table = Authorities.objects.get(email=authority_email)
 
         queryset_authorities_ticket_table = AuthoritiesTicketTable.objects.filter(
-            auth_id=queryset_authorities_table,
-            is_approved='Pending')
+            auth_id=queryset_authorities_table, is_approved="Pending"
+        )
 
         pending_tickets_list = []
 
         for queryset_ticket in queryset_authorities_ticket_table:
-            ticket = AuthoritiesTicketTableSerializer(
-                queryset_ticket, many=False)
+            ticket = AuthoritiesTicketTableSerializer(queryset_ticket, many=False)
 
             ResultObj = {}
 
-            ResultObj['is_approved'] = ticket['is_approved'].value
+            ResultObj["is_approved"] = ticket["is_approved"].value
 
-            ResultObj['ticket_type'] = ticket['ticket_type'].value
+            ResultObj["ticket_type"] = ticket["ticket_type"].value
 
-            ResultObj['date_time'] = ticket['date_time'].value
+            ResultObj["date_time"] = ticket["date_time"].value
 
-            location_id_ = ticket['location_id'].value
-            queryset_location_table = Location.objects.get(
-                location_id=location_id_)
+            location_id_ = ticket["location_id"].value
+            queryset_location_table = Location.objects.get(location_id=location_id_)
             serializer_location_table = LocationSerializer(
-                queryset_location_table, many=False)
-            location_name = serializer_location_table.data['location_name']
-            ResultObj['location'] = location_name
+                queryset_location_table, many=False
+            )
+            location_name = serializer_location_table.data["location_name"]
+            ResultObj["location"] = location_name
 
-            entry_no_ = ticket['entry_no'].value
+            entry_no_ = ticket["entry_no"].value
             queryset_entry_no = Student.objects.get(entry_no=entry_no_)
-            serializer_entry_no = StudentSerializer(
-                queryset_entry_no, many=False)
-            email_ = serializer_entry_no.data['email']
-            student_name = serializer_entry_no.data['st_name']
+            serializer_entry_no = StudentSerializer(queryset_entry_no, many=False)
+            email_ = serializer_entry_no.data["email"]
+            student_name = serializer_entry_no.data["st_name"]
 
-            ResultObj['email'] = email_
+            ResultObj["email"] = email_
 
-            ResultObj['student_name'] = student_name
+            ResultObj["student_name"] = student_name
 
-            ResultObj['authority_message'] = ticket['authority_message'].value
+            ResultObj["authority_message"] = ticket["authority_message"].value
 
             pending_tickets_list.append(ResultObj)
 
@@ -2622,51 +2729,50 @@ def get_pending_tickets_for_authorities(request):
         return Response(status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
-@api_view(['POST'])
+@api_view(["POST"])
 def get_tickets_for_guard(request):
     try:
         data = request.data
 
-        location = data['location']
-        enter_exit = data['enter_exit']
+        location = data["location"]
+        enter_exit = data["enter_exit"]
         queryset_location_table = Location.objects.get(location_name=location)
 
-        is_approved_ = data['is_approved']
+        is_approved_ = data["is_approved"]
 
         queryset_ticket_table = TicketTable.objects.filter(
             location_id=queryset_location_table,
             is_approved=is_approved_,
-            ticket_type=enter_exit)
+            ticket_type=enter_exit,
+        )
 
         tickets_list = []
 
         for queryset_ticket in queryset_ticket_table:
             ticket = TicketTableSerializer(queryset_ticket, many=False)
             ResultObj = {}
-            ResultObj['is_approved'] = ticket['is_approved'].value
-            ResultObj['ticket_type'] = ticket['ticket_type'].value
-            ResultObj['date_time'] = ticket['date_time'].value
-            location_id_ = ticket['location_id'].value
-            queryset_location_table = Location.objects.get(
-                location_id=location_id_)
+            ResultObj["is_approved"] = ticket["is_approved"].value
+            ResultObj["ticket_type"] = ticket["ticket_type"].value
+            ResultObj["date_time"] = ticket["date_time"].value
+            location_id_ = ticket["location_id"].value
+            queryset_location_table = Location.objects.get(location_id=location_id_)
             serializer_location_table = LocationSerializer(
-                queryset_location_table, many=False)
-            location_name = serializer_location_table.data['location_name']
-            ResultObj['location'] = location_name
-            ResultObj['destination_address'] = ticket['destination_address'].value
+                queryset_location_table, many=False
+            )
+            location_name = serializer_location_table.data["location_name"]
+            ResultObj["location"] = location_name
+            ResultObj["destination_address"] = ticket["destination_address"].value
 
-            entry_no_ = ticket['entry_no'].value
+            entry_no_ = ticket["entry_no"].value
             queryset_entry_no = Student.objects.get(entry_no=entry_no_)
-            serializer_entry_no = StudentSerializer(
-                queryset_entry_no, many=False)
-            email_ = serializer_entry_no.data['email']
-            student_name = serializer_entry_no.data['st_name']
-            ResultObj['email'] = email_
-            ResultObj['student_name'] = student_name
+            serializer_entry_no = StudentSerializer(queryset_entry_no, many=False)
+            email_ = serializer_entry_no.data["email"]
+            student_name = serializer_entry_no.data["st_name"]
+            ResultObj["email"] = email_
+            ResultObj["student_name"] = student_name
 
-            ref_id = ticket['ref_id'].value
-            vehicle_number=ticket['vehicle_reg_num'].value
-
+            ref_id = ticket["ref_id"].value
+            vehicle_number = ticket["vehicle_reg_num"].value
 
             authority_status = ""
 
@@ -2675,34 +2781,48 @@ def get_tickets_for_guard(request):
             try:
 
                 queryset_authorities_ticket_table = AuthoritiesTicketTable.objects.get(
-                    ref_id=ref_id)
+                    ref_id=ref_id
+                )
 
                 serializer_authorities_ticket_table = AuthoritiesTicketTableSerializer(
-                    queryset_authorities_ticket_table, many=False)
+                    queryset_authorities_ticket_table, many=False
+                )
 
-                auth_id = serializer_authorities_ticket_table.data['auth_id']
+                auth_id = serializer_authorities_ticket_table.data["auth_id"]
 
-                queryset_authorities_table = Authorities.objects.get(
-                    auth_id=auth_id)
+                queryset_authorities_table = Authorities.objects.get(auth_id=auth_id)
 
                 serializer_authorities = AuthoritiesSerializer(
-                    queryset_authorities_table, many=False)
+                    queryset_authorities_table, many=False
+                )
 
-                authority_name = serializer_authorities.data['authority_name']
+                authority_name = serializer_authorities.data["authority_name"]
 
-                authority_designation = serializer_authorities.data['authority_designation']
+                authority_designation = serializer_authorities.data[
+                    "authority_designation"
+                ]
 
-                authority_message = serializer_authorities_ticket_table.data['authority_message']
-                is_approved = serializer_authorities_ticket_table.data['is_approved']
+                authority_message = serializer_authorities_ticket_table.data[
+                    "authority_message"
+                ]
+                is_approved = serializer_authorities_ticket_table.data["is_approved"]
 
-                authority_status = authority_name + ", " + authority_designation + \
-                    "\n" + is_approved + "\n" + "authority_message: " + authority_message
+                authority_status = (
+                    authority_name
+                    + ", "
+                    + authority_designation
+                    + "\n"
+                    + is_approved
+                    + "\n"
+                    + "authority_message: "
+                    + authority_message
+                )
 
             except:
                 authority_status = "NA"
 
-            ResultObj['authority_status'] = authority_status
-            ResultObj['vehicle_number']=vehicle_number
+            ResultObj["authority_status"] = authority_status
+            ResultObj["vehicle_number"] = vehicle_number
 
             # print("ResultObj")
             # print(ResultObj)
@@ -2719,7 +2839,7 @@ def get_tickets_for_guard(request):
         return Response(status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
-@api_view(['POST'])
+@api_view(["POST"])
 def get_list_of_entry_numbers(request):
     try:
         queryset_student = Student.objects.filter(is_present=True)
@@ -2728,12 +2848,12 @@ def get_list_of_entry_numbers(request):
         serializer = StudentSerializer(queryset_student, many=True)
 
         for current_student in serializer.data:
-            if current_student['st_name'] == initial_data:
+            if current_student["st_name"] == initial_data:
                 continue
             obj = {
-                'entry_no': current_student['entry_no'],
-                'st_name': current_student['st_name'],
-                'email': current_student['email'],
+                "entry_no": current_student["entry_no"],
+                "st_name": current_student["st_name"],
+                "email": current_student["email"],
             }
             res.append(obj)
 
@@ -2744,7 +2864,7 @@ def get_list_of_entry_numbers(request):
         return Response(status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
-@api_view(['POST'])
+@api_view(["POST"])
 def get_list_of_visitors(request):
     try:
         queryset_visitor = Visitor.objects.filter(is_present=True)
@@ -2754,11 +2874,11 @@ def get_list_of_visitors(request):
         serializer = VisitorSerializer(queryset_visitor, many=True)
 
         for current_visitor in serializer.data:
-            if current_visitor['visitor_name'] == initial_data:
+            if current_visitor["visitor_name"] == initial_data:
                 continue
             obj = {
-                'visitor_name': current_visitor['visitor_name'],
-                'mobile_no': current_visitor['mobile_no'],
+                "visitor_name": current_visitor["visitor_name"],
+                "mobile_no": current_visitor["mobile_no"],
                 # 'current_status' : current_visitor['current_status'],
                 # 'car_number' : current_visitor['car_number'],
                 # 'authority_name' : current_visitor['authority_name'],
@@ -2783,55 +2903,52 @@ def get_list_of_visitors(request):
         return Response(status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
-@api_view(['POST'])
+@api_view(["POST"])
 def get_tickets_for_authorities(request):
     try:
         data = request.data
 
-        authority_email = data['authority_email']
+        authority_email = data["authority_email"]
 
-        queryset_authorities_table = Authorities.objects.get(
-            email=authority_email)
+        queryset_authorities_table = Authorities.objects.get(email=authority_email)
 
-        is_approved_ = data['is_approved']
+        is_approved_ = data["is_approved"]
 
         queryset_authorities_ticket_table = AuthoritiesTicketTable.objects.filter(
-            auth_id=queryset_authorities_table,
-            is_approved=is_approved_)
+            auth_id=queryset_authorities_table, is_approved=is_approved_
+        )
 
         tickets_list = []
 
         for queryset_ticket in queryset_authorities_ticket_table:
-            ticket = AuthoritiesTicketTableSerializer(
-                queryset_ticket, many=False)
+            ticket = AuthoritiesTicketTableSerializer(queryset_ticket, many=False)
             ResultObj = {}
 
-            ResultObj['is_approved'] = ticket['is_approved'].value
+            ResultObj["is_approved"] = ticket["is_approved"].value
 
-            ResultObj['ticket_type'] = ticket['ticket_type'].value
+            ResultObj["ticket_type"] = ticket["ticket_type"].value
 
-            ResultObj['date_time'] = ticket['date_time'].value
+            ResultObj["date_time"] = ticket["date_time"].value
 
-            location_id_ = ticket['location_id'].value
+            location_id_ = ticket["location_id"].value
 
-            queryset_location_table = Location.objects.get(
-                location_id=location_id_)
+            queryset_location_table = Location.objects.get(location_id=location_id_)
             serializer_location_table = LocationSerializer(
-                queryset_location_table, many=False)
-            location_name = serializer_location_table.data['location_name']
-            ResultObj['location'] = location_name
+                queryset_location_table, many=False
+            )
+            location_name = serializer_location_table.data["location_name"]
+            ResultObj["location"] = location_name
 
-            entry_no_ = ticket['entry_no'].value
+            entry_no_ = ticket["entry_no"].value
             queryset_entry_no = Student.objects.get(entry_no=entry_no_)
-            serializer_entry_no = StudentSerializer(
-                queryset_entry_no, many=False)
-            email_ = serializer_entry_no.data['email']
-            student_name = serializer_entry_no.data['st_name']
+            serializer_entry_no = StudentSerializer(queryset_entry_no, many=False)
+            email_ = serializer_entry_no.data["email"]
+            student_name = serializer_entry_no.data["st_name"]
 
-            ResultObj['email'] = email_
-            ResultObj['student_name'] = student_name
+            ResultObj["email"] = email_
+            ResultObj["student_name"] = student_name
 
-            ResultObj['authority_message'] = ticket['authority_message'].value
+            ResultObj["authority_message"] = ticket["authority_message"].value
 
             tickets_list.append(ResultObj)
 
@@ -2845,36 +2962,36 @@ def get_tickets_for_authorities(request):
         return Response(status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
-@api_view(['POST'])
+@api_view(["POST"])
 def get_student_status(request):
     try:
-        email_ = request.data['email']
+        email_ = request.data["email"]
 
-        location_name_ = request.data['location']
+        location_name_ = request.data["location"]
 
         # Finding current status of this student for the current location
 
         queryset_entry_no = Student.objects.get(email=email_)
 
-        queryset_location_table = Location.objects.get(
-            location_name=location_name_)
+        queryset_location_table = Location.objects.get(location_name=location_name_)
 
         serializer_location_table = LocationSerializer(
-            queryset_location_table, many=False)
+            queryset_location_table, many=False
+        )
 
-        current_location_id = serializer_location_table.data['location_id']
+        current_location_id = serializer_location_table.data["location_id"]
 
-        parent_id = serializer_location_table.data['parent_id']
+        parent_id = serializer_location_table.data["parent_id"]
 
         queryset_status_table = StatusTable.objects.get(
-            entry_no=queryset_entry_no,
-            location_id=queryset_location_table
+            entry_no=queryset_entry_no, location_id=queryset_location_table
         )
 
         serializer_status_table = StatusTableSerializer(
-            queryset_status_table, many=False)
+            queryset_status_table, many=False
+        )
 
-        current_status = serializer_status_table.data['current_status']
+        current_status = serializer_status_table.data["current_status"]
 
         # Find its parent location and thi status of the student for the parent location
 
@@ -2890,12 +3007,14 @@ def get_student_status(request):
                 )
 
                 serializer_status_table = StatusTableSerializer(
-                    queryset_status_table, many=False)
+                    queryset_status_table, many=False
+                )
 
                 current_status_of_student_in_parent = serializer_status_table.data[
-                    'current_status']
+                    "current_status"
+                ]
 
-                if current_status_of_student_in_parent == 'out':
+                if current_status_of_student_in_parent == "out":
                     inside_parent_location = "false"
 
             except:
@@ -2911,7 +3030,7 @@ def get_student_status(request):
 
             serializer = LocationSerializer(each_location, many=False)
 
-            potential_same_id = serializer.data['parent_id']
+            potential_same_id = serializer.data["parent_id"]
 
             if current_location_id == potential_same_id:
 
@@ -2921,11 +3040,14 @@ def get_student_status(request):
                 )
 
                 serializer_status_table = StatusTableSerializer(
-                    queryset_status_table, many=False)
+                    queryset_status_table, many=False
+                )
 
-                current_status_of_student_in_child = serializer_status_table.data['current_status']
+                current_status_of_student_in_child = serializer_status_table.data[
+                    "current_status"
+                ]
 
-                if current_status_of_student_in_child == 'in':
+                if current_status_of_student_in_child == "in":
 
                     exited_all_children = "false"
 
@@ -2956,25 +3078,25 @@ def get_student_status(request):
         return Response(res, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
-@api_view(['POST'])
+@api_view(["POST"])
 def insert_in_guard_ticket_table(request):
     try:
         data = request.data
-        email_ = data['email']
+        email_ = data["email"]
         queryset_entry_no = Student.objects.get(email=email_)
 
-        location_ = data['location']
+        location_ = data["location"]
         queryset_location_table = Location.objects.get(location_name=location_)
 
         # queryset_ref_id = AuthoritiesTicketTable.objects.get(ref_id = 1)
 
-        ticket_type_ = str(data['ticket_type'])
+        ticket_type_ = str(data["ticket_type"])
 
-        date_time_ = str(data['date_time'])
+        date_time_ = str(data["date_time"])
 
-        choosen_authority_ticket = str(data['choosen_authority_ticket'])
+        choosen_authority_ticket = str(data["choosen_authority_ticket"])
 
-        address = str(data['address'])
+        address = str(data["address"])
 
         if choosen_authority_ticket == "" or choosen_authority_ticket == "None":
             queryset = TicketTable.objects.create(
@@ -3001,22 +3123,18 @@ def insert_in_guard_ticket_table(request):
             )
 
         # If the student has raised an entry ticket, then mark the status of student as "pending_entry"
-        if ticket_type_ == 'enter':
+        if ticket_type_ == "enter":
             queryset_status_table = StatusTable.objects.filter(
-                entry_no=queryset_entry_no,
-                location_id=queryset_location_table).update(
-                    current_status="pending_entry"
-            )
+                entry_no=queryset_entry_no, location_id=queryset_location_table
+            ).update(current_status="pending_entry")
             print("is status updated by insert into guard ticket table backend")
             print("Status Table")
             print(StatusTable.objects.all())
 
-        elif ticket_type_ == 'exit':
+        elif ticket_type_ == "exit":
             queryset_status_table = StatusTable.objects.filter(
-                entry_no=queryset_entry_no,
-                location_id=queryset_location_table).update(
-                    current_status="pending_exit"
-            )
+                entry_no=queryset_entry_no, location_id=queryset_location_table
+            ).update(current_status="pending_exit")
 
         return Response(status=status.HTTP_200_OK)
 
@@ -3026,17 +3144,17 @@ def insert_in_guard_ticket_table(request):
         return Response(status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
-@api_view(['POST'])
+@api_view(["POST"])
 def insert_in_authorities_ticket_table(request):
     try:
         data = request.data
 
-        chosen_authority = data['chosen_authority']
-        ticket_type = data['ticket_type']
-        student_message = data['student_message']
-        email = data['email']
-        date_time = data['date_time']
-        location = data['location']
+        chosen_authority = data["chosen_authority"]
+        ticket_type = data["ticket_type"]
+        student_message = data["student_message"]
+        email = data["email"]
+        date_time = data["date_time"]
+        location = data["location"]
 
         authority_email = str(chosen_authority.split("\n")[1])
 
@@ -3046,8 +3164,7 @@ def insert_in_authorities_ticket_table(request):
 
         queryset_location_table = Location.objects.get(location_name=location)
 
-        queryset_authorities_table = Authorities.objects.get(
-            email=authority_email)
+        queryset_authorities_table = Authorities.objects.get(email=authority_email)
 
         queryset_authorities_ticket_table = AuthoritiesTicketTable.objects.create(
             auth_id=queryset_authorities_table,
@@ -3066,43 +3183,37 @@ def insert_in_authorities_ticket_table(request):
         return Response(status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
-@api_view(['POST'])
+@api_view(["POST"])
 def accept_selected_tickets(request):
     try:
         list_data = request.data
 
         for data in list_data:
             # print(data)
-            location = data['location']
-            is_approved_ = data['is_approved']
-            ticket_type_ = data['ticket_type']
-            date_time_ = data['date_time']
-            email_ = data['email']
-            queryset_location_table = Location.objects.get(
-                location_name=location)
+            location = data["location"]
+            is_approved_ = data["is_approved"]
+            ticket_type_ = data["ticket_type"]
+            date_time_ = data["date_time"]
+            email_ = data["email"]
+            queryset_location_table = Location.objects.get(location_name=location)
             queryset_entry_no = Student.objects.get(email=email_)
 
             queryset_ticket_table = TicketTable.objects.filter(
                 entry_no=queryset_entry_no,
                 location_id=queryset_location_table,
-                date_time=date_time_).update(
-                    is_approved="Approved"
-            )
+                date_time=date_time_,
+            ).update(is_approved="Approved")
 
             # If the ticket is an entry ticket and the guard has pressed approved, then mark the current status of that person as "in"
-            if ticket_type_ == 'enter':
+            if ticket_type_ == "enter":
                 queryset_status_table = StatusTable.objects.filter(
-                    entry_no=queryset_entry_no,
-                    location_id=queryset_location_table).update(
-                        current_status="in"
-                )
+                    entry_no=queryset_entry_no, location_id=queryset_location_table
+                ).update(current_status="in")
             # If the ticket is an exit ticket and the guard has pressed approved, then mark the current status of that person as "out"
-            elif ticket_type_ == 'exit':
+            elif ticket_type_ == "exit":
                 queryset_status_table = StatusTable.objects.filter(
-                    entry_no=queryset_entry_no,
-                    location_id=queryset_location_table).update(
-                        current_status="out"
-                )
+                    entry_no=queryset_entry_no, location_id=queryset_location_table
+                ).update(current_status="out")
 
         return Response(status=status.HTTP_200_OK)
 
@@ -3111,58 +3222,59 @@ def accept_selected_tickets(request):
         return Response(status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
-@api_view(['POST'])
+@api_view(["POST"])
 def accept_selected_tickets_visitors(request):
     try:
         list_data = request.data
         # print(list_data)
         for data in list_data:
 
-            visitor_name = data['visitor_name']
-            mobile_no = data['mobile_no']
-            current_status = data['current_status']
-            car_number = data['car_number']
-            authority_name = data['authority_name']
-            authority_email = data['authority_email']
-            authority_designation = data['authority_designation']
-            purpose = data['purpose']
-            authority_status = data['authority_status']
-            authority_message = data['authority_message']
-            date_time_of_ticket_raised = data['date_time_of_ticket_raised']
-            date_time_authority = data['date_time_authority']
-            date_time_guard = data['date_time_guard']
-            date_time_of_exit = data['date_time_of_exit']
-            guard_status = data['guard_status']
-            ticket_type = data['ticket_type']
-            visitor_ticket_id = data['visitor_ticket_id']
+            visitor_name = data["visitor_name"]
+            mobile_no = data["mobile_no"]
+            current_status = data["current_status"]
+            car_number = data["car_number"]
+            authority_name = data["authority_name"]
+            authority_email = data["authority_email"]
+            authority_designation = data["authority_designation"]
+            purpose = data["purpose"]
+            authority_status = data["authority_status"]
+            authority_message = data["authority_message"]
+            date_time_of_ticket_raised = data["date_time_of_ticket_raised"]
+            date_time_authority = data["date_time_authority"]
+            date_time_guard = data["date_time_guard"]
+            date_time_of_exit = data["date_time_of_exit"]
+            guard_status = data["guard_status"]
+            ticket_type = data["ticket_type"]
+            visitor_ticket_id = data["visitor_ticket_id"]
 
-            if authority_status == 'Pending':
+            if authority_status == "Pending":
                 continue
 
             queryset_visitor = Visitor.objects.get(
-                visitor_name=visitor_name, mobile_no=mobile_no)
-            serializer_visitor = VisitorSerializer(
-                queryset_visitor, many=False)
-            visitor_id = serializer_visitor.data['visitor_id']
+                visitor_name=visitor_name, mobile_no=mobile_no
+            )
+            serializer_visitor = VisitorSerializer(queryset_visitor, many=False)
+            visitor_id = serializer_visitor.data["visitor_id"]
 
             # If the ticket is an entry ticket and the guard has pressed approved, then mark the current status of that person as "in" and thereafter change it to "pending_exit"
-            if ticket_type == 'enter':
+            if ticket_type == "enter":
                 VisitorTicketTable.objects.filter(
-                    visitor_ticket_id=visitor_ticket_id).update(
-                        guard_status="Approved",
-                        date_time_guard=timezone.now())
+                    visitor_ticket_id=visitor_ticket_id
+                ).update(guard_status="Approved", date_time_guard=datetime.now())
 
                 Visitor.objects.filter(visitor_id=visitor_id).update(
                     current_status="pending_exit"
                 )
 
             # If the ticket is an exit ticket and the guard has pressed approved, then mark the current status of that person as "out"
-            elif ticket_type == 'exit':
+            elif ticket_type == "exit":
                 VisitorTicketTable.objects.filter(
-                    visitor_ticket_id=visitor_ticket_id).update(
-                        guard_status="Approved",
-                        # ticket_type = "enter",
-                        date_time_guard=timezone.now())
+                    visitor_ticket_id=visitor_ticket_id
+                ).update(
+                    guard_status="Approved",
+                    # ticket_type = "enter",
+                    date_time_guard=datetime.now(),
+                )
 
                 Visitor.objects.filter(visitor_id=visitor_id).update(
                     current_status="out"
@@ -3175,7 +3287,7 @@ def accept_selected_tickets_visitors(request):
         return Response(status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
-@api_view(['POST'])
+@api_view(["POST"])
 def accept_selected_tickets_authorities(request):
     try:
         list_data = request.data
@@ -3183,20 +3295,19 @@ def accept_selected_tickets_authorities(request):
         # Fields are [is_approved, ticket_type, date_time, location, email, student_name, authority_message]
 
         for data in list_data:
-            location = data['location']
+            location = data["location"]
 
-            is_approved_ = data['is_approved']
+            is_approved_ = data["is_approved"]
 
-            ticket_type_ = data['ticket_type']
+            ticket_type_ = data["ticket_type"]
 
-            date_time_ = data['date_time']
+            date_time_ = data["date_time"]
 
-            email_ = data['email']
+            email_ = data["email"]
 
-            authority_message = data['authority_message']
+            authority_message = data["authority_message"]
 
-            queryset_location_table = Location.objects.get(
-                location_name=location)
+            queryset_location_table = Location.objects.get(location_name=location)
 
             queryset_entry_no = Student.objects.get(email=email_)
 
@@ -3204,9 +3315,10 @@ def accept_selected_tickets_authorities(request):
             queryset_authorities_ticket_table = AuthoritiesTicketTable.objects.filter(
                 entry_no=queryset_entry_no,
                 location_id=queryset_location_table,
-                date_time=date_time_).update(
-                    is_approved="Approved",
-                    authority_message=authority_message,
+                date_time=date_time_,
+            ).update(
+                is_approved="Approved",
+                authority_message=authority_message,
             )
 
         return Response(status=status.HTTP_200_OK)
@@ -3218,42 +3330,36 @@ def accept_selected_tickets_authorities(request):
         return Response(status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
-@api_view(['POST'])
+@api_view(["POST"])
 def reject_selected_tickets(request):
     try:
         list_data = request.data
 
         for data in list_data:
-            location = data['location']
-            is_approved_ = data['is_approved']
-            ticket_type_ = data['ticket_type']
-            date_time_ = data['date_time']
-            email_ = data['email']
-            queryset_location_table = Location.objects.get(
-                location_name=location)
+            location = data["location"]
+            is_approved_ = data["is_approved"]
+            ticket_type_ = data["ticket_type"]
+            date_time_ = data["date_time"]
+            email_ = data["email"]
+            queryset_location_table = Location.objects.get(location_name=location)
             queryset_entry_no = Student.objects.get(email=email_)
 
             queryset_ticket_table = TicketTable.objects.filter(
                 entry_no=queryset_entry_no,
                 location_id=queryset_location_table,
-                date_time=date_time_).update(
-                    is_approved="Rejected"
-            )
+                date_time=date_time_,
+            ).update(is_approved="Rejected")
 
             # If the ticket is an entry ticket and the guard has pressed rejected, then mark the current status of that person as "out"
-            if ticket_type_ == 'enter':
+            if ticket_type_ == "enter":
                 queryset_status_table = StatusTable.objects.filter(
-                    entry_no=queryset_entry_no,
-                    location_id=queryset_location_table).update(
-                        current_status="out"
-                )
+                    entry_no=queryset_entry_no, location_id=queryset_location_table
+                ).update(current_status="out")
             # If the ticket is an exit ticket and the guard has pressed rejected, then mark the current status of that person as "in"
-            elif ticket_type_ == 'exit':
+            elif ticket_type_ == "exit":
                 queryset_status_table = StatusTable.objects.filter(
-                    entry_no=queryset_entry_no,
-                    location_id=queryset_location_table).update(
-                        current_status="in"
-                )
+                    entry_no=queryset_entry_no, location_id=queryset_location_table
+                ).update(current_status="in")
 
         return Response(status=status.HTTP_200_OK)
     except Exception as e:
@@ -3262,59 +3368,63 @@ def reject_selected_tickets(request):
         return Response(status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
-@api_view(['POST'])
+@api_view(["POST"])
 def reject_selected_tickets_visitors(request):
     try:
         list_data = request.data
 
         for data in list_data:
 
-            visitor_name = data['visitor_name']
-            mobile_no = data['mobile_no']
-            current_status = data['current_status']
-            car_number = data['car_number']
-            authority_name = data['authority_name']
-            authority_email = data['authority_email']
-            authority_designation = data['authority_designation']
-            purpose = data['purpose']
-            authority_status = data['authority_status']
-            authority_message = data['authority_message']
-            date_time_of_ticket_raised = data['date_time_of_ticket_raised']
-            date_time_authority = data['date_time_authority']
-            date_time_guard = data['date_time_guard']
-            date_time_of_exit = data['date_time_of_exit']
-            guard_status = data['guard_status']
-            ticket_type = data['ticket_type']
-            visitor_ticket_id = data['visitor_ticket_id']
+            visitor_name = data["visitor_name"]
+            mobile_no = data["mobile_no"]
+            current_status = data["current_status"]
+            car_number = data["car_number"]
+            authority_name = data["authority_name"]
+            authority_email = data["authority_email"]
+            authority_designation = data["authority_designation"]
+            purpose = data["purpose"]
+            authority_status = data["authority_status"]
+            authority_message = data["authority_message"]
+            date_time_of_ticket_raised = data["date_time_of_ticket_raised"]
+            date_time_authority = data["date_time_authority"]
+            date_time_guard = data["date_time_guard"]
+            date_time_of_exit = data["date_time_of_exit"]
+            guard_status = data["guard_status"]
+            ticket_type = data["ticket_type"]
+            visitor_ticket_id = data["visitor_ticket_id"]
 
-            if authority_status == 'Pending':
+            if authority_status == "Pending":
                 continue
 
             queryset_visitor = Visitor.objects.get(
-                visitor_name=visitor_name, mobile_no=mobile_no)
-            serializer_visitor = VisitorSerializer(
-                queryset_visitor, many=False)
-            visitor_id = serializer_visitor.data['visitor_id']
+                visitor_name=visitor_name, mobile_no=mobile_no
+            )
+            serializer_visitor = VisitorSerializer(queryset_visitor, many=False)
+            visitor_id = serializer_visitor.data["visitor_id"]
 
             # If the ticket is an entry ticket and the guard has pressed rejected, then mark the current status of that person as "out"
-            if ticket_type == 'enter':
+            if ticket_type == "enter":
                 VisitorTicketTable.objects.filter(
-                    visitor_ticket_id=visitor_ticket_id).update(
-                        guard_status="Rejected",
-                        # ticket_type = "exit",
-                        date_time_guard=timezone.now())
+                    visitor_ticket_id=visitor_ticket_id
+                ).update(
+                    guard_status="Rejected",
+                    # ticket_type = "exit",
+                    date_time_guard=datetime.now(),
+                )
 
                 Visitor.objects.filter(visitor_id=visitor_id).update(
                     current_status="out"
                 )
 
             # If the ticket is an exit ticket and the guard has pressed approved, then mark the current status of that person as "out"
-            elif ticket_type == 'exit':
+            elif ticket_type == "exit":
                 VisitorTicketTable.objects.filter(
-                    visitor_ticket_id=visitor_ticket_id).update(
-                        guard_status="Rejected",
-                        # ticket_type = "enter",
-                        date_time_guard=timezone.now())
+                    visitor_ticket_id=visitor_ticket_id
+                ).update(
+                    guard_status="Rejected",
+                    # ticket_type = "enter",
+                    date_time_guard=datetime.now(),
+                )
 
                 Visitor.objects.filter(visitor_id=visitor_id).update(
                     current_status="in"
@@ -3327,7 +3437,7 @@ def reject_selected_tickets_visitors(request):
         return Response(status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
-@api_view(['POST'])
+@api_view(["POST"])
 def reject_selected_tickets_authorities(request):
     try:
         list_data = request.data
@@ -3336,20 +3446,19 @@ def reject_selected_tickets_authorities(request):
 
         for data in list_data:
 
-            location = data['location']
+            location = data["location"]
 
-            is_approved_ = data['is_approved']
+            is_approved_ = data["is_approved"]
 
-            ticket_type_ = data['ticket_type']
+            ticket_type_ = data["ticket_type"]
 
-            date_time_ = data['date_time']
+            date_time_ = data["date_time"]
 
-            email_ = data['email']
+            email_ = data["email"]
 
-            authority_message = data['authority_message']
+            authority_message = data["authority_message"]
 
-            queryset_location_table = Location.objects.get(
-                location_name=location)
+            queryset_location_table = Location.objects.get(location_name=location)
 
             queryset_entry_no = Student.objects.get(email=email_)
 
@@ -3357,9 +3466,10 @@ def reject_selected_tickets_authorities(request):
             queryset_authorities_ticket_table = AuthoritiesTicketTable.objects.filter(
                 entry_no=queryset_entry_no,
                 location_id=queryset_location_table,
-                date_time=date_time_).update(
-                    is_approved="Rejected",
-                    authority_message=authority_message,
+                date_time=date_time_,
+            ).update(
+                is_approved="Rejected",
+                authority_message=authority_message,
             )
 
         return Response(status=status.HTTP_200_OK)
@@ -3369,80 +3479,76 @@ def reject_selected_tickets_authorities(request):
         return Response(status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
-@api_view(['POST'])
+@api_view(["POST"])
 def approve_all_tickets(request):
-    queryset_ticket_table = TicketTable.objects.filter(
-        is_approved="Pending").update(is_approved="Approved")
+    queryset_ticket_table = TicketTable.objects.filter(is_approved="Pending").update(
+        is_approved="Approved"
+    )
     if int(queryset_ticket_table) == 0:
         return Response(status=status.HTTP_200_OK)
-    serializer_ticket_table = TicketTableSerializer(
-        queryset_ticket_table, many=True)
+    serializer_ticket_table = TicketTableSerializer(queryset_ticket_table, many=True)
     # return Response(serializer_ticket_table.data)
     return Response(status=status.HTTP_200_OK)
 
 
-@api_view(['POST'])
+@api_view(["POST"])
 def reject_all_tickets(request):
-    queryset_ticket_table = TicketTable.objects.filter(
-        is_approved="Pending").update(is_approved="Rejected")
+    queryset_ticket_table = TicketTable.objects.filter(is_approved="Pending").update(
+        is_approved="Rejected"
+    )
     if int(queryset_ticket_table) == 0:
         return Response(status=status.HTTP_200_OK)
-    serializer_ticket_table = TicketTableSerializer(
-        queryset_ticket_table, many=True)
+    serializer_ticket_table = TicketTableSerializer(queryset_ticket_table, many=True)
     # return Response(serializer_ticket_table.data)
 
     return Response(status=status.HTTP_200_OK)
 
 
-@api_view(['POST'])
+@api_view(["POST"])
 def get_guard_tickets_by_location(request):
     data = request.data
-    location_name_ = data['location_name']
-    is_approved_ = data['is_approved']
+    location_name_ = data["location_name"]
+    is_approved_ = data["is_approved"]
 
-    queryset_location_table = Location.objects.get(
-        location_name=location_name_)
+    queryset_location_table = Location.objects.get(location_name=location_name_)
 
     queryset_ticket_table = TicketTable.objects.filter(
-        location_id=queryset_location_table, is_approved=is_approved_)
+        location_id=queryset_location_table, is_approved=is_approved_
+    )
 
-    serializer_ticket_table = TicketTableSerializer(
-        queryset_ticket_table, many=True)
+    serializer_ticket_table = TicketTableSerializer(queryset_ticket_table, many=True)
 
     return Response(serializer_ticket_table.data)
 
 
-@api_view(['POST'])
+@api_view(["POST"])
 def get_all_locations(request):
     res = []
     query_set = Location.objects.all()
     for each_query_set in query_set:
         serializer = LocationSerializer(each_query_set, many=False)
-        location_name = serializer.data['location_name']
-        location_id = serializer.data['location_id']
-        parent_id = serializer.data['parent_id']
+        location_name = serializer.data["location_name"]
+        location_id = serializer.data["location_id"]
+        parent_id = serializer.data["parent_id"]
         if parent_id == -1:
-            parent_location = 'NA'
+            parent_location = "NA"
         else:
-            parent_location = Location.objects.get(
-                location_id=parent_id).location_name
+            parent_location = Location.objects.get(location_id=parent_id).location_name
 
-        is_present = serializer.data['is_present']
+        is_present = serializer.data["is_present"]
         if location_name != initial_data and is_present:
-            ResultObj = {'location_name': location_name}
-            ResultObj['location_id'] = location_id
-            ResultObj['parent_id'] = parent_id
-            ResultObj['parent_location'] = parent_location
-            ResultObj['pre_approval'] = serializer.data['pre_approval_required']
-            ResultObj['automatic_exit'] = serializer.data['automatic_exit_required']
+            ResultObj = {"location_name": location_name}
+            ResultObj["location_id"] = location_id
+            ResultObj["parent_id"] = parent_id
+            ResultObj["parent_location"] = parent_location
+            ResultObj["pre_approval"] = serializer.data["pre_approval_required"]
+            ResultObj["automatic_exit"] = serializer.data["automatic_exit_required"]
             res.append(ResultObj)
-    output = {
-        "output": res
-    }
+    output = {"output": res}
     return Response(output, status.HTTP_200_OK)
 
 
-@api_view(['GET', 'POST'])
+@api_view(["GET", "POST"])
 def view_all_locations(request):
     res = []
     try:
@@ -3451,44 +3557,44 @@ def view_all_locations(request):
         serializer = LocationSerializer(queryset, many=True)
 
         for each_location in serializer.data:
-            if each_location['location_name'] == initial_data:
+            if each_location["location_name"] == initial_data:
                 continue
 
-            _parent_id = each_location['parent_id']
+            _parent_id = each_location["parent_id"]
             parent_location = "NA"
             if int(_parent_id) != -1:
-                query_set_location = Location.objects.get(
-                    location_id=_parent_id)
+                query_set_location = Location.objects.get(location_id=_parent_id)
 
                 parent_location = LocationSerializer(
-                    query_set_location, many=False).data['location_name']
+                    query_set_location, many=False
+                ).data["location_name"]
 
             _pre_approval_required = "No"
-            if each_location['pre_approval_required']:
+            if each_location["pre_approval_required"]:
                 _pre_approval_required = "Yes"
 
-            _automatic_exit_required = 'No'
-            if each_location['automatic_exit_required']:
+            _automatic_exit_required = "No"
+            if each_location["automatic_exit_required"]:
                 _automatic_exit_required = "Yes"
 
             item = {
-                'location_name': each_location['location_name'],
-                'parent_location': parent_location,
-                'pre_approval_required': _pre_approval_required,
-                'automatic_exit_required': _automatic_exit_required,
-                'name': '',
-                'entry_no': '',
-                'email': '',
-                'gender': '',
-                'department': '',
-                'degree_name': '',
-                'hostel': '',
-                'room_no': '',
-                'year_of_entry': '',
-                'mobile_no': '',
-                'profile_img': '',
-                'degree_duration': '',
-                'designation': '',
+                "location_name": each_location["location_name"],
+                "parent_location": parent_location,
+                "pre_approval_required": _pre_approval_required,
+                "automatic_exit_required": _automatic_exit_required,
+                "name": "",
+                "entry_no": "",
+                "email": "",
+                "gender": "",
+                "department": "",
+                "degree_name": "",
+                "hostel": "",
+                "room_no": "",
+                "year_of_entry": "",
+                "mobile_no": "",
+                "profile_img": "",
+                "degree_duration": "",
+                "designation": "",
             }
             res.append(item)
         return Response({"output": res}, status=status.HTTP_200_OK)
@@ -3496,65 +3602,65 @@ def view_all_locations(request):
         return Response(status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
-@api_view(['POST'])
+@api_view(["POST"])
 def get_parent_location_name(request):
     try:
-        location = request.data['location']
+        location = request.data["location"]
         query_set = Location.objects.get(location_name=location)
         serializer = LocationSerializer(query_set, many=False)
-        parent_id = serializer.data['parent_id']
-        parent_location = ''
+        parent_id = serializer.data["parent_id"]
+        parent_location = ""
         if parent_id != -1:
             query_set = Location.objects.get(location_id=parent_id)
             serializer = LocationSerializer(query_set, many=False)
-            parent_location = serializer.data['location_name']
+            parent_location = serializer.data["location_name"]
 
-        res = {'parent_location': parent_location}
+        res = {"parent_location": parent_location}
         return Response(res, status.HTTP_200_OK)
     except Exception as e:
-        res = {'parent_location': parent_location}
+        res = {"parent_location": parent_location}
         return Response(res, status.HTTP_500_INTERNAL_SERVER_ERROR)
+
 
 # Guard
 
 
-@api_view(['POST'])
+@api_view(["POST"])
 def get_all_guard_emails(request):
     res = []
     query_set = Guard.objects.all()
     for each_query_set in query_set:
         serializer = GuardSerializer(each_query_set, many=False)
-        _email = serializer.data['email']
-        is_present = serializer.data['is_present']
+        _email = serializer.data["email"]
+        is_present = serializer.data["is_present"]
         if is_present:
-            ResultObj = {'email': _email}
+            ResultObj = {"email": _email}
             res.append(ResultObj)
-    output = {
-        "output": res
-    }
+    output = {"output": res}
     return Response(output, status.HTTP_200_OK)
 
 
-@api_view(['POST'])
+@api_view(["POST"])
 def get_guard_by_email(request):
-    
+
     data = request.data
-    email_ = data['email']
+    email_ = data["email"]
     print(email_)
     try:
         queryset = Guard.objects.get(email=email_, is_present=True)
         serializer = GuardSerializer(queryset, many=False)
 
-        _location_id = serializer.data['location_id']
+        _location_id = serializer.data["location_id"]
         query_set_location = Location.objects.get(location_id=_location_id)
-        location_name = LocationSerializer(
-            query_set_location, many=False).data['location_name']
+        location_name = LocationSerializer(query_set_location, many=False).data[
+            "location_name"
+        ]
 
         res = {
-            'name': serializer.data['guard_name'],
-            'email': serializer.data['email'],
-            'profile_img': serializer.data['profile_img'],
-            'location': location_name
+            "name": serializer.data["guard_name"],
+            "email": serializer.data["email"],
+            "profile_img": serializer.data["profile_img"],
+            "location": location_name,
         }
     except:
         res = {}
@@ -3562,7 +3668,7 @@ def get_guard_by_email(request):
     return Response(res)
 
 
-@api_view(['GET', 'POST'])
+@api_view(["GET", "POST"])
 def get_all_guards(request):
     res = []
     try:
@@ -3572,31 +3678,32 @@ def get_all_guards(request):
 
         for each_guard in serializer.data:
 
-            _location_id = each_guard['location_id']
+            _location_id = each_guard["location_id"]
 
             query_set_location = Location.objects.get(location_id=_location_id)
 
-            location_name = LocationSerializer(
-                query_set_location, many=False).data['location_name']
+            location_name = LocationSerializer(query_set_location, many=False).data[
+                "location_name"
+            ]
 
             item = {
-                'name': each_guard['guard_name'],
-                'location_name': location_name,
-                'email': each_guard['email'],
-                'profile_img': each_guard['profile_img'],
-                'entry_no': '',
-                'gender': '',
-                'department': '',
-                'degree_name': '',
-                'hostel': '',
-                'room_no': '',
-                'year_of_entry': '',
-                'mobile_no': '',
-                'degree_duration': '',
-                'parent_location': '',
-                'pre_approval_required': '',
-                'automatic_exit_required': '',
-                'designation': '',
+                "name": each_guard["guard_name"],
+                "location_name": location_name,
+                "email": each_guard["email"],
+                "profile_img": each_guard["profile_img"],
+                "entry_no": "",
+                "gender": "",
+                "department": "",
+                "degree_name": "",
+                "hostel": "",
+                "room_no": "",
+                "year_of_entry": "",
+                "mobile_no": "",
+                "degree_duration": "",
+                "parent_location": "",
+                "pre_approval_required": "",
+                "automatic_exit_required": "",
+                "designation": "",
             }
 
             res.append(item)
@@ -3604,22 +3711,23 @@ def get_all_guards(request):
     except:
         return Response(status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
+
 # Authoriites
 
 
-@api_view(['POST'])
+@api_view(["POST"])
 def get_authority_by_email(request):
     try:
         data = request.data
-        email_ = data['email']
+        email_ = data["email"]
         queryset = Authorities.objects.get(email=email_, is_present=True)
         serializer = AuthoritiesSerializer(queryset, many=False)
 
         res = {
-            'name': serializer.data['authority_name'],
-            'email': serializer.data['email'],
-            'profile_img': serializer.data['profile_img'],
-            'designation': serializer.data['authority_designation']
+            "name": serializer.data["authority_name"],
+            "email": serializer.data["email"],
+            "profile_img": serializer.data["profile_img"],
+            "designation": serializer.data["authority_designation"],
         }
     except:
         res = {}
@@ -3627,26 +3735,26 @@ def get_authority_by_email(request):
     return Response(res)
 
 
-@api_view(['POST'])
+@api_view(["POST"])
 def get_authorities_list(request):
     try:
         queryset = Authorities.objects.filter(is_present=True)
         serializer = AuthoritiesSerializer(queryset, many=True)
         res = []
         for each_authority in serializer.data:
-            if each_authority['authority_name'] == initial_data:
+            if each_authority["authority_name"] == initial_data:
                 continue
             obj = {
-                'authority_name': each_authority['authority_name'],
-                'authority_designation': each_authority['authority_designation'],
-                'email': each_authority['email'],
+                "authority_name": each_authority["authority_name"],
+                "authority_designation": each_authority["authority_designation"],
+                "email": each_authority["email"],
             }
             res.append(obj)
 
         obj = {
-            'authority_name': "None",
-            'authority_designation': "None",
-            'email': "None",
+            "authority_name": "None",
+            "authority_designation": "None",
+            "email": "None",
         }
         res.append(obj)
         return Response(res, status=status.HTTP_200_OK)
@@ -3654,24 +3762,24 @@ def get_authorities_list(request):
     except Exception as e:
         res = []
         obj = {
-            'authority_name': "None",
-            'authority_designation': "None",
-            'email': "None",
+            "authority_name": "None",
+            "authority_designation": "None",
+            "email": "None",
         }
         res.append(obj)
         return Response(res, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
-@api_view(['POST'])
+@api_view(["POST"])
 def get_authority_tickets_with_status_accepted(request):
     try:
         data = request.data
 
-        email = data['email']
+        email = data["email"]
 
-        location = data['location']
+        location = data["location"]
 
-        ticket_type = data['ticket_type']
+        ticket_type = data["ticket_type"]
 
         queryset_student = Student.objects.get(email=email)
 
@@ -3686,7 +3794,8 @@ def get_authority_tickets_with_status_accepted(request):
         print("here2")
 
         serializer = AuthoritiesTicketTableSerializer(
-            queryset_authorities_ticket_table, many=True)
+            queryset_authorities_ticket_table, many=True
+        )
 
         print("here3")
 
@@ -3694,26 +3803,26 @@ def get_authority_tickets_with_status_accepted(request):
 
         for each_ticket in serializer.data:
 
-            queryset_auth_id = each_ticket['auth_id']
+            queryset_auth_id = each_ticket["auth_id"]
 
             print("queryset_auth_id")
             print(queryset_auth_id)
 
-            queryset_authority = Authorities.objects.get(
-                auth_id=queryset_auth_id)
+            queryset_authority = Authorities.objects.get(auth_id=queryset_auth_id)
 
             print("queryset_authority")
             print(queryset_authority)
 
-            serializer_authority = AuthoritiesSerializer(
-                queryset_authority, many=False)
+            serializer_authority = AuthoritiesSerializer(queryset_authority, many=False)
 
             obj = {
-                'authority_name': serializer_authority.data['authority_name'],
-                'authority_designation': serializer_authority.data['authority_designation'],
-                'student_message': each_ticket['student_message'],
-                'authority_message': each_ticket['authority_message'],
-                'ref_id': str(each_ticket['ref_id']),
+                "authority_name": serializer_authority.data["authority_name"],
+                "authority_designation": serializer_authority.data[
+                    "authority_designation"
+                ],
+                "student_message": each_ticket["student_message"],
+                "authority_message": each_ticket["authority_message"],
+                "ref_id": str(each_ticket["ref_id"]),
             }
             res.append(obj)
 
@@ -3743,22 +3852,23 @@ def get_authority_tickets_with_status_accepted(request):
 
         return Response(res, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
+
 # Admin
 
 
-@api_view(['POST'])
+@api_view(["POST"])
 def get_admin_by_email(request):
     data = request.data
-    email_ = data['email']
+    email_ = data["email"]
 
     try:
         queryset = Admin.objects.get(email=email_, is_present=True)
         serializer = AdminSerializer(queryset, many=False)
 
         res = {
-            'name': serializer.data['admin_name'],
-            'email': serializer.data['email'],
-            'profile_img': serializer.data['profile_img'],
+            "name": serializer.data["admin_name"],
+            "email": serializer.data["email"],
+            "profile_img": serializer.data["profile_img"],
         }
     except:
         res = {}
@@ -3766,7 +3876,7 @@ def get_admin_by_email(request):
     return Response(res)
 
 
-@api_view(['GET', 'POST'])
+@api_view(["GET", "POST"])
 def get_all_admins(request):
     res = []
     try:
@@ -3777,40 +3887,43 @@ def get_all_admins(request):
         for each_admin in serializer.data:
 
             item = {
-                'name': each_admin['admin_name'],
-                'email': each_admin['email'],
-                'profile_img': each_admin['profile_img'],
-                'entry_no': '',
-                'gender': '',
-                'department': '',
-                'degree_name': '',
-                'hostel': '',
-                'room_no': '',
-                'year_of_entry': '',
-                'mobile_no': '',
-                'degree_duration': '',
-                'location_name': '',
-                'parent_location': '',
-                'pre_approval_required': '',
-                'automatic_exit_required': '',
-                'designation': '',
+                "name": each_admin["admin_name"],
+                "email": each_admin["email"],
+                "profile_img": each_admin["profile_img"],
+                "entry_no": "",
+                "gender": "",
+                "department": "",
+                "degree_name": "",
+                "hostel": "",
+                "room_no": "",
+                "year_of_entry": "",
+                "mobile_no": "",
+                "degree_duration": "",
+                "location_name": "",
+                "parent_location": "",
+                "pre_approval_required": "",
+                "automatic_exit_required": "",
+                "designation": "",
             }
 
             res.append(item)
         return Response({"output": res}, status=status.HTTP_200_OK)
     except:
         return Response(status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
 # Change Profile Photo
 
 
-@api_view(['POST'])
+@api_view(["POST"])
 def change_profile_picture_of_student(request):
     try:
         upFile = request.FILES.get("image")
-        email = request.data['email']
+        email = request.data["email"]
 
-        is_student_present = len(Student.objects.filter(
-            email=email, is_present=True)) != 0
+        is_student_present = (
+            len(Student.objects.filter(email=email, is_present=True)) != 0
+        )
 
         if is_student_present:
             student = Student.objects.get(email=email, is_present=True)
@@ -3836,14 +3949,13 @@ def change_profile_picture_of_student(request):
         return Response(res_str, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
-@api_view(['POST'])
+@api_view(["POST"])
 def change_profile_picture_of_guard(request):
     try:
         upFile = request.FILES.get("image")
-        email = request.data['email']
+        email = request.data["email"]
 
-        is_guard_present = len(Guard.objects.filter(
-            email=email, is_present=True)) != 0
+        is_guard_present = len(Guard.objects.filter(email=email, is_present=True)) != 0
 
         if is_guard_present:
             guard = Guard.objects.get(email=email, is_present=True)
@@ -3867,14 +3979,15 @@ def change_profile_picture_of_guard(request):
         return Response(res_str, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
-@api_view(['POST'])
+@api_view(["POST"])
 def change_profile_picture_of_authority(request):
     try:
         upFile = request.FILES.get("image")
-        email = request.data['email']
+        email = request.data["email"]
 
-        is_authority_present = len(Authorities.objects.filter(
-            email=email, is_present=True)) != 0
+        is_authority_present = (
+            len(Authorities.objects.filter(email=email, is_present=True)) != 0
+        )
 
         if is_authority_present:
             authority = Authorities.objects.get(email=email, is_present=True)
@@ -3899,14 +4012,13 @@ def change_profile_picture_of_authority(request):
         return Response(res_str, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
-@api_view(['POST'])
+@api_view(["POST"])
 def change_profile_picture_of_admin(request):
     try:
         upFile = request.FILES.get("image")
-        email = request.data['email']
+        email = request.data["email"]
 
-        is_admin_present = len(Admin.objects.filter(
-            email=email, is_present=True)) != 0
+        is_admin_present = len(Admin.objects.filter(email=email, is_present=True)) != 0
 
         if is_admin_present:
             admin = Admin.objects.get(email=email, is_present=True)
@@ -3931,7 +4043,7 @@ def change_profile_picture_of_admin(request):
 
 
 # Hostel
-@api_view(['GET', 'POST'])
+@api_view(["GET", "POST"])
 def get_all_hostels(request):
     res = []
     try:
@@ -3940,37 +4052,38 @@ def get_all_hostels(request):
         serializer = HostelSerializer(queryset, many=True)
 
         for each_hostel in serializer.data:
-            if each_hostel['hostel_name'] == initial_data:
+            if each_hostel["hostel_name"] == initial_data:
                 continue
             item = {
-                'hostel': each_hostel['hostel_name'],
-                'id': each_hostel['hostel_id'],
-                'name': '',
-                'entry_no': '',
-                'email': '',
-                'gender': '',
-                'department': '',
-                'degree_name': '',
-                'room_no': '',
-                'year_of_entry': '',
-                'mobile_no': '',
-                'profile_img': '',
-                'degree_duration': '',
-                'location_name': '',
-                'parent_location': '',
-                'pre_approval_required': '',
-                'automatic_exit_required': '',
-                'designation': '',
+                "hostel": each_hostel["hostel_name"],
+                "id": each_hostel["hostel_id"],
+                "name": "",
+                "entry_no": "",
+                "email": "",
+                "gender": "",
+                "department": "",
+                "degree_name": "",
+                "room_no": "",
+                "year_of_entry": "",
+                "mobile_no": "",
+                "profile_img": "",
+                "degree_duration": "",
+                "location_name": "",
+                "parent_location": "",
+                "pre_approval_required": "",
+                "automatic_exit_required": "",
+                "designation": "",
             }
             res.append(item)
         return Response({"output": res}, status=status.HTTP_200_OK)
     except:
         return Response(status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
+
 # Authorities
 
 
-@api_view(['GET', 'POST'])
+@api_view(["GET", "POST"])
 def get_all_authorites(request):
     res = []
     try:
@@ -3979,27 +4092,26 @@ def get_all_authorites(request):
         serializer = AuthoritiesSerializer(queryset, many=True)
 
         for each_authority in serializer.data:
-            if each_authority['authority_name'] == initial_data:
+            if each_authority["authority_name"] == initial_data:
                 continue
             item = {
-                'name': each_authority['authority_name'],
-                'designation': each_authority['authority_designation'],
-                'email': each_authority['email'],
-
-                'entry_no': '',
-                'gender': '',
-                'department': '',
-                'degree_name': '',
-                'hostel': '',
-                'room_no': '',
-                'year_of_entry': '',
-                'mobile_no': '',
-                'profile_img': '',
-                'degree_duration': '',
-                'location_name': '',
-                'parent_location': '',
-                'pre_approval_required': '',
-                'automatic_exit_required': '',
+                "name": each_authority["authority_name"],
+                "designation": each_authority["authority_designation"],
+                "email": each_authority["email"],
+                "entry_no": "",
+                "gender": "",
+                "department": "",
+                "degree_name": "",
+                "hostel": "",
+                "room_no": "",
+                "year_of_entry": "",
+                "mobile_no": "",
+                "profile_img": "",
+                "degree_duration": "",
+                "location_name": "",
+                "parent_location": "",
+                "pre_approval_required": "",
+                "automatic_exit_required": "",
             }
 
             res.append(item)
@@ -4007,10 +4119,11 @@ def get_all_authorites(request):
     except:
         return Response(status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
+
 # Department
 
 
-@api_view(['GET', 'POST'])
+@api_view(["GET", "POST"])
 def get_all_departments(request):
     res = []
     try:
@@ -4019,37 +4132,38 @@ def get_all_departments(request):
         serializer = DepartmentSerializer(queryset, many=True)
 
         for each_department in serializer.data:
-            if each_department['dept_name'] == initial_data:
+            if each_department["dept_name"] == initial_data:
                 continue
             item = {
-                'department': each_department['dept_name'],
-                'id': each_department['dept_id'],
-                'name': '',
-                'entry_no': '',
-                'email': '',
-                'gender': '',
-                'degree_name': '',
-                'hostel': '',
-                'room_no': '',
-                'year_of_entry': '',
-                'mobile_no': '',
-                'profile_img': '',
-                'degree_duration': '',
-                'location_name': '',
-                'parent_location': '',
-                'pre_approval_required': '',
-                'automatic_exit_required': '',
-                'designation': '',
+                "department": each_department["dept_name"],
+                "id": each_department["dept_id"],
+                "name": "",
+                "entry_no": "",
+                "email": "",
+                "gender": "",
+                "degree_name": "",
+                "hostel": "",
+                "room_no": "",
+                "year_of_entry": "",
+                "mobile_no": "",
+                "profile_img": "",
+                "degree_duration": "",
+                "location_name": "",
+                "parent_location": "",
+                "pre_approval_required": "",
+                "automatic_exit_required": "",
+                "designation": "",
             }
             res.append(item)
         return Response({"output": res}, status=status.HTTP_200_OK)
     except:
         return Response(status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
+
 # Programs
 
 
-@api_view(['GET', 'POST'])
+@api_view(["GET", "POST"])
 def get_all_programs(request):
     res = []
     try:
@@ -4058,27 +4172,27 @@ def get_all_programs(request):
         serializer = ProgramSerializer(queryset, many=True)
 
         for each_program in serializer.data:
-            if each_program['degree_name'] == initial_data:
+            if each_program["degree_name"] == initial_data:
                 continue
             item = {
-                'degree_name': each_program['degree_name'],
-                'degree_duration': str(each_program['degree_duration']),
-                'id': each_program['degree_id'],
-                'name': '',
-                'entry_no': '',
-                'email': '',
-                'gender': '',
-                'department': '',
-                'hostel': '',
-                'room_no': '',
-                'year_of_entry': '',
-                'mobile_no': '',
-                'profile_img': '',
-                'location_name': '',
-                'parent_location': '',
-                'pre_approval_required': '',
-                'automatic_exit_required': '',
-                'designation': '',
+                "degree_name": each_program["degree_name"],
+                "degree_duration": str(each_program["degree_duration"]),
+                "id": each_program["degree_id"],
+                "name": "",
+                "entry_no": "",
+                "email": "",
+                "gender": "",
+                "department": "",
+                "hostel": "",
+                "room_no": "",
+                "year_of_entry": "",
+                "mobile_no": "",
+                "profile_img": "",
+                "location_name": "",
+                "parent_location": "",
+                "pre_approval_required": "",
+                "automatic_exit_required": "",
+                "designation": "",
             }
             res.append(item)
         return Response({"output": res}, status=status.HTTP_200_OK)
@@ -4086,62 +4200,74 @@ def get_all_programs(request):
         return Response(status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
-@api_view(['GET', 'POST'])
+@api_view(["GET", "POST"])
 def insert_in_visitors_ticket_table(request):
     res = {}
     try:
-        visitor_name = request.data['visitor_name']
-        mobile_no = request.data['mobile_no']
-        car_number = request.data['car_number']
-        guard_status=request.data['guard_status']
-       
-        purpose = request.data['purpose']
-        ticket_type = request.data['ticket_type']
-        duration_of_stay = request.data['duration_of_stay']
-       
-        type=request.data['type']
+        visitor_name = request.data["visitor_name"]
+        mobile_no = request.data["mobile_no"]
+        car_number = request.data["car_number"]
+        guard_status = request.data["guard_status"]
 
-        is_not_present = len(Visitor.objects.filter(
-            visitor_name=visitor_name, mobile_no=mobile_no)) == 0
+        purpose = request.data["purpose"]
+        ticket_type = request.data["ticket_type"]
+        duration_of_stay = request.data["duration_of_stay"]
+
+        type = request.data["type"]
+
+        is_not_present = (
+            len(Visitor.objects.filter(visitor_name=visitor_name, mobile_no=mobile_no))
+            == 0
+        )
 
         if is_not_present:
-            Visitor.objects.create(
-                visitor_name=visitor_name, mobile_no=mobile_no)
+            Visitor.objects.create(visitor_name=visitor_name, mobile_no=mobile_no)
 
         queryset_visitor = Visitor.objects.get(
-            visitor_name=visitor_name, mobile_no=mobile_no)
+            visitor_name=visitor_name, mobile_no=mobile_no
+        )
 
         serializer_visitor = VisitorSerializer(queryset_visitor, many=False)
 
-        current_status = serializer_visitor.data['current_status']
+        current_status = serializer_visitor.data["current_status"]
 
-        if ticket_type == 'enter' and current_status in ['pending_exit', 'in']:
-            print('Cannot raise an entry ticket because person is already inside campus')
+        if ticket_type == "enter" and current_status in ["pending_exit", "in"]:
+            print(
+                "Cannot raise an entry ticket because person is already inside campus"
+            )
             res["status"] = True
-            res["message"] = 'Cannot raise an entry ticket because person is already inside campus'
+            res["message"] = (
+                "Cannot raise an entry ticket because person is already inside campus"
+            )
             return Response({"output": res}, status=status.HTTP_400_BAD_REQUEST)
 
-        if ticket_type == 'exit' and current_status in ['pending_entry', 'out']:
-            print('Cannot raise an exit ticket because person is already outside campus')
+        if ticket_type == "exit" and current_status in ["pending_entry", "out"]:
+            print(
+                "Cannot raise an exit ticket because person is already outside campus"
+            )
             res["status"] = True
-            res["message"] = 'Cannot raise an exit ticket because person is already outside campus'
+            res["message"] = (
+                "Cannot raise an exit ticket because person is already outside campus"
+            )
             return Response({"output": res}, status=status.HTTP_400_BAD_REQUEST)
 
-        
-        if(type=='authority'):
-            authority_name = request.data['authority_name']
-            authority_email = request.data['authority_email']
-            authority_designation = request.data['authority_designation']
-            is_authority_present = len(Authorities.objects.filter(
-                email=authority_email, is_present=True)) != 0
+        if type == "authority":
+            authority_name = request.data["authority_name"]
+            authority_email = request.data["authority_email"]
+            authority_designation = request.data["authority_designation"]
+            is_authority_present = (
+                len(Authorities.objects.filter(email=authority_email, is_present=True))
+                != 0
+            )
             if is_authority_present:
                 queryset_authority = Authorities.objects.get(
-                    email=authority_email, is_present=True)
+                    email=authority_email, is_present=True
+                )
 
             else:
-                print('Requested authority is not present')
+                print("Requested authority is not present")
                 res["status"] = True
-                res["message"] = 'Requested authority is not present'
+                res["message"] = "Requested authority is not present"
                 return Response({"output": res}, status=status.HTTP_400_BAD_REQUEST)
             VisitorTicketTable.objects.create(
                 visitor_id=queryset_visitor,
@@ -4153,22 +4279,21 @@ def insert_in_visitors_ticket_table(request):
                 num_additional=num_additional,
             )
         else:
-            student_email=request.data['student_email'].strip()
-            num_additional=int(request.data['num_additional'])
-            
-            is_student_present=len(Student.objects.filter(email=student_email,
-                                                    is_present=True))!=0
-            print(len(Student.objects.filter(email=student_email,
-                                            is_present=True)))
+            student_email = request.data["student_email"].strip()
+            num_additional = int(request.data["num_additional"])
+
+            is_student_present = (
+                len(Student.objects.filter(email=student_email, is_present=True)) != 0
+            )
+            print(len(Student.objects.filter(email=student_email, is_present=True)))
             if is_student_present:
-                student=Student.objects.get(
-                    email=student_email, is_present=True)
+                student = Student.objects.get(email=student_email, is_present=True)
             else:
-                print('Student is not present')
+                print("Student is not present")
                 res["status"] = True
-                res["message"] = 'Student is not present'
+                res["message"] = "Student is not present"
                 return Response({"output": res}, status=status.HTTP_400_BAD_REQUEST)
-            
+
             VisitorTicketTable.objects.create(
                 visitor_id=queryset_visitor,
                 car_number=car_number,
@@ -4177,14 +4302,12 @@ def insert_in_visitors_ticket_table(request):
                 duration_of_stay=duration_of_stay,
                 num_additional=num_additional,
                 student_entry_no=student,
-                guard_status=guard_status
+                guard_status=guard_status,
             )
-        
-
 
         Visitor.objects.filter(visitor_name=visitor_name, mobile_no=mobile_no).update(
-            current_status='pending_entry')
-        
+            current_status="pending_entry"
+        )
 
         res["status"] = True
         res["message"] = "Ticket inserted in visitors table successfully"
@@ -4197,13 +4320,13 @@ def insert_in_visitors_ticket_table(request):
         return Response({"output": res}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
-@api_view(['GET', 'POST'])
+@api_view(["GET", "POST"])
 def insert_in_visitors_ticket_table_2(request):
     res = {}
     try:
-        authority_status = request.data['authority_status']
-        visitor_ticket_id = int(request.data['visitor_ticket_id'])
-        authority_message = request.data['authority_message']
+        authority_status = request.data["authority_status"]
+        visitor_ticket_id = int(request.data["visitor_ticket_id"])
+        authority_message = request.data["authority_message"]
 
         VisitorTicketTable.objects.filter(visitor_ticket_id=visitor_ticket_id).update(
             authority_status=authority_status,
@@ -4220,69 +4343,75 @@ def insert_in_visitors_ticket_table_2(request):
         res["message"] = "Exception in insert_in_visitors_ticket_table_2"
         return Response({"output": res}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
+
 # Student
 
 
-@api_view(['POST'])
-def get_status_for_all_locations(request):
-    res = {}
-    try:
-        _email = request.data['email']
 
-        queryset_student = Student.objects.get(email=_email)
-        queryset_student_serializer = StudentSerializer(
-            queryset_student, many=False)
-        _entry_no = queryset_student_serializer.data['entry_no']
+class Get_status_for_all_locations(APIView):
+    permission_classes = (IsAuthenticated,IsStudent)
+    def post(self,request):
+        res = {}
+        try:
+            _email = request.user.email
+            print(f"get_status_for_all_locations $$ email: {_email}")
 
-        queryset_status_table = StatusTable.objects.filter(entry_no=_entry_no)
-        for each_query_set in queryset_status_table:
-            queryset_status_table_serializer = StatusTableSerializer(
-                each_query_set, many=False)
-            _status = queryset_status_table_serializer.data['current_status']
-            _location_id = queryset_status_table_serializer.data['location_id']
+            queryset_student = Student.objects.get(email=_email)
+            queryset_student_serializer = StudentSerializer(queryset_student, many=False)
+            _entry_no = queryset_student_serializer.data["entry_no"]
+            print(f"get_status_for_all_locations $$ entry_no: {_entry_no}")
 
-            queryset_location = Location.objects.get(location_id=_location_id)
-            queryset_location_serializer = LocationSerializer(
-                queryset_location, many=False)
-            _location_name = queryset_location_serializer.data['location_name']
-            res[_location_name] = _status
+            queryset_status_table = StatusTable.objects.filter(entry_no=_entry_no)
+            for each_query_set in queryset_status_table:
+                queryset_status_table_serializer = StatusTableSerializer(
+                    each_query_set, many=False
+                )
+                _status = queryset_status_table_serializer.data["current_status"]
+                _location_id = queryset_status_table_serializer.data["location_id"]
 
-        print("location data")
-        print(res)
+                queryset_location = Location.objects.get(location_id=_location_id)
+                queryset_location_serializer = LocationSerializer(
+                    queryset_location, many=False
+                )
+                _location_name = queryset_location_serializer.data["location_name"]
+                res[_location_name] = _status
 
-        return Response(res, status=status.HTTP_200_OK)
+            print("location data")
+            print(res)
 
-    except Exception as e:
-        print("Exception Occured in get_status_for_all_locations function")
-        print(e)
-        res_str = "Error Occured"
-        return Response(res_str, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            return Response(res, status=status.HTTP_200_OK)
+
+        except Exception as e:
+            print("Exception Occured in get_status_for_all_locations function")
+            print(e)
+            res_str = "Error Occured"
+            return Response(res_str, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
-@api_view(['GET'])
+@api_view(["GET"])
 def get_location_id(request):
     res = {}
-    print(f'before')
-    index = int(request.GET.get('index', ''))
-    print(f'{index}=after')
+    print(f"before")
+    index = int(request.GET.get("index", ""))
+    print(f"{index}=after")
     location = ""
     if index == 0:
-        location = 'Main Gate'
+        location = "Main Gate"
     elif index == 1:
-        location = 'CS Department'
+        location = "CS Department"
     elif index == 2:
-        location = 'Mess'
+        location = "Mess"
     elif index == 3:
-        location = 'Library'
+        location = "Library"
     elif index == 4:
-        location = 'Hostel'
+        location = "Hostel"
     elif index == 5:
-        location = 'CS Lab'
+        location = "CS Lab"
     try:
-        print(f'shilu before={location}')
+        print(f"shilu before={location}")
         loc = Location.objects.get(location_name=location)
-        print(f'shilu after={location}')
-        print(f'shilu data={loc.location_id}')
+        print(f"shilu after={location}")
+        print(f"shilu data={loc.location_id}")
         res["location_id"] = loc.location_id
         return Response(res, status=status.HTTP_200_OK)
 
@@ -4290,13 +4419,14 @@ def get_location_id(request):
         print("\n\n\n\nError occured while counting")
 
 
-@api_view(['GET'])
+@api_view(["GET"])
 def get_location_count(request):
     res = {}
-    location_id = request.GET.get('location_id')
+    location_id = request.GET.get("location_id")
     try:
         in_count = StatusTable.objects.filter(
-            location_id=f'{location_id}', current_status='in').count()
+            location_id=f"{location_id}", current_status="in"
+        ).count()
         print("Inside location count = ")
         print(in_count)
         res["in_count"] = in_count
@@ -4306,11 +4436,11 @@ def get_location_count(request):
         print("\n\n\n\nError occured while counting")
 
 
-@api_view(['POST'])
+@api_view(["POST"])
 def update_phone_number(request):
     print("update phone")
-    phone_number = request.POST.get('phone_number')
-    st_email = request.POST.get('email')
+    phone_number = request.POST.get("phone_number")
+    st_email = request.POST.get("email")
     try:
         res = {}
         Student.objects.filter(email=st_email).update(mobile_no=phone_number)
@@ -4320,43 +4450,43 @@ def update_phone_number(request):
         print("Error occured in updating phone number")
 
 
-@api_view(['GET'])
+@api_view(["GET"])
 def get_guard_at_a_location(request):
-    email = request.GET.get('email')
-    location = request.GET.get('location')
+    email = request.GET.get("email")
+    location = request.GET.get("location")
 
-    print(f'EMAIL={email}')
-    print(F'LOCATION={location}')
+    print(f"EMAIL={email}")
+    print(f"LOCATION={location}")
 
     try:
         res = {}
         loc_id = Location.objects.get(location_name=location).location_id
         guard_id = Guard.objects.get(location_id=loc_id).email
         print(f"Loc id={loc_id}, guard_id={guard_id}")
-        res['loc_id'] = loc_id
-        res['guard_id'] = guard_id
+        res["loc_id"] = loc_id
+        res["guard_id"] = guard_id
         return Response(res, status=status.HTTP_200_OK)
 
     except Exception as e:
         print("Error occured while getting guard")
 
 
-@api_view(['POST'])
+@api_view(["POST"])
 def insert_notification(request):
     res = {}
-    print('inside insert notification')
-    print(request.POST.get('from_whom'))
-    print(request.POST.get('for_whom'))
-    print(request.POST.get('ticket_type'))
-    print(request.POST.get('location_id'))
-    print(request.POST.get('display_message'))
+    print("inside insert notification")
+    print(request.POST.get("from_whom"))
+    print(request.POST.get("for_whom"))
+    print(request.POST.get("ticket_type"))
+    print(request.POST.get("location_id"))
+    print(request.POST.get("display_message"))
     try:
         notificationObj = NotificationTable()
-        notificationObj.from_whom = request.POST.get('from_whom')
-        notificationObj.for_whom = request.POST.get('for_whom')
-        notificationObj.ticket_type = request.POST.get('ticket_type')
-        notificationObj.location_id = request.POST.get('location_id')
-        notificationObj.display_message = request.POST.get('display_message')
+        notificationObj.from_whom = request.POST.get("from_whom")
+        notificationObj.for_whom = request.POST.get("for_whom")
+        notificationObj.ticket_type = request.POST.get("ticket_type")
+        notificationObj.location_id = request.POST.get("location_id")
+        notificationObj.display_message = request.POST.get("display_message")
         notificationObj.save()
         res["data"] = "data"
         return Response(res, status=status.HTTP_200_OK)
@@ -4366,23 +4496,24 @@ def insert_notification(request):
         return Response(res, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
-@api_view(['POST'])
+@api_view(["POST"])
 def insert_notification_guard_accept_reject(request):
     res = {}
-    print('inside insert notification guard accept reject')
-    print(request.POST.get('from_whom'))
-    print(request.POST.get('for_whom'))
-    print(request.POST.get('ticket_type'))
-    print(request.POST.get('location'))
-    print(request.POST.get('display_message'))
+    print("inside insert notification guard accept reject")
+    print(request.POST.get("from_whom"))
+    print(request.POST.get("for_whom"))
+    print(request.POST.get("ticket_type"))
+    print(request.POST.get("location"))
+    print(request.POST.get("display_message"))
     try:
         notificationObj = NotificationTable()
-        notificationObj.from_whom = request.POST.get('from_whom')
-        notificationObj.for_whom = request.POST.get('for_whom')
-        notificationObj.ticket_type = request.POST.get('ticket_type')
+        notificationObj.from_whom = request.POST.get("from_whom")
+        notificationObj.for_whom = request.POST.get("for_whom")
+        notificationObj.ticket_type = request.POST.get("ticket_type")
         notificationObj.location_id = Location.objects.get(
-            location_name=request.POST.get('location')).location_id
-        notificationObj.display_message = request.POST.get('display_message')
+            location_name=request.POST.get("location")
+        ).location_id
+        notificationObj.display_message = request.POST.get("display_message")
         notificationObj.save()
         return Response(res, status=status.HTTP_200_OK)
 
@@ -4390,33 +4521,36 @@ def insert_notification_guard_accept_reject(request):
         print("Error")
 
 
-@api_view(['GET'])
+@api_view(["GET"])
 def count_notifications(request):
     print(f"Backend email={request.GET.get('email')}")
     res = {}
     try:
         count = NotificationTable.objects.filter(
-            for_whom=request.GET.get('email'), is_seen=False).count()
-        res['count'] = count
+            for_whom=request.GET.get("email"), is_seen=False
+        ).count()
+        res["count"] = count
         return Response(res, status=status.HTTP_200_OK)
 
     except Exception as e:
         print("Error")
 
 
-@api_view(['POST'])
+@api_view(["POST"])
 def mark_notification_as_false(request):
     res = {}
-    email = request.POST.get('email')
+    email = request.POST.get("email")
     print("inside false noti")
     try:
         # Student.objects.filter(email=st_email).update(mobile_no=phone_number)
-        NotificationTable.objects.filter(
-            for_whom=email, is_seen=False).update(is_seen=True)
+        NotificationTable.objects.filter(for_whom=email, is_seen=False).update(
+            is_seen=True
+        )
         return Response(res, status=status.HTTP_200_OK)
 
     except Exception as e:
         print("Error")
+
 
 # @api_view(['GET'])
 # def fetch_notification_guard(request):
@@ -4435,101 +4569,103 @@ def mark_notification_as_false(request):
 #         print("Error")
 
 
-@api_view(['GET'])
+@api_view(["GET"])
 def fetch_notification_guard(request):
-    email = request.GET.get('email')
+    email = request.GET.get("email")
     print("inside false noti")
     print(email)
     res = {}
     try:
-        notifications = NotificationTable.objects.filter(
-            for_whom=email, is_seen=False)
+        notifications = NotificationTable.objects.filter(for_whom=email, is_seen=False)
 
         serializer = NotificationTableSerializer(notifications, many=True)
         print(serializer.data)
-        print('print data at backend')
-        res['data'] = serializer.data
+        print("print data at backend")
+        res["data"] = serializer.data
         # print(res['data'])
         return Response(res, status=status.HTTP_200_OK)
 
     except NotificationTable.DoesNotExist:
-        return Response({'error': 'Notifications not found'}, status=status.HTTP_404_NOT_FOUND)
+        return Response(
+            {"error": "Notifications not found"}, status=status.HTTP_404_NOT_FOUND
+        )
 
     except Exception as e:
-        return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
-@api_view(['POST'])
+@api_view(["POST"])
 def mark_individual_notification(request):
-    ticket_id_notification_table = int(request.POST.get('tick_id'))
-    email = request.POST.get('email')
-    print(f'tic id={ticket_id_notification_table}')
+    ticket_id_notification_table = int(request.POST.get("tick_id"))
+    email = request.POST.get("email")
+    print(f"tic id={ticket_id_notification_table}")
     print(email)
     res = {}
     try:
         NotificationTable.objects.filter(
-            for_whom=email, ticket_id=ticket_id_notification_table, is_seen=False).update(is_seen=True)
+            for_whom=email, ticket_id=ticket_id_notification_table, is_seen=False
+        ).update(is_seen=True)
         return Response(res, status=status.HTTP_200_OK)
 
     except Exception as e:
         print("Error")
 
 
-@api_view(['GET'])
+@api_view(["GET"])
 def loc_from_loc_id(request):
     res = {}
-    loc_id = request.GET.get('loc_id')
+    loc_id = request.GET.get("loc_id")
     try:
         loc = Location.objects.get(location_id=loc_id)
-        res['loc_name'] = loc.location_name
-        print(f'location name bhai={loc.location_name}')
+        res["loc_name"] = loc.location_name
+        print(f"location name bhai={loc.location_name}")
         return Response(res, status=status.HTTP_200_OK)
 
     except Exception as e:
         print("Error")
 
 
-@api_view(['GET'])
+@api_view(["GET"])
 def hostel_from_hostel_id(request):
     res = {}
-    id = request.GET.get('id')
+    id = request.GET.get("id")
     try:
         hostel = Hostel.objects.get(hostel_id=id)
-        res['hostel_name'] = hostel.hostel_name
+        res["hostel_name"] = hostel.hostel_name
         return Response(res, status=status.HTTP_200_OK)
 
     except Exception as e:
         print("Error")
 
 
-@api_view(['GET'])
+@api_view(["GET"])
 def department_from_department_id(request):
     res = {}
-    id = request.GET.get('id')
+    id = request.GET.get("id")
     try:
         department = Department.objects.get(dept_id=id)
-        res['dept_name'] = department.dept_name
+        res["dept_name"] = department.dept_name
         return Response(res, status=status.HTTP_200_OK)
 
     except Exception as e:
         print("Error")
 
 
-@api_view(['GET'])
+@api_view(["GET"])
 def program_from_program_id(request):
     res = {}
-    id = request.GET.get('id')
+    id = request.GET.get("id")
     try:
         program = Program.objects.get(degree_id=id)
-        res['degree_name'] = program.degree_name
-        res['degree_duration'] = program.degree_duration
+        res["degree_name"] = program.degree_name
+        res["degree_duration"] = program.degree_duration
         return Response(res, status=status.HTTP_200_OK)
 
     except Exception as e:
         print("Error")
 
 
-@api_view(['GET'])
+@api_view(["GET"])
 def get_all_count(request):
     try:
         student = Student.objects.filter(is_present=True).count()
@@ -4539,8 +4675,15 @@ def get_all_count(request):
         hostel = Hostel.objects.filter(is_present=True).count()
         program = Program.objects.filter(is_present=True).count()
         department = Department.objects.filter(is_present=True).count()
-        res = {"student": student,
-               "guard": guard, "authority": authority, "location": location, "hostel": hostel, "program": program, "department": department}
+        res = {
+            "student": student,
+            "guard": guard,
+            "authority": authority,
+            "location": location,
+            "hostel": hostel,
+            "program": program,
+            "department": department,
+        }
         return Response(res, status=status.HTTP_200_OK)
     except Exception as e:
         print("Error: ", e)
@@ -4548,34 +4691,30 @@ def get_all_count(request):
 
 
 class CustomSerializer(serializers.ModelSerializer):
-    entry_no = serializers.PrimaryKeyRelatedField(
-        queryset=Student.objects.all())
-    student_name = serializers.CharField(
-        source='entry_no.st_name', read_only=True)
-    student_email = serializers.CharField(
-        source='entry_no.email', read_only=True)
+    entry_no = serializers.PrimaryKeyRelatedField(queryset=Student.objects.all())
+    student_name = serializers.CharField(source="entry_no.st_name", read_only=True)
+    student_email = serializers.CharField(source="entry_no.email", read_only=True)
     guard_id = serializers.PrimaryKeyRelatedField(queryset=Guard.objects.all())
-    guard_name = serializers.CharField(
-        source='guard_id.guard_name', read_only=True)
-    guard_email = serializers.CharField(
-        source='guard_id.email', read_only=True)
-    location_id = serializers.PrimaryKeyRelatedField(
-        queryset=Location.objects.all())
+    guard_name = serializers.CharField(source="guard_id.guard_name", read_only=True)
+    guard_email = serializers.CharField(source="guard_id.email", read_only=True)
+    location_id = serializers.PrimaryKeyRelatedField(queryset=Location.objects.all())
     location_name = serializers.CharField(
-        source='location_id.location_name', read_only=True)
+        source="location_id.location_name", read_only=True
+    )
 
     class Meta:
         model = TicketTable
-        fields = '__all__'
+        fields = "__all__"
 
 
-@api_view(['POST'])
+@api_view(["POST"])
 def get_history_student(request):
-    data = request.data.get('body', [])
+    data = request.data.get("body", [])
     result = []
     for entry_no in data:
         tickets = TicketTable.objects.select_related(
-            'entry_no', 'guard_id', 'location_id').filter(entry_no=entry_no)
+            "entry_no", "guard_id", "location_id"
+        ).filter(entry_no=entry_no)
         for ticket in tickets:
             serializer = CustomSerializer(ticket)
             result.append(serializer.data)
@@ -4587,77 +4726,93 @@ def get_history_student(request):
         return Response(status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
-@api_view(['GET'])
+@api_view(["GET"])
 def get_student_raw(request):
     try:
         data = request.query_params
         # if data :
-        entry_no = data.get('id')
+        entry_no = data.get("id")
         if not entry_no:
-            return Response({'error': 'Entry No. not provided.'}, status=status.HTTP_200_OK)
+            return Response(
+                {"error": "Entry No. not provided."}, status=status.HTTP_200_OK
+            )
 
         res = Student.objects.filter(entry_no=entry_no)
         if not res:
-            return Response({'error': 'No student found with provided Entry No.'}, status=status.HTTP_404_NOT_FOUND)
+            return Response(
+                {"error": "No student found with provided Entry No."},
+                status=status.HTTP_404_NOT_FOUND,
+            )
 
         res2 = StudentSerializer(res, many=True).data
         return Response(res2, status=status.HTTP_200_OK)
     except Exception as e:
         print("Error: ", e)
-        return Response({'error': 'Internal server error.'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        return Response(
+            {"error": "Internal server error."},
+            status=status.HTTP_500_INTERNAL_SERVER_ERROR,
+        )
 
 
-@api_view(['GET'])
+@api_view(["GET"])
 def get_guard_raw(request):
     try:
         data = request.query_params
         # if data :
-        email = data.get('email')
+        email = data.get("email")
         if not email:
-            return Response({'error': 'email. not provided.'}, status=status.HTTP_200_OK)
+            return Response(
+                {"error": "email. not provided."}, status=status.HTTP_200_OK
+            )
 
         res = Guard.objects.filter(email=email)
         if not res:
-            return Response({'error': 'No guard found with provided email.'}, status=status.HTTP_404_NOT_FOUND)
+            return Response(
+                {"error": "No guard found with provided email."},
+                status=status.HTTP_404_NOT_FOUND,
+            )
 
         res2 = GuardSerializer(res, many=True).data
         return Response(res2, status=status.HTTP_200_OK)
     except Exception as e:
         print("Error: ", e)
-        return Response({'error': 'Internal server error.'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        return Response(
+            {"error": "Internal server error."},
+            status=status.HTTP_500_INTERNAL_SERVER_ERROR,
+        )
 
 
-@api_view(['POST'])
+@api_view(["POST"])
 def update_student_details(request):
     try:
         print(request.data)
         print("Here in update function")
         # print(request.data)
         data = request.data
-        entry_no = data['entry_no']
+        entry_no = data["entry_no"]
         student = get_object_or_404(Student, entry_no=entry_no)
 
         # Get the department instance for the given dept_id value
-        dept_id = data['dept_id']
+        dept_id = data["dept_id"]
         print("flaskjdf", dept_id)
         department = get_object_or_404(Department, dept_id=dept_id)
 
         # Get the degree instance for the given degree_id value
-        degree_id = data['degree_id']
+        degree_id = data["degree_id"]
         degree = get_object_or_404(Program, degree_id=degree_id)
 
         # Get the hostel instance for the given hostel_id value
-        hostel_id = data['hostel_id']
+        hostel_id = data["hostel_id"]
         hostel = get_object_or_404(Hostel, hostel_id=hostel_id)
 
         # Update the fields in the record
-        student.st_name = data['st_name']
-        student.email = data['email']
-        student.gender = data['gender']
-        student.room_no = data['room_no']
-        student.year_of_entry = data['year_of_entry']
+        student.st_name = data["st_name"]
+        student.email = data["email"]
+        student.gender = data["gender"]
+        student.room_no = data["room_no"]
+        student.year_of_entry = data["year_of_entry"]
         # student.profile_img = data['profile_img']
-        student.mobile_no = data['mobile_no']
+        student.mobile_no = data["mobile_no"]
         # student.is_present = data['is_present']
         student.dept_id = department
         student.degree_id = degree
@@ -4666,140 +4821,165 @@ def update_student_details(request):
         # Save the updated record to the database
         student.save()
 
-        return Response({'output': 'Ok'}, status=status.HTTP_200_OK)
+        return Response({"output": "Ok"}, status=status.HTTP_200_OK)
 
     except Exception as e:
         print("Error: ", e)
-        return Response({'error': 'Internal server error.'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        return Response(
+            {"error": "Internal server error."},
+            status=status.HTTP_500_INTERNAL_SERVER_ERROR,
+        )
 
 
-@api_view(['POST'])
+@api_view(["POST"])
 def update_hostel_details(request):
     try:
         print(request.data)
         print("Here in update function")
         # print(request.data)
         data = request.data
-        id = data['id']
+        id = data["id"]
         hostel = get_object_or_404(Hostel, hostel_id=id)
 
         # Update the fields in the record
-        hostel.hostel_name = data['hostel_name']
+        hostel.hostel_name = data["hostel_name"]
 
         # Save the updated record to the database
         hostel.save()
 
-        return Response({'output': 'Ok'}, status=status.HTTP_200_OK)
+        return Response({"output": "Ok"}, status=status.HTTP_200_OK)
 
     except Exception as e:
         print("Error: ", e)
-        return Response({'error': 'Internal server error.'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        return Response(
+            {"error": "Internal server error."},
+            status=status.HTTP_500_INTERNAL_SERVER_ERROR,
+        )
 
 
-@api_view(['POST'])
+@api_view(["POST"])
 def update_department_details(request):
     try:
         print(request.data)
         print("Here in update function")
         # print(request.data)
         data = request.data
-        id = data['id']
+        id = data["id"]
         department = get_object_or_404(Department, dept_id=id)
 
         # Update the fields in the record
-        department.dept_name = data['dept_name']
+        department.dept_name = data["dept_name"]
 
         # Save the updated record to the database
         department.save()
 
-        return Response({'output': 'Ok'}, status=status.HTTP_200_OK)
+        return Response({"output": "Ok"}, status=status.HTTP_200_OK)
 
     except Exception as e:
         print("Error: ", e)
-        return Response({'error': 'Internal server error.'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        return Response(
+            {"error": "Internal server error."},
+            status=status.HTTP_500_INTERNAL_SERVER_ERROR,
+        )
 
 
-@api_view(['POST'])
+@api_view(["POST"])
 def update_program_details(request):
     try:
         print(request.data)
         print("Here in update function")
         # print(request.data)
         data = request.data
-        id = data['id']
+        id = data["id"]
         program = get_object_or_404(Program, degree_id=id)
 
         # Update the fields in the record
-        program.degree_name = data['degree_name']
-        program.degree_duration = data['degree_duration']
+        program.degree_name = data["degree_name"]
+        program.degree_duration = data["degree_duration"]
 
         # Save the updated record to the database
         program.save()
 
-        return Response({'output': 'Ok'}, status=status.HTTP_200_OK)
+        return Response({"output": "Ok"}, status=status.HTTP_200_OK)
 
     except Exception as e:
         print("Error: ", e)
-        return Response({'error': 'Internal server error.'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        return Response(
+            {"error": "Internal server error."},
+            status=status.HTTP_500_INTERNAL_SERVER_ERROR,
+        )
 
 
-@api_view(['POST'])
+@api_view(["POST"])
 def update_location_details(request):
     try:
         data = request.data
         print("data = ", data)
-        id = data['location_id']
+        id = data["location_id"]
         location = get_object_or_404(Location, location_id=id)
         # print(location)
         # # Update the fields in the record
-        location.location_name = data['location_name']
-        location.parent_id = data['parent_id']
-        location.pre_approval_required = data['pre_approval_required']
-        location.automatic_exit_required = data['automatic_exit_required']
+        location.location_name = data["location_name"]
+        location.parent_id = data["parent_id"]
+        location.pre_approval_required = data["pre_approval_required"]
+        location.automatic_exit_required = data["automatic_exit_required"]
 
         # # Save the updated record to the database
         location.save()
 
-        return Response({'output': 'Ok'}, status=status.HTTP_200_OK)
+        return Response({"output": "Ok"}, status=status.HTTP_200_OK)
 
     except Exception as e:
         print("Error: ", e)
-        return Response({'error': 'Internal server error.'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        return Response(
+            {"error": "Internal server error."},
+            status=status.HTTP_500_INTERNAL_SERVER_ERROR,
+        )
 
 
-@api_view(['POST'])
+@api_view(["POST"])
 def add_student2(request):
     data = request.data
 
     try:
-        dept_id = data['dept_id']
-        degree_id = data['degree_id']
-        hostel_id = data['hostel_id']
+        dept_id = data["dept_id"]
+        degree_id = data["degree_id"]
+        hostel_id = data["hostel_id"]
         department = get_object_or_404(Department, dept_id=dept_id)
         degree = get_object_or_404(Program, degree_id=degree_id)
         hostel = get_object_or_404(Hostel, hostel_id=hostel_id)
 
-        student_data = {'entry_no': data['entry_no'], 'st_name': data['st_name'], 'email': data['email'], 'gender': data['gender'], 'room_no': data['gender'],
-                        'year_of_entry': data['year_of_entry'], 'mobile_no': data['mobile_no'], 'dept_id': department, 'degree_id': degree, 'hostel_id': hostel}
+        student_data = {
+            "entry_no": data["entry_no"],
+            "st_name": data["st_name"],
+            "email": data["email"],
+            "gender": data["gender"],
+            "room_no": data["gender"],
+            "year_of_entry": data["year_of_entry"],
+            "mobile_no": data["mobile_no"],
+            "dept_id": department,
+            "degree_id": degree,
+            "hostel_id": hostel,
+        }
 
         student = Student(**student_data)
         student.save()
-        person_data = {'email': data['email'], 'person_type': 'Student'}
-        person = Person(**person_data)
-        person.save()
-        person_data = {'email': data['email']}
-        pss = Password(**person_data)
-        pss.save()
+        user_data = {"email": data["email"], "type": "Student"}
+        user = User(**user_data)
+        user.save()
+        
 
         queryset_location_table = Location.objects.all()
-        queryset_entry_no = Student.objects.get(entry_no=data['entry_no'])
+        queryset_entry_no = Student.objects.get(entry_no=data["entry_no"])
 
         for each_queryset_location_table in queryset_location_table:
             queryset_location_table_serializer = LocationSerializer(
-                each_queryset_location_table, many=False)
-            queryset_location_table_location_name = queryset_location_table_serializer.data[
-                'location_name']
-            if (queryset_location_table_location_name != initial_data):
+                each_queryset_location_table, many=False
+            )
+            queryset_location_table_location_name = (
+                queryset_location_table_serializer.data["location_name"]
+            )
+            if queryset_location_table_location_name != initial_data:
                 queryset_status_table = StatusTable.objects.create(
                     entry_no=queryset_entry_no,
                     location_id=each_queryset_location_table,
@@ -4813,24 +4993,26 @@ def add_student2(request):
         return Response(response_str, status=status.HTTP_200_OK)
 
 
-@api_view(['POST'])
+@api_view(["POST"])
 def add_guard_single(request):
     data = request.data
 
     try:
-        location_id = data['location_id']
+        location_id = data["location_id"]
         location = get_object_or_404(Location, location_id=location_id)
-        guard_data = {'guard_name': data['guard_name'],
-                      'email': data['email'], 'location_id': location}
+        guard_data = {
+            "guard_name": data["guard_name"],
+            "email": data["email"],
+            "location_id": location,
+        }
 
         guard = Guard(**guard_data)
         guard.save()
-        person_data = {'email': data['email'], 'person_type': 'Guard'}
-        person = Person(**person_data)
-        person.save()
-        person_data = {'email': data['email']}
-        pss = Password(**person_data)
-        pss.save()
+        user_data = {"email": data["email"], "person_type": "Guard"}
+        user = User(**user_data)
+        user.save()
+        
+
 
         response_str = "Guard Added Successfully"
         return Response(response_str, status=status.HTTP_200_OK)
@@ -4840,23 +5022,23 @@ def add_guard_single(request):
         return Response(response_str, status=status.HTTP_200_OK)
 
 
-@api_view(['POST'])
+@api_view(["POST"])
 def add_authority_single(request):
     data = request.data
 
     try:
-        email = data['email']
+        email = data["email"]
         authority_data = {
-            'authority_name': data['name'], 'email': email, 'authority_designation': data['designation']}
+            "authority_name": data["name"],
+            "email": email,
+            "authority_designation": data["designation"],
+        }
 
         authority = Authorities(**authority_data)
         authority.save()
-        person_data = {'email': data['email'], 'person_type': 'Authority'}
-        person = Person(**person_data)
-        person.save()
-        person_data = {'email': data['email']}
-        pss = Password(**person_data)
-        pss.save()
+        user_data = {"email": data["email"], "person_type": "Authority"}
+        user = User(**user_data)
+        user.save()
 
         response_str = "Authority Added Successfully"
         return Response(response_str, status=status.HTTP_200_OK)
@@ -4866,17 +5048,21 @@ def add_authority_single(request):
         return Response(response_str, status=status.HTTP_200_OK)
 
 
-@api_view(['POST'])
+@api_view(["POST"])
 def add_location_single(request):
     data = request.data
     try:
         print(data)
-        location_name = data['location_name']
-        parent_id = data['parent_id']
-        pre_approval_required = data['pre_approval_required']
-        automatic_exit_required = data['automatic_exit_required']
-        location_data = {'location_name': location_name, 'parent_id': parent_id,
-                         'pre_approval_required': pre_approval_required, 'automatic_exit_required': automatic_exit_required}
+        location_name = data["location_name"]
+        parent_id = data["parent_id"]
+        pre_approval_required = data["pre_approval_required"]
+        automatic_exit_required = data["automatic_exit_required"]
+        location_data = {
+            "location_name": location_name,
+            "parent_id": parent_id,
+            "pre_approval_required": pre_approval_required,
+            "automatic_exit_required": automatic_exit_required,
+        }
         location = Location(**location_data)
         location.save()
 
@@ -4888,13 +5074,13 @@ def add_location_single(request):
         return Response(response_str, status=status.HTTP_200_OK)
 
 
-@api_view(['POST'])
+@api_view(["POST"])
 def add_hostel_single(request):
     data = request.data
     try:
         print(data)
-        hostel_name = data['hostel_name']
-        hostel_data = {'hostel_name': hostel_name}
+        hostel_name = data["hostel_name"]
+        hostel_data = {"hostel_name": hostel_name}
         hostel = Hostel(**hostel_data)
         hostel.save()
 
@@ -4906,13 +5092,13 @@ def add_hostel_single(request):
         return Response(response_str, status=status.HTTP_200_OK)
 
 
-@api_view(['POST'])
+@api_view(["POST"])
 def add_department_single(request):
     data = request.data
     try:
         print(data)
-        dept_name = data['dept_name']
-        dept_data = {'dept_name': dept_name}
+        dept_name = data["dept_name"]
+        dept_data = {"dept_name": dept_name}
         dept = Department(**dept_data)
         dept.save()
 
@@ -4924,15 +5110,14 @@ def add_department_single(request):
         return Response(response_str, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
-@api_view(['POST'])
+@api_view(["POST"])
 def add_program_single(request):
     data = request.data
     try:
         print(data)
-        degree_name = data['degree_name']
-        degree_duration = data['degree_duration']
-        degree_data = {'degree_name': degree_name,
-                       'degree_duration': degree_duration}
+        degree_name = data["degree_name"]
+        degree_duration = data["degree_duration"]
+        degree_data = {"degree_name": degree_name, "degree_duration": degree_duration}
         program = Program(**degree_data)
         program.save()
 
@@ -4944,16 +5129,16 @@ def add_program_single(request):
         return Response(response_str, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
-@api_view(['POST'])
+@api_view(["POST"])
 def get_guard_profile(request):
     try:
         data = request.data
         print(data)
         # if 'id' in data and 'id' in data['id']:
-        if 'id' not in data:
-            res = {'error': 'Invalid request data'}
+        if "id" not in data:
+            res = {"error": "Invalid request data"}
             return Response(res, status=status.HTTP_400_BAD_REQUEST)
-        _email = data['id']
+        _email = data["id"]
         # rest of the code here
         # else:
         #     res = {'error': 'Invalid request data'}
@@ -4963,14 +5148,14 @@ def get_guard_profile(request):
 
         serializer = GuardSerializer(queryset, many=False)
 
-        image_path = serializer.data['profile_img']
+        image_path = serializer.data["profile_img"]
         print("0000000000000000000000000000000000000000000000000000000000000000000")
         with open(str(settings.BASE_DIR) + image_path, "rb") as image_file:
-            encoded_image = base64.b64encode(image_file.read()).decode('utf-8')
+            encoded_image = base64.b64encode(image_file.read()).decode("utf-8")
 
         res = {
-            'profile_img': encoded_image,
-            'image_path': image_path,
+            "profile_img": encoded_image,
+            "image_path": image_path,
         }
         print("------------------------------------------------")
         return Response(res, status=status.HTTP_200_OK)
@@ -4980,16 +5165,16 @@ def get_guard_profile(request):
         return Response(status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
-@api_view(['POST'])
+@api_view(["POST"])
 def get_authority_profile(request):
     try:
         data = request.data
         print(data)
         # if 'id' in data and 'id' in data['id']:
-        if 'id' not in data:
-            res = {'error': 'Invalid request data'}
+        if "id" not in data:
+            res = {"error": "Invalid request data"}
             return Response(res, status=status.HTTP_400_BAD_REQUEST)
-        _email = data['id']
+        _email = data["id"]
         # rest of the code here
         # else:
         #     res = {'error': 'Invalid request data'}
@@ -4998,14 +5183,14 @@ def get_authority_profile(request):
         queryset = Authorities.objects.get(email=_email)
         serializer = AuthoritiesSerializer(queryset, many=False)
 
-        image_path = serializer.data['profile_img']
+        image_path = serializer.data["profile_img"]
         print("0000000000000000000000000000000000000000000000000000000000000000000")
         with open(str(settings.BASE_DIR) + image_path, "rb") as image_file:
-            encoded_image = base64.b64encode(image_file.read()).decode('utf-8')
+            encoded_image = base64.b64encode(image_file.read()).decode("utf-8")
 
         res = {
-            'profile_img': encoded_image,
-            'image_path': image_path,
+            "profile_img": encoded_image,
+            "image_path": image_path,
         }
         print("------------------------------------------------")
         return Response(res, status=status.HTTP_200_OK)
@@ -5015,44 +5200,48 @@ def get_authority_profile(request):
         return Response(status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
-@api_view(['POST'])
+@api_view(["POST"])
 def update_guard_details(request):
     try:
         print(request.data)
         print("Here in update function")
         # print(request.data)
         data = request.data
-        email = data['email']
+        email = data["email"]
         guard = get_object_or_404(Guard, email=email)
 
-        location_id = data['location_id']
+        location_id = data["location_id"]
         location = get_object_or_404(Location, location_id=location_id)
 
         # Update the fields in the record
-        guard.guard_name = data['guard_name']
-        guard.email = data['email']
+        guard.guard_name = data["guard_name"]
+        guard.email = data["email"]
         guard.location_id = location
 
         # Save the updated record to the database
         guard.save()
 
-        return Response({'output': 'Ok'}, status=status.HTTP_200_OK)
+        return Response({"output": "Ok"}, status=status.HTTP_200_OK)
 
     except Exception as e:
         print("Error: ", e)
-        return Response({'error': 'Internal server error.'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        return Response(
+            {"error": "Internal server error."},
+            status=status.HTTP_500_INTERNAL_SERVER_ERROR,
+        )
 
 
-@api_view(['POST'])
+@api_view(["POST"])
 def get_history_guard(request):
-    data = request.data.get('body', [])
+    data = request.data.get("body", [])
     result = []
 
     for email in data:
         try:
             guard = Guard.objects.get(email=email)
             tickets = TicketTable.objects.select_related(
-                'entry_no', 'guard_id', 'location_id').filter(guard_id=guard.guard_id)
+                "entry_no", "guard_id", "location_id"
+            ).filter(guard_id=guard.guard_id)
             for ticket in tickets:
                 serializer = CustomSerializer(ticket)
                 result.append(serializer.data)
@@ -5063,40 +5252,38 @@ def get_history_guard(request):
 
 
 class CustomSerializerAuth(serializers.ModelSerializer):
-    entry_no = serializers.PrimaryKeyRelatedField(
-        queryset=Student.objects.all())
-    student_name = serializers.CharField(
-        source='entry_no.st_name', read_only=True)
-    student_email = serializers.CharField(
-        source='entry_no.email', read_only=True)
-    auth_id = serializers.PrimaryKeyRelatedField(
-        queryset=Authorities.objects.all())
+    entry_no = serializers.PrimaryKeyRelatedField(queryset=Student.objects.all())
+    student_name = serializers.CharField(source="entry_no.st_name", read_only=True)
+    student_email = serializers.CharField(source="entry_no.email", read_only=True)
+    auth_id = serializers.PrimaryKeyRelatedField(queryset=Authorities.objects.all())
     authority_name = serializers.CharField(
-        source='auth_id.authority_name', read_only=True)
-    authority_email = serializers.CharField(
-        source='auth_id.email', read_only=True)
+        source="auth_id.authority_name", read_only=True
+    )
+    authority_email = serializers.CharField(source="auth_id.email", read_only=True)
     student_message = serializers.CharField(
-        source='entry_no.student_message', read_only=True)
-    location_id = serializers.PrimaryKeyRelatedField(
-        queryset=Location.objects.all())
+        source="entry_no.student_message", read_only=True
+    )
+    location_id = serializers.PrimaryKeyRelatedField(queryset=Location.objects.all())
     location_name = serializers.CharField(
-        source='location_id.location_name', read_only=True)
+        source="location_id.location_name", read_only=True
+    )
 
     class Meta:
         model = TicketTable
-        fields = '__all__'
+        fields = "__all__"
 
 
-@api_view(['POST'])
+@api_view(["POST"])
 def get_history_authority(request):
-    data = request.data.get('body', [])
+    data = request.data.get("body", [])
     result = []
 
     for email in data:
         try:
             auth = Authorities.objects.get(email=email)
             tickets = AuthoritiesTicketTable.objects.select_related(
-                'entry_no', 'auth_id', 'location_id').filter(auth_id=auth.auth_id)
+                "entry_no", "auth_id", "location_id"
+            ).filter(auth_id=auth.auth_id)
             for ticket in tickets:
                 serializer = CustomSerializerAuth(ticket)
                 result.append(serializer.data)
@@ -5106,16 +5293,16 @@ def get_history_authority(request):
     return Response(result, status=status.HTTP_200_OK)
 
 
-@api_view(['POST'])
+@api_view(["POST"])
 def update_authorities(request):
     try:
         print(request.data)
         print("Here in update function")
         # print(request.data)
         data = request.data
-        email = data['email']
-        designation = data['designation']
-        name = data['name']
+        email = data["email"]
+        designation = data["designation"]
+        name = data["name"]
         authorities = get_object_or_404(Authorities, email=email)
 
         # Update the fields in the record
@@ -5125,25 +5312,31 @@ def update_authorities(request):
         # Save the updated record to the database
         authorities.save()
 
-        return Response({'output': 'Ok'}, status=status.HTTP_200_OK)
+        return Response({"output": "Ok"}, status=status.HTTP_200_OK)
 
     except Exception as e:
         print("Error: ", e)
-        return Response({'error': 'Internal server error.'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        return Response(
+            {"error": "Internal server error."},
+            status=status.HTTP_500_INTERNAL_SERVER_ERROR,
+        )
 
 
-@api_view(['GET'])
+@api_view(["GET"])
 def get_location_by_id(request):
     try:
         data = request.query_params
         # if data :
-        id = data.get('id')
+        id = data.get("id")
         if not id:
-            return Response({'error': 'id. not provided.'}, status=status.HTTP_200_OK)
+            return Response({"error": "id. not provided."}, status=status.HTTP_200_OK)
 
         res = Location.objects.filter(location_id=id)
         if not res:
-            return Response({'error': 'No location found with provided id.'}, status=status.HTTP_404_NOT_FOUND)
+            return Response(
+                {"error": "No location found with provided id."},
+                status=status.HTTP_404_NOT_FOUND,
+            )
 
         res2 = LocationSerializer(res, many=True).data
         return Response(res2, status=status.HTTP_200_OK)
