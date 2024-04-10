@@ -466,3 +466,26 @@ class ResultObj7 {
   }
 }
 
+class RelativeResultObj {
+  late String name;
+  late String status;
+  late String mobileNumber;
+  late String ticket_id;
+
+  RelativeResultObj({
+    required this.name,
+    required this.status,
+    required this.mobileNumber,
+    required this.ticket_id,
+
+  });
+  factory RelativeResultObj.fromJson(Map<String, dynamic> json) {
+    return RelativeResultObj(
+      name: json['invitee_name'],
+      status: json['status'],
+      mobileNumber: json['invitee_contact'],
+      ticket_id: json['ticket_id'],
+    );
+  }
+}
+

@@ -1,5 +1,7 @@
 // ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables, deprecated_member_use, non_constant_identifier_names
 
+import 'dart:convert';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -21,6 +23,7 @@ import 'package:my_gate_app/screens/profile2/model/user.dart';
 import 'package:my_gate_app/screens/profile2/utils/user_preferences.dart';
 import 'package:my_gate_app/screens/guard/visitors/selectVisitor.dart';
 import 'package:my_gate_app/screens/guard/utils/UI_statics.dart';
+import 'package:my_gate_app/screens/guard/visitors/inviteeValidationPage.dart';
 
 class EntryExit extends StatefulWidget {
   const EntryExit({
@@ -253,41 +256,64 @@ class _EntryExitState extends State<EntryExit> {
                         if (qrdata != null) {
                           // Do something with qrdata
                           // print("qrdata bhai=${qrdata}");
-                          List<String> qrDataList = qrdata.split('\n');
-                          print("email of student${qrDataList[1]}");
-                          String email_of_student = qrDataList[1];
-                          String veh_reg = qrDataList[2];
-                          String dest_address = qrDataList[0];
-                          // String entry_no =
-                          String ticket_type = qrDataList[3];
-                          String location_of_student = qrDataList[4];
+                          Map<String,dynamic> qrDataobj_ = jsonDecode(qrdata);
+                          
+                          Map<String,String> qrDataobj={};
+                          qrDataobj_.forEach((key,value){
+                            qrDataobj[key]=value.toString();
+                          });
 
-                          // String? location_name=qrDataList[4];
-                          // print("${}");
-                          if (widget.guard_location == location_of_student) {
-                            Navigator.of(context).push(
-                              MaterialPageRoute(
-                                builder: (context) => Validification_page(
-                                  email: email_of_student,
-                                  guard_location: widget.guard_location,
-                                  vehicle_reg: veh_reg,
-                                  ticket_type: ticket_type,
-                                  destination_addr: dest_address,
-                                  guard_email: LoggedInDetails.getEmail(),
-                                  isEditable: false,
-                                  student_location: location_of_student,
+                          if(qrDataobj['type']=='student'){
+
+                            print("email of student${qrDataobj["eml"]}");
+                            String email_of_student = qrDataobj["eml"]!;
+                            String veh_reg = qrDataobj["v_n"]!;
+                            String dest_address = qrDataobj["add"]!;
+                            // String entry_no =
+                            String ticket_type = qrDataobj["tic_ty"]!;
+                            String location_of_student = qrDataobj["s_lc"]!;
+
+                            // String? location_name=qrDataList[4];
+                            // print("${}");
+                            if (widget.guard_location == location_of_student) {
+                              Navigator.of(context).push(
+                                MaterialPageRoute(
+                                  builder: (context) => Validification_page(
+                                    email: email_of_student,
+                                    guard_location: widget.guard_location,
+                                    vehicle_reg: veh_reg,
+                                    ticket_type: ticket_type,
+                                    destination_addr: dest_address,
+                                    guard_email: LoggedInDetails.getEmail(),
+                                    isEditable: false,
+                                    student_location: location_of_student,
+                                  ),
                                 ),
-                              ),
-                            );
-                          } else {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                content: Text(
-                                    'You are not authorized for $location_of_student Locations'),
-                                backgroundColor: Colors
-                                    .red, // Set the background color to red
-                              ),
-                            );
+                              );
+                            } else {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Text(
+                                      'You are not authorized for $location_of_student Locations'),
+                                  backgroundColor: Colors
+                                      .red, // Set the background color to red
+                                ),
+                              );
+                            }
+                          }
+                          else if(qrDataobj['type']=='invited_visitor'){
+                            print("hello!");
+                            String ticket_id =qrDataobj['ticket_id']!;
+                            print("hello!");
+                            Navigator.of(context).push(
+                                MaterialPageRoute(
+                                  builder: (context) => InviteeValidationPage(
+                                    ticket_id:ticket_id,
+                                  ),
+                                ),
+                              );
+                              print("bye");
+
                           }
                         } else {
                           // Handle the case where qrdata is null

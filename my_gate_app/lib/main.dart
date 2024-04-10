@@ -1,6 +1,7 @@
 // ignore_for_file: prefer_const_constructors
 
 import 'package:flutter/material.dart';
+import 'package:my_gate_app/screens/guard/visitors/inviteeValidationPage.dart';
 import 'package:my_gate_app/splash.dart';
 
 import 'package:my_gate_app/get_email.dart';
@@ -10,6 +11,7 @@ import 'package:my_gate_app/screens/guard/enter_exit.dart';
 import 'package:my_gate_app/screens/student/home_student.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter/services.dart';
+import 'package:my_gate_app/screens/guard/visitors/inviteeValidationPage.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -89,5 +91,9 @@ class MyApp extends StatelessWidget {
       //     }),
       debugShowCheckedModeBanner: false,
     );
+    // // return InviteeValidationPage(ticket_id: "ir");
+    // return MaterialApp(
+    //   home:InviteeValidationPage(ticket_id: "ir")
+    // );
   }
 }

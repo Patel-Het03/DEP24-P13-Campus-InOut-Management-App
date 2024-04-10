@@ -10,7 +10,7 @@ urlpatterns = [
     path('reactCheck', testReact, name='react'),
 
     # Login
-#     path('login_user', login_user),
+    path('login_user', login_user),
     path('forgot_password', forgot_password),
     path('reset_password', reset_password),
     path('get_welcome_message', get_welcome_message),
@@ -192,12 +192,9 @@ urlpatterns = [
     path('student/delete_student_by_id/', delete_student_by_id),
 
 
-#     # login test
-#     path('login_admin_test/', login_admin_test),
-#     path('anothertest/', protected_endpoint),
-
-    
-    
+    # login test
+    path('login_admin_test/', login_admin_test),
+    path('anothertest/', protected_endpoint),
 
     # manage student
     path('manage/student/delete', delete_student),
@@ -241,10 +238,19 @@ urlpatterns = [
     path('get/location', get_location_by_id),
 
 
+     # byHet
+    path('generate_relatives_ticket',GenerateRelativesTicketAPIView.as_view()),
+    path('getStudentRelativeTickets', GetStudentRelativeTicketsAPIView.as_view(), name='student_ticket_status'),
+    path('adminTickets/status/', AdminTicketStatusAPIView.as_view(), name='student_ticket_status'),
+    path('accept_ticket/', AcceptTicketAPIView.as_view(), name='accept_ticket'),
+    path('reject_ticket/', RejectTicketAPIView.as_view(), name='reject_ticket'),
 
-#     path('register', register_user, name='register'),
+    path('getInviteRequestByTicketID',GetInviteRequestByTicketID.as_view(),name='get_invited_request_ticket_id'),
+    path('guardApproveInviteeEntryRequest',GuardApproveInviteeEntryRequest.as_view()),
+
+    path('register', register_user, name='register'),
     #     path('login', CustomTokenObtainPairView.as_view(), name='token_obtain_pair'),
-#     path('login', CustomTokenObtainPairView.as_view(), name='token_obtain_pair'),
+    path('login', CustomTokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('api/token/', jwt_views.TokenObtainPairView.as_view(),
          name='token_obtain_pair'),
     path('api/token/refresh/', jwt_views.TokenRefreshView.as_view(),

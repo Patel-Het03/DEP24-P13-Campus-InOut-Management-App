@@ -10,11 +10,12 @@ import traceback
 from datetime import date, datetime, timedelta
 from unicodedata import category
 from django.contrib.auth.backends import BaseBackend
-
+from django.utils import timezone
 from django.conf import settings
 from django.core import serializers
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.hashers import *
+from django.contrib.auth.models import User
 from django.core.files.base import ContentFile
 from django.core.mail import send_mail
 from rest_framework import status
@@ -25,8 +26,8 @@ from rest_framework.permissions import (AllowAny, BasePermission,
                                         IsAuthenticated)
 from rest_framework.renderers import JSONRenderer, TemplateHTMLRenderer
 from rest_framework.response import Response
-
-
+from rest_framework.views import APIView
+from rest_framework_simplejwt.tokens import RefreshToken
 from django.shortcuts import get_object_or_404
 from rest_framework_simplejwt.views import TokenObtainPairView
 from rest_framework_simplejwt.tokens import AccessToken
@@ -38,8 +39,6 @@ from functools import wraps
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework.authentication import SessionAuthentication, BasicAuthentication
 
-from rest_framework_simplejwt.tokens import RefreshToken
-
 
 from .models import *
 from .serializers import *
@@ -48,7 +47,6 @@ from .thread import *
 # Password storing work
 # encrypted = make_password("Vasu")
 # check_password("Vasu", encrypted)
-
 
 headers= {
 "Access-Control-Allow-Origin": "*",
@@ -75,7 +73,6 @@ THREAD_ACTIVATED = False
 #     except:
 #         return Response(status = status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-#commented by jayraj
 
 # def jwt_auth_middleware(view_func):
 #     def wrapper(request, *args, **kwargs):
@@ -108,45 +105,42 @@ THREAD_ACTIVATED = False
 #     return Response({'message': 'Hello, world!'})
 
 
-# def get_token(user):
-#     token = AccessToken.for_user(user)
-#     return str(token)
+def get_token(user):
+    token = AccessToken.for_user(user)
+    return str(token)
 
 
-# class CustomTokenObtainPairView(TokenObtainPairView):
-#     def post(self, request, *args, **kwargs):
-#         response = super().post(request, *args, **kwargs)
-#         if response.status_code == status.HTTP_200_OK:
-#             user = request.user
-#             token = get_token(user)
-#             response.data['token'] = token
-#         return response
+class CustomTokenObtainPairView(TokenObtainPairView):
+    def post(self, request, *args, **kwargs):
+        response = super().post(request, *args, **kwargs)
+        if response.status_code == status.HTTP_200_OK:
+            user = request.user
+            token = get_token(user)
+            response.data['token'] = token
+        return response
 
 
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def protect_route(request):
+    return Response({"data": "You are inside protected route"}, status=status.HTTP_200_OK)
 
 
-# @api_view(['GET'])
-# @permission_classes([IsAuthenticated])
-# def protect_route(request):
-#     return Response({"data": "You are inside protected route"}, status=status.HTTP_200_OK)
+@api_view(['GET'])
+@authentication_classes([JWTAuthentication])
+@permission_classes([IsAuthenticated])
+def protected_endpoint(request):
+    # Your API endpoint logic here
+    return Response({"message": "You are authenticated"})
 
+@api_view(['POST'])
+def register_user(request):
+    serializer = UserSerializer(data=request.data)
+    if serializer.is_valid():
+        serializer.save()
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-# @api_view(['GET'])
-# @authentication_classes([JWTAuthentication])
-# @permission_classes([IsAuthenticated])
-# def protected_endpoint(request):
-#     # Your API endpoint logic here
-#     return Response({"message": "You are authenticated"})
-
-# @api_view(['POST'])
-# def register_user(request):
-#     serializer = UserSerializer(data=request.data)
-#     if serializer.is_valid():
-#         serializer.save()
-#         return Response(serializer.data, status=status.HTTP_201_CREATED)
-#     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-#end
 
 @api_view(('POST',))
 def delete_student(request):
@@ -155,7 +149,7 @@ def delete_student(request):
     for student in data:
         email = student['email']
         Student.objects.filter(email=email).update(is_present=False)
-        User.objects.filter(email=email).update(is_present=False)
+        Person.objects.filter(email=email).update(is_present=False)
     return Response(res, status=status.HTTP_200_OK)
 
 
@@ -166,7 +160,7 @@ def delete_guard(request):
     for guard in data:
         email = guard['email']
         Guard.objects.filter(email=email).update(is_present=False)
-        User.objects.filter(email=email).update(is_present=False)
+        Person.objects.filter(email=email).update(is_present=False)
     return Response(res, status=status.HTTP_200_OK)
 
 
@@ -177,7 +171,7 @@ def delete_authority(request):
     for authority in data:
         email = authority['email']
         Authorities.objects.filter(email=email).update(is_present=False)
-        User.objects.filter(email=email).update(is_present=False)
+        Person.objects.filter(email=email).update(is_present=False)
     return Response(res, status=status.HTTP_200_OK)
 
 
@@ -229,87 +223,87 @@ def delete_program_web(request):
     return Response(res, status=status.HTTP_200_OK)
 
 
-# def authenticate(email, password):
+def authenticate(email, password):
 
-#     try:
-#         # email = data['email']
-#         # password = data['password']
-#         queryset_password = Password.objects.get(email=email)
-#         print(queryset_password)
-#         serializer_password = PasswordSerializer(queryset_password, many=False)
-#         encrypted_password = serializer_password.data['password']
+    try:
+        # email = data['email']
+        # password = data['password']
+        queryset_password = Password.objects.get(email=email)
+        print(queryset_password)
+        serializer_password = PasswordSerializer(queryset_password, many=False)
+        encrypted_password = serializer_password.data['password']
 
-#         queryset_person = Admin.objects.filter(email=email, is_present=True)
-#         serializer_person = PersonSerializer(queryset_person, many=True)
-#         person_not_present = len(queryset_person) == 0
+        queryset_person = Admin.objects.filter(email=email, is_present=True)
+        serializer_person = PersonSerializer(queryset_person, many=True)
+        person_not_present = len(queryset_person) == 0
 
-#         if person_not_present:
-#             res = {
-#                 "message": "Invalid Email",
-#                 "person_type": "NA",
-#             }
-#             print("User not Found")
-#             return Response(res, status=status.HTTP_200_OK)
+        if person_not_present:
+            res = {
+                "message": "Invalid Email",
+                "person_type": "NA",
+            }
+            print("User not Found")
+            return Response(res, status=status.HTTP_200_OK)
 
-#         person_type = serializer_person.data[0]['person_type']
+            person_type = serializer_person.data[0]['person_type']
 
-#         if check_password(password, encrypted_password):
-#             res = {
-#                 "message": "Login Successful",
-#                 "person_type": person_type,
-#             }
-#             print("Password Matched")
-#             return Response(res, status=status.HTTP_200_OK)
+            if check_password(password, encrypted_password):
+                res = {
+                    "message": "Login Successful",
+                    "person_type": person_type,
+                }
+                print("Password Matched")
+                return Response(res, status=status.HTTP_200_OK)
 
-#         else:
-#             res = {
-#                 "message": "Invalid Password",
-#                 "person_type": "NA"
-#             }
-#             print("Password Different")
-#             return Response(res, status=status.HTTP_200_OK)
+            else:
+                res = {
+                    "message": "Invalid Password",
+                    "person_type": "NA"
+                }
+                print("Password Different")
+                return Response(res, status=status.HTTP_200_OK)
 
-#     except Exception as e:
-#         print("Exception in login user")
-#         print(e)
-#         res = {
-#             "message": "Error: An error occured while logging in",
-#             "person_type": "NA"
-#         }
+    except Exception as e:
+        print("Exception in login user")
+        print(e)
+        res = {
+            "message": "Error: An error occured while logging in",
+            "person_type": "NA"
+        }
 
-#         return Response(res, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-
-
+        return Response(res, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
-# @api_view(['POST'])
-# def login_admin_test(request):
-#     data = request.data
-#     try:
-#         email = data['email']
-#         password = data['password']
-#         user = authenticate(email=email, password=password)
-#         print(user)
-#         if user is not None:
-#             refresh = RefreshToken.for_user(user)
-#             res = {
-#                 "message": "Login Successful",
-#                 "refresh_token": str(refresh),
-#                 "access_token": str(refresh.access_token),
-#             }
-#             return Response(res, status=status.HTTP_200_OK)
-#         else:
-#             res = {
-#                 "message": "Invalid email or password",
-#             }
-#             return Response(res, status=status.HTTP_401_UNAUTHORIZED)
-#     except Exception as e:
-#         print("Exception in login user")
-#         print(e)
-#         res = {
-#             "message": "Error: An error occured while logging in",
-#         }
-#         return Response(res, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+@api_view(['POST'])
+def login_admin_test(request):
+    data = request.data
+    try:
+        email = data['email']
+        password = data['password']
+        user = authenticate(email=email, password=password)
+        print(user)
+        if user is not None:
+            refresh = RefreshToken.for_user(user)
+            res = {
+                "message": "Login Successful",
+                "refresh_token": str(refresh),
+                "access_token": str(refresh.access_token),
+            }
+            return Response(res, status=status.HTTP_200_OK)
+        else:
+            res = {
+                "message": "Invalid email or password",
+            }
+            return Response(res, status=status.HTTP_401_UNAUTHORIZED)
+    except Exception as e:
+        print("Exception in login user")
+        print(e)
+        res = {
+            "message": "Error: An error occured while logging in",
+        }
+        return Response(res, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
 @api_view(('GET',))
@@ -382,7 +376,6 @@ def clear_db(request):
     Hostel.objects.all().delete()
     Program.objects.all().delete()
     Department.objects.all().delete()
-    User.objects.all().delete()
     Person.objects.all().delete()
     Password.objects.all().delete()
     Admin.objects.all().delete()
@@ -390,59 +383,58 @@ def clear_db(request):
     return Response(status=status.HTTP_200_OK)
 
 
+@api_view(['POST'])
+def login_user(request):
+    data = request.data
+    print("ashish\n\n\n\n", data)
+    try:
+        email = data['email']
 
-# @api_view(['POST'])
-# def login_user(request):
-#     data = request.data
-#     print("ashish\n\n\n\n", data)
-#     try:
-#         email = data['email']
+        password = data['password']
+        queryset_password = Password.objects.get(email=email)
+        print(queryset_password)
+        serializer_password = PasswordSerializer(queryset_password, many=False)
+        encrypted_password = serializer_password.data['password']
 
-#         password = data['password']
-#         queryset_password = Password.objects.get(email=email)
-#         print(queryset_password)
-#         serializer_password = PasswordSerializer(queryset_password, many=False)
-#         encrypted_password = serializer_password.data['password']
+        queryset_person = Person.objects.filter(email=email, is_present=True)
+        serializer_person = PersonSerializer(queryset_person, many=True)
+        person_not_present = len(queryset_person) == 0
 
-#         queryset_person = Person.objects.filter(email=email, is_present=True)
-#         serializer_person = PersonSerializer(queryset_person, many=True)
-#         person_not_present = len(queryset_person) == 0
+        if person_not_present:
+            res = {
+                "message": "Invalid Email",
+                "person_type": "NA",
+            }
+            print("User not Found")
+            return Response(res, status=status.HTTP_200_OK)
 
-#         if person_not_present:
-#             res = {
-#                 "message": "Invalid Email",
-#                 "person_type": "NA",
-#             }
-#             print("User not Found")
-#             return Response(res, status=status.HTTP_200_OK)
+        person_type = serializer_person.data[0]['person_type']
 
-#         person_type = serializer_person.data[0]['person_type']
+        if check_password(password, encrypted_password):
+            res = {
+                "message": "Login Successful",
+                "person_type": person_type,
+            }
+            print("Password Matched")
+            return Response(res, status=status.HTTP_200_OK)
 
-#         if check_password(password, encrypted_password):
-#             res = {
-#                 "message": "Login Successful",
-#                 "person_type": person_type,
-#             }
-#             print("Password Matched")
-#             return Response(res, status=status.HTTP_200_OK)
+        else:
+            res = {
+                "message": "Invalid Password",
+                "person_type": "NA"
+            }
+            print("Password Different")
+            return Response(res, status=status.HTTP_200_OK)
 
-#         else:
-#             res = {
-#                 "message": "Invalid Password",
-#                 "person_type": "NA"
-#             }
-#             print("Password Different")
-#             return Response(res, status=status.HTTP_200_OK)
+    except Exception as e:
+        print("Exception in login user")
+        print(e)
+        res = {
+            "message": "Error: An error occured while logging in",
+            "person_type": "NA"
+        }
 
-#     except Exception as e:
-#         print("Exception in login user")
-#         print(e)
-#         res = {
-#             "message": "Error: An error occured while logging in",
-#             "person_type": "NA"
-#         }
-
-#         return Response(res, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        return Response(res, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
 @api_view(['POST'])
@@ -907,31 +899,13 @@ def add_students_from_file(request):
         curr_student = data[i]
         # print(curr_student)
         """ print(curr_student, len(curr_student)) """
-
-        
         if (len(curr_student)):
-
-            user = User.objects.filter(
-                email=curr_student[2], type="Student").first()
-            
-            if user is None:
-                print(f'## {curr_student}')
-                User.objects.create_user(
-                    email=curr_student[2],
-                    type="Studnet"
-                )
-            else:
-                print(f"**")
-                User.objects.filter(
-                    email=curr_student[2], type="Student").update_user()
-            
             is_student_present = len(
                 Student.objects.filter(entry_no=curr_student[1])) != 0
 
             print("inside insert student data")
             print(f"{curr_student[0]} {curr_student[1]} {curr_student[2]} {curr_student[3]} {curr_student[4]} {curr_student[5]} {curr_student[6]} {curr_student[7]} {curr_student[8]}")
 
-            
             if is_student_present:
                 Student.objects.filter(entry_no=curr_student[1]).update(
                     st_name=curr_student[0],
@@ -974,17 +948,26 @@ def add_students_from_file(request):
                             location_id=each_queryset_location_table,
                         )
 
-            
+            person_not_present = len(Person.objects.filter(
+                email=curr_student[2], person_type="Student")) == 0
+            if person_not_present:
+                Person.objects.create(
+                    email=curr_student[2],
+                    person_type="Student"
+                )
+            else:
+                Person.objects.filter(
+                    email=curr_student[2], person_type="Student").update(is_present=True)
 
-            # password_not_present = len(
-            #     Password.objects.filter(email=curr_student[2])) == 0
-            # if password_not_present:
-            #     Password.objects.create(
-            #         email=curr_student[2]
-            #     )
-            # else:
-            #     Password.objects.filter(
-            #         email=curr_student[2]).update(is_present=True)
+            password_not_present = len(
+                Password.objects.filter(email=curr_student[2])) == 0
+            if password_not_present:
+                Password.objects.create(
+                    email=curr_student[2]
+                )
+            else:
+                Password.objects.filter(
+                    email=curr_student[2]).update(is_present=True)
 
     return Response(status=status.HTTP_200_OK)
 
@@ -3167,7 +3150,7 @@ def accept_selected_tickets_visitors(request):
                 VisitorTicketTable.objects.filter(
                     visitor_ticket_id=visitor_ticket_id).update(
                         guard_status="Approved",
-                        date_time_guard=datetime.now())
+                        date_time_guard=timezone.now())
 
                 Visitor.objects.filter(visitor_id=visitor_id).update(
                     current_status="pending_exit"
@@ -3179,7 +3162,7 @@ def accept_selected_tickets_visitors(request):
                     visitor_ticket_id=visitor_ticket_id).update(
                         guard_status="Approved",
                         # ticket_type = "enter",
-                        date_time_guard=datetime.now())
+                        date_time_guard=timezone.now())
 
                 Visitor.objects.filter(visitor_id=visitor_id).update(
                     current_status="out"
@@ -3319,7 +3302,7 @@ def reject_selected_tickets_visitors(request):
                     visitor_ticket_id=visitor_ticket_id).update(
                         guard_status="Rejected",
                         # ticket_type = "exit",
-                        date_time_guard=datetime.now())
+                        date_time_guard=timezone.now())
 
                 Visitor.objects.filter(visitor_id=visitor_id).update(
                     current_status="out"
@@ -3331,7 +3314,7 @@ def reject_selected_tickets_visitors(request):
                     visitor_ticket_id=visitor_ticket_id).update(
                         guard_status="Rejected",
                         # ticket_type = "enter",
-                        date_time_guard=datetime.now())
+                        date_time_guard=timezone.now())
 
                 Visitor.objects.filter(visitor_id=visitor_id).update(
                     current_status="in"
@@ -3834,7 +3817,7 @@ def change_profile_picture_of_student(request):
 
             ext = upFile.name.split(".")[-1]
 
-            curr_time = datetime.now()
+            curr_time = timezone.now()
             custom_name = str(student.entry_no) + "_" + \
                 str(curr_time) + "." + ext
             upFile.name = custom_name
@@ -3867,7 +3850,7 @@ def change_profile_picture_of_guard(request):
 
             ext = upFile.name.split(".")[-1]
 
-            curr_time = datetime.now()
+            curr_time = timezone.now()
             custom_name = str(guard.email) + "_" + str(curr_time) + "." + ext
             upFile.name = custom_name
 
@@ -3898,7 +3881,7 @@ def change_profile_picture_of_authority(request):
 
             ext = upFile.name.split(".")[-1]
 
-            curr_time = datetime.now()
+            curr_time = timezone.now()
             custom_name = str(authority.email) + "_" + \
                 str(curr_time) + "." + ext
             upFile.name = custom_name
@@ -3930,7 +3913,7 @@ def change_profile_picture_of_admin(request):
 
             ext = upFile.name.split(".")[-1]
 
-            curr_time = datetime.now()
+            curr_time = timezone.now()
             custom_name = str(admin.email) + "_" + str(curr_time) + "." + ext
             upFile.name = custom_name
 
@@ -4225,7 +4208,7 @@ def insert_in_visitors_ticket_table_2(request):
         VisitorTicketTable.objects.filter(visitor_ticket_id=visitor_ticket_id).update(
             authority_status=authority_status,
             authority_message=authority_message,
-            date_time_authority=datetime.now(),
+            date_time_authority=timezone.now(),
         )
 
         res["status"] = True
@@ -5167,3 +5150,208 @@ def get_location_by_id(request):
     except Exception as e:
         print("Error: ", e)
         return Response({'error': 'Internal server error.'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+class GenerateRelativesTicketAPIView(APIView):
+    # permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        data = request.data
+
+        # Assuming student_name is obtained from the authenticated user
+        # student_name = request.user.username
+        # data['student_name'] = 
+
+        serializer = InviteRequestSerializer(data=data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class GetStudentRelativeTicketsAPIView(APIView):
+    # permission_classes = [IsAuthenticated]
+    
+
+    def post(self, request):
+        # print("**")
+        # Extract status and student name from query parameters
+        print(request.data)
+        # data = json.loads(request.body)
+       
+        student = request.data.get('student')
+       
+        print(student)
+
+        # Validate parameters
+        # if not status_param or not student_name:
+        #     return Response("Status and student_name are required parameters.", status=status.HTTP_400_BAD_REQUEST)
+
+        # Filter tickets based on status and student name
+        tickets = InviteRequest.objects.filter(student=student)
+
+        # Serialize the ticket data
+        serializer = InviteRequestSerializer(tickets, many=True)
+
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+class AdminTicketStatusAPIView(APIView):
+    
+    def post(self, request):
+        # Extract status and student name from query parameters
+        print(request.data)
+        # data = json.loads(request.body)
+        status_param = request.data.get('status')
+        print(status_param)
+
+       
+        # Filter tickets based on status and student name
+        tickets = InviteRequest.objects.filter(status=status_param)
+
+        # Serialize the ticket data
+        serializer = InviteRequestSerializer(tickets, many=True)
+
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+class AcceptTicketAPIView(APIView):
+    # permission_classes = [IsAdminUser]  # Assuming only admins can access this API
+
+    def post(self, request):
+        ticket_id = request.data.get('ticket_id')
+
+        # Check if ticket exists
+        try:
+            ticket = InviteRequest.objects.get(ticket_id=ticket_id)
+        except InviteRequest.DoesNotExist:
+            return Response({"error": "Ticket not found"}, status=status.HTTP_404_NOT_FOUND)
+
+        print(ticket)
+        # Check if the ticket status is pending or rejected
+        if ticket.status in ['Pending', 'Rejected']:
+            # Update the ticket status to Accepted
+            ticket.status = 'Accepted'
+            ticket.save()
+            return Response({"message": "Ticket accepted successfully"}, status=status.HTTP_200_OK)
+        else:
+            print("Ticket status cannot be changed to Accepted")
+            return Response({"error": "Ticket status cannot be changed to Accepted"}, status=status.HTTP_400_BAD_REQUEST)
+
+class RejectTicketAPIView(APIView):
+    # permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        ticket_id = request.data.get('ticket_id')
+        try:
+            ticket = InviteRequest.objects.get(ticket_id=ticket_id)
+        except InviteRequest.DoesNotExist:
+            return Response({"message": "Ticket not found."}, status=status.HTTP_404_NOT_FOUND)
+        
+        # Check if the ticket status is pending or rejected
+        if ticket.status in ['Pending']:
+            ticket.status = 'Rejected'
+            ticket.save()
+            return Response({"message": "Ticket rejected successfully."}, status=status.HTTP_200_OK)
+        else:
+            return Response({"message": "Ticket cannot be rejected as it is already approved."}, status=status.HTTP_400_BAD_REQUEST)
+        
+class GuardApproveInviteeEntryRequest(APIView):
+    # permission_classes = (IsAuthenticated,IsGuard)  # Assuming only admins can access this API
+    def post(self,request):
+        try:
+            try:
+                ticket_id=request.data.get('ticket_id')
+                vehicle_number=request.data.get("vehicle_number")
+                enter_exit=request.data.get("enter_exit")
+            except:
+                jsonresponse={
+                    "ok":False,
+                    "error":"invalid input. required ticket_id , ",
+                }
+                return Response(jsonresponse,status=status.HTTP_400_BAD_REQUEST)
+            try:
+                invite_request=InviteRequest.objects.get(ticket_id=ticket_id)
+            except InviteRequest.DoesNotExist:
+                jsonresponse={
+                    "ok":False,
+                    "error":"Ticket not found",
+                }
+                return Response(jsonresponse,status=status.HTTP_400_BAD_REQUEST)
+            if invite_request.status!="Accepted":
+                jsonresponse={
+                    "ok":False,
+                    "error":f"Ticket Status By Authority : {invite_request.status}",
+                }
+                return Response(jsonresponse,status=status.HTTP_400_BAD_REQUEST)
+            if enter_exit=="enter":
+                invite_request.vehicle_number=vehicle_number
+                invite_request.enter_time=timezone.now()
+                invite_request.save()
+                jsonresponse={
+                    "ok":True,
+                    "message":"Entry succesfull",
+                }
+                return Response(jsonresponse,status=status.HTTP_200_OK)
+                
+            elif enter_exit=='exit' :
+                invite_request.exit_time=timezone.now()
+                invite_request.save()
+                jsonresponse={
+                    "ok":True,
+                    "message":"Exit succesfull",
+                }
+                return Response(jsonresponse,status=status.HTTP_200_OK)
+            jsonresponse={
+                "ok":False,
+                "error":f"you request for <{enter_exit}>Not recognised",
+            }
+            return Response(jsonresponse,status=status.HTTP_400_BAD_REQUEST)
+        except Exception as e:
+            jsonresponse={
+                "ok":False,
+                "error":str(e),
+            }
+            return Response(jsonresponse,status.HTTP_400_BAD_REQUEST)
+
+class GetInviteRequestByTicketID(APIView):
+    def post(self,request):
+        try:
+            try:
+                ticket_id=request.data.get('ticket_id')
+            except:
+                jsonresponse={
+                    "ok":False,
+                    "error":"invalid input. required ticket_id , ",
+                }
+                return Response(jsonresponse,status=status.HTTP_400_BAD_REQUEST)
+            try:
+                invite_request=InviteRequest.objects.get(ticket_id=ticket_id)
+            except InviteRequest.DoesNotExist:
+                jsonresponse={
+                    "ok":False,
+                    "error":"Ticket not found",
+                }
+                return Response(jsonresponse,status=status.HTTP_400_BAD_REQUEST)
+            try:
+                
+                student=Student.objects.get(entry_no=invite_request.student.entry_no)
+            except InviteRequest.DoesNotExist:
+                jsonresponse={
+                    "ok":False,
+                    "error":"Student not found",
+                }
+                return Response(jsonresponse,status=status.HTTP_400_BAD_REQUEST)
+            
+            jsonresponse={
+                "ok":True,
+                "invitee_name":invite_request.invitee_name,
+                "student_name":student.st_name,
+                "relationship_with_student":invite_request.invitee_relationship,
+            }
+            return Response(jsonresponse,status.HTTP_200_OK)       
+        except Exception as e:
+            jsonresponse={
+                "ok":False,
+                "error":str(e),
+            }
+            return Response(jsonresponse,status.HTTP_400_BAD_REQUEST)

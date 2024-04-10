@@ -13,7 +13,7 @@ import 'dart:typed_data';
 import 'database_objects.dart';
 import 'package:http_parser/http_parser.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+// import 'package:my_gate_app/screens/student/result_obj.dart';
 
 class databaseInterface {
   static int REFRESH_RATE = 1;
@@ -22,8 +22,8 @@ class databaseInterface {
   static String complete_base_url_static =
       // "http://localhost:$PORT_NO_static";
       // "http://31.220.57.173:" + PORT_NO_static.toString();
-      "http://10.0.2.2:"+PORT_NO_static.toString();
-      //   "http://192.168.68.111:"+PORT_NO_static.toString();
+      "http://10.0.2.2:" + PORT_NO_static.toString();
+    // "http://192.168.64.111:"+PORT_NO_static.toString();
   databaseInterface();
 
   static Future<String> get_welcome_message(String email) async {
@@ -40,86 +40,6 @@ class databaseInterface {
       return "Welcome";
     }
   }
-
-//   // Import required packages
-// import 'dart:convert';
-// import 'package:http/http.dart' as http;
-// import 'package:flutter/material.dart';
-
-
-// Function to get access token from shared preferences
-// Function to get access token from shared preferences
-Future<String> getAccessToken() async {
-  SharedPreferences prefs = await SharedPreferences.getInstance();
-  return prefs.getString('access_token') as Future<String>;
-}
-
-// Function to get refresh token from shared preferences
-Future<String> getRefreshToken() async {
-  SharedPreferences prefs = await SharedPreferences.getInstance();
-  return prefs.getString('refresh_token') as Future<String>;
-}
-
-// Function to save access token to shared preferences
-Future<void> saveAccessToken(String accessToken) async {
-  SharedPreferences prefs = await SharedPreferences.getInstance();
-  prefs.setString('access_token', accessToken);
-}
-
-// Function to make authenticated API request
-Future<Map<String, dynamic>> makeAuthenticatedRequest(String path, {required Map<String, dynamic> body}) async {
-  // Get access token
-  String accessToken = await getAccessToken();
-  
-  // Add access token to headers
-  Map<String, String> headers = {
-    'Content-Type': 'application/json',
-    'Authorization': 'Bearer $accessToken',
-  };
-
-  // Make API request
-  final response = await http.post(
-    Uri.parse('http://your-api-url/$path'),
-    headers: headers,
-    body: jsonEncode(body),
-  );
-
-  // Parse response
-  if (response.statusCode == 200) {
-    return json.decode(response.body);
-  } else if (response.statusCode == 401) {
-    // Access token expired, try to refresh token
-    await refreshToken();
-    // Retry the API request
-    return makeAuthenticatedRequest(path, body: body);
-  } else {
-    throw Exception('Failed to make authenticated request: ${response.reasonPhrase}');
-  }
-}
-
-// Function to refresh token
-Future<void> refreshToken() async {
-  String refreshToken = await getRefreshToken();
-  
-  // Make request to refresh token endpoint
-  final response = await http.post(
-    Uri.parse('http://your-api-url/refresh_token/'),
-    body: {
-      'refresh_token': refreshToken,
-    },
-  );
-
-  // Parse response
-  if (response.statusCode == 200) {
-    // Save new access token
-    Map<String, dynamic> data = json.decode(response.body);
-    String accessToken = data['access_token'];
-    await saveAccessToken(accessToken);
-  } else {
-    throw Exception('Failed to refresh access token');
-  }
-}
-
 
   static List<String> getLoctions() {
     // TODO: get this list from the backend
@@ -312,8 +232,7 @@ Future<void> refreshToken() async {
 
   // Called by the guard to get the list of entry numbers
   static Future<List<String>> get_list_of_entry_numbers(String route) async {
-    var url =
-        "$complete_base_url_static/$route/get_list_of_entry_numbers";
+    var url = "$complete_base_url_static/$route/get_list_of_entry_numbers";
     try {
       var response = await http.post(Uri.parse(url));
       var data = json.decode(response.body) as List;
@@ -364,7 +283,8 @@ Future<void> refreshToken() async {
 
   static Future<List<String>> get_authority_tickets_with_status_accepted(
       String email, String location, String ticket_type) async {
-    var url = "$complete_base_url_static/authorities/get_authority_tickets_with_status_accepted";
+    var url =
+        "$complete_base_url_static/authorities/get_authority_tickets_with_status_accepted";
     try {
       var response = await http.post(Uri.parse(url), body: {
         "email": email,
@@ -478,7 +398,8 @@ Future<void> refreshToken() async {
       String email,
       String date_time,
       String location) async {
-    var uri = "$complete_base_url_static/authorities/insert_in_authorities_ticket_table";
+    var uri =
+        "$complete_base_url_static/authorities/insert_in_authorities_ticket_table";
     try {
       var response = await http.post(
         Uri.parse(uri),
@@ -561,7 +482,8 @@ Future<void> refreshToken() async {
 
   static Future<List<ResultObj7>> get_authority_tickets_for_student_util(
       String email, String location) async {
-    var uri = "$complete_base_url_static/students/get_authority_tickets_for_students";
+    var uri =
+        "$complete_base_url_static/students/get_authority_tickets_for_students";
     try {
       var response = await http
           .post(Uri.parse(uri), body: {'email': email, 'location': location});
@@ -589,8 +511,7 @@ Future<void> refreshToken() async {
 
   static Future<List<ResultObj>> get_pending_tickets_for_guard_stream_util(
       String location) async {
-    var uri =
-        "$complete_base_url_static/guards/get_pending_tickets_for_guard";
+    var uri = "$complete_base_url_static/guards/get_pending_tickets_for_guard";
     try {
       var response =
           await http.post(Uri.parse(uri), body: {'location': location});
@@ -618,8 +539,7 @@ Future<void> refreshToken() async {
 
   static Future<List<ResultObj>> get_pending_tickets_for_guard(
       String location, String enter_exit) async {
-    var uri =
-        "$complete_base_url_static/guards/get_pending_tickets_for_guard";
+    var uri = "$complete_base_url_static/guards/get_pending_tickets_for_guard";
     try {
       var response = await http.post(Uri.parse(uri),
           body: {'location': location, 'enter_exit': enter_exit});
@@ -677,7 +597,8 @@ Future<void> refreshToken() async {
   // To get pending visitor tickets on the authority side
   static Future<List<ResultObj4>> get_pending_visitor_tickets_for_authorities(
       String authority_email) async {
-    var uri = "$complete_base_url_static/visitors/get_pending_visitor_tickets_for_authorities";
+    var uri =
+        "$complete_base_url_static/visitors/get_pending_visitor_tickets_for_authorities";
     try {
       var response = await http
           .post(Uri.parse(uri), body: {'authority_email': authority_email});
@@ -704,7 +625,8 @@ Future<void> refreshToken() async {
   // To get past visitor tickets on the authority side
   static Future<List<ResultObj4>> get_past_visitor_tickets_for_authorities(
       String authority_email) async {
-    var uri = "$complete_base_url_static/visitors/get_past_visitor_tickets_for_authorities";
+    var uri =
+        "$complete_base_url_static/visitors/get_past_visitor_tickets_for_authorities";
     try {
       var response = await http
           .post(Uri.parse(uri), body: {'authority_email': authority_email});
@@ -729,7 +651,8 @@ Future<void> refreshToken() async {
 
   static Future<List<ResultObj2>> get_pending_tickets_for_authorities(
       String authority_email) async {
-    var uri = "$complete_base_url_static/authorities/get_pending_tickets_for_authorities";
+    var uri =
+        "$complete_base_url_static/authorities/get_pending_tickets_for_authorities";
     try {
       var response = await http
           .post(Uri.parse(uri), body: {'authority_email': authority_email});
@@ -1003,7 +926,7 @@ Future<void> refreshToken() async {
     }
   }
 
-   Future<int> accept_selected_tickets(List<ResultObj> selectedTickets) async {
+  Future<int> accept_selected_tickets(List<ResultObj> selectedTickets) async {
     var uri = complete_base_url_static + "/guards/accept_selected_tickets";
     Map<String, String> headers = {
       'Content-type': 'application/json',
@@ -1081,7 +1004,8 @@ Future<void> refreshToken() async {
 
   Future<int> accept_selected_tickets_authorities(
       List<ResultObj2> selectedTickets) async {
-    var uri = "$complete_base_url_static/authorities/accept_selected_tickets_authorities";
+    var uri =
+        "$complete_base_url_static/authorities/accept_selected_tickets_authorities";
     Map<String, String> headers = {
       'Content-type': 'application/json',
       'Accept': 'application/json',
@@ -1210,7 +1134,8 @@ Future<void> refreshToken() async {
 
   Future<int> reject_selected_tickets_authorities(
       List<ResultObj2> selectedTickets) async {
-    var uri = "$complete_base_url_static/authorities/reject_selected_tickets_authorities";
+    var uri =
+        "$complete_base_url_static/authorities/reject_selected_tickets_authorities";
     Map<String, String> headers = {
       'Content-type': 'application/json',
       'Accept': 'application/json',
@@ -1480,15 +1405,14 @@ Future<void> refreshToken() async {
       var request = http.MultipartRequest("POST", url);
       request.fields['email'] = email;
       request.files.add(http.MultipartFile.fromBytes('image', iterable_data,
-          contentType: MediaType('image', 'jpg'),
-          filename: 'image_file.jpg'));
+          contentType: MediaType('image', 'jpg'), filename: 'image_file.jpg'));
       var response = await request.send();
       print(response.statusCode);
     } catch (e) {
       print("post request error");
       print(e.toString());
     }
-    }
+  }
 
   static Future<String> add_guard(
       String name, String email, String location) async {
@@ -1546,7 +1470,8 @@ Future<void> refreshToken() async {
 
   static Future<List<StatisticsResultObj>> get_statistics_data_by_location(
       String location, String filter, String status) async {
-    var uri = "$complete_base_url_static/statistics/get_statistics_data_by_location";
+    var uri =
+        "$complete_base_url_static/statistics/get_statistics_data_by_location";
     try {
       var response = await http.post(Uri.parse(uri),
           body: {"location": location, "filter": filter, "status": status});
@@ -1574,7 +1499,8 @@ Future<void> refreshToken() async {
       String filter,
       String start_date,
       String end_date) async {
-    var uri = "$complete_base_url_static/statistics/get_piechart_statistics_by_location";
+    var uri =
+        "$complete_base_url_static/statistics/get_piechart_statistics_by_location";
 
     try {
       var response = await http.post(Uri.parse(uri), body: {
@@ -1634,8 +1560,8 @@ Future<void> refreshToken() async {
           'duration_of_stay': duration_of_stay,
           'num_additional': num_additional,
           'student_email': student_id,
-          'type':'student',
-          'guard_status':"Approved"
+          'type': 'student',
+          'guard_status': "Approved"
         },
       );
       var data = json.decode(response.body);
@@ -1657,7 +1583,8 @@ Future<void> refreshToken() async {
     String authority_status,
     ResultObj4 ticket_visitor,
   ) async {
-    var uri = "$complete_base_url_static/visitors/insert_in_visitors_ticket_table_2";
+    var uri =
+        "$complete_base_url_static/visitors/insert_in_visitors_ticket_table_2";
     try {
       String visitor_ticket_id = ticket_visitor.visitor_ticket_id.toString();
       String authority_message = ticket_visitor.authority_message;
@@ -1686,8 +1613,7 @@ Future<void> refreshToken() async {
 //useless function
   static Future<List<String>> get_student_status_for_all_locations(
       String email) async {
-    var uri =
-        "$complete_base_url_static/students/get_status_for_all_locations";
+    var uri = "$complete_base_url_static/students/get_status_for_all_locations";
     List<String> output = [];
     try {
       var response = await http.post(
@@ -1736,8 +1662,7 @@ Future<void> refreshToken() async {
 
   static Future<List<String>> get_student_status_for_all_locations_2(
       String email, List<int> location_ids) async {
-    var uri =
-        "$complete_base_url_static/students/get_status_for_all_locations";
+    var uri = "$complete_base_url_static/students/get_status_for_all_locations";
     List<String> output = [];
     try {
       print("location ids in db=$location_ids");
@@ -1896,7 +1821,8 @@ Future<void> refreshToken() async {
       String message) async {
     print("Inside insert notification database interface");
     print("$from_whom,$for_whom,$ticket_type,$location,$message");
-    var uri = "$complete_base_url_static/notification/insert_notification_guard_accept_reject/";
+    var uri =
+        "$complete_base_url_static/notification/insert_notification_guard_accept_reject/";
     try {
       //post request
       var response_noti = await http.post(Uri.parse(uri), body: {
@@ -1917,8 +1843,8 @@ Future<void> refreshToken() async {
 
   static Future<int> return_total_notification_count_guard(String email) async {
     // print("Email yo=${email}");
-    var uri = Uri.parse(
-        "$complete_base_url_static/notification/count_notification/");
+    var uri =
+        Uri.parse("$complete_base_url_static/notification/count_notification/");
     late http.Response response;
     try {
       response = await http.get(uri.replace(queryParameters: {"email": email}));
@@ -1947,8 +1873,7 @@ Future<void> refreshToken() async {
   }
 
   static Future<String> loc_from_loc_id(String loc_id) async {
-    var uri =
-        Uri.parse("$complete_base_url_static/location/loc_from_loc_id/");
+    var uri = Uri.parse("$complete_base_url_static/location/loc_from_loc_id/");
     try {
       var response =
           await http.get(uri.replace(queryParameters: {"loc_id": loc_id}));
@@ -2000,7 +1925,8 @@ Future<void> refreshToken() async {
     // int tick_id = int.parse(ticket_id);
     // print(tick_id);
     print(email);
-    var uri = "$complete_base_url_static/notification/mark_individual_notification/";
+    var uri =
+        "$complete_base_url_static/notification/mark_individual_notification/";
     try {
       var response = await http.post(
         Uri.parse(uri),
@@ -2075,19 +2001,16 @@ Future<void> refreshToken() async {
     myobj.destination_address = "NO DEST ADDRESS";
     myobj.vehicle_number = "PB XX";
 
-
     List<ResultObj> selectedTickets = [];
     selectedTickets.add(myobj);
     print("accept_QR@2@");
     // print("${}");
-    if (is_approved == "Approved"){
+    if (is_approved == "Approved") {
       await databaseInterface().accept_selected_tickets(selectedTickets);
-  }
-  else if(is_approved == "Rejected"){
+    } else if (is_approved == "Rejected") {
       await databaseInterface().reject_selected_tickets(selectedTickets);
-    }
-  else{
-    print("NO Accepted Or Rejected ");
+    } else {
+      print("NO Accepted Or Rejected ");
     }
     print("accept_QR@3@");
   }
@@ -2099,10 +2022,10 @@ Future<void> refreshToken() async {
     //   enter_exit = "enter";
     // }
     print("!@!@!");
-    var uri =
-        Uri.parse("$complete_base_url_static/guards/get_visitor_tickets");
+    var uri = Uri.parse("$complete_base_url_static/guards/get_visitor_tickets");
     try {
-      var response = await http.post(uri,body:{"is_approved":is_approved,"enter_exit":enter_exit});
+      var response = await http.post(uri,
+          body: {"is_approved": is_approved, "enter_exit": enter_exit});
       print(
           "00000000000000000000000000000000000000000000000000000000000000000000000000000000");
 
@@ -2156,4 +2079,113 @@ Future<void> refreshToken() async {
   static Stream<int> get_notification_count_stream(String email) =>
       Stream.periodic(Duration(seconds: REFRESH_RATE * 5))
           .asyncMap((_) => return_total_notification_count_guard(email));
+
+  Future<int> GenerateRelativesTicket(
+      String Student,
+      String Name,
+      String Relationship,
+      String Contact,
+      String Purpose
+      )async{
+    var uri = "$complete_base_url_static/generate_relatives_ticket";
+    try{
+      var response = await http.post(
+        Uri.parse(uri),
+        body: {
+          'student': Student,
+          'invitee_name': Name,
+          'invitee_relationship': Relationship,
+          'invitee_contact': Contact,
+          'purpose': Purpose,
+        },
+      );
+      print('Response status: ${response.statusCode}');
+      print('Response body: ${response.body}');
+      return response.statusCode.toInt();
+    }
+    catch (e) {
+      print("post request error");
+      print(e.toString());
+      return 500;
+      // return Future.error(e);
+    }
+  }
+
+  static Future<List<RelativeResultObj>>  GetStudentRelativeTickets(
+      String student
+      )async{
+    var uri = "$complete_base_url_static/getStudentRelativeTickets";
+
+    try{
+      final response = await http.post(
+        Uri.parse(uri),
+        body: {
+          'student': student,
+        },
+      );
+      if (response.statusCode == 200) {
+        List<dynamic> data = json.decode(response.body);
+        List<RelativeResultObj> result = data.map((item) => RelativeResultObj.fromJson(item)).toList();
+        return result;
+        // print(result);
+      } else {
+        throw Exception('Failed to load data');
+      }
+
+    }
+    catch (e) {
+      print("post request error");
+      print(e.toString());
+      throw Exception('Failed to load data');
+
+      // return Future.error(e);
+    }
+
+
+  }
+  static Future<Map<String,String>> getInviteeRequestByTicketID(String ticket_id) async {
+    var uri = "$complete_base_url_static/getInviteRequestByTicketID";
+    try{
+      final response=await http.post(Uri.parse(uri),body:{
+        "ticket_id":ticket_id,
+      });
+      if (response.statusCode == 200) {
+        Map<String,dynamic> data_ = json.decode(response.body);
+        Map<String,String> data={};
+        data_.forEach((key,value){data[key]=value.toString();});
+        return data;
+        // print(result);
+      } else {
+        print(" #%error ${json.decode(response.body)["error"]}");
+        throw Exception('Failed to load data');
+      }
+    }
+    catch(e){
+      print("post request error in getInviteeRequestByTicketID");
+      print(e.toString());
+      throw Exception('Failed to load data');
+    }  
+  }
+  static Future<int> guardApproveInviteeTicket(String ticket_id,String vehicle_number,String enter_exit) async {
+    var uri = "$complete_base_url_static/guardApproveInviteeEntryRequest";
+    try{
+      final response=await http.post(Uri.parse(uri),body:{
+        "ticket_id":ticket_id,
+        "vehicle_number":vehicle_number,
+        "enter_exit":enter_exit,
+      });
+      if (response.statusCode == 200) {
+        return response.statusCode;
+      } else {
+        print("error ${json.decode(response.body)["error"]}");
+        throw Exception('Failed to load data');
+      }
+    }
+    catch(e){
+      print("post request error in getInviteeRequestByTicketID");
+      print(e.toString());
+      throw Exception('Failed to load data');
+    } 
+
+  }
 }

@@ -30,7 +30,7 @@ DEBUG = True
 # ALLOWED_HOSTS = ['*']
 # ALLOWED_HOSTS = ['*','10.0.2.2','127.0.0.1','localhost','103.118.50.66', '157.39.150.123', 'testserver']
 ALLOWED_HOSTS = ['31.220.57.173', '31.220.57.173',
-                 '10.0.2.2', '127.0.0.1', 'localhost', '172.23.6.189','0.0.0.0','172.26.12.178',]
+                 '10.0.2.2', '127.0.0.1', 'localhost', '172.23.6.189','0.0.0.0','172.26.12.178','192.168.64.111']
 
 # Application definition
 
@@ -46,7 +46,6 @@ INSTALLED_APPS = [
     'api',
     'corsheaders',
     'django_extensions',
-    'myauth',
 ]
 # REST_FRAMEWORK = {
 #     'DEFAULT_PERMISSION_CLASSES': [
@@ -59,12 +58,6 @@ INSTALLED_APPS = [
 
 
 # AUTH_USER_MODEL = "api.Person"
-REST_FRAMEWORK = {
-    'DEFAULT_AUTHENTICATION_CLASSES': [
-        'rest_framework_simplejwt.authentication.JWTAuthentication',
-    ],
-}
-
 
 SIMPLE_JWT = {
     'ACCESS_TOKEN_LIFETIME': timedelta(minutes=60),
@@ -84,7 +77,7 @@ MIDDLEWARE = [
 ]
 
 CORS_ALLOWED_ORIGINS = [
-    'http://localhost:8080', 'http://31.220.57.173:8000', 'http://localhost:8081', 'http://localhost:8082', 'http://13.233.223.96:8000', 'http://localhost:3000'
+    'http://localhost:8080', 'http://31.220.57.173:8000', 'http://localhost:8081', 'http://localhost:8082', 'http://13.233.223.96:8000', 'http://localhost:3000','http://192.168.64.111:8000'
 ]
 
 ROOT_URLCONF = 'django_backend.urls'
@@ -133,7 +126,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'NAME': 'MyGateAppDB',
         'USER': 'postgres',
-        'PASSWORD': '123@123',
+        'PASSWORD': '1234',
         'HOST': 'localhost',
         'PORT': '5432',
     }
@@ -165,7 +158,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Asia/Kolkata'
 
 USE_I18N = True
 
@@ -212,7 +205,3 @@ EMAIL_PORT = 587
 # EMAIL_HOST_PASSWORD = 'kagsfshwcfahakavfahaksvajalavsksv'
 EMAIL_HOST_USER = 'depproject37@gmail.com'
 EMAIL_HOST_PASSWORD = 'xcmx udim fabi crjk'
-
-
-
-AUTH_USER_MODEL='api.User'

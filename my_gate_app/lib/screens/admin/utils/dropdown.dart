@@ -23,18 +23,18 @@ Widget dropdown(BuildContext context, List<String> parentLocations,
         ),
         dropdownDecoratorProps: DropDownDecoratorProps(
           dropdownSearchDecoration: InputDecoration(
-              labelText: 'Select an item',
-              labelStyle: TextStyle(color: Colors.black),
+              labelText: label,
+              labelStyle: TextStyle(color: Colors.black,fontSize: 16,),
               floatingLabelStyle: TextStyle(color: Colors.black),
               prefixStyle: TextStyle(color: Colors.black),
               fillColor: Colors.deepOrange,
-              enabledBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.all(Radius.circular(border_radius)),
-                borderSide: BorderSide(
-                  color: Colors.black,
-                  width: 2,
-                ),
-              ),
+              // enabledBorder: OutlineInputBorder(
+              //   borderRadius: BorderRadius.all(Radius.circular(border_radius)),
+              //   borderSide: BorderSide(
+              //     color: Colors.black,
+              //     width: 2,
+              //   ),
+              // ),
               focusedBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.all(Radius.circular(border_radius)),
                 borderSide: BorderSide(

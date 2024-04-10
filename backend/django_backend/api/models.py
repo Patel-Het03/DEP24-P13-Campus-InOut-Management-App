@@ -1,60 +1,28 @@
 from django.db import models
 from django.contrib.auth.hashers import *
 import datetime
-from django.contrib.auth.models import AbstractUser
+from django.contrib.auth.models import BaseUserManager
 # If we delete anything, change the value of is_present to False
 default_password = 'IIT_Ropar'
 default_encrypted_password = make_password(default_password)
+import uuid 
+from django.utils import timezone
 
-TYPES=(("student", "Student"), ("guard", "Guard"), ("authority", "Authority"), ("admin", "Admin"))
-
-from django.contrib.auth.models import BaseUserManager
-
-class CustomUserManager(BaseUserManager):
-    def create_user(self, email, password=default_password, **extra_fields):
+class UserManager(BaseUserManager):
+    def create_user(self, email, password=None, **extra_fields):
         if not email:
             raise ValueError('The Email field must be set')
         email = self.normalize_email(email)
         user = self.model(email=email, **extra_fields)
         user.set_password(password)
-        user.save(using=self._db)
+        user.save()
         return user
-    def create(self, email, password=default_password, **extra_fields):
-        return self.create_user(email, password, **extra_fields)
-    
-    def update_user(self, user, password=None, **extra_fields):
-        if password:
-            user.set_password(password)
-        for field, value in extra_fields.items():
-            setattr(user, field, value)
-        user.save(using=self._db)
-        return user
-    
+
     def create_superuser(self, email, password=None, **extra_fields):
         extra_fields.setdefault('is_staff', True)
         extra_fields.setdefault('is_superuser', True)
-        if extra_fields.get('is_staff') is not True:
-            raise ValueError('Superuser must have is_staff=True.')
-        if extra_fields.get('is_superuser') is not True:
-            raise ValueError('Superuser must have is_superuser=True.')
+
         return self.create_user(email, password, **extra_fields)
-
-
-# class UserManager(BaseUserManager):
-#     def create_user(self, email, password=None, **extra_fields):
-#         if not email:
-#             raise ValueError('The Email field must be set')
-#         email = self.normalize_email(email)
-#         user = self.model(email=email, **extra_fields)
-#         user.set_password(password)
-#         user.save()
-#         return user
-
-#     def create_superuser(self, email, password=None, **extra_fields):
-#         extra_fields.setdefault('is_staff', True)
-#         extra_fields.setdefault('is_superuser', True)
-
-#         return self.create_user(email, password, **extra_fields)
 
 
 # class User(AbstractBaseUser, PermissionsMixin):
@@ -72,17 +40,6 @@ class CustomUserManager(BaseUserManager):
 #     def __str__(self):
 #         return self.email
 
-class User(AbstractUser):
-    email=models.CharField(max_length=255,unique=True)
-    password=models.CharField(max_length=255)
-    type=models.CharField(max_length=255,default='student',null=False,choices=TYPES)
-    username=None
-
-    USERNAME_FIELD='email' 
-
-    REQUIRED_FIELDS=[]
-
-    objects = CustomUserManager()
 
 
 class Location(models.Model):
@@ -273,6 +230,24 @@ class NotificationTable(models.Model):
     ticket_type = models.CharField(max_length=100,default=None)
     location_id = models.IntegerField()
     display_message = models.CharField(max_length=200,default=None)
-    date_time = models.DateTimeField(default=datetime.datetime.now())
+    date_time = models.DateTimeField(default=timezone.now)
+
+
+class InviteRequest(models.Model):
+    ticket_id = models.UUIDField(
+        default=uuid.uuid4, editable=False, unique=True, primary_key=True
+    )
+    student = models.ForeignKey(Student, on_delete=models.CASCADE)
+    invitee_name = models.CharField(max_length=100)
+    invitee_relationship = models.CharField(max_length=100)
+    invitee_contact = models.CharField(max_length=100)
+    purpose = models.TextField()
+    status = models.CharField(max_length=20, default='Pending')
+    created_at = models.DateTimeField(auto_now_add=True)
+    enter_time=models.DateTimeField(null=True,blank=True)
+    exit_time=models.DateTimeField(null=True, blank=True)
+    guard_status = models.CharField(max_length=20, default='Pending')
+    vehicle_number = models.CharField(max_length=100,null=True,blank=True, default=None) # Optional field
+    
 
     
