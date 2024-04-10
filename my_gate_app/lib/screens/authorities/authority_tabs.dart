@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:my_gate_app/database/database_objects.dart';
 import 'package:my_gate_app/screens/authorities/pending_authority_ticket_table.dart';
 import 'package:my_gate_app/screens/authorities/stream_authority_ticket_table.dart';
-
+import 'package:google_fonts/google_fonts.dart';
 class AuthorityTabs extends StatefulWidget {
   const AuthorityTabs({super.key});
 
@@ -12,10 +12,20 @@ class AuthorityTabs extends StatefulWidget {
   State<AuthorityTabs> createState() => _AuthorityTabsState();
 }
 
+enum Status { pending, accepted,rejected }
+
 class _AuthorityTabsState extends State<AuthorityTabs>
     with SingleTickerProviderStateMixin {
   late TabController controller;
   List<ResultObj> tickets = [];
+  Status _ticket = Status.pending;
+  void _toggleTicket(Status input) {
+    if (input != _ticket) {
+      setState(() {
+        _ticket = input;
+      });
+    }
+  }
 
   // The initState and dispose state are required for adding the tabs
   @override
@@ -38,8 +48,16 @@ class _AuthorityTabsState extends State<AuthorityTabs>
         length: 3,
         child: Scaffold(
           appBar: AppBar(
-            backgroundColor: Color.fromARGB(255, 0, 0, 0),
-            title: Text("Authority"),
+            iconTheme: IconThemeData(color: Colors.black),
+            backgroundColor: Color(0xffFCC150),
+            title: Text(
+                "Student Tickets",
+              style: GoogleFonts.mPlusRounded1c(
+                color: Colors.black,
+                fontWeight: FontWeight.w700,
+                fontSize: MediaQuery.of(context).size.width * 0.085,
+              ),
+            ),
             // actions: [
             //   PopupMenuButton<MenuItem>(
             //     onSelected: (item) => onSelected(context, item),
@@ -51,43 +69,241 @@ class _AuthorityTabsState extends State<AuthorityTabs>
             //   ),
             // ],
             centerTitle: true,
-            bottom: TabBar(
-              controller: controller,
-              indicator: BoxDecoration(
-                color: Colors.white.withOpacity(0.5),
-                borderRadius: BorderRadius.circular(
-                    10.0), // Set the border radius for rounded corners
-              ),
-              // ignore: prefer_const_literals_to_create_immutables
-              tabs: [
-                Tab(
-                    // child: Text('Pending\nTickets', style: TextStyle(color: Colors.green),),
-                    text: 'Pending\n Tickets',
-                    icon: Icon(Icons.pending_actions)),
-                Tab(
-                  text: 'Approved\n Tickets',
-                  icon: Icon(Icons.approval),
-                ),
-                Tab(
-                    text: 'Rejected\n Tickets',
-                    icon: Icon(Icons.not_interested)),
-              ],
-            ),
           ),
-          body: TabBarView(
-            controller: controller,
-            // ignore: prefer_const_literals_to_create_immutables
-            children: [
-              PendingAuthorityTicketTable(),
-              StreamAuthorityTicketTable(
-                is_approved: "Approved",
-                image_path: 'assets/images/approved.jpg',
+          // body: TabBarView(
+          //   controller: controller,
+          //   // ignore: prefer_const_literals_to_create_immutables
+          //   children: [
+          //     PendingAuthorityTicketTable(),
+          //     StreamAuthorityTicketTable(
+          //       is_approved: "Approved",
+          //       image_path: 'assets/images/approved.jpg',
+          //     ),
+          //     StreamAuthorityTicketTable(
+          //       is_approved: "Rejected",
+          //       image_path: 'assets/images/rejected.jpg',
+          //     ),
+          //   ],
+          // ),
+          backgroundColor: Color(0xffFFF0D2),
+          body: SingleChildScrollView(
+            child: Padding(
+              padding: EdgeInsets.only(top: 16.0),
+            
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  // Container(
+                  //   color: Colors.black, // Black background color for the row
+                  //   child: Row(
+                  //     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  //     children: [
+                  //       // Pending Section
+                  //
+                  //       InkWell(
+                  //         onTap: () {
+                  //           // Handle onTap for pending section
+                  //         },
+                  //         child: Container(
+                  //           width: MediaQuery.of(context).size.width / 3, // Divide screen width by 3 for equal width sections
+                  //           height: 100, // Adjust the height as needed
+                  //           color: Colors.green, // Customize the color for Pending section
+                  //           child: Center(
+                  //             child: Text(
+                  //               "Pending",
+                  //               style: TextStyle(
+                  //                 color: Colors.white,
+                  //                 fontSize: 20,
+                  //                 fontWeight: FontWeight.bold,
+                  //               ),
+                  //             ),
+                  //           ),
+                  //         ),
+                  //       ),
+                  //
+                  //       // Approved Section
+                  //       InkWell(
+                  //         onTap: () {
+                  //           // Handle onTap for approved section
+                  //         },
+                  //         child: Container(
+                  //           width: MediaQuery.of(context).size.width / 3, // Divide screen width by 3 for equal width sections
+                  //           height: 100, // Adjust the height as needed
+                  //           color: Colors.blue, // Customize the color for Approved section
+                  //           child: Center(
+                  //             child: Text(
+                  //               "Approved",
+                  //               style: TextStyle(
+                  //                 color: Colors.white,
+                  //                 fontSize: 20,
+                  //                 fontWeight: FontWeight.bold,
+                  //               ),
+                  //             ),
+                  //           ),
+                  //         ),
+                  //       ),
+                  //
+                  //       // Rejected Section
+                  //       InkWell(
+                  //         onTap: () {
+                  //           // Handle onTap for rejected section
+                  //         },
+                  //         child: Container(
+                  //           width: MediaQuery.of(context).size.width / 3, // Divide screen width by 3 for equal width sections
+                  //           height: 100, // Adjust the height as needed
+                  //           color: Colors.red, // Customize the color for Rejected section
+                  //           child: Center(
+                  //             child: Text(
+                  //               "Rejected",
+                  //               style: TextStyle(
+                  //                 color: Colors.white,
+                  //                 fontSize: 20,
+                  //                 fontWeight: FontWeight.bold,
+                  //               ),
+                  //             ),
+                  //           ),
+                  //         ),
+                  //       ),
+                  //     ],
+                  //   ),
+                  // ),
+                  SizedBox(height: 10),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: [
+                      // SizedBox(
+                      //   width: MediaQuery.of(context).size.width * 0.07,
+                      // ),
+                      SizedBox(
+                        width: MediaQuery.of(context).size.width * 0.29,
+                        height: MediaQuery.of(context).size.height * 0.04,
+                        child: ElevatedButton(
+                          onPressed: () {
+                            _toggleTicket(Status.pending);
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: (_ticket == Status.pending)
+                                ? Colors.grey[800]
+                                : Colors.black,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(
+                                  10.0), // Adjust the radius as needed
+                            ),
+                          ),
+                          child: Text(
+                            "Pending",
+            
+                              style:GoogleFonts.mPlusRounded1c(
+                                fontSize: 16,
+                                fontWeight: FontWeight.w800,
+                                color: Colors.white
+                              )
+            
+                          ),
+                        ),
+                      ),
+                      // SizedBox(
+                      //   width: MediaQuery.of(context).size.width * 0.07,
+                      // ),
+                      SizedBox(
+                        width: MediaQuery.of(context).size.width * 0.32,
+                        height: MediaQuery.of(context).size.height * 0.04,
+                        child: ElevatedButton(
+                          onPressed: () {
+                            _toggleTicket(Status.accepted);
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: (_ticket == Status.accepted)
+                                ? Colors.grey[800]
+                                : Colors.black,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(
+                                  10.0), // Adjust the radius as needed
+                            ),
+                          ),
+                          child: Text(
+                            "Accepted",
+            
+                            style:GoogleFonts.mPlusRounded1c(
+                                fontSize: 16,
+                                fontWeight: FontWeight.w800,
+                                color: Colors.white),
+                          ),
+                        ),
+                      ),
+                      SizedBox(
+                        width: MediaQuery.of(context).size.width * 0.32,
+                        height: MediaQuery.of(context).size.height * 0.04,
+                        child: ElevatedButton(
+                          onPressed: () {
+                            _toggleTicket(Status.rejected);
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: (_ticket == Status.rejected)
+                                ? Colors.grey[800]
+                                : Colors.black,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(
+                                  10.0), // Adjust the radius as needed
+                            ),
+                          ),
+                          child: Text(
+                            "Rejected",
+            
+                            style:GoogleFonts.mPlusRounded1c(
+                                fontSize: 16,
+                                fontWeight: FontWeight.w800,
+                                color: Colors.white),
+                          ),
+                        ),
+                      ),
+            
+                    ],
+                  ),
+                  SizedBox(
+                    height: 40,
+                  ),
+                  //
+                  // SizedBox(
+                  //   height: MediaQuery.of(context).size.height * 0.03,
+                  // ),
+                  // SizedBox(
+                  //   height: 300,
+                  //   child: Container(
+                  //     child: PendingAuthorityTicketTable(),
+                  //   ),
+                  // )
+            
+                  SingleChildScrollView(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        // Your other widgets...
+                        SizedBox(
+                          // Set constraints for the SizedBox
+                          height: MediaQuery.of(context).size.height,
+                          child: _ticket == Status.pending
+                              ? PendingAuthorityTicketTable()
+                              : _ticket == Status.accepted
+                              ? StreamAuthorityTicketTable(
+                            is_approved: "Approved",
+                            image_path: 'assets/images/approved.jpg',
+                          )
+                              : StreamAuthorityTicketTable(
+                            is_approved: "Rejected",
+                            image_path: 'assets/images/rejected.jpg',
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+            
+            
+            
+                  // Add other content of the body below the row
+                ],
               ),
-              StreamAuthorityTicketTable(
-                is_approved: "Rejected",
-                image_path: 'assets/images/rejected.jpg',
-              ),
-            ],
+            ),
           ),
         ),
       );

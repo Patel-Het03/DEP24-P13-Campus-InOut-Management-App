@@ -1,12 +1,14 @@
 // ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables, deprecated_member_use, non_constant_identifier_names
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:my_gate_app/aboutus.dart';
 import 'package:my_gate_app/auth/authscreen.dart';
 import 'package:my_gate_app/get_email.dart';
 import 'package:my_gate_app/screens/authorities/authority_tabs.dart';
 import 'package:my_gate_app/screens/authorities/visitor/authorityVisitor.dart';
-
+import 'package:my_gate_app/screens/authorities/relatives/stu_relatives.dart';
 import 'package:my_gate_app/screens/profile2/authority_profile/authority_profile_page.dart';
 import 'package:my_gate_app/screens/profile2/model/menu_item.dart';
 import 'package:my_gate_app/screens/profile2/utils/menu_items.dart';
@@ -26,7 +28,7 @@ class AuthorityMain extends StatefulWidget {
 
 class _AuthorityMainState extends State<AuthorityMain> {
   int notificationCount = 0;
-  String welcome_message = "Welcome";
+  String welcome_message = "Dr.Ravi Kant";
 
   var user = UserPreferences.myUser;
 
@@ -83,7 +85,7 @@ class _AuthorityMainState extends State<AuthorityMain> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Color.fromARGB(255, 0, 0, 0),
+        backgroundColor: Color(0xffFCC150),
         title: Row(
           children: [
             SizedBox(
@@ -102,20 +104,18 @@ class _AuthorityMainState extends State<AuthorityMain> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'Welcome Back,',
-                    style: TextStyle(
-                      color: Color.fromARGB(221, 255, 255, 255),
-                      fontWeight: FontWeight.w900,
-                      fontFamily: 'Open Sans',
+                    'Welcome',
+                    style: GoogleFonts.mPlusRounded1c(
+                      color: Colors.black,
+                      fontWeight: FontWeight.w700,
                       fontSize: MediaQuery.of(context).size.width * 0.04,
                     ),
                   ),
                   Text(
                     welcome_message,
-                    style: TextStyle(
-                      color: Color.fromARGB(221, 247, 247, 247),
+                    style: GoogleFonts.mPlusRounded1c(
+                      color: Colors.black,
                       fontWeight: FontWeight.bold,
-                      fontFamily: 'Open Sans',
                       fontSize: MediaQuery.of(context).size.width * 0.057,
                     ),
                   ),
@@ -131,7 +131,7 @@ class _AuthorityMainState extends State<AuthorityMain> {
                 height: kToolbarHeight,
                 child: IconButton(
                   icon: Icon(Icons.notifications,
-                      color: Color.fromARGB(255, 255, 255, 255)),
+                      color: Color.fromARGB(255, 0, 0, 0)),
                   onPressed: () {
                     Navigator.push(
                       context,
@@ -184,8 +184,7 @@ class _AuthorityMainState extends State<AuthorityMain> {
           ),
           PopupMenuButton<MenuItem>(
             onSelected: (item) => onSelected(context, item),
-            icon: Icon(Icons.more_vert,
-                color: Color.fromARGB(255, 255, 255, 255)),
+            icon: Icon(Icons.more_vert, color: Color.fromARGB(255, 0, 0, 0)),
             itemBuilder: (context) => [
               ...MenuItems.itemsFirst.map(buildItem),
               PopupMenuDivider(),
@@ -196,100 +195,306 @@ class _AuthorityMainState extends State<AuthorityMain> {
           ),
         ],
       ),
-      body: Container(
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-              colors: [Colors.white, Colors.white]),
-        ),
-        child: Center(
-          child: Column(
-            // add Column
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              // Text('Welcome', style: TextStyle( // your text
-              //     fontSize: 50.0,
-              //     fontWeight: FontWeight.bold,
-              //     color: Colors.white)
-              // ),
-              // RaisedButton(onPressed: () {Navigator.push(
-              //   context,
-              //   MaterialPageRoute(builder: (context) => StudentTicketTable(location: widget.location))
-              // );
-              // }, child: Text('Raise Ticket for Guard'),
-              // ), // your button beneath text
-              Image.asset('assets/images/home_authority.jpg'),
-              SizedBox(
-                height: 100,
-              ),
-              MaterialButton(
-                // Student Tickets
-                onPressed: () {
-                  Navigator.push(context,
-                      MaterialPageRoute(builder: (context) => AuthorityTabs()));
-                },
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(80.0)),
-                padding: EdgeInsets.all(0.0),
-                child: Ink(
-                  decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      // colors: [Color(0xff374ABE), Color(0xff64B6FF)],
-                      colors: [Colors.red, Colors.purple],
-                      begin: Alignment.centerLeft,
-                      end: Alignment.centerRight,
-                    ),
-                    borderRadius: BorderRadius.circular(30.0),
-                  ),
-                  child: Container(
-                    constraints:
-                        BoxConstraints(maxWidth: 250.0, minHeight: 50.0),
-                    alignment: Alignment.center,
-                    child: Text(
-                      "Student Tickets",
-                      textAlign: TextAlign.center,
-                      style: TextStyle(color: Colors.white),
-                    ),
+      body: SingleChildScrollView(
+        child: Container(
+          decoration: BoxDecoration(
+            color: Color(0xffFFF0D2),
+          ),
+          child: Center(
+            child: Column(
+              // add Column
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                SizedBox(
+                  height: 20,
+                ),
+                Text(
+                  "Let's Get Going: \n Today's Tickets Await Approval!",
+                  textAlign: TextAlign.center,
+                  style: GoogleFonts.mPlusRounded1c(
+                    color: Colors.black,
+                    fontSize: 30, // Adjust font size as needed
+                    fontWeight: FontWeight.bold,
                   ),
                 ),
-              ),
-              SizedBox(height: 50),
-              MaterialButton(
-                // Visitor Tickets
-                onPressed: () {
-                  Navigator.push(
+                SizedBox(
+                  height: 100,
+                ),
+                GestureDetector(
+                  onTap: () {
+                    Navigator.push(
                       context,
-                      MaterialPageRoute(
-                          builder: (context) => AuthorityVisitor()));
-                },
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(80.0)),
-                padding: EdgeInsets.all(0.0),
-                child: Ink(
-                  decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                        colors: [Colors.greenAccent, Colors.lightBlueAccent],
-                        // colors: [Color(0xff374ABE), Color(0xff64B6FF)],
-                        begin: Alignment.centerLeft,
-                        end: Alignment.centerRight,
-                      ),
-                      borderRadius: BorderRadius.circular(30.0)),
+                      MaterialPageRoute(builder: (context) => AuthorityTabs()),
+                    );
+                  },
                   child: Container(
-                    constraints:
-                        BoxConstraints(maxWidth: 250.0, minHeight: 50.0),
-                    alignment: Alignment.center,
-                    child: Text(
-                      "Visitor Tickets",
-                      textAlign: TextAlign.center,
-                      style: TextStyle(color: Colors.white),
+                    width: MediaQuery.of(context).size.width*0.9, // Set width to screen width
+                    height: MediaQuery.of(context).size.height * 0.215, // Set height to half of screen height
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(20),// Adjust border radius as needed
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.2), // Shadow color
+                          spreadRadius: 4, // Spread radius
+                          blurRadius:7, // Blur radius
+                          offset: Offset(0, 3), // Offset from the container
+                        ),
+                      ],
+                    ),
+        
+        
+        
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(10),
+                      child: Stack(
+                        children: [
+                          // Background Image or Container with Black Blurring
+                          Positioned.fill(
+                            child: Image.network(
+                              "https://images.pexels.com/photos/7972534/pexels-photo-7972534.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2", // Use your show_image function to provide the image path
+                              fit: BoxFit.cover,
+                            ),
+                          ),
+                          Positioned.fill(
+                            child: Container(
+                              color: Colors.black
+                                  .withOpacity(0.5), // Adjust opacity as needed
+                            ),
+                          ),
+        
+                          // Text at the Bottom Left with Colored Backdrop
+                          Positioned(
+                            left: 16,
+                            bottom: 16,
+                            child: Container(
+                              padding: EdgeInsets.all(8),
+                              decoration: BoxDecoration(
+                                color: Colors.white
+                                    .withOpacity(0), // Adjust opacity as needed
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                              child: Text(
+                                "Student Tickets",
+                                style: GoogleFonts.mPlusRounded1c(
+                                  fontSize: 25,
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ),
+                          ),
+        
+                          // Arrow Icon at the Bottom Right
+                          Positioned(
+                            right: 16,
+                            bottom: 22,
+                            child: Icon(
+                              Icons.arrow_forward,
+                              color: Colors.white,
+                              size: 35,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+
+
+                  ),
+                ),
+        
+                SizedBox(height: 40),
+                // MaterialButton(
+                //   // Visitor Tickets
+                //   onPressed: () {
+                //     Navigator.push(
+                //         context,
+                //         MaterialPageRoute(
+                //             builder: (context) => AuthorityVisitor()));
+                //   },
+                //   shape: RoundedRectangleBorder(
+                //       borderRadius: BorderRadius.circular(80.0)),
+                //   padding: EdgeInsets.all(0.0),
+                //   child: Ink(
+                //     decoration: BoxDecoration(
+                //         gradient: LinearGradient(
+                //           colors: [Colors.greenAccent, Colors.lightBlueAccent],
+                //           // colors: [Color(0xff374ABE), Color(0xff64B6FF)],
+                //           begin: Alignment.centerLeft,
+                //           end: Alignment.centerRight,
+                //         ),
+                //         borderRadius: BorderRadius.circular(30.0)),
+                //     child: Container(
+                //       constraints:
+                //           BoxConstraints(maxWidth: 250.0, minHeight: 50.0),
+                //       alignment: Alignment.center,
+                //       child: Text(
+                //         "Visitor Tickets",
+                //         textAlign: TextAlign.center,
+                //         style: TextStyle(color: Colors.white),
+                //       ),
+                //     ),
+                //   ),
+                // ),
+                GestureDetector(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => AuthorityVisitor()),
+                    );
+                  },
+                  child: Container(
+                    width: MediaQuery.of(context).size.width*0.9, // Set width to screen width
+                    height: MediaQuery.of(context).size.height * 0.215, // Set height to half of screen height
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(20), // Adjust border radius as needed
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.2), // Shadow color
+                          spreadRadius: 4, // Spread radius
+                          blurRadius: 7, // Blur radius
+                          offset: Offset(0, 3), // Offset from the container
+                        ),
+                      ],
+                    ),
+        
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(10),
+                      child: Stack(
+                        children: [
+                          // Background Image or Container with Black Blurring
+                          Positioned.fill(
+                            child: Image.network(
+                              "https://images.unsplash.com/photo-1525237621662-a70e88ad8387?q=80&w=2940&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D", // Use your show_image function to provide the image path
+                              fit: BoxFit.cover,
+                            ),
+                          ),
+                          Positioned.fill(
+                            child: Container(
+                              color: Colors.black
+                                  .withOpacity(0.5), // Adjust opacity as needed
+                            ),
+                          ),
+        
+                          // Text at the Bottom Left with Colored Backdrop
+                          Positioned(
+                            left: 16,
+                            bottom: 16,
+                            child: Container(
+                              padding: EdgeInsets.all(8),
+                              decoration: BoxDecoration(
+                                color: Colors.white
+                                    .withOpacity(0), // Adjust opacity as needed
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                              child: Text(
+                                "Visitor Tickets",
+                                style: GoogleFonts.mPlusRounded1c(
+                                  fontSize: 25,
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ),
+                          ),
+        
+                          // Arrow Icon at the Bottom Right
+                          Positioned(
+                            right: 16,
+                            bottom: 22,
+                            child: Icon(
+                              Icons.arrow_forward,
+                              color: Colors.white,
+                              size: 35,
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 ),
-              ),
+                SizedBox(height: 40),
+                GestureDetector(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => Stu_Relatives()),
+                    );
+                  },
+                  child: Container(
+                    width: MediaQuery.of(context).size.width*0.9, // Set width to screen width
+                    height: MediaQuery.of(context).size.height * 0.215, // Set height to half of screen height
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(20), // Adjust border radius as needed
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.2), // Shadow color
+                          spreadRadius: 4, // Spread radius
+                          blurRadius: 7, // Blur radius
+                          offset: Offset(0, 3), // Offset from the container
+                        ),
+                      ],
+                    ),
 
-              // RaisedButton(onPressed: () {}, child: Text('Raise Ticket for Authorities'),), // your button beneath text
-            ],
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(10),
+                      child: Stack(
+                        children: [
+                          // Background Image or Container with Black Blurring
+                          Positioned.fill(
+                            child: Image.network(
+                              "https://images.unsplash.com/photo-1511632765486-a01980e01a18?w=800&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTh8fHN0dWRlbnRzJTIwZmFtaWx5fGVufDB8fDB8fHww", // Use your show_image function to provide the image path
+                              fit: BoxFit.cover,
+                            ),
+                          ),
+                          Positioned.fill(
+                            child: Container(
+                              color: Colors.black
+                                  .withOpacity(0.5), // Adjust opacity as needed
+                            ),
+                          ),
+
+                          // Text at the Bottom Left with Colored Backdrop
+                          Positioned(
+                            left: 16,
+                            bottom: 16,
+                            child: Container(
+                              padding: EdgeInsets.all(8),
+                              decoration: BoxDecoration(
+                                color: Colors.white
+                                    .withOpacity(0), // Adjust opacity as needed
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                              child: Text(
+                                "Relatives Tickets",
+                                style: GoogleFonts.mPlusRounded1c(
+                                  fontSize: 25,
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ),
+                          ),
+
+                          // Arrow Icon at the Bottom Right
+                          Positioned(
+                            right: 16,
+                            bottom: 22,
+                            child: Icon(
+                              Icons.arrow_forward,
+                              color: Colors.white,
+                              size: 35,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+                SizedBox(height: 20),
+        
+                // RaisedButton(onPressed: () {}, child: Text('Raise Ticket for Authorities'),), // your button beneath text
+              ],
+            ),
           ),
         ),
       ),

@@ -5,6 +5,7 @@ import 'package:my_gate_app/database/database_interface.dart';
 import 'package:my_gate_app/database/database_objects.dart';
 // import 'package:my_gate_app/screens/profile2/guard_profile/guard_edit_profile_page.dart';
 import 'package:my_gate_app/screens/utils/custom_snack_bar.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class VisitorProfilePage extends StatefulWidget {
   final ResultObj4 visitorObject;
@@ -74,7 +75,7 @@ class _VisitorProfilePageState extends State<VisitorProfilePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: Color(0xffFFF0D2),
       appBar: AppBar(
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
@@ -83,13 +84,15 @@ class _VisitorProfilePageState extends State<VisitorProfilePage> {
           },
         ),
         backgroundColor: const Color.fromARGB(255, 0, 0, 0),
-        iconTheme: const IconThemeData(color: Colors.black),
+        iconTheme: const IconThemeData(color: Colors.white),
         elevation: 0,
-        title: const Text(
+        title: Text(
           'Ticket Details',
-          style: TextStyle(
-              fontWeight: FontWeight.bold,
-              color: Color.fromARGB(255, 255, 255, 255)),
+          style: GoogleFonts.mPlusRounded1c(
+            color: Colors.white,
+            fontWeight: FontWeight.w700,
+            fontSize: MediaQuery.of(context).size.width * 0.065,
+          ),
         ),
         centerTitle: true,
       ),
@@ -131,16 +134,27 @@ class _VisitorProfilePageState extends State<VisitorProfilePage> {
                         statusCode); // Used to display the snackbar
                   },
                   style: ButtonStyle(
-                    backgroundColor: MaterialStateProperty.all(Colors.green),
+                    backgroundColor: MaterialStateProperty.all(Colors.black),
                     padding: MaterialStateProperty.all(
                         const EdgeInsets.symmetric(
                             vertical: 15, horizontal: 15)),
                     textStyle: MaterialStateProperty.all(
                         const TextStyle(fontSize: 15, color: Colors.black)),
+                    shape: MaterialStateProperty.all(
+                      RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10.0), // Adjust the border radius as needed
+                      ),
+                    ),
+
                   ),
-                  child: const Text("Approve Ticket"),
+                  child: Text(
+                      "Approve Ticket",
+                    style: GoogleFonts.roboto(
+                      color: Colors.white,
+                    ),
+                  ),
                 ),
-                const SizedBox(width: 5),
+                const SizedBox(width: 10),
                 ElevatedButton(
                   onPressed: () async {
                     widget.visitorObject.authority_message =
@@ -152,14 +166,23 @@ class _VisitorProfilePageState extends State<VisitorProfilePage> {
                         statusCode); // Used to display the snackbar
                   },
                   style: ButtonStyle(
-                    backgroundColor: MaterialStateProperty.all(Colors.red),
+                    backgroundColor: MaterialStateProperty.all(Colors.black),
                     padding: MaterialStateProperty.all(
                         const EdgeInsets.symmetric(
                             vertical: 15, horizontal: 15)),
                     textStyle: MaterialStateProperty.all(
                         const TextStyle(fontSize: 15, color: Colors.black)),
+                    shape: MaterialStateProperty.all(
+                      RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10.0), // Adjust the border radius as needed
+                      ),
+                    ),
                   ),
-                  child: const Text("Reject Ticket"),
+                  child:  Text("Reject Ticket",
+                    style: GoogleFonts.roboto(
+                      color: Colors.white,
+                    ),
+                  )
                 ),
               ],
             ),
@@ -178,26 +201,42 @@ class _VisitorProfilePageState extends State<VisitorProfilePage> {
         children: [
           Text(
             label,
-            style: const TextStyle(
+            style: GoogleFonts.roboto(
                 fontWeight: FontWeight.bold, fontSize: 16, color: Colors.black),
           ),
           const SizedBox(height: 8),
           TextField(
             enabled: enabled,
-            style: const TextStyle(color: Color.fromARGB(255, 0, 0, 0)),
+            style: TextStyle(
+              color: Colors.black,
+              fontWeight: FontWeight.w400,
+              fontFamily: 'Roboto', // Change the font family as needed
+              fontSize: 16.0, // Adjust the font size as needed
+            ),
             controller: controller,
-            decoration: const InputDecoration(
+            decoration: InputDecoration(
+              filled: true,
+              fillColor: Color(0xFFFDE4B2), // Set the background color
+              contentPadding: EdgeInsets.symmetric(
+                  vertical: 14.0,
+                  horizontal: 16.0), // Adjust the padding as needed
               enabledBorder: OutlineInputBorder(
-                borderSide: BorderSide(color: Color.fromARGB(255, 29, 40, 204)),
+                borderSide: BorderSide.none,
+                borderRadius: BorderRadius.circular(
+                    8.0), // Adjust the border radius as needed
               ),
               focusedBorder: OutlineInputBorder(
                 borderSide: BorderSide(
                   color: Color.fromARGB(255, 36, 0, 108),
                   width: 2.0,
                 ),
+                borderRadius: BorderRadius.circular(
+                    8.0), // Adjust the border radius as needed
               ),
               disabledBorder: OutlineInputBorder(
-                borderSide: BorderSide(color: Color.fromARGB(255, 0, 0, 0)),
+                borderSide: BorderSide.none,
+                borderRadius: BorderRadius.circular(
+                    8.0), // Adjust the border radius as needed
               ),
             ),
             maxLines: maxLines,
