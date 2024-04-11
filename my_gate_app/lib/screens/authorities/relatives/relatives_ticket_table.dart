@@ -321,7 +321,7 @@ class _RelativesTicketTableState extends State<RelativesTicketTable> {
                         child: ExpansionTile(
 
                               title: Text(
-                                mytickets[index].studentId,
+                                mytickets[index].student,
                                 style: GoogleFonts.lato(
                                   fontWeight: FontWeight.w800,
                                   color: Colors.white,

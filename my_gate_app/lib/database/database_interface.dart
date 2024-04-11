@@ -2369,7 +2369,7 @@ class databaseInterface {
       if (response.statusCode == 200) {
 
         List<dynamic> data = json.decode(response.body);
-        List<StuRelTicket> result = data.map((item) => StuRelTicket.fromJson1(item)).toList();
+        List<StuRelTicket> result = data.map((item) => StuRelTicket.fromJson(item)).toList();
         return result;
         // print(result);
       } else {
