@@ -5504,7 +5504,7 @@ class RejectTicketAPIView(APIView):
             return Response({"message": "Ticket not found."}, status=status.HTTP_404_NOT_FOUND)
         
         # Check if the ticket status is pending or rejected
-        if ticket.status in ['Pending']:
+        if ticket.status in ['Pending','Accepted']:
             ticket.status = 'Rejected'
             ticket.save()
             return Response({"message": "Ticket rejected successfully."}, status=status.HTTP_200_OK)

@@ -51,34 +51,32 @@ class _PendingRelativeTicketTable
 
 
 
-  // Future<void> accept_action_tickets_authorities() async {
-  //   databaseInterface db = new databaseInterface();
-  //   int status_code =
-  //   await db.accept_selected_tickets_authorities(selectedTickets_action);
-  //   if (status_code == 200) {
-  //     await init();
-  //     final snackBar = get_snack_bar("Ticket accepted", Colors.green);
-  //     ScaffoldMessenger.of(context).showSnackBar(snackBar);
-  //   } else {
-  //     final snackBar = get_snack_bar("Failed to accept the ticket", Colors.red);
-  //     ScaffoldMessenger.of(context).showSnackBar(snackBar);
-  //   }
-  // }
+  Future<void> accept_action_relatives_tickets_authorities(String ticket_id ) async {
+    int status_code =
+    await databaseInterface.accept_action_relatives_tickets_authorities(ticket_id);
+    if (status_code == 200) {
+      await init();
+      final snackBar = get_snack_bar("Ticket accepted", Colors.green);
+      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+    } else {
+      final snackBar = get_snack_bar("Failed to accept the ticket", Colors.red);
+      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+    }
+  }
 
-  // Future<void> reject_action_tickets_authorities() async {
-  //   databaseInterface db = new databaseInterface();
-  //   int status_code =
-  //   await db.reject_selected_tickets_authorities(selectedTickets_action);
-  //   print("The status code is $status_code");
-  //   if (status_code == 200) {
-  //     await init();
-  //     final snackBar = get_snack_bar("Ticket rejected", Colors.green);
-  //     ScaffoldMessenger.of(context).showSnackBar(snackBar);
-  //   } else {
-  //     final snackBar = get_snack_bar("Failed to reject the ticket", Colors.red);
-  //     ScaffoldMessenger.of(context).showSnackBar(snackBar);
-  //   }
-  // }
+  Future<void> reject_action_relatives_tickets_authorities(String ticket_id) async {
+    int status_code =
+    await databaseInterface.reject_action_relatives_tickets_authorities(ticket_id);
+    print("The status code is $status_code");
+    if (status_code == 200) {
+      await init();
+      final snackBar = get_snack_bar("Ticket rejected", Colors.green);
+      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+    } else {
+      final snackBar = get_snack_bar("Failed to reject the ticket", Colors.red);
+      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+    }
+  }
 
   // void filterTickets(String query) {
   //   if (enableDateFilter) {
@@ -142,25 +140,25 @@ class _PendingRelativeTicketTable
   @override
   void initState() {
     super.initState();
-    // init();
+    init();
 
   }
 
-  // Future<List<ResultObj2>> get_pending_tickets_for_authority() async {
-  //   String authority_email = LoggedInDetails.getEmail();
-  //   return await databaseInterface
-  //       .get_pending_tickets_for_authorities(authority_email);
-  // }
+  Future<List<StuRelTicket>> Get_relatives_ticket_for_authority() async {
+    // String authority_email = LoggedInDetails.getEmail();
+    return await databaseInterface
+        .Get_relatives_ticket_for_authority('Pending');
+  }
 
-  // Future init() async {
-  //   final tickets_local = await get_pending_tickets_for_authority();
-  //   setState(() {
-  //     tickets = tickets_local;
-  //     selectedTickets = [];
-  //     selectedTickets_action = [];
-  //   });
-  //   filterTickets(searchQuery);
-  // }
+  Future init() async {
+    final tickets_local = await Get_relatives_ticket_for_authority();
+    setState(() {
+      tickets = tickets_local;
+      // selectedTickets = [];
+      // selectedTickets_action = [];
+    });
+    // filterTickets(searchQuery);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -293,7 +291,7 @@ class _PendingRelativeTicketTable
                           children: <Widget>[
                             ListTile(
                               title: Text(
-                                mytickets[index].studentId,
+                                mytickets[index].student,
                                 style: GoogleFonts.lato(
                                   fontWeight: FontWeight.w800,
                                   color: Colors.white,
@@ -313,48 +311,39 @@ class _PendingRelativeTicketTable
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: [
                                       Text(
-                                          "InviteeName :${tickets[index].inviteeName}",
+                                          "InviteeName : ${tickets[index].inviteeName}",
                                           style: GoogleFonts.lato(
                                             fontWeight: FontWeight.w600,
                                             color: Colors.black,
                                             fontSize: 15,
                                           )),
-                                      Text("InviteeRelationship :${tickets[index].inviteeRelationship}",
-                                          style: GoogleFonts.lato(
-                                            fontWeight: FontWeight.w600,
-                                            color: Colors.black,
-                                            fontSize: 15,
-                                          )),
-                                      Text(
-                                          "Contact :${tickets[index].inviteeContact}",
+                                      Text("InviteeRelationship : ${tickets[index].inviteeRelationship}",
                                           style: GoogleFonts.lato(
                                             fontWeight: FontWeight.w600,
                                             color: Colors.black,
                                             fontSize: 15,
                                           )),
                                       Text(
-                                          "Ticket_type :${tickets[index].status}",
+                                          "Contact : ${tickets[index].inviteeContact}",
                                           style: GoogleFonts.lato(
                                             fontWeight: FontWeight.w600,
                                             color: Colors.black,
                                             fontSize: 15,
                                           )),
-                                      SizedBox(
-                                          height: 5
-                                      ),
-                                      Container(
-                                        width: MediaQuery.of(context).size.width * 0.4, // 80% of screen width
-                                        height: 1, // Height of the divider
-                                        color: Colors.black12, // Color of the divider
-                                      ),
-                                      SizedBox(
-                                          height: 5
-                                      ),
-                                      Container(
-                                        width: MediaQuery.of(context).size.width * 0.8, // 80% of screen width
-                                        height: 1, // Height of the divider
-                                        color: Colors.black12, // Color of the divider
-                                      ),
+                                      Text(
+                                          "Ticket_type : ${tickets[index].status}",
+                                          style: GoogleFonts.lato(
+                                            fontWeight: FontWeight.w600,
+                                            color: Colors.black,
+                                            fontSize: 15,
+                                          )),
+                                      Text(
+                                          "Purpose : ${tickets[index].purpose}",
+                                          style: GoogleFonts.lato(
+                                            fontWeight: FontWeight.w600,
+                                            color: Colors.black,
+                                            fontSize: 15,
+                                          )),
                                       SizedBox(
                                           height: 5
                                       ),
@@ -364,7 +353,7 @@ class _PendingRelativeTicketTable
                                           ElevatedButton(
                                             onPressed: () async{
                                               // selectedTickets_action.add(tickets[index]);
-                                              // await accept_action_tickets_authorities();
+                                              await accept_action_relatives_tickets_authorities(tickets[index].ticketId);
                                             },
                                             style: ElevatedButton.styleFrom(
                                               shape: RoundedRectangleBorder(
@@ -381,7 +370,7 @@ class _PendingRelativeTicketTable
                                           ElevatedButton(
                                             onPressed: () async{
                                               // selectedTickets_action.add(tickets[index]);
-                                              // await reject_action_tickets_authorities();
+                                              await reject_action_relatives_tickets_authorities(tickets[index].ticketId);
                                             },
                                             style: ElevatedButton.styleFrom(
                                               shape: RoundedRectangleBorder(

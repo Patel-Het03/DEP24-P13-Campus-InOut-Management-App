@@ -491,7 +491,7 @@ class RelativeResultObj {
 
 class StuRelTicket {
   String ticketId;
-  String studentId; // Assuming this is a String representation of Student ID
+  String student; // Assuming this is a String representation of Student ID
   String inviteeName;
   String inviteeRelationship;
   String inviteeContact;
@@ -500,7 +500,7 @@ class StuRelTicket {
 
   StuRelTicket({
     required this.ticketId,
-    required this.studentId,
+    required this.student,
     required this.inviteeName,
     required this.inviteeRelationship,
     required this.inviteeContact,
@@ -512,7 +512,7 @@ class StuRelTicket {
   factory StuRelTicket.fromJson(Map<String, dynamic> json) {
     return StuRelTicket(
       ticketId: json['ticket_id'],
-      studentId: json['student']['id'], // Assuming Student ID is nested under 'student'
+      student: json['student'], // Assuming Student ID is nested under 'student'
       inviteeName: json['invitee_name'],
       inviteeRelationship: json['invitee_relationship'],
       inviteeContact: json['invitee_contact'],
@@ -525,7 +525,7 @@ class StuRelTicket {
   Map<String, dynamic> toJson() {
     return {
       'ticket_id': ticketId,
-      'student': {'id': studentId}, // Assuming 'student' is a nested object with 'id' field
+      'student':  student, // Assuming 'student' is a nested object with 'id' field
       'invitee_name': inviteeName,
       'invitee_relationship': inviteeRelationship,
       'invitee_contact': inviteeContact,
