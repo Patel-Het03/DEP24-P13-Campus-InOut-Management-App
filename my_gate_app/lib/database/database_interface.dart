@@ -2290,7 +2290,9 @@ class databaseInterface {
       String Name,
       String Relationship,
       String Contact,
-      String Purpose
+      String Purpose,
+      String visit_date,
+      String durations,
       )async{
     var uri = "$complete_base_url_static/generate_relatives_ticket";
     try{
@@ -2302,6 +2304,8 @@ class databaseInterface {
           'invitee_relationship': Relationship,
           'invitee_contact': Contact,
           'purpose': Purpose,
+          'visit_date':visit_date,
+          'duration':durations,
         },
       );
       print('Response status: ${response.statusCode}');
@@ -2316,7 +2320,7 @@ class databaseInterface {
     }
   }
 
-  static Future<List<RelativeResultObj>>  GetStudentRelativeTickets(
+  static Future<List<StuRelTicket>>  GetStudentRelativeTickets(
       String student
       )async{
     var uri = "$complete_base_url_static/getStudentRelativeTickets";
@@ -2329,8 +2333,11 @@ class databaseInterface {
         },
       );
       if (response.statusCode == 200) {
+
         List<dynamic> data = json.decode(response.body);
-        List<RelativeResultObj> result = data.map((item) => RelativeResultObj.fromJson(item)).toList();
+        print('hhh');
+        print(data);
+        List<StuRelTicket> result = data.map((item) => StuRelTicket.fromJson(item)).toList();
         return result;
         // print(result);
       } else {
@@ -2362,7 +2369,7 @@ class databaseInterface {
       if (response.statusCode == 200) {
 
         List<dynamic> data = json.decode(response.body);
-        List<StuRelTicket> result = data.map((item) => StuRelTicket.fromJson(item)).toList();
+        List<StuRelTicket> result = data.map((item) => StuRelTicket.fromJson1(item)).toList();
         return result;
         // print(result);
       } else {

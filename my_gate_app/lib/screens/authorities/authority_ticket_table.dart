@@ -105,7 +105,9 @@ class _AuthorityTicketTableState extends State<AuthorityTicketTable> {
       if (query.isEmpty) {
         ticketsFiltered = widget.tickets
             .where((ticket) => DateTime.parse(ticket.date_time).isBefore(
-                DateTime.parse(chosen_end_date).add(Duration(days: 1))))
+                DateTime.parse(chosen_end_date).add(Duration(days: 1)))&&
+            DateTime.parse(ticket.date_time)
+                .isAfter(DateTime.parse(chosen_start_date)))
             .toList();
       } else {
         ticketsFiltered = widget.tickets
@@ -137,6 +139,11 @@ class _AuthorityTicketTableState extends State<AuthorityTicketTable> {
       searchQuery = query;
       filterTickets(searchQuery);
     });
+  }
+  void resetFilter(String query) {
+    chosen_start_date = DateTime.now().subtract(Duration(days: 1)).toString();
+    chosen_end_date = DateTime.now().toString();
+    filterTickets(query);
   }
 
   Future<void> _selectDateRange(BuildContext context) async {
@@ -181,34 +188,35 @@ class _AuthorityTicketTableState extends State<AuthorityTicketTable> {
                       border:
                       Border(bottom: BorderSide(color: Colors.black, width: 2.0)),
                     ),
-                    child: TextField(
-                      style: GoogleFonts.lato(
-                        color: Colors.black,
-                        fontSize: 20,
-                      ),
-                      onChanged: (text) {
-                        // isFieldEmpty = text.isEmpty;
-                        // onSearchQueryChanged(text);
-                      },
-                      decoration: InputDecoration(
-                        contentPadding: EdgeInsets.fromLTRB(5.0, 0, 0, 14.0),
-                        hintText: 'Search by Name',
-                        border: InputBorder.none,
-                        prefixIcon: Icon(Icons.search, color: Colors.black),
-                        suffixIcon: IconButton(
-                          padding: EdgeInsets.zero,
-                          icon: Icon(Icons.clear, color: Colors.black),
-                          onPressed: () {
-                            // Clear search field
-                          },
-                        ),
-                        hintStyle: GoogleFonts.lato(
-                          color: Colors.black87,
-                          fontSize: 16.0,
-                          fontWeight: FontWeight.normal,
-                        ),
-                      ),
-                    ),
+                    // child: TextField(
+                    //   style: GoogleFonts.lato(
+                    //     color: Colors.black,
+                    //     fontSize: 20,
+                    //   ),
+                    //   onChanged: (text) {
+                    //     isFieldEmpty = text.isEmpty;
+                    //     onSearchQueryChanged(text);
+                    //   },
+                    //   decoration: InputDecoration(
+                    //     contentPadding: EdgeInsets.fromLTRB(5.0, 0, 0, 14.0),
+                    //     hintText: 'Search by Student Name',
+                    //     border: InputBorder.none,
+                    //     prefixIcon: Icon(Icons.search, color: Colors.black),
+                    //     suffixIcon: IconButton(
+                    //       padding: EdgeInsets.zero,
+                    //       icon: Icon(Icons.clear, color: Colors.black),
+                    //       onPressed: () {
+                    //         // Clear search field
+                    //       },
+                    //     ),
+                    //     hintStyle: GoogleFonts.lato(
+                    //       color: Colors.black87,
+                    //       fontSize: 16.0,
+                    //       fontWeight: FontWeight.normal,
+                    //     ),
+                    //   ),
+                    // ),
+                    child: buildSearchTextField(),
                   ),
                   SizedBox(
                     width: MediaQuery.of(context).size.width * 0.02,
@@ -225,8 +233,8 @@ class _AuthorityTicketTableState extends State<AuthorityTicketTable> {
                       icon: Icon(Icons.filter_alt,
                           color: Colors.black87), // Filter icon
                       onPressed: () {
-                        // enableDateFilter=true;
-                        // _selectDateRange(context);
+                        enableDateFilter=true;
+                        _selectDateRange(context);
                       },
                     ),
                   ),
@@ -245,11 +253,11 @@ class _AuthorityTicketTableState extends State<AuthorityTicketTable> {
                       icon: Icon(Icons.filter_alt_off,
                           color: Colors.black87), // Filter icon
                       onPressed: () {
-                        // setState(() {
-                        //   enableDateFilter = !enableDateFilter;
-                        //   resetFilter(searchQuery);
-                        //   // filterTickets(searchQuery);
-                        // });
+                        setState(() {
+                          enableDateFilter = !enableDateFilter;
+                          resetFilter(searchQuery);
+
+                        });
                       },
                     ),
                   ),
@@ -260,12 +268,59 @@ class _AuthorityTicketTableState extends State<AuthorityTicketTable> {
 
 
                 // Expanded(child: ScrollableWidget(child: buildDataTable())),
-                acceptedRejectedStudentList(tickets),
+                acceptedRejectedStudentList(ticketsFiltered),
               ],
             ),
           ),
         ),
       );
+  TextField buildSearchTextField() {
+    TextEditingController _searchController = TextEditingController();
+
+    // Initialize controller value only if searchQuery is not empty
+    if (searchQuery.isNotEmpty) {
+      _searchController.text = searchQuery;
+      _searchController.selection = TextSelection.fromPosition(
+          TextPosition(offset: _searchController.text.length));
+    }
+
+    return TextField(
+      controller: _searchController,
+      style: GoogleFonts.lato(
+        color: Colors.black,
+        fontSize: 20,
+      ),
+      onChanged: (text) {
+
+        onSearchQueryChanged(text);
+
+      },
+      decoration: InputDecoration(
+        contentPadding: EdgeInsets.fromLTRB(5.0, 0, 0, 14.0),
+        hintText: 'Search by Student Name',
+        border: InputBorder.none,
+        prefixIcon: Icon(Icons.search, color: Colors.black),
+        suffixIcon: _searchController.text.isNotEmpty
+            ? IconButton(
+          padding: EdgeInsets.zero,
+          icon: Icon(Icons.clear, color: Colors.black),
+          onPressed: () {
+            setState(() {
+              _searchController.clear();
+              searchQuery = '';
+              filterTickets('');
+            });
+          },
+        )
+            : null,
+        hintStyle: GoogleFonts.lato(
+          color: Colors.black87,
+          fontSize: 16.0,
+          fontWeight: FontWeight.normal,
+        ),
+      ),
+    );
+  }
 
   Widget acceptedRejectedStudentList(List<ResultObj2> mytickets) {
     print(mytickets);

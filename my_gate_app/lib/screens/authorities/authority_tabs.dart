@@ -93,80 +93,6 @@ class _AuthorityTabsState extends State<AuthorityTabs>
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  // Container(
-                  //   color: Colors.black, // Black background color for the row
-                  //   child: Row(
-                  //     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  //     children: [
-                  //       // Pending Section
-                  //
-                  //       InkWell(
-                  //         onTap: () {
-                  //           // Handle onTap for pending section
-                  //         },
-                  //         child: Container(
-                  //           width: MediaQuery.of(context).size.width / 3, // Divide screen width by 3 for equal width sections
-                  //           height: 100, // Adjust the height as needed
-                  //           color: Colors.green, // Customize the color for Pending section
-                  //           child: Center(
-                  //             child: Text(
-                  //               "Pending",
-                  //               style: TextStyle(
-                  //                 color: Colors.white,
-                  //                 fontSize: 20,
-                  //                 fontWeight: FontWeight.bold,
-                  //               ),
-                  //             ),
-                  //           ),
-                  //         ),
-                  //       ),
-                  //
-                  //       // Approved Section
-                  //       InkWell(
-                  //         onTap: () {
-                  //           // Handle onTap for approved section
-                  //         },
-                  //         child: Container(
-                  //           width: MediaQuery.of(context).size.width / 3, // Divide screen width by 3 for equal width sections
-                  //           height: 100, // Adjust the height as needed
-                  //           color: Colors.blue, // Customize the color for Approved section
-                  //           child: Center(
-                  //             child: Text(
-                  //               "Approved",
-                  //               style: TextStyle(
-                  //                 color: Colors.white,
-                  //                 fontSize: 20,
-                  //                 fontWeight: FontWeight.bold,
-                  //               ),
-                  //             ),
-                  //           ),
-                  //         ),
-                  //       ),
-                  //
-                  //       // Rejected Section
-                  //       InkWell(
-                  //         onTap: () {
-                  //           // Handle onTap for rejected section
-                  //         },
-                  //         child: Container(
-                  //           width: MediaQuery.of(context).size.width / 3, // Divide screen width by 3 for equal width sections
-                  //           height: 100, // Adjust the height as needed
-                  //           color: Colors.red, // Customize the color for Rejected section
-                  //           child: Center(
-                  //             child: Text(
-                  //               "Rejected",
-                  //               style: TextStyle(
-                  //                 color: Colors.white,
-                  //                 fontSize: 20,
-                  //                 fontWeight: FontWeight.bold,
-                  //               ),
-                  //             ),
-                  //           ),
-                  //         ),
-                  //       ),
-                  //     ],
-                  //   ),
-                  // ),
                   SizedBox(height: 10),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -263,17 +189,7 @@ class _AuthorityTabsState extends State<AuthorityTabs>
                   SizedBox(
                     height: 40,
                   ),
-                  //
-                  // SizedBox(
-                  //   height: MediaQuery.of(context).size.height * 0.03,
-                  // ),
-                  // SizedBox(
-                  //   height: 300,
-                  //   child: Container(
-                  //     child: PendingAuthorityTicketTable(),
-                  //   ),
-                  // )
-            
+
                   SingleChildScrollView(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.stretch,

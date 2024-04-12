@@ -322,11 +322,18 @@ class _RelativesTicketTableState extends State<RelativesTicketTable> {
                           children: <Widget>[
                             ListTile(
                               title: Text(
-                                mytickets[index].student,
+                                mytickets[index].studentId,
                                 style: GoogleFonts.lato(
                                   fontWeight: FontWeight.w800,
                                   color: Colors.white,
                                   fontSize: 18,
+                                ),
+                              ),
+                              subtitle: Text(
+                                '${mytickets[index].studentName}',
+                                style: GoogleFonts.lato(
+                                  color: Colors.white,
+                                  fontSize: 16,
                                 ),
                               ),
                               // subtitle: Text(mytickets[index]
@@ -342,39 +349,61 @@ class _RelativesTicketTableState extends State<RelativesTicketTable> {
                                         .center,
                                     children: [
                                       Text(
-                                          "InviteeName :${tickets[index]
+                                          "InviteeName : ${tickets[index]
                                               .inviteeName}",
                                           style: GoogleFonts.lato(
                                             fontWeight: FontWeight.w600,
                                             color: Colors.black,
                                             fontSize: 15,
                                           )),
+                                      SizedBox(height: 2),
+
                                       Text(
-                                          "InviteeRelationship :${tickets[index]
+                                          "InviteeRelationship : ${tickets[index]
                                               .inviteeRelationship}",
                                           style: GoogleFonts.lato(
                                             fontWeight: FontWeight.w600,
                                             color: Colors.black,
                                             fontSize: 15,
                                           )),
+                                      SizedBox(height: 2),
+
                                       Text(
-                                          "InviteeContact :${tickets[index]
+                                          "InviteeContact : ${tickets[index]
                                               .inviteeContact}",
                                           style: GoogleFonts.lato(
                                             fontWeight: FontWeight.w600,
                                             color: Colors.black,
                                             fontSize: 15,
                                           )),
+                                      SizedBox(height: 2),
+
                                       Text(
-                                          "Purpose :${tickets[index]
+                                          "Visit_Date : ${tickets[index].visit_date}",
+                                          style: GoogleFonts.lato(
+                                            fontWeight: FontWeight.w600,
+                                            color: Colors.black,
+                                            fontSize: 15,
+                                          )),
+                                      SizedBox(height: 2),
+
+                                      Text(
+                                          "Durations(In-Days) : ${tickets[index].duration}",
+                                          style: GoogleFonts.lato(
+                                            fontWeight: FontWeight.w600,
+                                            color: Colors.black,
+                                            fontSize: 15,
+                                          )),
+                                      SizedBox(height: 2),
+                                      Text(
+                                          "Purpose : ${tickets[index]
                                               .purpose}",
                                           style: GoogleFonts.lato(
                                             fontWeight: FontWeight.w600,
                                             color: Colors.black,
                                             fontSize: 15,
                                           )),
-
-
+                                      SizedBox(height: 2),
                                       Row(
                                         mainAxisAlignment: MainAxisAlignment
                                             .center,

@@ -135,7 +135,9 @@ class _PendingAuthorityTicketTableState
       if (query.isEmpty) {
         ticketsFiltered = tickets
             .where((ticket) => DateTime.parse(ticket.date_time).isBefore(
-                DateTime.parse(chosen_end_date).add(Duration(days: 1))))
+                DateTime.parse(chosen_end_date).add(Duration(days: 1)))&&
+            DateTime.parse(ticket.date_time)
+                .isAfter(DateTime.parse(chosen_start_date)))
             .toList();
       } else {
         ticketsFiltered = tickets
@@ -158,6 +160,7 @@ class _PendingAuthorityTicketTableState
             .where((ticket) =>
                 ticket.student_name.toLowerCase().contains(query.toLowerCase()))
             .toList();
+        // print('jj${ticketsFiltered}');
       }
     }
   }
@@ -167,6 +170,12 @@ class _PendingAuthorityTicketTableState
       searchQuery = query;
       filterTickets(searchQuery);
     });
+  }
+
+  void resetFilter(String query) {
+    chosen_start_date = DateTime.now().subtract(Duration(days: 1)).toString();
+    chosen_end_date = DateTime.now().toString();
+    filterTickets(query);
   }
 
   Future<void> _selectDateRange(BuildContext context) async {
@@ -523,20 +532,23 @@ class _PendingAuthorityTicketTableState
                   fontSize: 20,
                 ),
                 onChanged: (text) {
-                  // isFieldEmpty = text.isEmpty;
-                  //
-                  // onSearchQueryChanged(text);
+                  print(text);
+                  isFieldEmpty = text.isEmpty;
+
+                  onSearchQueryChanged(text);
                 },
                 decoration: InputDecoration(
                   contentPadding: EdgeInsets.fromLTRB(5.0, 0, 0, 14.0),
-                  hintText: 'Search by Name',
+                  hintText: 'Search by Student Name',
                   border: InputBorder.none,
                   prefixIcon: Icon(Icons.search, color: Colors.black),
                   suffixIcon: IconButton(
                     padding: EdgeInsets.zero,
                     icon: Icon(Icons.clear, color: Colors.black),
                     onPressed: () {
-                      // Clear search field
+                      // isFieldEmpty = text.isEmpty;
+                      //
+                      // onSearchQueryChanged(text);
                     },
                   ),
                   hintStyle: GoogleFonts.lato(
@@ -562,11 +574,12 @@ class _PendingAuthorityTicketTableState
                 icon: Icon(Icons.filter_alt,
                     color: Colors.black87), // Filter icon
                 onPressed: () {
-                  // enableDateFilter=true;
-                  // _selectDateRange(context);
+                  enableDateFilter=true;
+                  _selectDateRange(context);
                 },
               ),
             ),
+
             SizedBox(
               width: MediaQuery.of(context).size.width * 0.02,
             ),
@@ -582,20 +595,21 @@ class _PendingAuthorityTicketTableState
                 icon: Icon(Icons.filter_alt_off,
                     color: Colors.black87), // Filter icon
                 onPressed: () {
-                  // setState(() {
-                  //   enableDateFilter = !enableDateFilter;
-                  //   resetFilter(searchQuery);
-                  //   // filterTickets(searchQuery);
-                  // });
+                  setState(() {
+                    enableDateFilter = !enableDateFilter;
+                    resetFilter(searchQuery);
+                    // filterTickets(searchQuery);
+                  });
                 },
               ),
             ),
           ]),
+
           SizedBox(
             height: MediaQuery.of(context).size.height * 0.03,
           ),
 
-          pendingStudentList(tickets),
+          pendingStudentList(ticketsFiltered),
           // buildSubmit(),
         ],
       ),
@@ -706,15 +720,12 @@ class _PendingAuthorityTicketTableState
                                     //       fontSize: 15,
                                     //     )),
                                     SizedBox(
-                                        height: 5
+                                        height: 8
                                     ),
                                     Container(
                                       width: MediaQuery.of(context).size.width * 0.4, // 80% of screen width
                                       height: 1, // Height of the divider
                                       color: Colors.black12, // Color of the divider
-                                    ),
-                                    SizedBox(
-                                        height: 5
                                     ),
                                     Padding(
                                       padding: EdgeInsets.fromLTRB(8.0, 0, 0, 0),

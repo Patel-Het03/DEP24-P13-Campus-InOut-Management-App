@@ -5448,6 +5448,7 @@ class GetStudentRelativeTicketsAPIView(APIView):
 
         # Serialize the ticket data
         serializer = InviteRequestSerializer(tickets, many=True)
+        print(serializer.data)
 
         return Response(serializer.data, status=status.HTTP_200_OK)
 
@@ -5466,6 +5467,12 @@ class AdminTicketStatusAPIView(APIView):
 
         # Serialize the ticket data
         serializer = InviteRequestSerializer(tickets, many=True)
+
+        for data in serializer.data:
+            student_id = data['student']
+            print(student_id)
+            student = Student.objects.get(entry_no=student_id)
+            data['studentName'] = student.st_name
 
         return Response(serializer.data, status=status.HTTP_200_OK)
 
