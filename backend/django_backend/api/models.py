@@ -352,6 +352,3 @@ class InviteRequest(models.Model):
     exit_time=models.DateTimeField(null=True, blank=True)
     guard_status = models.CharField(max_length=20, default='Pending')
     vehicle_number = models.CharField(max_length=100,null=True,blank=True, default=None) # Optional field
-    
-
-    
