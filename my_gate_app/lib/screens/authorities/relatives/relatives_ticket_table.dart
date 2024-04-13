@@ -318,9 +318,8 @@ class _RelativesTicketTableState extends State<RelativesTicketTable> {
                           borderRadius: BorderRadius.circular(
                               15), // Adjust the radius as needed
                         ),
-                        child: Column(
-                          children: <Widget>[
-                            ListTile(
+                        child: ExpansionTile(
+
                               title: Text(
                                 mytickets[index].studentId,
                                 style: GoogleFonts.lato(
@@ -339,10 +338,9 @@ class _RelativesTicketTableState extends State<RelativesTicketTable> {
                               // subtitle: Text(mytickets[index]
                               // .date_time_guard
                               // .toString()),
-                              onTap: () => toggleExpansion(index),
-                            ),
 
-                            if (isExpanded)
+
+              children: <Widget>[
                               Container(
                                 child: Column(
                                     crossAxisAlignment: CrossAxisAlignment

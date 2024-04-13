@@ -134,10 +134,11 @@ class _PendingAuthorityTicketTableState
     if (enableDateFilter) {
       if (query.isEmpty) {
         ticketsFiltered = tickets
-            .where((ticket) => DateTime.parse(ticket.date_time).isBefore(
-                DateTime.parse(chosen_end_date).add(Duration(days: 1)))&&
-            DateTime.parse(ticket.date_time)
-                .isAfter(DateTime.parse(chosen_start_date)))
+            .where((ticket) =>
+                DateTime.parse(ticket.date_time).isBefore(
+                    DateTime.parse(chosen_end_date).add(Duration(days: 1))) &&
+                DateTime.parse(ticket.date_time)
+                    .isAfter(DateTime.parse(chosen_start_date)))
             .toList();
       } else {
         ticketsFiltered = tickets
@@ -574,12 +575,11 @@ class _PendingAuthorityTicketTableState
                 icon: Icon(Icons.filter_alt,
                     color: Colors.black87), // Filter icon
                 onPressed: () {
-                  enableDateFilter=true;
+                  enableDateFilter = true;
                   _selectDateRange(context);
                 },
               ),
             ),
-
             SizedBox(
               width: MediaQuery.of(context).size.width * 0.02,
             ),
@@ -659,179 +659,174 @@ class _PendingAuthorityTicketTableState
                         borderRadius: BorderRadius.circular(
                             15), // Adjust the radius as needed
                       ),
-                      child: Column(
-                        children: <Widget>[
-                          ListTile(
-                            title: Text(
-                              mytickets[index].student_name,
-                              style: GoogleFonts.lato(
-                                fontWeight: FontWeight.w800,
-                                color: Colors.white,
-                                fontSize: 18,
-                              ),
-                            ),
-                            // subtitle: Text(mytickets[index]
-                            // .date_time_guard
-                            // .toString()),
-                            onTap: () => toggleExpansion(index),
+                      child: ExpansionTile(
+                        title: Text(
+                          mytickets[index].student_name,
+                          style: GoogleFonts.lato(
+                            fontWeight: FontWeight.w800,
+                            color: Colors.white,
+                            fontSize: 18,
                           ),
+                        ),
+                        // subtitle: Text(mytickets[index]
+                        // .date_time_guard
+                        // .toString()),
 
-                          if (isExpanded)
-                            Container(
-                              child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Text(
-                                        "Student :${tickets[index].student_name}",
-                                        style: GoogleFonts.lato(
-                                          fontWeight: FontWeight.w600,
-                                          color: Colors.black,
-                                          fontSize: 15,
-                                        )),
-                                    Text("Location :${tickets[index].location}",
-                                        style: GoogleFonts.lato(
-                                          fontWeight: FontWeight.w600,
-                                          color: Colors.black,
-                                          fontSize: 15,
-                                        )),
-                                    Text(
-                                        "Time :${((tickets[index].date_time.split("T").last).split(".")[0].split(":").sublist(0, 2)).join(":")}",
-                                        style: GoogleFonts.lato(
-                                          fontWeight: FontWeight.w600,
-                                          color: Colors.black,
-                                          fontSize: 15,
-                                        )),
-                                    Text(
-                                        "Ticket_type :${tickets[index].ticket_type}",
-                                        style: GoogleFonts.lato(
-                                          fontWeight: FontWeight.w600,
-                                          color: Colors.black,
-                                          fontSize: 15,
-                                        )),
-                                    // TextField(
-                                    //     onChanged: (text) {
-                                    //       this.tickets[index].authority_message = text;
-                                    //     },
-                                    //     "Authority_message :${tickets[index].authority_message}",
-                                    //     style: GoogleFonts.lato(
-                                    //       fontWeight: FontWeight.w600,
-                                    //       color: Colors.black,
-                                    //       fontSize: 15,
-                                    //     )),
-                                    SizedBox(
-                                        height: 8
-                                    ),
-                                    Container(
-                                      width: MediaQuery.of(context).size.width * 0.4, // 80% of screen width
-                                      height: 1, // Height of the divider
-                                      color: Colors.black12, // Color of the divider
-                                    ),
-                                    Padding(
-                                      padding: EdgeInsets.fromLTRB(8.0, 0, 0, 0),
-                                      child: Row(
-                                        mainAxisAlignment: MainAxisAlignment.center,
-                                        children: [
-                                          Text(
-                                            "Authority_Message: ",
-                                            style: GoogleFonts.lato(
-                                              fontWeight: FontWeight.w600,
-                                              color: Colors.black,
-                                              fontSize: 15,
-                                            ),
-                                          ),
-                                          Expanded(
-                                            child: TextField(
-                                              onChanged: (text) {
-                                                setState(() {
-                                                  tickets[index].authority_message = text;
-                                                });
-                                              },
-                                              decoration: InputDecoration(
-                                                hintText: "Enter Authority Message",
-                                                hintStyle: TextStyle(
-                                                  color: Colors.white54,
-                                                ),
-                                                border: InputBorder.none,
-                                              ),
-                                              style: GoogleFonts.lato(
-                                                fontWeight: FontWeight.w400,
-                                                color: Colors.black,
-                                                fontSize: 15,
-                                              ),
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-
-
-                                    SizedBox(
-                                        height: 5
-                                    ),
-                                    Container(
-                                      width: MediaQuery.of(context).size.width * 0.8, // 80% of screen width
-                                      height: 1, // Height of the divider
-                                      color: Colors.black12, // Color of the divider
-                                    ),
-                                    SizedBox(
-                                        height: 5
-                                    ),
-                                    Row(
-                                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: <Widget>[
+                          Container(
+                            child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Text(
+                                      "Student :${tickets[index].student_name}",
+                                      style: GoogleFonts.lato(
+                                        fontWeight: FontWeight.w600,
+                                        color: Colors.black,
+                                        fontSize: 15,
+                                      )),
+                                  Text("Location :${tickets[index].location}",
+                                      style: GoogleFonts.lato(
+                                        fontWeight: FontWeight.w600,
+                                        color: Colors.black,
+                                        fontSize: 15,
+                                      )),
+                                  Text(
+                                      "Time :${((tickets[index].date_time.split("T").last).split(".")[0].split(":").sublist(0, 2)).join(":")}",
+                                      style: GoogleFonts.lato(
+                                        fontWeight: FontWeight.w600,
+                                        color: Colors.black,
+                                        fontSize: 15,
+                                      )),
+                                  Text(
+                                      "Ticket_type :${tickets[index].ticket_type}",
+                                      style: GoogleFonts.lato(
+                                        fontWeight: FontWeight.w600,
+                                        color: Colors.black,
+                                        fontSize: 15,
+                                      )),
+                                  // TextField(
+                                  //     onChanged: (text) {
+                                  //       this.tickets[index].authority_message = text;
+                                  //     },
+                                  //     "Authority_message :${tickets[index].authority_message}",
+                                  //     style: GoogleFonts.lato(
+                                  //       fontWeight: FontWeight.w600,
+                                  //       color: Colors.black,
+                                  //       fontSize: 15,
+                                  //     )),
+                                  SizedBox(height: 8),
+                                  Container(
+                                    width: MediaQuery.of(context).size.width *
+                                        0.4, // 80% of screen width
+                                    height: 1, // Height of the divider
+                                    color:
+                                        Colors.black12, // Color of the divider
+                                  ),
+                                  Padding(
+                                    padding: EdgeInsets.fromLTRB(8.0, 0, 0, 0),
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
                                       children: [
-                                        ElevatedButton(
-                                          onPressed: () async{
-                                            selectedTickets_action.add(tickets[index]);
-                                            await accept_action_tickets_authorities();
-                                          },
-                                          style: ElevatedButton.styleFrom(
-                                            shape: RoundedRectangleBorder(
-                                              borderRadius: BorderRadius.circular(5), // Adjust the radius as needed
-                                            ),
-                                          ),
-                                          child: Text(
-                                            "Accept",
-                                            style: GoogleFonts.mPlusRounded1c(
-                                              color: Colors.white,
-                                            ),
+                                        Text(
+                                          "Authority_Message: ",
+                                          style: GoogleFonts.lato(
+                                            fontWeight: FontWeight.w600,
+                                            color: Colors.black,
+                                            fontSize: 15,
                                           ),
                                         ),
-                                        ElevatedButton(
-                                          onPressed: () async{
-                                            selectedTickets_action.add(tickets[index]);
-                                            await reject_action_tickets_authorities();
-                                          },
-                                          style: ElevatedButton.styleFrom(
-                                            shape: RoundedRectangleBorder(
-                                              borderRadius: BorderRadius.circular(5), // Adjust the radius as needed
+                                        Expanded(
+                                          child: TextField(
+                                            onChanged: (text) {
+                                              setState(() {
+                                                tickets[index]
+                                                    .authority_message = text;
+                                              });
+                                            },
+                                            decoration: InputDecoration(
+                                              hintText:
+                                                  "Enter Authority Message",
+                                              hintStyle: TextStyle(
+                                                color: Colors.white54,
+                                              ),
+                                              border: InputBorder.none,
                                             ),
-                                          ),
-                                          child: Text(
-                                            "Reject",
-                                            style: GoogleFonts.mPlusRounded1c(
-                                              color: Colors.white,
+                                            style: GoogleFonts.lato(
+                                              fontWeight: FontWeight.w400,
+                                              color: Colors.black,
+                                              fontSize: 15,
                                             ),
                                           ),
                                         ),
                                       ],
                                     ),
-                                  ]),
+                                  ),
 
-                            ),
-
+                                  SizedBox(height: 5),
+                                  Container(
+                                    width: MediaQuery.of(context).size.width *
+                                        0.8, // 80% of screen width
+                                    height: 1, // Height of the divider
+                                    color:
+                                        Colors.black12, // Color of the divider
+                                  ),
+                                  SizedBox(height: 5),
+                                  Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceEvenly,
+                                    children: [
+                                      ElevatedButton(
+                                        onPressed: () async {
+                                          selectedTickets_action
+                                              .add(tickets[index]);
+                                          await accept_action_tickets_authorities();
+                                        },
+                                        style: ElevatedButton.styleFrom(
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius: BorderRadius.circular(
+                                                5), // Adjust the radius as needed
+                                          ),
+                                        ),
+                                        child: Text(
+                                          "Accept",
+                                          style: GoogleFonts.mPlusRounded1c(
+                                            color: Colors.white,
+                                          ),
+                                        ),
+                                      ),
+                                      ElevatedButton(
+                                        onPressed: () async {
+                                          selectedTickets_action
+                                              .add(tickets[index]);
+                                          await reject_action_tickets_authorities();
+                                        },
+                                        style: ElevatedButton.styleFrom(
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius: BorderRadius.circular(
+                                                5), // Adjust the radius as needed
+                                          ),
+                                        ),
+                                        child: Text(
+                                          "Reject",
+                                          style: GoogleFonts.mPlusRounded1c(
+                                            color: Colors.white,
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ]),
+                          ),
                         ],
                       ),
                     ),
                     SizedBox(
                       height: 5,
                     ),
-                  ]
-
-              ),
-
+                  ]),
             );
-
           },
         ),
       ),

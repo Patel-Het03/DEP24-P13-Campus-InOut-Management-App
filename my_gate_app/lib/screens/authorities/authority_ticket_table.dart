@@ -347,9 +347,9 @@ class _AuthorityTicketTableState extends State<AuthorityTicketTable> {
                           borderRadius: BorderRadius.circular(
                               15), // Adjust the radius as needed
                         ),
-                        child: Column(
-                          children: <Widget>[
-                            ListTile(
+                        child: ExpansionTile(
+                          // children: <Widget>[
+                          //   ListTile(
                               title: Text(
                                 mytickets[index].student_name,
                                 style: GoogleFonts.lato(
@@ -361,11 +361,12 @@ class _AuthorityTicketTableState extends State<AuthorityTicketTable> {
                               // subtitle: Text(mytickets[index]
                               // .date_time_guard
                               // .toString()),
-                              onTap: () => toggleExpansion(index),
-                            ),
+                            //   onTap: () => toggleExpansion(index),
+                            // ),
 
-                            if (isExpanded)
-                              Container(
+                            // if (isExpanded)
+                          children: <Widget>[
+                            Container(
                                 child: Column(
                                     crossAxisAlignment: CrossAxisAlignment.center,
                                     children: [
@@ -462,8 +463,9 @@ class _AuthorityTicketTableState extends State<AuthorityTicketTable> {
                                     ]),
 
                               ),
-
                           ],
+
+                          // ],
                         ),
                       ),
                       SizedBox(
