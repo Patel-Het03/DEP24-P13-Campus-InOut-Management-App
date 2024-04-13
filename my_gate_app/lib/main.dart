@@ -55,13 +55,6 @@ class AuthWrapper extends StatelessWidget {
     return Consumer<AuthState>(
       builder: (context, authStatus, _) {
         if (!authStatus.loggedIn) {
-          // print("&& Build AuthWrapper");
-          // WidgetsBinding.instance.addPostFrameCallback((_) {
-          //   Navigator.of(context).pushAndRemoveUntil(
-          //     MaterialPageRoute(builder: (context) => AuthScreen()),
-          //     (Route<dynamic> route) => false,
-          //   );
-          // });
           return AuthScreen();
         }
         else{
@@ -111,8 +104,8 @@ class Home extends StatelessWidget {
               return Splash();
             }
           } else {
-            // return Splash();
-            return Text('not intended try to uncomment above line');
+            return Splash();
+            // return Text('not intended try to uncomment above line');
           }
         } else {
           return Splash();

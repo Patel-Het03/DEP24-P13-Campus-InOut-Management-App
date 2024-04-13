@@ -485,6 +485,11 @@ class databaseInterface {
       // respone.body.toString();
       var data = json.decode(response.body);
       String message = data['message'];
+      if(op==2 && response.statusCode==200){
+       SharedPreferences prefs= await SharedPreferences.getInstance();
+       prefs.setString("reset_password_token", data['token']);
+       prefs.setString("reset_password_uid", data['uidb64']);
+      }
       return message;
     } catch (e) {
       print("OTP error=${e.toString()}");
@@ -496,10 +501,14 @@ class databaseInterface {
   static Future<String> reset_password(String email, String password) async {
     var uri = "$complete_base_url_static/reset_password";
     try {
+      SharedPreferences prefs= await SharedPreferences.getInstance();
+       String token= prefs.getString("reset_password_token")!;
+       String uid = prefs.getString("reset_password_uid")!;
       var response = await http.post(
         Uri.parse(uri),
         body: {
-          'email': email,
+          'token':token,
+          'uidb64':uid,
           'password': password,
         },
       );
@@ -2383,5 +2392,53 @@ class databaseInterface {
       throw Exception('Failed to load data');
     } 
 
+  }
+
+  static Future<List<InviteeRecord>> getInviteeRecords(
+      String entryChoice, String statusType) async {
+    String uri = '$complete_base_url_static/inviteeRecords?entry_choice=$entryChoice&status_type=$statusType';
+    try {
+      var response = await http.get(Uri.parse(uri));
+
+      if (response.statusCode == 200) {
+        List<dynamic> responseData = json.decode(response.body);
+        return responseData
+            .map((json) => InviteeRecord.fromJson(json))
+            .toList()
+            .cast<InviteeRecord>();
+      } else {
+        print("Server Error in getInviteeRecords");
+        return [];
+      }
+    } catch (e) {
+      print("Exception while getting invitee records");
+      print("Error: ${e.toString()}");
+      return [];
+    }
+  }
+
+  static Future<String?> updateInviteeRecordStatus(
+      int recordId, String newStatus) async {
+    String uri = '$complete_base_url_static/updateInviteeRecordStatus';
+    try {
+      var response = await http.post(
+        Uri.parse(uri),
+        body:{
+          'record_id': recordId.toString() ,
+          'status': newStatus,
+        },
+      );
+
+      if (response.statusCode == 200) {
+        Map<String, dynamic> responseData = json.decode(response.body);
+        return responseData['message'];
+      } else {
+        print("Server Error: ${response.statusCode}");
+        return null;
+      }
+    } catch (e) {
+      print("Exception while updating invitee record status: $e");
+      return null;
+    }
   }
 }
