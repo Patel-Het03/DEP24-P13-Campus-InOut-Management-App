@@ -580,7 +580,6 @@ class _PendingAuthorityTicketTableState
                 },
               ),
             ),
-
             SizedBox(
               width: MediaQuery.of(context).size.width * 0.02,
             ),

@@ -47,11 +47,10 @@ class _PendingRelativeTicketTable extends State<PendingRelativeTicketTable> {
     });
   }
 
-
-
-  Future<void> accept_action_relatives_tickets_authorities(String ticket_id ) async {
-    int status_code =
-    await databaseInterface.accept_action_relatives_tickets_authorities(ticket_id);
+  Future<void> accept_action_relatives_tickets_authorities(
+      String ticket_id) async {
+    int status_code = await databaseInterface
+        .accept_action_relatives_tickets_authorities(ticket_id);
     if (status_code == 200) {
       await init();
       final snackBar = get_snack_bar("Ticket accepted", Colors.green);
@@ -62,9 +61,10 @@ class _PendingRelativeTicketTable extends State<PendingRelativeTicketTable> {
     }
   }
 
-  Future<void> reject_action_relatives_tickets_authorities(String ticket_id) async {
-    int status_code =
-    await databaseInterface.reject_action_relatives_tickets_authorities(ticket_id);
+  Future<void> reject_action_relatives_tickets_authorities(
+      String ticket_id) async {
+    int status_code = await databaseInterface
+        .reject_action_relatives_tickets_authorities(ticket_id);
     print("The status code is $status_code");
     if (status_code == 200) {
       await init();
@@ -139,13 +139,12 @@ class _PendingRelativeTicketTable extends State<PendingRelativeTicketTable> {
   void initState() {
     super.initState();
     init();
-
   }
 
   Future<List<StuRelTicket>> Get_relatives_ticket_for_authority() async {
     // String authority_email = LoggedInDetails.getEmail();
-    return await databaseInterface
-        .Get_relatives_ticket_for_authority('Pending');
+    return await databaseInterface.Get_relatives_ticket_for_authority(
+        'Pending');
   }
 
   Future init() async {
