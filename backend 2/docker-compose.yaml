@@ -1,0 +1,19 @@
+version: '3.9'
+
+services:
+  db:
+    image: jayrajsinh255/in-out-management-backend/postgres
+    env_file:
+      - ./django_backend/.env
+  web:
+    build: .
+    image: jayrajsinh255/in-out-management-backend/web
+    command: bash -c "python ./django_backend/manage.py migrate && python ./django_backend/manage.py runserver 0.0.0.0:8000"
+    volumes:
+      - .:/app
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+    env_file:
+      - ./django_backend/.env

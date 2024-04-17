@@ -1,0 +1,5 @@
+db.sqlite3
+api/migrations/
+api/__pycache__/
+django_backend/migrations/
+django_backend/__pycache__/
