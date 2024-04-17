@@ -187,7 +187,7 @@ class _StuRelativesState extends State<Stu_Relatives>
                           ? PendingRelativeTicketTable()
                           : _ticket == Status.accepted
                           ? StreamRelativesTicketTable(
-                        is_approved: "Approved",
+                        is_approved: "Accepted",
                         image_path: 'assets/images/approved.jpg',
                       )
                           : StreamRelativesTicketTable(

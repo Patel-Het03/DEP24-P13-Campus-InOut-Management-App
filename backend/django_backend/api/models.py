@@ -351,16 +351,6 @@ class InviteRequest(models.Model):
     purpose = models.TextField()
     status = models.CharField(max_length=20, default='Pending')
     created_at = models.DateTimeField(auto_now_add=True)
-    # enter_time=models.DateTimeField(null=True,blank=True)
-    # exit_time=models.DateTimeField(null=True, blank=True)
-    # guard_status = models.CharField(max_length=20, default='Pending')
+    visit_date = models.CharField(null=True, blank=True)
+    duration = models.CharField(null=True, blank=True)
     cached_vehicle_number = models.CharField(max_length=100,null=True,blank=True, default=None) # Optional field
-
-class InviteeTicketRecord(models.Model):
-
-    record_id = models.AutoField(primary_key=True)
-    invite_request = models.ForeignKey(InviteRequest, on_delete=models.CASCADE)
-    vehicle_number = models.CharField(max_length=20,blank=True,default="")
-    time = models.DateTimeField(auto_now_add=True)
-    type = models.CharField(max_length=10, choices=ENTRY_CHOICES)
-    status = models.CharField(max_length=20, choices=(('Accepted', 'Accepted'), ('Rejected', 'Rejected')),default='Accepted')

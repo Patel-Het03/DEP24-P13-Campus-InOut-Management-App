@@ -135,6 +135,9 @@ class _InviteeFormState extends State<InviteeForm> {
   String _relationship = '';
   String _contact = '';
   String _purpose = '';
+  late DateTime _selectedDate = DateTime.now(); // Initialize with current date
+  String _durations = ''; // Initialize with current date
+
 
   @override
   Widget build(BuildContext context) {
@@ -248,6 +251,65 @@ class _InviteeFormState extends State<InviteeForm> {
                   },
                 ),
                 SizedBox(height: 30),
+                TextFormField(
+                  readOnly: true, // Make the field read-only
+                  controller: TextEditingController(
+                      text:
+                      '${_selectedDate.day}/${_selectedDate.month}/${_selectedDate.year}'),
+                  decoration: InputDecoration(
+                    labelText: 'Visit Date',
+                    labelStyle: GoogleFonts.mPlusRounded1c(color: Colors.black),
+                    enabledBorder: UnderlineInputBorder(
+                      borderSide: BorderSide(color: Colors.black),
+                    ),
+                    focusedBorder: UnderlineInputBorder(
+                      borderSide: BorderSide(color: Colors.black),
+                    ),
+                  ),
+                  onTap: () async {
+                    final DateTime? pickedDate = await showDatePicker(
+                      context: context,
+                      initialDate: _selectedDate,
+                      firstDate: DateTime(2022),
+                      lastDate: DateTime(2100),
+                    );
+                    if (pickedDate != null && pickedDate != _selectedDate) {
+                      setState(() {
+                        _selectedDate = pickedDate;
+                      });
+                    }
+
+                  },
+                    style: TextStyle(
+                        color: Colors.black
+                    ),
+                ),
+
+                SizedBox(height: 20),
+                TextFormField(
+                  decoration: InputDecoration(
+                    labelText: 'Duration of Visit (in days)',
+                    hintText: 'Enter duration of visit in days',
+                    labelStyle: GoogleFonts.mPlusRounded1c(color: Colors.black),
+                    enabledBorder: UnderlineInputBorder(
+                      borderSide: BorderSide(color: Colors.black),
+                    ),
+                    focusedBorder: UnderlineInputBorder(
+                      borderSide: BorderSide(color: Colors.black),
+                    ),
+                  ),
+                  style: TextStyle(color: Colors.black),
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Please enter the duration of visit';
+                    }
+                    return null;
+                  },
+                  onSaved: (value) {
+                    _durations = value!;
+                  },
+                ),
+                SizedBox(height: 20),
                 ElevatedButton(
                   onPressed: () async{
                     if (_formKey.currentState!.validate()) {
@@ -266,12 +328,17 @@ class _InviteeFormState extends State<InviteeForm> {
                       String extractedStudent=extracted.toUpperCase();
                       print(extractedStudent);
                       int statusCode;
+                      String formattedDate = '${_selectedDate.day.toString().padLeft(2, '0')}/${_selectedDate.month.toString().padLeft(2, '0')}/${_selectedDate.year}';
+                      print('edgjkweq'+formattedDate);
+                      print('edgjkweq'+_durations);
                       statusCode= await  db.GenerateRelativesTicket(
                         extractedStudent,
                          _name,
                         _relationship,
                         _contact,
                         _purpose,
+                        formattedDate,
+                        _durations,
                       );
                       if(statusCode==200){
                         ScaffoldMessenger.of(context).showSnackBar(
@@ -322,8 +389,8 @@ class InviteeStatus extends StatefulWidget {
 
 class _InviteeStatusState extends State<InviteeStatus> {
   String searchQuery = '';
-  List<RelativeResultObj> tickets = []; // Define necessary variables
-  List<RelativeResultObj> ticketsFiltered = [];
+  List<StuRelTicket> tickets = []; // Define necessary variables
+  List<StuRelTicket> ticketsFiltered = [];
   int selectedIndex = -1; // Define selectedIndex variable
 
   @override
@@ -346,7 +413,7 @@ class _InviteeStatusState extends State<InviteeStatus> {
       String extractedStudent=extracted.toUpperCase();
       
 
-      List<RelativeResultObj> fetchedTickets = 
+      List<StuRelTicket> fetchedTickets =
       await databaseInterface.GetStudentRelativeTickets(extractedStudent);
 
       setState(() {
@@ -374,11 +441,6 @@ class _InviteeStatusState extends State<InviteeStatus> {
       version: QrVersions.auto,
       errorCorrectionLevel: QrErrorCorrectLevel.L,
     );
-
-
-
-
-
 
     if (qrValidationResult.isValid) {
       final QrCode? qrCode = qrValidationResult.qrCode;
@@ -420,15 +482,28 @@ class _InviteeStatusState extends State<InviteeStatus> {
       await myshare.Share.shareXFiles([myshare.XFile(file.path, mimeType: "image/jpg")]);
     }
   }
-  String getQrData(RelativeResultObj ticket){
+  String getQrData(StuRelTicket ticket){
     String data="";
     Map<String,String> obj={
       "type":"invited_visitor",
-      "ticket_id":ticket.ticket_id,
+      "ticket_id":ticket.ticketId,
     };
     data=jsonEncode(obj);
     return data;
   }
+  Color getColorForStatus(String status) {
+    switch (status) {
+      case "Pending":
+        return Color(0xff3E3E3E); // Change to your desired color
+      case "Accepted":
+        return Color(0xff3E5D5D); // Change to your desired color
+      case "Rejected":
+        return Color(0xff3E1313); // Change to your desired color
+      default:
+        return Colors.grey; // Default color
+    }
+  }
+
 
 
   @override
@@ -453,14 +528,14 @@ class _InviteeStatusState extends State<InviteeStatus> {
                       children: [
                         Container(
                           decoration: BoxDecoration(
-                            color: Color(0xff3E3E3E),
+                            color: getColorForStatus(ticketsFiltered[index].status),
                             borderRadius: BorderRadius.circular(15),
                           ),
                           child: ListTile(
                             title: Row(
                               children: [
                                 Text(
-                                  ticketsFiltered[index].name,
+                                  ticketsFiltered[index].inviteeName,
                                   style: TextStyle(
                                     fontWeight: FontWeight.bold,
                                     fontSize: 16,
@@ -535,7 +610,22 @@ class _InviteeStatusState extends State<InviteeStatus> {
                                 ),
                                 SizedBox(height: 4),
                                 Text(
-                                  'Mobile Number: ${ticketsFiltered[index].mobileNumber}',
+                                  'Invitee_Relationship: ${ticketsFiltered[index].inviteeRelationship}',
+                                ),
+                                SizedBox(height: 4),
+                                Text(
+                                  'Mobile Number: ${ticketsFiltered[index].inviteeContact}',
+                                ),
+                                SizedBox(height: 4),
+                                Text(
+                                  'Purpose: ${ticketsFiltered[index].purpose}',
+                                ),SizedBox(height: 4),
+                                Text(
+                                  'Visit_date: ${ticketsFiltered[index].visit_date}',
+                                ),
+                                SizedBox(height: 4),
+                                Text(
+                                  'Durations: ${ticketsFiltered[index].duration}',
                                 ),
                                 // Add more details here as needed
                               ],

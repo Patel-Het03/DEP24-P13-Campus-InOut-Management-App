@@ -5448,6 +5448,7 @@ class GetStudentRelativeTicketsAPIView(APIView):
 
         # Serialize the ticket data
         serializer = InviteRequestSerializer(tickets, many=True)
+        print(serializer.data)
 
         return Response(serializer.data, status=status.HTTP_200_OK)
 
@@ -5466,6 +5467,12 @@ class AdminTicketStatusAPIView(APIView):
 
         # Serialize the ticket data
         serializer = InviteRequestSerializer(tickets, many=True)
+
+        for data in serializer.data:
+            student_id = data['student']
+            print(student_id)
+            student = Student.objects.get(entry_no=student_id)
+            data['studentName'] = student.st_name
 
         return Response(serializer.data, status=status.HTTP_200_OK)
 
@@ -5504,7 +5511,7 @@ class RejectTicketAPIView(APIView):
             return Response({"message": "Ticket not found."}, status=status.HTTP_404_NOT_FOUND)
         
         # Check if the ticket status is pending or rejected
-        if ticket.status in ['Pending']:
+        if ticket.status in ['Pending','Accepted']:
             ticket.status = 'Rejected'
             ticket.save()
             return Response({"message": "Ticket rejected successfully."}, status=status.HTTP_200_OK)

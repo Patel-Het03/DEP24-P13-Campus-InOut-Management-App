@@ -14,11 +14,9 @@ class RelativesTicketTable extends StatefulWidget {
   RelativesTicketTable({
     super.key,
     required this.is_approved,
-    required this.tickets,
     required this.image_path,
   });
   final String is_approved;
-  List<StuRelTicket> tickets;
   final String image_path;
 
   @override
@@ -44,42 +42,49 @@ class _RelativesTicketTableState extends State<RelativesTicketTable> {
   @override
   void initState() {
     super.initState();
-    // init();
+    init();
   }
 
-  // Future<List<ResultObj2>> get_tickets_for_authority() async {
-  //   String authority_email = LoggedInDetails.getEmail();
-  //   print(widget.is_approved);
-  //   return await databaseInterface.get_tickets_for_authorities(
-  //       authority_email, widget.is_approved);
-  // }
-  // Future<void> reject_action_tickets_authorities() async {
-  //   databaseInterface db = new databaseInterface();
-  //   int status_code =
-  //   await db.reject_selected_tickets_authorities(selectedTickets_action);
-  //   print("The status code is $status_code");
-  //   if (status_code == 200) {
-  //     await init();
-  //     final snackBar = get_snack_bar("Ticket rejected", Colors.green);
-  //     ScaffoldMessenger.of(context).showSnackBar(snackBar);
-  //   } else {
-  //     final snackBar = get_snack_bar("Failed to reject the ticket", Colors.red);
-  //     ScaffoldMessenger.of(context).showSnackBar(snackBar);
-  //   }
-  // }
-  // Future<void> accept_action_tickets_authorities() async {
-  //   databaseInterface db = new databaseInterface();
-  //   int status_code =
-  //   await db.accept_selected_tickets_authorities(selectedTickets_action);
-  //   if (status_code == 200) {
-  //     await init();
-  //     final snackBar = get_snack_bar("Ticket accepted", Colors.green);
-  //     ScaffoldMessenger.of(context).showSnackBar(snackBar);
-  //   } else {
-  //     final snackBar = get_snack_bar("Failed to accept the ticket", Colors.red);
-  //     ScaffoldMessenger.of(context).showSnackBar(snackBar);
-  //   }
-  // }
+  Future<List<StuRelTicket>> Get_relatives_ticket_for_authority() async {
+    print(widget.is_approved);
+    return await databaseInterface.Get_relatives_ticket_for_authority(widget.is_approved);
+  }
+  Future init() async {
+    final Bactickets = await Get_relatives_ticket_for_authority();
+    setState(() {
+      tickets = Bactickets;
+
+    });
+    // filterTickets(searchQuery);
+  }
+
+  Future<void> accept_action_relatives_tickets_authorities(String ticket_id ) async {
+    int status_code =
+    await databaseInterface.accept_action_relatives_tickets_authorities(ticket_id);
+    if (status_code == 200) {
+      await init();
+      final snackBar = get_snack_bar("Ticket accepted", Colors.green);
+      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+    } else {
+      final snackBar = get_snack_bar("Failed to accept the ticket", Colors.red);
+      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+    }
+  }
+
+  Future<void> reject_action_relatives_tickets_authorities(String ticket_id) async {
+    int status_code =
+    await databaseInterface.reject_action_relatives_tickets_authorities(ticket_id);
+    print("The status code is $status_code");
+    if (status_code == 200) {
+      await init();
+      final snackBar = get_snack_bar("Ticket rejected", Colors.green);
+      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+    } else {
+      final snackBar = get_snack_bar("Failed to reject the ticket", Colors.red);
+      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+    }
+  }
+
   void toggleExpansion(int index) {
     setState(() {
       if (selectedIndex == index) {
@@ -90,15 +95,7 @@ class _RelativesTicketTableState extends State<RelativesTicketTable> {
     });
   }
 
-  // Future init() async {
-  //   final Bactickets = await get_tickets_for_authority();
-  //   setState(() {
-  //     tickets = Bactickets;
-  //
-  //   });
-  //   filterTickets(searchQuery);
-  //
-  // }
+
   //
   // void filterTickets(String query) {
   //   if (enableDateFilter) {
@@ -321,9 +318,8 @@ class _RelativesTicketTableState extends State<RelativesTicketTable> {
                           borderRadius: BorderRadius.circular(
                               15), // Adjust the radius as needed
                         ),
-                        child: Column(
-                          children: <Widget>[
-                            ListTile(
+                        child: ExpansionTile(
+
                               title: Text(
                                 mytickets[index].studentId,
                                 style: GoogleFonts.lato(
@@ -332,51 +328,80 @@ class _RelativesTicketTableState extends State<RelativesTicketTable> {
                                   fontSize: 18,
                                 ),
                               ),
+                              subtitle: Text(
+                                '${mytickets[index].studentName}',
+                                style: GoogleFonts.lato(
+                                  color: Colors.white,
+                                  fontSize: 16,
+                                ),
+                              ),
                               // subtitle: Text(mytickets[index]
                               // .date_time_guard
                               // .toString()),
-                              onTap: () => toggleExpansion(index),
-                            ),
 
-                            if (isExpanded)
+
+              children: <Widget>[
                               Container(
                                 child: Column(
                                     crossAxisAlignment: CrossAxisAlignment
                                         .center,
                                     children: [
                                       Text(
-                                          "InviteeName :${tickets[index]
+                                          "InviteeName : ${tickets[index]
                                               .inviteeName}",
                                           style: GoogleFonts.lato(
                                             fontWeight: FontWeight.w600,
                                             color: Colors.black,
                                             fontSize: 15,
                                           )),
+                                      SizedBox(height: 2),
+
                                       Text(
-                                          "InviteeRelationship :${tickets[index]
+                                          "InviteeRelationship : ${tickets[index]
                                               .inviteeRelationship}",
                                           style: GoogleFonts.lato(
                                             fontWeight: FontWeight.w600,
                                             color: Colors.black,
                                             fontSize: 15,
                                           )),
+                                      SizedBox(height: 2),
+
                                       Text(
-                                          "InviteeContact :${tickets[index]
+                                          "InviteeContact : ${tickets[index]
                                               .inviteeContact}",
                                           style: GoogleFonts.lato(
                                             fontWeight: FontWeight.w600,
                                             color: Colors.black,
                                             fontSize: 15,
                                           )),
+                                      SizedBox(height: 2),
+
                                       Text(
-                                          "Ticket_type :${tickets[index]
-                                              .status}",
+                                          "Visit_Date : ${tickets[index].visit_date}",
                                           style: GoogleFonts.lato(
                                             fontWeight: FontWeight.w600,
                                             color: Colors.black,
                                             fontSize: 15,
                                           )),
+                                      SizedBox(height: 2),
 
+                                      Text(
+                                          "Durations(In-Days) : ${tickets[index].duration}",
+                                          style: GoogleFonts.lato(
+                                            fontWeight: FontWeight.w600,
+                                            color: Colors.black,
+                                            fontSize: 15,
+                                          )),
+                                      SizedBox(height: 2),
+                                      Text(
+                                          "Purpose : ${tickets[index]
+                                              .purpose}",
+                                          style: GoogleFonts.lato(
+                                            fontWeight: FontWeight.w600,
+                                            color: Colors.black,
+                                            fontSize: 15,
+                                          )),
+                                      SizedBox(height: 2),
                                       Row(
                                         mainAxisAlignment: MainAxisAlignment
                                             .center,
@@ -387,7 +412,7 @@ class _RelativesTicketTableState extends State<RelativesTicketTable> {
                                             child: ElevatedButton(
                                               onPressed: () async {
                                                 // selectedTickets_action.add(tickets[index]);
-                                                // await accept_action_tickets_authorities();
+                                                await accept_action_relatives_tickets_authorities(tickets[index].ticketId);
                                               },
                                               style: ElevatedButton.styleFrom(
                                                 shape: RoundedRectangleBorder(
@@ -406,11 +431,11 @@ class _RelativesTicketTableState extends State<RelativesTicketTable> {
                                           ),
                                           Visibility(
                                             visible: tickets[index].status ==
-                                                "Approved",
+                                                "Accepted",
                                             child: ElevatedButton(
                                               onPressed: () async {
                                                 // selectedTickets_action.add(tickets[index]);
-                                                // await reject_action_tickets_authorities();
+                                                await reject_action_relatives_tickets_authorities(tickets[index].ticketId);
                                               },
                                               style: ElevatedButton.styleFrom(
                                                 shape: RoundedRectangleBorder(

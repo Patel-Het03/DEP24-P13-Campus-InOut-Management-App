@@ -2290,7 +2290,9 @@ class databaseInterface {
       String Name,
       String Relationship,
       String Contact,
-      String Purpose
+      String Purpose,
+      String visit_date,
+      String durations,
       )async{
     var uri = "$complete_base_url_static/generate_relatives_ticket";
     try{
@@ -2302,6 +2304,8 @@ class databaseInterface {
           'invitee_relationship': Relationship,
           'invitee_contact': Contact,
           'purpose': Purpose,
+          'visit_date':visit_date,
+          'duration':durations,
         },
       );
       print('Response status: ${response.statusCode}');
@@ -2316,7 +2320,7 @@ class databaseInterface {
     }
   }
 
-  static Future<List<RelativeResultObj>>  GetStudentRelativeTickets(
+  static Future<List<StuRelTicket>>  GetStudentRelativeTickets(
       String student
       )async{
     var uri = "$complete_base_url_static/getStudentRelativeTickets";
@@ -2329,8 +2333,11 @@ class databaseInterface {
         },
       );
       if (response.statusCode == 200) {
+
         List<dynamic> data = json.decode(response.body);
-        List<RelativeResultObj> result = data.map((item) => RelativeResultObj.fromJson(item)).toList();
+        print('hhh');
+        print(data);
+        List<StuRelTicket> result = data.map((item) => StuRelTicket.fromJson(item)).toList();
         return result;
         // print(result);
       } else {
@@ -2345,9 +2352,105 @@ class databaseInterface {
 
       // return Future.error(e);
     }
-
-
   }
+
+  static Future<List<StuRelTicket>>  Get_relatives_ticket_for_authority(
+      String status
+      )async{
+    var uri = "$complete_base_url_static/adminTickets/status/";
+
+    try{
+      final response = await http.post(
+        Uri.parse(uri),
+        body: {
+          'status': status,
+        },
+      );
+      if (response.statusCode == 200) {
+
+        List<dynamic> data = json.decode(response.body);
+        List<StuRelTicket> result = data.map((item) => StuRelTicket.fromJson1(item)).toList();
+        return result;
+        // print(result);
+      } else {
+        throw Exception('Failed to load data');
+      }
+
+    }
+    catch (e) {
+      print("post request error");
+      print(e.toString());
+      throw Exception('Failed to load data');
+
+      // return Future.error(e);
+    }
+  }
+
+  static Future<int>  accept_action_relatives_tickets_authorities(
+      String ticket_id
+      )async{
+    var uri = "$complete_base_url_static/accept_ticket/";
+
+    try{
+      final response = await http.post(
+        Uri.parse(uri),
+        body: {
+          'ticket_id': ticket_id,
+        },
+      );
+      if (response.statusCode == 200) {
+        return 200;
+      } else {
+        throw Exception('Failed accept ticket');
+      }
+
+    }
+    catch (e) {
+      print("post request error");
+      print(e.toString());
+      throw Exception('Failed to load data');
+
+      // return Future.error(e);
+    }
+  }
+  static Future<int>  reject_action_relatives_tickets_authorities(
+      String ticket_id
+      )async{
+    var uri = "$complete_base_url_static/reject_ticket/";
+
+    try{
+      final response = await http.post(
+        Uri.parse(uri),
+        body: {
+          'ticket_id': ticket_id,
+        },
+      );
+      if (response.statusCode == 200) {
+        return 200;
+      } else {
+        throw Exception('Failed reject ticket');
+      }
+
+    }
+    catch (e) {
+      print("post request error");
+      print(e.toString());
+      throw Exception('Failed to load data');
+
+      // return Future.error(e);
+    }
+  }
+
+  static Stream<void> get_relative_tickets_for_authorities_stream() {
+    return Stream.periodic(Duration(seconds: REFRESH_RATE), (count) {
+      // Your logic to return the desired value instead of making an API call
+      print('Stream emitted value $count');
+    });
+  }
+
+
+
+
   static Future<Map<String,String>> getInviteeRequestByTicketID(String ticket_id) async {
     var uri = "$complete_base_url_static/getInviteRequestByTicketID";
     try{

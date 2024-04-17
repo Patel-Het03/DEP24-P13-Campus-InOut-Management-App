@@ -13,12 +13,10 @@ class PendingRelativeTicketTable extends StatefulWidget {
   const PendingRelativeTicketTable({super.key});
 
   @override
-  _PendingRelativeTicketTable createState() =>
-      _PendingRelativeTicketTable();
+  _PendingRelativeTicketTable createState() => _PendingRelativeTicketTable();
 }
 
-class _PendingRelativeTicketTable
-    extends State<PendingRelativeTicketTable> {
+class _PendingRelativeTicketTable extends State<PendingRelativeTicketTable> {
   String ticket_accepted_message = '';
   String ticket_rejected_message = '';
 
@@ -49,36 +47,34 @@ class _PendingRelativeTicketTable
     });
   }
 
+  Future<void> accept_action_relatives_tickets_authorities(
+      String ticket_id) async {
+    int status_code = await databaseInterface
+        .accept_action_relatives_tickets_authorities(ticket_id);
+    if (status_code == 200) {
+      await init();
+      final snackBar = get_snack_bar("Ticket accepted", Colors.green);
+      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+    } else {
+      final snackBar = get_snack_bar("Failed to accept the ticket", Colors.red);
+      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+    }
+  }
 
-
-  // Future<void> accept_action_tickets_authorities() async {
-  //   databaseInterface db = new databaseInterface();
-  //   int status_code =
-  //   await db.accept_selected_tickets_authorities(selectedTickets_action);
-  //   if (status_code == 200) {
-  //     await init();
-  //     final snackBar = get_snack_bar("Ticket accepted", Colors.green);
-  //     ScaffoldMessenger.of(context).showSnackBar(snackBar);
-  //   } else {
-  //     final snackBar = get_snack_bar("Failed to accept the ticket", Colors.red);
-  //     ScaffoldMessenger.of(context).showSnackBar(snackBar);
-  //   }
-  // }
-
-  // Future<void> reject_action_tickets_authorities() async {
-  //   databaseInterface db = new databaseInterface();
-  //   int status_code =
-  //   await db.reject_selected_tickets_authorities(selectedTickets_action);
-  //   print("The status code is $status_code");
-  //   if (status_code == 200) {
-  //     await init();
-  //     final snackBar = get_snack_bar("Ticket rejected", Colors.green);
-  //     ScaffoldMessenger.of(context).showSnackBar(snackBar);
-  //   } else {
-  //     final snackBar = get_snack_bar("Failed to reject the ticket", Colors.red);
-  //     ScaffoldMessenger.of(context).showSnackBar(snackBar);
-  //   }
-  // }
+  Future<void> reject_action_relatives_tickets_authorities(
+      String ticket_id) async {
+    int status_code = await databaseInterface
+        .reject_action_relatives_tickets_authorities(ticket_id);
+    print("The status code is $status_code");
+    if (status_code == 200) {
+      await init();
+      final snackBar = get_snack_bar("Ticket rejected", Colors.green);
+      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+    } else {
+      final snackBar = get_snack_bar("Failed to reject the ticket", Colors.red);
+      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+    }
+  }
 
   // void filterTickets(String query) {
   //   if (enableDateFilter) {
@@ -142,25 +138,33 @@ class _PendingRelativeTicketTable
   @override
   void initState() {
     super.initState();
-    // init();
-
+    init();
   }
 
-  // Future<List<ResultObj2>> get_pending_tickets_for_authority() async {
-  //   String authority_email = LoggedInDetails.getEmail();
-  //   return await databaseInterface
-  //       .get_pending_tickets_for_authorities(authority_email);
-  // }
+  Future<List<StuRelTicket>> Get_relatives_ticket_for_authority() async {
+    // String authority_email = LoggedInDetails.getEmail();
+    return await databaseInterface.Get_relatives_ticket_for_authority(
+        'Pending');
+  }
 
-  // Future init() async {
-  //   final tickets_local = await get_pending_tickets_for_authority();
-  //   setState(() {
-  //     tickets = tickets_local;
-  //     selectedTickets = [];
-  //     selectedTickets_action = [];
-  //   });
-  //   filterTickets(searchQuery);
-  // }
+  Future init() async {
+    final tickets_local = await Get_relatives_ticket_for_authority();
+    setState(() {
+      tickets = tickets_local;
+      // selectedTickets = [];
+      // selectedTickets_action = [];
+    });
+    // filterTickets(searchQuery);
+  }
+  Future init() async {
+    final tickets_local = await Get_relatives_ticket_for_authority();
+    setState(() {
+      tickets = tickets_local;
+      // selectedTickets = [];
+      // selectedTickets_action = [];
+    });
+    // filterTickets(searchQuery);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -181,7 +185,7 @@ class _PendingRelativeTicketTable
                 color: Colors.transparent,
                 borderRadius: BorderRadius.circular(5.0),
                 border:
-                Border(bottom: BorderSide(color: Colors.black, width: 2.0)),
+                    Border(bottom: BorderSide(color: Colors.black, width: 2.0)),
               ),
               child: TextField(
                 style: GoogleFonts.lato(
@@ -269,153 +273,155 @@ class _PendingRelativeTicketTable
   }
 
   Widget pendingRelativeList(List<StuRelTicket> mytickets) {
-    return
-
-      Expanded(
-        child: SizedBox(
-          width: MediaQuery.of(context).size.width * 0.95,
-          // height:MediaQuery.of(context).size.height*0.67,
-          child: ListView.builder(
-            itemCount: mytickets.length,
-            itemBuilder: (BuildContext context, int index) {
-              final bool isExpanded = index == selectedIndex;
-              return Container(
-                child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Container(
-                        decoration: BoxDecoration(
-                          color: Color(0xffEDC882),
-                          borderRadius: BorderRadius.circular(
-                              15), // Adjust the radius as needed
+    return Expanded(
+      child: SizedBox(
+        width: MediaQuery.of(context).size.width * 0.95,
+        // height:MediaQuery.of(context).size.height*0.67,
+        child: ListView.builder(
+          itemCount: mytickets.length,
+          itemBuilder: (BuildContext context, int index) {
+            final bool isExpanded = index == selectedIndex;
+            return Container(
+              child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Container(
+                      decoration: BoxDecoration(
+                        color: Color(0xffEDC882),
+                        borderRadius: BorderRadius.circular(
+                            15), // Adjust the radius as needed
+                      ),
+                      child: ExpansionTile(
+                        title: Text(
+                          mytickets[index].studentId,
+                          style: GoogleFonts.lato(
+                            fontWeight: FontWeight.w800,
+                            color: Colors.white,
+                            fontSize: 18,
+                          ),
                         ),
-                        child: Column(
-                          children: <Widget>[
-                            ListTile(
-                              title: Text(
-                                mytickets[index].studentId,
-                                style: GoogleFonts.lato(
-                                  fontWeight: FontWeight.w800,
-                                  color: Colors.white,
-                                  fontSize: 18,
-                                ),
-                              ),
-                              // subtitle: Text(mytickets[index]
-                              // .date_time_guard
-                              // .toString()),
-                              onTap: () => toggleExpansion(index),
-                            ),
+                        subtitle: Text(
+                          '${mytickets[index].studentName}',
+                          style: GoogleFonts.lato(
+                            color: Colors.white,
+                            fontSize: 16,
+                          ),
+                        ),
 
-                            if (isExpanded)
-                              Container(
-                                child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.center,
-                                    mainAxisAlignment: MainAxisAlignment.center,
+                        // subtitle: Text(mytickets[index]
+                        // .date_time_guard
+                        // .toString()),
+
+                        children: <Widget>[
+                          Container(
+                            child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Text(
+                                      "InviteeName : ${tickets[index].inviteeName}",
+                                      style: GoogleFonts.lato(
+                                        fontWeight: FontWeight.w600,
+                                        color: Colors.black,
+                                        fontSize: 15,
+                                      )),
+                                  SizedBox(height: 2),
+                                  Text(
+                                      "InviteeRelationship : ${tickets[index].inviteeRelationship}",
+                                      style: GoogleFonts.lato(
+                                        fontWeight: FontWeight.w600,
+                                        color: Colors.black,
+                                        fontSize: 15,
+                                      )),
+                                  SizedBox(height: 2),
+                                  Text(
+                                      "Contact : ${tickets[index].inviteeContact}",
+                                      style: GoogleFonts.lato(
+                                        fontWeight: FontWeight.w600,
+                                        color: Colors.black,
+                                        fontSize: 15,
+                                      )),
+                                  SizedBox(height: 2),
+                                  Text(
+                                      "Visit_Date : ${tickets[index].visit_date}",
+                                      style: GoogleFonts.lato(
+                                        fontWeight: FontWeight.w600,
+                                        color: Colors.black,
+                                        fontSize: 15,
+                                      )),
+                                  SizedBox(height: 2),
+                                  Text(
+                                      "Durations(In-Days) : ${tickets[index].duration}",
+                                      style: GoogleFonts.lato(
+                                        fontWeight: FontWeight.w600,
+                                        color: Colors.black,
+                                        fontSize: 15,
+                                      )),
+                                  SizedBox(height: 2),
+                                  Text("Purpose : ${tickets[index].purpose}",
+                                      style: GoogleFonts.lato(
+                                        fontWeight: FontWeight.w600,
+                                        color: Colors.black,
+                                        fontSize: 15,
+                                      )),
+                                  SizedBox(height: 5),
+                                  Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceEvenly,
                                     children: [
-                                      Text(
-                                          "InviteeName :${tickets[index].inviteeName}",
-                                          style: GoogleFonts.lato(
-                                            fontWeight: FontWeight.w600,
-                                            color: Colors.black,
-                                            fontSize: 15,
-                                          )),
-                                      Text("InviteeRelationship :${tickets[index].inviteeRelationship}",
-                                          style: GoogleFonts.lato(
-                                            fontWeight: FontWeight.w600,
-                                            color: Colors.black,
-                                            fontSize: 15,
-                                          )),
-                                      Text(
-                                          "Contact :${tickets[index].inviteeContact}",
-                                          style: GoogleFonts.lato(
-                                            fontWeight: FontWeight.w600,
-                                            color: Colors.black,
-                                            fontSize: 15,
-                                          )),
-                                      Text(
-                                          "Ticket_type :${tickets[index].status}",
-                                          style: GoogleFonts.lato(
-                                            fontWeight: FontWeight.w600,
-                                            color: Colors.black,
-                                            fontSize: 15,
-                                          )),
-                                      SizedBox(
-                                          height: 5
-                                      ),
-                                      Container(
-                                        width: MediaQuery.of(context).size.width * 0.4, // 80% of screen width
-                                        height: 1, // Height of the divider
-                                        color: Colors.black12, // Color of the divider
-                                      ),
-                                      SizedBox(
-                                          height: 5
-                                      ),
-                                      Container(
-                                        width: MediaQuery.of(context).size.width * 0.8, // 80% of screen width
-                                        height: 1, // Height of the divider
-                                        color: Colors.black12, // Color of the divider
-                                      ),
-                                      SizedBox(
-                                          height: 5
-                                      ),
-                                      Row(
-                                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                        children: [
-                                          ElevatedButton(
-                                            onPressed: () async{
-                                              // selectedTickets_action.add(tickets[index]);
-                                              // await accept_action_tickets_authorities();
-                                            },
-                                            style: ElevatedButton.styleFrom(
-                                              shape: RoundedRectangleBorder(
-                                                borderRadius: BorderRadius.circular(5), // Adjust the radius as needed
-                                              ),
-                                            ),
-                                            child: Text(
-                                              "Accept",
-                                              style: GoogleFonts.mPlusRounded1c(
-                                                color: Colors.white,
-                                              ),
-                                            ),
+                                      ElevatedButton(
+                                        onPressed: () async {
+                                          // selectedTickets_action.add(tickets[index]);
+                                          await accept_action_relatives_tickets_authorities(
+                                              tickets[index].ticketId);
+                                        },
+                                        style: ElevatedButton.styleFrom(
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius: BorderRadius.circular(
+                                                5), // Adjust the radius as needed
                                           ),
-                                          ElevatedButton(
-                                            onPressed: () async{
-                                              // selectedTickets_action.add(tickets[index]);
-                                              // await reject_action_tickets_authorities();
-                                            },
-                                            style: ElevatedButton.styleFrom(
-                                              shape: RoundedRectangleBorder(
-                                                borderRadius: BorderRadius.circular(5), // Adjust the radius as needed
-                                              ),
-                                            ),
-                                            child: Text(
-                                              "Reject",
-                                              style: GoogleFonts.mPlusRounded1c(
-                                                color: Colors.white,
-                                              ),
-                                            ),
+                                        ),
+                                        child: Text(
+                                          "Accept",
+                                          style: GoogleFonts.mPlusRounded1c(
+                                            color: Colors.white,
                                           ),
-                                        ],
+                                        ),
                                       ),
-                                    ]),
-
-                              ),
-
-                          ],
-                        ),
+                                      ElevatedButton(
+                                        onPressed: () async {
+                                          // selectedTickets_action.add(tickets[index]);
+                                          await reject_action_relatives_tickets_authorities(
+                                              tickets[index].ticketId);
+                                        },
+                                        style: ElevatedButton.styleFrom(
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius: BorderRadius.circular(
+                                                5), // Adjust the radius as needed
+                                          ),
+                                        ),
+                                        child: Text(
+                                          "Reject",
+                                          style: GoogleFonts.mPlusRounded1c(
+                                            color: Colors.white,
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ]),
+                          ),
+                        ],
                       ),
-                      SizedBox(
-                        height: 5,
-                      ),
-                    ]
-
-                ),
-
-              );
-
-            },
-          ),
+                    ),
+                    SizedBox(
+                      height: 5,
+                    ),
+                  ]),
+            );
+          },
         ),
-      );
+      ),
+    );
   }
 }

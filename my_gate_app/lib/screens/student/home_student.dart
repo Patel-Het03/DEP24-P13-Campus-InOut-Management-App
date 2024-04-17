@@ -1019,6 +1019,10 @@ class _HomeStudentState extends State<HomeStudent> {
                 ),
                 style: ElevatedButton.styleFrom(
                   padding: EdgeInsets.all(15),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(6), // Adjust the value as needed
+                  ),
+
                 ),
               ),
 
