@@ -156,15 +156,15 @@ class _PendingRelativeTicketTable extends State<PendingRelativeTicketTable> {
     });
     // filterTickets(searchQuery);
   }
-  Future init() async {
-    final tickets_local = await Get_relatives_ticket_for_authority();
-    setState(() {
-      tickets = tickets_local;
-      // selectedTickets = [];
-      // selectedTickets_action = [];
-    });
-    // filterTickets(searchQuery);
-  }
+  // Future init() async {
+  //   final tickets_local = await Get_relatives_ticket_for_authority();
+  //   setState(() {
+  //     tickets = tickets_local;
+  //     // selectedTickets = [];
+  //     // selectedTickets_action = [];
+  //   });
+  //   // filterTickets(searchQuery);
+  // }
 
   @override
   Widget build(BuildContext context) {

@@ -11,6 +11,7 @@ import 'dart:typed_data';
 import 'dart:io';
 import 'dart:ui';
 import 'dart:convert';
+import 'package:flutter/services.dart';
 
 
 
@@ -298,10 +299,16 @@ class _InviteeFormState extends State<InviteeForm> {
                       borderSide: BorderSide(color: Colors.black),
                     ),
                   ),
+
                   style: TextStyle(color: Colors.black),
+
                   validator: (value) {
+
                     if (value == null || value.isEmpty) {
                       return 'Please enter the duration of visit';
+                    }
+                    if (int.tryParse(value) == null) {
+                      return 'Please enter a valid integer';
                     }
                     return null;
                   },
@@ -626,6 +633,7 @@ class _InviteeStatusState extends State<InviteeStatus> {
                                 SizedBox(height: 4),
                                 Text(
                                   'Durations: ${ticketsFiltered[index].duration}',
+
                                 ),
                                 // Add more details here as needed
                               ],

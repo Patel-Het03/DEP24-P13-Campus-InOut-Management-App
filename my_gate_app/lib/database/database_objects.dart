@@ -541,8 +541,6 @@ class StuRelTicket {
       status: json['status'],
       visit_date: json['visit_date'],
       duration: json['duration'],
-      visit_date: json['visit_date'],
-      duration: json['duration'],
     );
   }
 
