@@ -220,7 +220,9 @@ urlpatterns = [
     path('reject_ticket/', RejectTicketAPIView.as_view(), name='reject_ticket'),
 
     path('getInviteRequestByTicketID',GetInviteRequestByTicketID.as_view(),name='get_invited_request_ticket_id'),
-    path('guardApproveInviteeEntryRequest',GuardApproveInviteeEntryRequest.as_view()),
+    path('guardCreateInviteeRecord',GuardCreateInviteeRecord.as_view()),
+    path('inviteeRecords',InviteeRecords.as_view()),
+    path('updateInviteeRecordStatus',UpdateInviteeRecordStatus.as_view()),
 
     path('register', register_user, name='register'),
     #     path('login', CustomTokenObtainPairView.as_view(), name='token_obtain_pair'),

@@ -8,6 +8,7 @@ import 'package:my_gate_app/screens/guard/utils/UI_statics.dart';
 import 'package:my_gate_app/database/database_objects.dart';
 import 'package:my_gate_app/database/database_interface.dart';
 import 'dart:async';
+import 'package:intl/intl.dart';
 
 class TicketScreen extends StatefulWidget {
   const TicketScreen(
@@ -25,7 +26,7 @@ class TicketScreen extends StatefulWidget {
   State<TicketScreen> createState() => _TicketScreenState();
 }
 
-enum User { student, visitor,invitee }
+enum User { student, visitor, invitee }
 
 class _TicketScreenState extends State<TicketScreen> {
   String searchQuery = '';
@@ -34,11 +35,14 @@ class _TicketScreenState extends State<TicketScreen> {
   List<ResultObj> ticketsFiltered = [];
   List<ResultObj4> tickets_visitors = [];
   List<ResultObj4> tickets_visitorsFiltered = [];
+  List<InviteeRecord> invitee_records = [];
+  List<InviteeRecord> invitee_recordsFiltered = [];
+
   List<String> search_entry_numbers = [];
   String chosen_entry_number = "None";
-  String chosen_start_date = "None";
-  String chosen_end_date = "None";
-  List<bool> isSelected = [true, true];
+  String chosen_start_date =
+      DateTime.now().subtract(Duration(days: 1)).toString();
+  String chosen_end_date = DateTime.now().toString();
   bool enableDateFilter = true;
   bool isFieldEmpty = true;
   User _person = User.student;
@@ -51,6 +55,7 @@ class _TicketScreenState extends State<TicketScreen> {
       setState(() {
         _person = input;
       });
+      refreshInvitee();
     }
   }
 
@@ -81,6 +86,8 @@ class _TicketScreenState extends State<TicketScreen> {
       filterStudentTickets(query);
     } else if (_person == User.visitor) {
       filterVisitorTickets(query);
+    } else if (_person == User.invitee) {
+      filterInviteeRecords(query);
     }
   }
 
@@ -114,6 +121,40 @@ class _TicketScreenState extends State<TicketScreen> {
         ticketsFiltered = tickets
             .where((ticket) =>
                 ticket.student_name.toLowerCase().contains(query.toLowerCase()))
+            .toList();
+      }
+    }
+  }
+
+  void filterInviteeRecords(String query) {
+    if (enableDateFilter) {
+      if (query.isEmpty) {
+        invitee_recordsFiltered = invitee_records
+            .where((record) =>
+                DateTime.parse(record.time).isBefore(
+                    DateTime.parse(chosen_end_date).add(Duration(days: 1))) &&
+                DateTime.parse(record.time)
+                    .isAfter(DateTime.parse(chosen_start_date)))
+            .toList();
+      } else {
+        invitee_recordsFiltered = invitee_records
+            .where((record) =>
+                record.inviteeName
+                    .toLowerCase()
+                    .contains(query.toLowerCase()) &&
+                DateTime.parse(record.time)
+                    .isAfter(DateTime.parse(chosen_start_date)) &&
+                DateTime.parse(record.time).isBefore(
+                    DateTime.parse(chosen_end_date).add(Duration(days: 1))))
+            .toList();
+      }
+    } else {
+      if (query.isEmpty) {
+        invitee_recordsFiltered = invitee_records;
+      } else {
+        invitee_recordsFiltered = invitee_records
+            .where((record) =>
+                record.inviteeName.toLowerCase().contains(query.toLowerCase()))
             .toList();
       }
     }
@@ -164,12 +205,12 @@ class _TicketScreenState extends State<TicketScreen> {
 
   void onSearchQueryChanged(String query) {
     if (_debounce?.isActive ?? false) _debounce!.cancel();
-  _debounce = Timer(const Duration(milliseconds: 500), () {
-    setState(() {
-      searchQuery = query.toLowerCase();
-      filterTickets(searchQuery);
+    _debounce = Timer(const Duration(milliseconds: 500), () {
+      setState(() {
+        searchQuery = query.toLowerCase();
+        filterTickets(searchQuery);
+      });
     });
-  });
   }
 
   Future<void> _selectDateRange(BuildContext context) async {
@@ -195,6 +236,14 @@ class _TicketScreenState extends State<TicketScreen> {
     }
   }
 
+  Future<void> refreshInvitee() async {
+    invitee_records = await get_tickets_invitee();
+    filterInviteeRecords(searchQuery);
+    setState(() {
+      invitee_recordsFiltered = invitee_recordsFiltered;
+    });
+  }
+
   @override
   void initState() {
     super.initState();
@@ -217,10 +266,22 @@ class _TicketScreenState extends State<TicketScreen> {
         widget.location, widget.isApproved, widget.enterExit);
   }
 
+  Future<List<InviteeRecord>> get_tickets_invitee() async {
+    late final String statusType;
+    if (widget.isApproved == "Approved") {
+      statusType = "Accepted";
+    } else {
+      statusType = "Rejected";
+    }
+    return await databaseInterface.getInviteeRecords(
+        widget.enterExit, statusType);
+  }
+
   Future init() async {
     // tickets = await get_tickets_for_guard();
     late List<ResultObj> tickets_local;
     late List<ResultObj4> tickets_local_2;
+    late List<InviteeRecord> invitee_records_local;
 
     tickets_local = await get_tickets_for_guard();
     print("tickets_local :${tickets_local}");
@@ -228,13 +289,18 @@ class _TicketScreenState extends State<TicketScreen> {
     tickets_local_2 = await get_approved_tickets_for_visitors();
     print("tickets_local_2 :${tickets_local_2}");
 
+    invitee_records_local = await get_tickets_invitee();
+
     setState(() {
       tickets = tickets_local;
-
+      invitee_records = invitee_records_local;
       tickets_visitors = tickets_local_2;
     });
     print("tickets_visitors set\n${tickets_visitors}");
-    // filterTickets(searchQuery);
+    filterTickets(searchQuery);
+    setState(() {
+      enableDateFilter = enableDateFilter;
+    });
   }
 
   @override
@@ -362,7 +428,7 @@ class _TicketScreenState extends State<TicketScreen> {
                 color: Colors.grey[350],
                 borderRadius: BorderRadius.circular(30.0),
               ),
-              child:buildSearchTextField(),
+              child: buildSearchTextField(),
               // child: TextField(
               //   style: GoogleFonts.lato(
               //     color: Colors.black,
@@ -440,9 +506,12 @@ class _TicketScreenState extends State<TicketScreen> {
           SizedBox(
             height: MediaQuery.of(context).size.height * 0.03,
           ),
-          (_person == User.student)
-              ? studentList(ticketsFiltered)
-              : visitorList(tickets_visitorsFiltered),
+          if (_person == User.student)
+            studentList(ticketsFiltered)
+          else if (_person == User.visitor)
+            visitorList(tickets_visitorsFiltered)
+          else
+            InviteeList(invitee_recordsFiltered),
         ]));
   }
 
@@ -463,9 +532,7 @@ class _TicketScreenState extends State<TicketScreen> {
         fontSize: 20,
       ),
       onChanged: (text) {
-        
         onSearchQueryChanged(text);
-       
       },
       decoration: InputDecoration(
         contentPadding: EdgeInsets.fromLTRB(5.0, 0, 0, 14.0),
@@ -541,7 +608,6 @@ class _TicketScreenState extends State<TicketScreen> {
         child: ListView.builder(
           itemCount: mytickets.length,
           itemBuilder: (BuildContext context, int index) {
-            final bool isExpanded = index == selectedIndex;
             return Container(
               child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -677,6 +743,159 @@ class _TicketScreenState extends State<TicketScreen> {
             )),
         SizedBox(height: MediaQuery.of(context).size.height * 0.01)
       ]),
+    );
+  }
+
+  Widget InviteeList(List<InviteeRecord> mytickets) {
+    return Expanded(
+      child: SizedBox(
+        width: MediaQuery.of(context).size.width * 0.95,
+        // height:MediaQuery.of(context).size.height*0.67,
+        child: ListView.builder(
+          itemCount: mytickets.length,
+          itemBuilder: (BuildContext context, int index) {
+            return Container(
+              child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Container(
+                        decoration: BoxDecoration(
+                          color: hexToColor(guardColors[1]),
+                          borderRadius: BorderRadius.circular(
+                              15), // Adjust the radius as needed
+                        ),
+                        child: ExpansionTile(
+                          title: Text(
+                            mytickets[index].inviteeName,
+                            style: GoogleFonts.lato(
+                              fontWeight: FontWeight.w800,
+                              color: Colors.white,
+                              fontSize: 18,
+                            ),
+                          ),
+                          children: <Widget>[
+                            InviteeDetails(mytickets[index]),
+                          ],
+                        )),
+                    SizedBox(
+                      height: 5,
+                    ),
+                  ]),
+            );
+          },
+        ),
+      ),
+    );
+  }
+
+  Widget InviteeDetails(InviteeRecord ticket) {
+    // Parse the time string to DateTime object
+    DateTime time = DateTime.parse(ticket.time);
+
+    // Format the date and time
+    String formattedTime = DateFormat('MMM dd, yyyy - hh:mm a').format(time);
+    return Container(
+      padding: EdgeInsets.all(10),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            "${ticket.inviteeRelationship} of ",
+            style: GoogleFonts.lato(
+              fontWeight: FontWeight.w300,
+              color: Colors.black,
+              fontSize: 16,
+            ),
+          ),
+          Text(
+            "Student ${ticket.studentName} (${ticket.studentEntryNo})",
+            style: GoogleFonts.lato(
+              fontWeight: FontWeight.w500,
+              color: Colors.black,
+              fontSize: 18,
+            ),
+          ),
+          SizedBox(height: 5),
+          Text(
+            "Time: $formattedTime",
+            style: GoogleFonts.lato(
+              fontWeight: FontWeight.w500,
+              color: Colors.black,
+              fontSize: 16,
+            ),
+          ),
+          SizedBox(height: 5),
+          Text(
+            "Vehicle Number: ${ticket.vehicleNumber}",
+            style: GoogleFonts.lato(
+              fontWeight: FontWeight.w500,
+              color: Colors.black,
+              fontSize: 16,
+            ),
+          ),
+          AcceptRejectInvitee(ticket.recordId, ticket.status)
+        ],
+      ),
+    );
+  }
+
+  Widget AcceptRejectInvitee(int recordId, String status) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Visibility(
+          visible: status == "Rejected",
+          child: ElevatedButton(
+            onPressed: () async {
+              await databaseInterface.updateInviteeRecordStatus(
+                  recordId, "Accepted");
+              invitee_records = await get_tickets_invitee();
+              filterInviteeRecords(searchQuery);
+              setState(() {
+                invitee_recordsFiltered = invitee_recordsFiltered;
+              });
+            },
+            style: ElevatedButton.styleFrom(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(5),
+              ),
+            ),
+            child: Text(
+              "Accept",
+              style: GoogleFonts.mPlusRounded1c(
+                color: Colors.white,
+              ),
+            ),
+          ),
+        ),
+        Visibility(
+          visible: status == "Accepted",
+          child: ElevatedButton(
+            onPressed: () async {
+              // selectedTickets_action.add(tickets[index]);
+              // await reject_action_tickets_authorities();
+              await databaseInterface.updateInviteeRecordStatus(
+                  recordId, "Rejected");
+              invitee_records = await get_tickets_invitee();
+              filterInviteeRecords(searchQuery);
+              setState(() {
+                invitee_recordsFiltered = invitee_recordsFiltered;
+              });
+            },
+            style: ElevatedButton.styleFrom(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(5),
+              ),
+            ),
+            child: Text(
+              "Reject",
+              style: GoogleFonts.mPlusRounded1c(
+                color: Colors.white,
+              ),
+            ),
+          ),
+        ),
+      ],
     );
   }
 }
