@@ -138,7 +138,7 @@ class _InviteeValidationPageState extends State<InviteeValidationPage> {
                       button_text: "Accept",
                       submit_function: () async {
                         int statusCode =
-                            await databaseInterface.guardApproveInviteeTicket(
+                            await databaseInterface.guardCreateInviteeRecord(
                                 widget.ticket_id, vehicle_number, enter_exit);
                                 display_further_status(statusCode);
                       },

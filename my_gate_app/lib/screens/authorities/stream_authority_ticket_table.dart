@@ -45,7 +45,7 @@ class _StreamAuthorityTicketTableState
               }
               return AuthorityTicketTable(
                 is_approved: widget.is_approved,
-                tickets: tickets,
+
                 image_path: widget.image_path
               );
             }

@@ -14,11 +14,10 @@ class AuthorityTicketTable extends StatefulWidget {
   AuthorityTicketTable({
     super.key,
     required this.is_approved,
-    required this.tickets,
+
     required this.image_path,
   });
   final String is_approved;
-  List<ResultObj2> tickets;
   final String image_path;
 
   @override
@@ -103,14 +102,14 @@ class _AuthorityTicketTableState extends State<AuthorityTicketTable> {
   void filterTickets(String query) {
     if (enableDateFilter) {
       if (query.isEmpty) {
-        ticketsFiltered = widget.tickets
+        ticketsFiltered = tickets
             .where((ticket) => DateTime.parse(ticket.date_time).isBefore(
                 DateTime.parse(chosen_end_date).add(Duration(days: 1)))&&
             DateTime.parse(ticket.date_time)
                 .isAfter(DateTime.parse(chosen_start_date)))
             .toList();
       } else {
-        ticketsFiltered = widget.tickets
+        ticketsFiltered = tickets
             .where((ticket) =>
                 ticket.student_name
                     .toLowerCase()
@@ -124,9 +123,9 @@ class _AuthorityTicketTableState extends State<AuthorityTicketTable> {
       }
     } else {
       if (query.isEmpty) {
-        ticketsFiltered = widget.tickets;
+        ticketsFiltered = tickets;
       } else {
-        ticketsFiltered = widget.tickets
+        ticketsFiltered = tickets
             .where((ticket) =>
                 ticket.student_name.toLowerCase().contains(query.toLowerCase()))
             .toList();
@@ -188,34 +187,7 @@ class _AuthorityTicketTableState extends State<AuthorityTicketTable> {
                       border:
                       Border(bottom: BorderSide(color: Colors.black, width: 2.0)),
                     ),
-                    // child: TextField(
-                    //   style: GoogleFonts.lato(
-                    //     color: Colors.black,
-                    //     fontSize: 20,
-                    //   ),
-                    //   onChanged: (text) {
-                    //     isFieldEmpty = text.isEmpty;
-                    //     onSearchQueryChanged(text);
-                    //   },
-                    //   decoration: InputDecoration(
-                    //     contentPadding: EdgeInsets.fromLTRB(5.0, 0, 0, 14.0),
-                    //     hintText: 'Search by Student Name',
-                    //     border: InputBorder.none,
-                    //     prefixIcon: Icon(Icons.search, color: Colors.black),
-                    //     suffixIcon: IconButton(
-                    //       padding: EdgeInsets.zero,
-                    //       icon: Icon(Icons.clear, color: Colors.black),
-                    //       onPressed: () {
-                    //         // Clear search field
-                    //       },
-                    //     ),
-                    //     hintStyle: GoogleFonts.lato(
-                    //       color: Colors.black87,
-                    //       fontSize: 16.0,
-                    //       fontWeight: FontWeight.normal,
-                    //     ),
-                    //   ),
-                    // ),
+
                     child: buildSearchTextField(),
                   ),
                   SizedBox(
@@ -283,7 +255,7 @@ class _AuthorityTicketTableState extends State<AuthorityTicketTable> {
       _searchController.selection = TextSelection.fromPosition(
           TextPosition(offset: _searchController.text.length));
     }
-
+    print("hello i am here start");
     return TextField(
       controller: _searchController,
       style: GoogleFonts.lato(
@@ -304,7 +276,9 @@ class _AuthorityTicketTableState extends State<AuthorityTicketTable> {
             ? IconButton(
           padding: EdgeInsets.zero,
           icon: Icon(Icons.clear, color: Colors.black),
+
           onPressed: () {
+            print("hello i am here");
             setState(() {
               _searchController.clear();
               searchQuery = '';
@@ -483,143 +457,143 @@ class _AuthorityTicketTableState extends State<AuthorityTicketTable> {
       );
   }
 
-  Widget buildDataTable() {
-    // Fields returned from backend [is_approved, ticket_type, date_time, location, email, student_name, authority_message]
-
-    final columns = [
-      'S.No.',
-      'Name',
-      'Location',
-      'Time',
-      'Entry/Exit',
-      'Authority Message'
-    ];
-
-    return DataTable(
-      border: TableBorder.all(width: 1, color: Color.fromARGB(255, 0, 0, 0)),
-      headingRowColor: MaterialStateProperty.all(Colors.orangeAccent),
-      columns: getColumns(columns),
-      rows: getRows(ticketsFiltered),
-    );
-
-    // return Scaffold(
-    //   body: LayoutBuilder(
-    //     builder: (context, constraints) => SingleChildScrollView(
-    //       child: Column(
-    //         children: [
-    //           const Text('My Text'),
-    //           Container(
-    //             alignment: Alignment.topLeft,
-    //             child: ConstrainedBox(
-    //               constraints: BoxConstraints(maxWidth: constraints.maxWidth),
-    //               child: DataTable(
-    //                 headingRowColor: MaterialStateProperty.all(Colors.red[200]),
-    //                 columns: getColumns(columns),
-    //                 rows: getRows(widget.tickets),
-    //               ),
-    //             ),
-    //           ),
-    //         ],
-    //       ),
-    //     ),
-    //   ),
-    // );
-
-    // return DataTable(
-    //   headingRowColor: MaterialStateProperty.all(Colors.red[200]),
-    //   columns: getColumns(columns),
-    //   rows: getRows(widget.tickets),
-    // );
-  }
-
-  List<DataColumn> getColumns(List<String> columns) => columns
-      .map((String column) => DataColumn(
-            // label:  Flexible(
-            //   child:Text(column,style: TextStyle(color: Colors.blue, fontWeight: FontWeight.bold),),
-            // )
-
-            // label: ConstrainedBox(
-            //   constraints: BoxConstraints(
-            //     maxWidth: 20,
-            //     minWidth: 20,
-            //   ),
-            //   child: Flexible(
-            //       child:Text(column,style: TextStyle(color: Colors.blue, fontWeight: FontWeight.bold),)),
-            // ),
-            label: Text(
-              column,
-              style:
-                  TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
-            ),
-          ))
-      .toList();
-
-  List<DataRow> getRows(List<ResultObj2> tickets) {
-    List<DataRow> row_list = [];
-    for (int index = 0; index < tickets.length; index++) {
-      var ticket = tickets[index];
-      row_list.add(DataRow(
-        color: MaterialStateProperty.resolveWith<Color?>(
-            (Set<MaterialState> states) {
-          // All rows will have the same selected color.
-          if (states.contains(MaterialState.selected)) {
-            return Theme.of(context).colorScheme.primary.withOpacity(0.08);
-          }
-          // Even rows will have a grey color.
-          if (index.isEven) {
-            return Colors.grey.withOpacity(0.3);
-          }
-          return null; // Use default value for other states and odd rows.
-        }),
-        // final columns = ['S.No.', 'Student Name', 'Time Generated', 'Entry/Exit', 'Authority Status'];
-
-        // final columns = ['S.No.', 'Student Name', 'Location', 'Time Generated', 'Entry/Exit', 'Authority Message'];
-        cells: [
-          DataCell(
-            Text(
-              (index + 1).toString(),
-              style: TextStyle(color: Color.fromARGB(255, 0, 0, 0)),
-            ),
-          ),
-          DataCell(
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).push(
-                  MaterialPageRoute(
-                      builder: (context) =>
-                          ProfilePage(email: ticket.email, isEditable: false)),
-                );
-              },
-              child: Text(
-                ticket.student_name.toString(),
-                style: TextStyle(color: Colors.lightBlueAccent),
-              ),
-            ),
-          ),
-          // DataCell(Text(ticket.student_name.toString())),
-          DataCell(Text(
-            ticket.location.toString(),
-            style: TextStyle(color: Color.fromARGB(255, 0, 0, 0)),
-          )),
-          DataCell(Text(
-            "    ${((ticket.date_time.split("T").last)
-                        .split(".")[0]
-                        .split(":")
-                        .sublist(0, 2))
-                    .join(":")}\n${ticket.date_time.split("T")[0]}",
-            style: TextStyle(color: Color.fromARGB(255, 0, 0, 0)),
-          )),
-          DataCell(Text(
-            ticket.ticket_type.toString(),
-            style: TextStyle(color: Color.fromARGB(255, 0, 0, 0)),
-          )),
-          DataCell(Text(
-            ticket.authority_message.toString(),
-            style: TextStyle(color: Color.fromARGB(255, 0, 0, 0)),
-          )),
-        ],
-      ));
-    }
-    return row_list;
-  }
+//   Widget buildDataTable() {
+//     // Fields returned from backend [is_approved, ticket_type, date_time, location, email, student_name, authority_message]
+//
+//     final columns = [
+//       'S.No.',
+//       'Name',
+//       'Location',
+//       'Time',
+//       'Entry/Exit',
+//       'Authority Message'
+//     ];
+//
+//     return DataTable(
+//       border: TableBorder.all(width: 1, color: Color.fromARGB(255, 0, 0, 0)),
+//       headingRowColor: MaterialStateProperty.all(Colors.orangeAccent),
+//       columns: getColumns(columns),
+//       rows: getRows(ticketsFiltered),
+//     );
+//
+//     // return Scaffold(
+//     //   body: LayoutBuilder(
+//     //     builder: (context, constraints) => SingleChildScrollView(
+//     //       child: Column(
+//     //         children: [
+//     //           const Text('My Text'),
+//     //           Container(
+//     //             alignment: Alignment.topLeft,
+//     //             child: ConstrainedBox(
+//     //               constraints: BoxConstraints(maxWidth: constraints.maxWidth),
+//     //               child: DataTable(
+//     //                 headingRowColor: MaterialStateProperty.all(Colors.red[200]),
+//     //                 columns: getColumns(columns),
+//     //                 rows: getRows(widget.tickets),
+//     //               ),
+//     //             ),
+//     //           ),
+//     //         ],
+//     //       ),
+//     //     ),
+//     //   ),
+//     // );
+//
+//     // return DataTable(
+//     //   headingRowColor: MaterialStateProperty.all(Colors.red[200]),
+//     //   columns: getColumns(columns),
+//     //   rows: getRows(widget.tickets),
+//     // );
+//   }
+//
+//   List<DataColumn> getColumns(List<String> columns) => columns
+//       .map((String column) => DataColumn(
+//             // label:  Flexible(
+//             //   child:Text(column,style: TextStyle(color: Colors.blue, fontWeight: FontWeight.bold),),
+//             // )
+//
+//             // label: ConstrainedBox(
+//             //   constraints: BoxConstraints(
+//             //     maxWidth: 20,
+//             //     minWidth: 20,
+//             //   ),
+//             //   child: Flexible(
+//             //       child:Text(column,style: TextStyle(color: Colors.blue, fontWeight: FontWeight.bold),)),
+//             // ),
+//             label: Text(
+//               column,
+//               style:
+//                   TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+//             ),
+//           ))
+//       .toList();
+//
+//   List<DataRow> getRows(List<ResultObj2> tickets) {
+//     List<DataRow> row_list = [];
+//     for (int index = 0; index < tickets.length; index++) {
+//       var ticket = tickets[index];
+//       row_list.add(DataRow(
+//         color: MaterialStateProperty.resolveWith<Color?>(
+//             (Set<MaterialState> states) {
+//           // All rows will have the same selected color.
+//           if (states.contains(MaterialState.selected)) {
+//             return Theme.of(context).colorScheme.primary.withOpacity(0.08);
+//           }
+//           // Even rows will have a grey color.
+//           if (index.isEven) {
+//             return Colors.grey.withOpacity(0.3);
+//           }
+//           return null; // Use default value for other states and odd rows.
+//         }),
+//         // final columns = ['S.No.', 'Student Name', 'Time Generated', 'Entry/Exit', 'Authority Status'];
+//
+//         // final columns = ['S.No.', 'Student Name', 'Location', 'Time Generated', 'Entry/Exit', 'Authority Message'];
+//         cells: [
+//           DataCell(
+//             Text(
+//               (index + 1).toString(),
+//               style: TextStyle(color: Color.fromARGB(255, 0, 0, 0)),
+//             ),
+//           ),
+//           DataCell(
+//             TextButton(
+//               onPressed: () {
+//                 Navigator.of(context).push(
+//                   MaterialPageRoute(
+//                       builder: (context) =>
+//                           ProfilePage(email: ticket.email, isEditable: false)),
+//                 );
+//               },
+//               child: Text(
+//                 ticket.student_name.toString(),
+//                 style: TextStyle(color: Colors.lightBlueAccent),
+//               ),
+//             ),
+//           ),
+//           // DataCell(Text(ticket.student_name.toString())),
+//           DataCell(Text(
+//             ticket.location.toString(),
+//             style: TextStyle(color: Color.fromARGB(255, 0, 0, 0)),
+//           )),
+//           DataCell(Text(
+//             "    ${((ticket.date_time.split("T").last)
+//                         .split(".")[0]
+//                         .split(":")
+//                         .sublist(0, 2))
+//                     .join(":")}\n${ticket.date_time.split("T")[0]}",
+//             style: TextStyle(color: Color.fromARGB(255, 0, 0, 0)),
+//           )),
+//           DataCell(Text(
+//             ticket.ticket_type.toString(),
+//             style: TextStyle(color: Color.fromARGB(255, 0, 0, 0)),
+//           )),
+//           DataCell(Text(
+//             ticket.authority_message.toString(),
+//             style: TextStyle(color: Color.fromARGB(255, 0, 0, 0)),
+//           )),
+//         ],
+//       ));
+//     }
+//     return row_list;
+//   }
 }

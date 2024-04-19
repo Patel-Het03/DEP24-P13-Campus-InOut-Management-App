@@ -429,35 +429,7 @@ class _TicketScreenState extends State<TicketScreen> {
                 borderRadius: BorderRadius.circular(30.0),
               ),
               child: buildSearchTextField(),
-              // child: TextField(
-              //   style: GoogleFonts.lato(
-              //     color: Colors.black,
-              //     fontSize: 20,
-              //   ),
-              //   onChanged: (text) {
-              //     isFieldEmpty = text.isEmpty;
-              //     print("$text");
-              //     onSearchQueryChanged(text);
-              //   },
-              //   decoration: InputDecoration(
-              //     contentPadding: EdgeInsets.fromLTRB(5.0, 0, 0, 14.0),
-              //     hintText: 'Search by Name',
-              //     border: InputBorder.none,
-              //     prefixIcon: Icon(Icons.search, color: Colors.black),
-              //     suffixIcon: IconButton(
-              //       padding: EdgeInsets.zero,
-              //       icon: Icon(Icons.clear, color: Colors.black),
-              //       onPressed: () {
-              //         // Clear search field
-              //       },
-              //     ),
-              //     hintStyle: GoogleFonts.lato(
-              //       color: Colors.black87,
-              //       fontSize: 16.0,
-              //       fontWeight: FontWeight.normal,
-              //     ),
-              //   ),
-              // ),
+
             ),
             SizedBox(
               width: MediaQuery.of(context).size.width * 0.02,
@@ -563,44 +535,6 @@ class _TicketScreenState extends State<TicketScreen> {
 
   Widget studentList(List<ResultObj> mytickets) {
     return
-        // mytickets.isEmpty
-        //     ? Center(child: CircularProgressIndicator())
-        //     :
-        //  Expanded(
-        //     child: ListView.builder(
-        //       itemCount: mytickets.length,
-        //       itemBuilder: (BuildContext context, int index) {
-        //         final bool isExpanded = index == selectedIndex;
-        //         return Column(
-        //           children: <Widget>[
-        //             ListTile(
-        //               title: Text(mytickets[index].student_name,
-        //                   style: GoogleFonts.lato(
-        //                     fontWeight: FontWeight.w600,
-        //                     color: Colors.black,
-        //                   )),
-        //               subtitle: Text(mytickets[index].date_time.toString()),
-        //               onTap: () => toggleExpansion(index),
-        //             ),
-        //             if (isExpanded)
-        //               Padding(
-        //                 padding: EdgeInsets.symmetric(horizontal: 16.0),
-        //                 child: Column(
-        //                     mainAxisAlignment: MainAxisAlignment.start,
-        //                     children: [
-        //                       Text("Email : ${mytickets[index].email}"),
-        //                       Text(
-        //                           "Destination Address : ${mytickets[index].destination_address}"),
-        //                       Text(
-        //                           "Vehicle Number : ${mytickets[index].vehicle_number}"),
-        //                     ]),
-        //               ),
-        //             Divider(), // Add divider between list items
-        //           ],
-        //         );
-        //       },
-        //     ),
-        //   );
         Expanded(
       child: SizedBox(
         width: MediaQuery.of(context).size.width * 0.95,

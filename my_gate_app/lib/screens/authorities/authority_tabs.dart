@@ -5,6 +5,7 @@ import 'package:my_gate_app/database/database_objects.dart';
 import 'package:my_gate_app/screens/authorities/pending_authority_ticket_table.dart';
 import 'package:my_gate_app/screens/authorities/stream_authority_ticket_table.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:my_gate_app/screens/authorities/authority_ticket_table.dart';
 class AuthorityTabs extends StatefulWidget {
   const AuthorityTabs({super.key});
 
@@ -201,14 +202,24 @@ class _AuthorityTabsState extends State<AuthorityTabs>
                           child: _ticket == Status.pending
                               ? PendingAuthorityTicketTable()
                               : _ticket == Status.accepted
-                              ? StreamAuthorityTicketTable(
-                            is_approved: "Approved",
-                            image_path: 'assets/images/approved.jpg',
+                              ?
+                          AuthorityTicketTable(
+                              is_approved: "Approved" ,
+                              image_path: 'assets/images/approved.jpg',
                           )
-                              : StreamAuthorityTicketTable(
-                            is_approved: "Rejected",
+                        // StreamAuthorityTicketTable(
+                        //     is_approved: "Approved",
+                        //     image_path: 'assets/images/approved.jpg',
+                        //   )
+                              :
+                          AuthorityTicketTable(
+                            is_approved: "Rejected" ,
                             image_path: 'assets/images/rejected.jpg',
-                          ),
+                          )
+                          // StreamAuthorityTicketTable(
+                          //   is_approved: "Rejected",
+                          //   image_path: 'assets/images/rejected.jpg',
+                          // ),
                         ),
                       ],
                     ),

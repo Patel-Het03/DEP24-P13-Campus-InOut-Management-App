@@ -499,7 +499,7 @@ class StuRelTicket {
   String purpose;
   String status;
   String visit_date;
-  String duration;
+  int duration;
 
   StuRelTicket({
     required this.ticketId,
