@@ -97,7 +97,7 @@ class _StuRelativesState extends State<Stu_Relatives>
                           "Pending",
 
                           style:GoogleFonts.mPlusRounded1c(
-                              fontSize: 16,
+                              fontSize: 14,
                               fontWeight: FontWeight.w800,
                               color: Colors.white
                           )
@@ -128,7 +128,7 @@ class _StuRelativesState extends State<Stu_Relatives>
                         "Accepted",
 
                         style:GoogleFonts.mPlusRounded1c(
-                            fontSize: 16,
+                            fontSize: 14,
                             fontWeight: FontWeight.w800,
                             color: Colors.white),
                       ),
@@ -154,7 +154,7 @@ class _StuRelativesState extends State<Stu_Relatives>
                         "Rejected",
 
                         style:GoogleFonts.mPlusRounded1c(
-                            fontSize: 16,
+                            fontSize: 14,
                             fontWeight: FontWeight.w800,
                             color: Colors.white),
                       ),
@@ -189,10 +189,12 @@ class _StuRelativesState extends State<Stu_Relatives>
                           ? PendingRelativeTicketTable()
                           : _ticket == Status.accepted
                           ? RelativesTicketTable(
+                        key:UniqueKey(),
                         is_approved: "Accepted",
                         image_path: 'assets/images/approved.jpg',
                       )
                           : RelativesTicketTable(
+                        key:UniqueKey(),
                         is_approved: "Rejected",
                         image_path: 'assets/images/rejected.jpg',
                       ),

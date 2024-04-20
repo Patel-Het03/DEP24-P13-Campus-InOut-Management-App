@@ -22,6 +22,7 @@ class _AuthorityTabsState extends State<AuthorityTabs>
   Status _ticket = Status.pending;
   void _toggleTicket(Status input) {
     if (input != _ticket) {
+
       setState(() {
         _ticket = input;
       });
@@ -121,10 +122,11 @@ class _AuthorityTabsState extends State<AuthorityTabs>
                             "Pending",
             
                               style:GoogleFonts.mPlusRounded1c(
-                                fontSize: 16,
+                                fontSize: 14,
                                 fontWeight: FontWeight.w800,
                                 color: Colors.white
-                              )
+                              ),
+
             
                           ),
                         ),
@@ -152,7 +154,7 @@ class _AuthorityTabsState extends State<AuthorityTabs>
                             "Accepted",
             
                             style:GoogleFonts.mPlusRounded1c(
-                                fontSize: 16,
+                                fontSize: 14,
                                 fontWeight: FontWeight.w800,
                                 color: Colors.white),
                           ),
@@ -178,7 +180,7 @@ class _AuthorityTabsState extends State<AuthorityTabs>
                             "Rejected",
             
                             style:GoogleFonts.mPlusRounded1c(
-                                fontSize: 16,
+                                fontSize: 14,
                                 fontWeight: FontWeight.w800,
                                 color: Colors.white),
                           ),
@@ -204,6 +206,7 @@ class _AuthorityTabsState extends State<AuthorityTabs>
                               : _ticket == Status.accepted
                               ?
                           AuthorityTicketTable(
+                              key:UniqueKey(),
                               is_approved: "Approved" ,
                               image_path: 'assets/images/approved.jpg',
                           )
@@ -213,9 +216,10 @@ class _AuthorityTabsState extends State<AuthorityTabs>
                         //   )
                               :
                           AuthorityTicketTable(
+                            key:UniqueKey(),
                             is_approved: "Rejected" ,
                             image_path: 'assets/images/rejected.jpg',
-                          )
+                          ),
                           // StreamAuthorityTicketTable(
                           //   is_approved: "Rejected",
                           //   image_path: 'assets/images/rejected.jpg',

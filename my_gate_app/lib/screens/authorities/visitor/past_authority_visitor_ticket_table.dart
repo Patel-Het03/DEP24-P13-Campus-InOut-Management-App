@@ -238,16 +238,14 @@ class _PastAuthorityVisitorTicketTableState
                                 height: 50,
                               ),
                             ),
-                            SizedBox(
-                              width: 5,
-                            ),
+
                             Container(
                               child: Column(
                                 mainAxisAlignment: MainAxisAlignment.start,
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   SizedBox(
-                                    height: 10,
+                                    height: 5,
                                   ),
                                   Align(
                                     alignment: Alignment.topLeft,

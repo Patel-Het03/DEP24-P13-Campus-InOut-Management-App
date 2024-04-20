@@ -370,109 +370,112 @@ class _RelativesTicketTableState extends State<RelativesTicketTable> {
                         // .toString()),
 
                         children: <Widget>[
-                          Container(
-                            child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: [
-                                  Text(
-                                      "InviteeName : ${tickets[index].inviteeName}",
-                                      style: GoogleFonts.lato(
-                                        fontWeight: FontWeight.w600,
-                                        color: Colors.black,
-                                        fontSize: 15,
-                                      )),
-                                  SizedBox(height: 2),
-                                  Text(
-                                      "InviteeRelationship : ${tickets[index].inviteeRelationship}",
-                                      style: GoogleFonts.lato(
-                                        fontWeight: FontWeight.w600,
-                                        color: Colors.black,
-                                        fontSize: 15,
-                                      )),
-                                  SizedBox(height: 2),
-                                  Text(
-                                      "InviteeContact : ${tickets[index].inviteeContact}",
-                                      style: GoogleFonts.lato(
-                                        fontWeight: FontWeight.w600,
-                                        color: Colors.black,
-                                        fontSize: 15,
-                                      )),
-                                  SizedBox(height: 2),
-                                  Text(
-                                      "Visit_Date : ${tickets[index].visit_date}",
-                                      style: GoogleFonts.lato(
-                                        fontWeight: FontWeight.w600,
-                                        color: Colors.black,
-                                        fontSize: 15,
-                                      )),
-                                  SizedBox(height: 2),
-                                  Text(
-                                      "Durations(In-Days) : ${tickets[index].duration}",
-                                      style: GoogleFonts.lato(
-                                        fontWeight: FontWeight.w600,
-                                        color: Colors.black,
-                                        fontSize: 15,
-                                      )),
-                                  SizedBox(height: 2),
-                                  Text("Purpose : ${tickets[index].purpose}",
-                                      style: GoogleFonts.lato(
-                                        fontWeight: FontWeight.w600,
-                                        color: Colors.black,
-                                        fontSize: 15,
-                                      )),
-                                  SizedBox(height: 2),
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Visibility(
-                                        visible:
-                                            tickets[index].status == "Rejected",
-                                        child: ElevatedButton(
-                                          onPressed: () async {
-                                            // selectedTickets_action.add(tickets[index]);
-                                            await accept_action_relatives_tickets_authorities(
-                                                tickets[index].ticketId);
-                                          },
-                                          style: ElevatedButton.styleFrom(
-                                            shape: RoundedRectangleBorder(
-                                              borderRadius:
-                                                  BorderRadius.circular(5),
+                          Center(
+                            child: Container(
+                              width: MediaQuery.of(context).size.width * 0.8,
+                              child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                        "InviteeName : ${tickets[index].inviteeName}",
+                                        style: GoogleFonts.lato(
+                                          fontWeight: FontWeight.w600,
+                                          color: Colors.black,
+                                          fontSize: 15,
+                                        )),
+                                    SizedBox(height: 2),
+                                    Text(
+                                        "InviteeRelationship : ${tickets[index].inviteeRelationship}",
+                                        style: GoogleFonts.lato(
+                                          fontWeight: FontWeight.w600,
+                                          color: Colors.black,
+                                          fontSize: 15,
+                                        )),
+                                    SizedBox(height: 2),
+                                    Text(
+                                        "InviteeContact : ${tickets[index].inviteeContact}",
+                                        style: GoogleFonts.lato(
+                                          fontWeight: FontWeight.w600,
+                                          color: Colors.black,
+                                          fontSize: 15,
+                                        )),
+                                    SizedBox(height: 2),
+                                    Text(
+                                        "Visit_Date : ${tickets[index].visit_date}",
+                                        style: GoogleFonts.lato(
+                                          fontWeight: FontWeight.w600,
+                                          color: Colors.black,
+                                          fontSize: 15,
+                                        )),
+                                    SizedBox(height: 2),
+                                    Text(
+                                        "Durations(In-Days) : ${tickets[index].duration}",
+                                        style: GoogleFonts.lato(
+                                          fontWeight: FontWeight.w600,
+                                          color: Colors.black,
+                                          fontSize: 15,
+                                        )),
+                                    SizedBox(height: 2),
+                                    Text("Purpose : ${tickets[index].purpose}",
+                                        style: GoogleFonts.lato(
+                                          fontWeight: FontWeight.w600,
+                                          color: Colors.black,
+                                          fontSize: 15,
+                                        )),
+                                    SizedBox(height: 2),
+                                    Row(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      children: [
+                                        Visibility(
+                                          visible:
+                                              tickets[index].status == "Rejected",
+                                          child: ElevatedButton(
+                                            onPressed: () async {
+                                              // selectedTickets_action.add(tickets[index]);
+                                              await accept_action_relatives_tickets_authorities(
+                                                  tickets[index].ticketId);
+                                            },
+                                            style: ElevatedButton.styleFrom(
+                                              shape: RoundedRectangleBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(5),
+                                              ),
                                             ),
-                                          ),
-                                          child: Text(
-                                            "Accept",
-                                            style: GoogleFonts.mPlusRounded1c(
-                                              color: Colors.white,
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                      Visibility(
-                                        visible:
-                                            tickets[index].status == "Accepted",
-                                        child: ElevatedButton(
-                                          onPressed: () async {
-                                            // selectedTickets_action.add(tickets[index]);
-                                            await reject_action_relatives_tickets_authorities(
-                                                tickets[index].ticketId);
-                                          },
-                                          style: ElevatedButton.styleFrom(
-                                            shape: RoundedRectangleBorder(
-                                              borderRadius:
-                                                  BorderRadius.circular(5),
-                                            ),
-                                          ),
-                                          child: Text(
-                                            "Reject",
-                                            style: GoogleFonts.mPlusRounded1c(
-                                              color: Colors.white,
+                                            child: Text(
+                                              "Accept",
+                                              style: GoogleFonts.mPlusRounded1c(
+                                                color: Colors.white,
+                                              ),
                                             ),
                                           ),
                                         ),
-                                      ),
-                                    ],
-                                  ),
-                                ]),
+                                        Visibility(
+                                          visible:
+                                              tickets[index].status == "Accepted",
+                                          child: ElevatedButton(
+                                            onPressed: () async {
+                                              // selectedTickets_action.add(tickets[index]);
+                                              await reject_action_relatives_tickets_authorities(
+                                                  tickets[index].ticketId);
+                                            },
+                                            style: ElevatedButton.styleFrom(
+                                              shape: RoundedRectangleBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(5),
+                                              ),
+                                            ),
+                                            child: Text(
+                                              "Reject",
+                                              style: GoogleFonts.mPlusRounded1c(
+                                                color: Colors.white,
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ]),
+                            ),
                           ),
                         ],
                       ),
