@@ -577,6 +577,12 @@ class _TicketScreenState extends State<TicketScreen> {
   }
 
   Widget StudentDetails(ResultObj ticket) {
+    // Parse the time string to DateTime object
+    DateTime time = DateTime.parse(ticket.date_time);
+    print(ticket.date_time);
+  print("datetime: ${time}");
+    // Format the date and time
+    String formattedTime = DateFormat('MMM dd, yyyy - hh:mm a').format(time);
     return Container(
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
         Text("Email :${ticket.email}",
@@ -591,7 +597,7 @@ class _TicketScreenState extends State<TicketScreen> {
               color: Colors.black,
               fontSize: 15,
             )),
-        Text("Time :${ticket}",
+        Text("Time :${formattedTime}",
             style: GoogleFonts.lato(
               fontWeight: FontWeight.w600,
               color: Colors.black,
@@ -649,6 +655,10 @@ class _TicketScreenState extends State<TicketScreen> {
   }
 
   Widget VisitorDetails(ResultObj4 ticket) {
+     DateTime time = DateTime.parse(ticket.date_time_of_ticket_raised);
+
+    // Format the date and time
+    String formattedTime = DateFormat('MMM dd, yyyy - hh:mm a').format(time);
     return Container(
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
         Text("Duration :${ticket.duration_of_stay}",
@@ -675,6 +685,15 @@ class _TicketScreenState extends State<TicketScreen> {
               color: Colors.black,
               fontSize: 15,
             )),
+          Text(
+            "Time Ticket Raised: $formattedTime",
+            style: GoogleFonts.lato(
+              fontWeight: FontWeight.w500,
+              color: Colors.black,
+              fontSize: 16,
+            ),
+          ),
+        
         SizedBox(height: MediaQuery.of(context).size.height * 0.01)
       ]),
     );

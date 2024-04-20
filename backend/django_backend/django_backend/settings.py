@@ -39,6 +39,7 @@ ALLOWED_HOSTS = [
     "0.0.0.0",
     "172.26.12.178",
     "192.168.73.245",
+    "172.30.8.213",
 ]
 
 # Application definition
@@ -131,27 +132,27 @@ WSGI_APPLICATION = "django_backend.wsgi.application"
     }
 } """
 
-""" DATABASES = {
-    'default': {
-        'ENGINE'  : 'django.db.backends.mysql', 
-        'NAME'    : 'mygateapp',               
-        'USER'    : 'root',                   
-        'PASSWORD': '123@123',         
-        'HOST'    : 'localhost',              
-        'PORT'    : '3306',
-    }
-} """
-
 DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.postgresql_psycopg2",
-        "NAME": "MyGateAppDB",
-        "USER": "postgres",
-        "PASSWORD": "123@123",
-        "HOST": "localhost",
-        "PORT": "5432",
+    'default': {
+        'ENGINE'  : 'django.db.backends.postgresql_psycopg2', 
+        'NAME'    : 'mygateapp',               
+        'USER'    : 'postgres',                   
+        'PASSWORD': 'James',         
+        'HOST'    : 'localhost',              
+        'PORT'    : '5432',
     }
-}
+} 
+
+# DATABASES = {
+#     "default": {
+#         "ENGINE": "django.db.backends.postgresql_psycopg2",
+#         "NAME": "MyGateAppDB",
+#         "USER": "postgres",
+#         "PASSWORD": "123@123",
+#         "HOST": "localhost",
+#         "PORT": "5432",
+#     }
+# }
 
 
 # Password validation
