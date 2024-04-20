@@ -492,32 +492,55 @@ class RelativeResultObj {
 class StuRelTicket {
   String ticketId;
   String studentId; // Assuming this is a String representation of Student ID
+  String? studentName; // Assuming this is a String representation of Student ID
   String inviteeName;
   String inviteeRelationship;
   String inviteeContact;
   String purpose;
   String status;
+  String visit_date;
+  int duration;
 
   StuRelTicket({
     required this.ticketId,
     required this.studentId,
+    this.studentName,
     required this.inviteeName,
     required this.inviteeRelationship,
     required this.inviteeContact,
     required this.purpose,
     required this.status,
+    required this.visit_date,
+    required this.duration,
   });
 
   // Convenience constructor to create a Ticket object from a JSON map
   factory StuRelTicket.fromJson(Map<String, dynamic> json) {
     return StuRelTicket(
       ticketId: json['ticket_id'],
-      studentId: json['student']['id'], // Assuming Student ID is nested under 'student'
+      studentId: json['student'], // Assuming Student ID is nested under 'student'
+      // studentName: json['studentName'], // Assuming Student ID is nested under 'student'
       inviteeName: json['invitee_name'],
       inviteeRelationship: json['invitee_relationship'],
       inviteeContact: json['invitee_contact'],
       purpose: json['purpose'],
       status: json['status'],
+      visit_date: json['visit_date'],
+      duration: json['duration'],
+    );
+  }
+  factory StuRelTicket.fromJson1(Map<String, dynamic> json) {
+    return StuRelTicket(
+      ticketId: json['ticket_id'],
+      studentId: json['student'], // Assuming Student ID is nested under 'student'
+      studentName: json['studentName'], // Assuming Student ID is nested under 'student'
+      inviteeName: json['invitee_name'],
+      inviteeRelationship: json['invitee_relationship'],
+      inviteeContact: json['invitee_contact'],
+      purpose: json['purpose'],
+      status: json['status'],
+      visit_date: json['visit_date'],
+      duration: json['duration'],
     );
   }
 
@@ -525,13 +548,74 @@ class StuRelTicket {
   Map<String, dynamic> toJson() {
     return {
       'ticket_id': ticketId,
-      'student': {'id': studentId}, // Assuming 'student' is a nested object with 'id' field
+      'studentId':  studentId, // Assuming 'student' is a nested object with 'id' field
+      // 'studentName':  studentName, // Assuming 'student' is a nested object with 'id' field
       'invitee_name': inviteeName,
       'invitee_relationship': inviteeRelationship,
       'invitee_contact': inviteeContact,
       'purpose': purpose,
       'status': status,
+      'visit_date':visit_date,
+      'duration':duration,
     };
+  }
+  Map<String, dynamic> toJson1() {
+    return {
+      'ticket_id': ticketId,
+      'studentId':  studentId, // Assuming 'student' is a nested object with 'id' field
+      'studentName':  studentName, // Assuming 'student' is a nested object with 'id' field
+      'invitee_name': inviteeName,
+      'invitee_relationship': inviteeRelationship,
+      'invitee_contact': inviteeContact,
+      'purpose': purpose,
+      'status': status,
+      'visit_date':visit_date,
+      'duration':duration,
+    };
+  }
+}
+
+class InviteeRecord {
+  late int recordId;
+  late String studentName;
+  late String studentEntryNo;
+  late String inviteeName;
+  late String inviteeRelationship;
+  late String inviteeContact;
+  late String inviteePurpose;
+  late String vehicleNumber;
+  late String time;
+  late String type;
+  late String status;
+
+  InviteeRecord({
+    required this.recordId,
+    required this.studentName,
+    required this.studentEntryNo,
+    required this.inviteeName,
+    required this.inviteeRelationship,
+    required this.inviteeContact,
+    required this.inviteePurpose,
+    required this.vehicleNumber,
+    required this.time,
+    required this.type,
+    required this.status,
+  });
+
+  factory InviteeRecord.fromJson(Map<String, dynamic> json) {
+    return InviteeRecord(
+      recordId: json['record_id'],
+      studentName: json['student_name'],
+      studentEntryNo: json['student_entry_no'],
+      inviteeName: json['invitee_name'],
+      inviteeRelationship: json['invitee_relationship'],
+      inviteeContact: json['invitee_contact'],
+      inviteePurpose: json['invitee_purpose'],
+      vehicleNumber: json['vehicle_number'],
+      time: json['time'],
+      type: json['type'],
+      status: json['status'],
+    );
   }
 }
 

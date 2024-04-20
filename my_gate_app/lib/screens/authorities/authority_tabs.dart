@@ -5,6 +5,7 @@ import 'package:my_gate_app/database/database_objects.dart';
 import 'package:my_gate_app/screens/authorities/pending_authority_ticket_table.dart';
 import 'package:my_gate_app/screens/authorities/stream_authority_ticket_table.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:my_gate_app/screens/authorities/authority_ticket_table.dart';
 class AuthorityTabs extends StatefulWidget {
   const AuthorityTabs({super.key});
 
@@ -21,6 +22,7 @@ class _AuthorityTabsState extends State<AuthorityTabs>
   Status _ticket = Status.pending;
   void _toggleTicket(Status input) {
     if (input != _ticket) {
+
       setState(() {
         _ticket = input;
       });
@@ -93,80 +95,6 @@ class _AuthorityTabsState extends State<AuthorityTabs>
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  // Container(
-                  //   color: Colors.black, // Black background color for the row
-                  //   child: Row(
-                  //     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  //     children: [
-                  //       // Pending Section
-                  //
-                  //       InkWell(
-                  //         onTap: () {
-                  //           // Handle onTap for pending section
-                  //         },
-                  //         child: Container(
-                  //           width: MediaQuery.of(context).size.width / 3, // Divide screen width by 3 for equal width sections
-                  //           height: 100, // Adjust the height as needed
-                  //           color: Colors.green, // Customize the color for Pending section
-                  //           child: Center(
-                  //             child: Text(
-                  //               "Pending",
-                  //               style: TextStyle(
-                  //                 color: Colors.white,
-                  //                 fontSize: 20,
-                  //                 fontWeight: FontWeight.bold,
-                  //               ),
-                  //             ),
-                  //           ),
-                  //         ),
-                  //       ),
-                  //
-                  //       // Approved Section
-                  //       InkWell(
-                  //         onTap: () {
-                  //           // Handle onTap for approved section
-                  //         },
-                  //         child: Container(
-                  //           width: MediaQuery.of(context).size.width / 3, // Divide screen width by 3 for equal width sections
-                  //           height: 100, // Adjust the height as needed
-                  //           color: Colors.blue, // Customize the color for Approved section
-                  //           child: Center(
-                  //             child: Text(
-                  //               "Approved",
-                  //               style: TextStyle(
-                  //                 color: Colors.white,
-                  //                 fontSize: 20,
-                  //                 fontWeight: FontWeight.bold,
-                  //               ),
-                  //             ),
-                  //           ),
-                  //         ),
-                  //       ),
-                  //
-                  //       // Rejected Section
-                  //       InkWell(
-                  //         onTap: () {
-                  //           // Handle onTap for rejected section
-                  //         },
-                  //         child: Container(
-                  //           width: MediaQuery.of(context).size.width / 3, // Divide screen width by 3 for equal width sections
-                  //           height: 100, // Adjust the height as needed
-                  //           color: Colors.red, // Customize the color for Rejected section
-                  //           child: Center(
-                  //             child: Text(
-                  //               "Rejected",
-                  //               style: TextStyle(
-                  //                 color: Colors.white,
-                  //                 fontSize: 20,
-                  //                 fontWeight: FontWeight.bold,
-                  //               ),
-                  //             ),
-                  //           ),
-                  //         ),
-                  //       ),
-                  //     ],
-                  //   ),
-                  // ),
                   SizedBox(height: 10),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -194,10 +122,11 @@ class _AuthorityTabsState extends State<AuthorityTabs>
                             "Pending",
             
                               style:GoogleFonts.mPlusRounded1c(
-                                fontSize: 16,
+                                fontSize: 14,
                                 fontWeight: FontWeight.w800,
                                 color: Colors.white
-                              )
+                              ),
+
             
                           ),
                         ),
@@ -225,7 +154,7 @@ class _AuthorityTabsState extends State<AuthorityTabs>
                             "Accepted",
             
                             style:GoogleFonts.mPlusRounded1c(
-                                fontSize: 16,
+                                fontSize: 14,
                                 fontWeight: FontWeight.w800,
                                 color: Colors.white),
                           ),
@@ -251,7 +180,7 @@ class _AuthorityTabsState extends State<AuthorityTabs>
                             "Rejected",
             
                             style:GoogleFonts.mPlusRounded1c(
-                                fontSize: 16,
+                                fontSize: 14,
                                 fontWeight: FontWeight.w800,
                                 color: Colors.white),
                           ),
@@ -263,17 +192,7 @@ class _AuthorityTabsState extends State<AuthorityTabs>
                   SizedBox(
                     height: 40,
                   ),
-                  //
-                  // SizedBox(
-                  //   height: MediaQuery.of(context).size.height * 0.03,
-                  // ),
-                  // SizedBox(
-                  //   height: 300,
-                  //   child: Container(
-                  //     child: PendingAuthorityTicketTable(),
-                  //   ),
-                  // )
-            
+
                   SingleChildScrollView(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -285,14 +204,26 @@ class _AuthorityTabsState extends State<AuthorityTabs>
                           child: _ticket == Status.pending
                               ? PendingAuthorityTicketTable()
                               : _ticket == Status.accepted
-                              ? StreamAuthorityTicketTable(
-                            is_approved: "Approved",
-                            image_path: 'assets/images/approved.jpg',
+                              ?
+                          AuthorityTicketTable(
+                              key:UniqueKey(),
+                              is_approved: "Approved" ,
+                              image_path: 'assets/images/approved.jpg',
                           )
-                              : StreamAuthorityTicketTable(
-                            is_approved: "Rejected",
+                        // StreamAuthorityTicketTable(
+                        //     is_approved: "Approved",
+                        //     image_path: 'assets/images/approved.jpg',
+                        //   )
+                              :
+                          AuthorityTicketTable(
+                            key:UniqueKey(),
+                            is_approved: "Rejected" ,
                             image_path: 'assets/images/rejected.jpg',
                           ),
+                          // StreamAuthorityTicketTable(
+                          //   is_approved: "Rejected",
+                          //   image_path: 'assets/images/rejected.jpg',
+                          // ),
                         ),
                       ],
                     ),

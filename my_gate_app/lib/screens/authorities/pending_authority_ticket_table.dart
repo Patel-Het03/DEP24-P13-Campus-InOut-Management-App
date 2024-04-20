@@ -134,8 +134,11 @@ class _PendingAuthorityTicketTableState
     if (enableDateFilter) {
       if (query.isEmpty) {
         ticketsFiltered = tickets
-            .where((ticket) => DateTime.parse(ticket.date_time).isBefore(
-                DateTime.parse(chosen_end_date).add(Duration(days: 1))))
+            .where((ticket) =>
+                DateTime.parse(ticket.date_time).isBefore(
+                    DateTime.parse(chosen_end_date).add(Duration(days: 1))) &&
+                DateTime.parse(ticket.date_time)
+                    .isAfter(DateTime.parse(chosen_start_date)))
             .toList();
       } else {
         ticketsFiltered = tickets
@@ -158,6 +161,7 @@ class _PendingAuthorityTicketTableState
             .where((ticket) =>
                 ticket.student_name.toLowerCase().contains(query.toLowerCase()))
             .toList();
+        // print('jj${ticketsFiltered}');
       }
     }
   }
@@ -167,6 +171,12 @@ class _PendingAuthorityTicketTableState
       searchQuery = query;
       filterTickets(searchQuery);
     });
+  }
+
+  void resetFilter(String query) {
+    chosen_start_date = DateTime.now().subtract(Duration(days: 1)).toString();
+    chosen_end_date = DateTime.now().toString();
+    filterTickets(query);
   }
 
   Future<void> _selectDateRange(BuildContext context) async {
@@ -523,20 +533,23 @@ class _PendingAuthorityTicketTableState
                   fontSize: 20,
                 ),
                 onChanged: (text) {
-                  // isFieldEmpty = text.isEmpty;
-                  //
-                  // onSearchQueryChanged(text);
+                  print(text);
+                  isFieldEmpty = text.isEmpty;
+
+                  onSearchQueryChanged(text);
                 },
                 decoration: InputDecoration(
                   contentPadding: EdgeInsets.fromLTRB(5.0, 0, 0, 14.0),
-                  hintText: 'Search by Name',
+                  hintText: 'Search by Student Name',
                   border: InputBorder.none,
                   prefixIcon: Icon(Icons.search, color: Colors.black),
                   suffixIcon: IconButton(
                     padding: EdgeInsets.zero,
                     icon: Icon(Icons.clear, color: Colors.black),
                     onPressed: () {
-                      // Clear search field
+                      // isFieldEmpty = text.isEmpty;
+                      //
+                      // onSearchQueryChanged(text);
                     },
                   ),
                   hintStyle: GoogleFonts.lato(
@@ -562,8 +575,8 @@ class _PendingAuthorityTicketTableState
                 icon: Icon(Icons.filter_alt,
                     color: Colors.black87), // Filter icon
                 onPressed: () {
-                  // enableDateFilter=true;
-                  // _selectDateRange(context);
+                  enableDateFilter = true;
+                  _selectDateRange(context);
                 },
               ),
             ),
@@ -582,20 +595,21 @@ class _PendingAuthorityTicketTableState
                 icon: Icon(Icons.filter_alt_off,
                     color: Colors.black87), // Filter icon
                 onPressed: () {
-                  // setState(() {
-                  //   enableDateFilter = !enableDateFilter;
-                  //   resetFilter(searchQuery);
-                  //   // filterTickets(searchQuery);
-                  // });
+                  setState(() {
+                    enableDateFilter = !enableDateFilter;
+                    resetFilter(searchQuery);
+                    // filterTickets(searchQuery);
+                  });
                 },
               ),
             ),
           ]),
+
           SizedBox(
             height: MediaQuery.of(context).size.height * 0.03,
           ),
 
-          pendingStudentList(tickets),
+          pendingStudentList(ticketsFiltered),
           // buildSubmit(),
         ],
       ),
@@ -645,27 +659,25 @@ class _PendingAuthorityTicketTableState
                         borderRadius: BorderRadius.circular(
                             15), // Adjust the radius as needed
                       ),
-                      child: Column(
-                        children: <Widget>[
-                          ListTile(
-                            title: Text(
-                              mytickets[index].student_name,
-                              style: GoogleFonts.lato(
-                                fontWeight: FontWeight.w800,
-                                color: Colors.white,
-                                fontSize: 18,
-                              ),
-                            ),
-                            // subtitle: Text(mytickets[index]
-                            // .date_time_guard
-                            // .toString()),
-                            onTap: () => toggleExpansion(index),
+                      child: ExpansionTile(
+                        title: Text(
+                          mytickets[index].student_name,
+                          style: GoogleFonts.lato(
+                            fontWeight: FontWeight.w800,
+                            color: Colors.white,
+                            fontSize: 18,
                           ),
+                        ),
+                        // subtitle: Text(mytickets[index]
+                        // .date_time_guard
+                        // .toString()),
 
-                          if (isExpanded)
-                            Container(
+                        children: <Widget>[
+                          Center(
+                            child: Container(
+                              width: MediaQuery.of(context).size.width * 0.8,
                               child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
                                     Text(
@@ -705,21 +717,19 @@ class _PendingAuthorityTicketTableState
                                     //       color: Colors.black,
                                     //       fontSize: 15,
                                     //     )),
-                                    SizedBox(
-                                        height: 5
-                                    ),
+                                    SizedBox(height: 8),
                                     Container(
-                                      width: MediaQuery.of(context).size.width * 0.4, // 80% of screen width
+                                      width: MediaQuery.of(context).size.width *
+                                          0.4, // 80% of screen width
                                       height: 1, // Height of the divider
-                                      color: Colors.black12, // Color of the divider
-                                    ),
-                                    SizedBox(
-                                        height: 5
+                                      color:
+                                          Colors.black12, // Color of the divider
                                     ),
                                     Padding(
                                       padding: EdgeInsets.fromLTRB(8.0, 0, 0, 0),
                                       child: Row(
-                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
                                         children: [
                                           Text(
                                             "Authority_Message: ",
@@ -733,11 +743,13 @@ class _PendingAuthorityTicketTableState
                                             child: TextField(
                                               onChanged: (text) {
                                                 setState(() {
-                                                  tickets[index].authority_message = text;
+                                                  tickets[index]
+                                                      .authority_message = text;
                                                 });
                                               },
                                               decoration: InputDecoration(
-                                                hintText: "Enter Authority Message",
+                                                hintText:
+                                                    "Enter Authority Message",
                                                 hintStyle: TextStyle(
                                                   color: Colors.white54,
                                                 ),
@@ -754,29 +766,29 @@ class _PendingAuthorityTicketTableState
                                       ),
                                     ),
 
-
-                                    SizedBox(
-                                        height: 5
-                                    ),
+                                    SizedBox(height: 5),
                                     Container(
-                                      width: MediaQuery.of(context).size.width * 0.8, // 80% of screen width
+                                      width: MediaQuery.of(context).size.width *
+                                          0.8, // 80% of screen width
                                       height: 1, // Height of the divider
-                                      color: Colors.black12, // Color of the divider
+                                      color:
+                                          Colors.black12, // Color of the divider
                                     ),
-                                    SizedBox(
-                                        height: 5
-                                    ),
+                                    SizedBox(height: 5),
                                     Row(
-                                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceEvenly,
                                       children: [
                                         ElevatedButton(
-                                          onPressed: () async{
-                                            selectedTickets_action.add(tickets[index]);
+                                          onPressed: () async {
+                                            selectedTickets_action
+                                                .add(tickets[index]);
                                             await accept_action_tickets_authorities();
                                           },
                                           style: ElevatedButton.styleFrom(
                                             shape: RoundedRectangleBorder(
-                                              borderRadius: BorderRadius.circular(5), // Adjust the radius as needed
+                                              borderRadius: BorderRadius.circular(
+                                                  5), // Adjust the radius as needed
                                             ),
                                           ),
                                           child: Text(
@@ -787,13 +799,15 @@ class _PendingAuthorityTicketTableState
                                           ),
                                         ),
                                         ElevatedButton(
-                                          onPressed: () async{
-                                            selectedTickets_action.add(tickets[index]);
+                                          onPressed: () async {
+                                            selectedTickets_action
+                                                .add(tickets[index]);
                                             await reject_action_tickets_authorities();
                                           },
                                           style: ElevatedButton.styleFrom(
                                             shape: RoundedRectangleBorder(
-                                              borderRadius: BorderRadius.circular(5), // Adjust the radius as needed
+                                              borderRadius: BorderRadius.circular(
+                                                  5), // Adjust the radius as needed
                                             ),
                                           ),
                                           child: Text(
@@ -806,21 +820,16 @@ class _PendingAuthorityTicketTableState
                                       ],
                                     ),
                                   ]),
-
                             ),
-
+                          ),
                         ],
                       ),
                     ),
                     SizedBox(
                       height: 5,
                     ),
-                  ]
-
-              ),
-
+                  ]),
             );
-
           },
         ),
       ),

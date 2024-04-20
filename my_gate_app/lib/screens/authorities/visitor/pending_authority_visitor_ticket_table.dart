@@ -248,16 +248,16 @@
                                   height: 20,
                                 ),
                               ),
-                              const SizedBox(
-                                width: 5,
-                              ),
+                              // const SizedBox(
+                              //   width: 5,
+                              // ),
                               Container(
                                 child: Column(
                                   mainAxisAlignment: MainAxisAlignment.start,
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     const SizedBox(
-                                      height: 10,
+                                      height: 5,
                                     ),
                                     Align(
                                       alignment: Alignment.topLeft,

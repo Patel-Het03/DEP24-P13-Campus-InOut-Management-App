@@ -14,11 +14,10 @@ class AuthorityTicketTable extends StatefulWidget {
   AuthorityTicketTable({
     super.key,
     required this.is_approved,
-    required this.tickets,
+
     required this.image_path,
   });
   final String is_approved;
-  List<ResultObj2> tickets;
   final String image_path;
 
   @override
@@ -92,9 +91,10 @@ class _AuthorityTicketTableState extends State<AuthorityTicketTable> {
 
   Future init() async {
     final Bactickets = await get_tickets_for_authority();
+    print("akjdcbkjsd${widget.is_approved}");
+    print('iiiiinittttt');
     setState(() {
       tickets = Bactickets;
-
     });
     filterTickets(searchQuery);
 
@@ -103,12 +103,14 @@ class _AuthorityTicketTableState extends State<AuthorityTicketTable> {
   void filterTickets(String query) {
     if (enableDateFilter) {
       if (query.isEmpty) {
-        ticketsFiltered = widget.tickets
+        ticketsFiltered = tickets
             .where((ticket) => DateTime.parse(ticket.date_time).isBefore(
-                DateTime.parse(chosen_end_date).add(Duration(days: 1))))
+                DateTime.parse(chosen_end_date).add(Duration(days: 1)))&&
+            DateTime.parse(ticket.date_time)
+                .isAfter(DateTime.parse(chosen_start_date)))
             .toList();
       } else {
-        ticketsFiltered = widget.tickets
+        ticketsFiltered = tickets
             .where((ticket) =>
                 ticket.student_name
                     .toLowerCase()
@@ -122,9 +124,9 @@ class _AuthorityTicketTableState extends State<AuthorityTicketTable> {
       }
     } else {
       if (query.isEmpty) {
-        ticketsFiltered = widget.tickets;
+        ticketsFiltered = tickets;
       } else {
-        ticketsFiltered = widget.tickets
+        ticketsFiltered = tickets
             .where((ticket) =>
                 ticket.student_name.toLowerCase().contains(query.toLowerCase()))
             .toList();
@@ -137,6 +139,11 @@ class _AuthorityTicketTableState extends State<AuthorityTicketTable> {
       searchQuery = query;
       filterTickets(searchQuery);
     });
+  }
+  void resetFilter(String query) {
+    chosen_start_date = DateTime.now().subtract(Duration(days: 1)).toString();
+    chosen_end_date = DateTime.now().toString();
+    filterTickets(query);
   }
 
   Future<void> _selectDateRange(BuildContext context) async {
@@ -181,34 +188,8 @@ class _AuthorityTicketTableState extends State<AuthorityTicketTable> {
                       border:
                       Border(bottom: BorderSide(color: Colors.black, width: 2.0)),
                     ),
-                    child: TextField(
-                      style: GoogleFonts.lato(
-                        color: Colors.black,
-                        fontSize: 20,
-                      ),
-                      onChanged: (text) {
-                        // isFieldEmpty = text.isEmpty;
-                        // onSearchQueryChanged(text);
-                      },
-                      decoration: InputDecoration(
-                        contentPadding: EdgeInsets.fromLTRB(5.0, 0, 0, 14.0),
-                        hintText: 'Search by Name',
-                        border: InputBorder.none,
-                        prefixIcon: Icon(Icons.search, color: Colors.black),
-                        suffixIcon: IconButton(
-                          padding: EdgeInsets.zero,
-                          icon: Icon(Icons.clear, color: Colors.black),
-                          onPressed: () {
-                            // Clear search field
-                          },
-                        ),
-                        hintStyle: GoogleFonts.lato(
-                          color: Colors.black87,
-                          fontSize: 16.0,
-                          fontWeight: FontWeight.normal,
-                        ),
-                      ),
-                    ),
+
+                    child: buildSearchTextField(),
                   ),
                   SizedBox(
                     width: MediaQuery.of(context).size.width * 0.02,
@@ -225,8 +206,8 @@ class _AuthorityTicketTableState extends State<AuthorityTicketTable> {
                       icon: Icon(Icons.filter_alt,
                           color: Colors.black87), // Filter icon
                       onPressed: () {
-                        // enableDateFilter=true;
-                        // _selectDateRange(context);
+                        enableDateFilter=true;
+                        _selectDateRange(context);
                       },
                     ),
                   ),
@@ -245,11 +226,11 @@ class _AuthorityTicketTableState extends State<AuthorityTicketTable> {
                       icon: Icon(Icons.filter_alt_off,
                           color: Colors.black87), // Filter icon
                       onPressed: () {
-                        // setState(() {
-                        //   enableDateFilter = !enableDateFilter;
-                        //   resetFilter(searchQuery);
-                        //   // filterTickets(searchQuery);
-                        // });
+                        setState(() {
+                          enableDateFilter = !enableDateFilter;
+                          resetFilter(searchQuery);
+
+                        });
                       },
                     ),
                   ),
@@ -260,12 +241,60 @@ class _AuthorityTicketTableState extends State<AuthorityTicketTable> {
 
 
                 // Expanded(child: ScrollableWidget(child: buildDataTable())),
-                acceptedRejectedStudentList(tickets),
+                acceptedRejectedStudentList(ticketsFiltered),
               ],
             ),
           ),
         ),
       );
+  TextField buildSearchTextField() {
+    TextEditingController _searchController = TextEditingController();
+
+    // Initialize controller value only if searchQuery is not empty
+    if (searchQuery.isNotEmpty) {
+      _searchController.text = searchQuery;
+      _searchController.selection = TextSelection.fromPosition(
+          TextPosition(offset: _searchController.text.length));
+    }
+    return TextField(
+      controller: _searchController,
+      style: GoogleFonts.lato(
+        color: Colors.black,
+        fontSize: 20,
+      ),
+      onChanged: (text) {
+
+        onSearchQueryChanged(text);
+
+      },
+      decoration: InputDecoration(
+        contentPadding: EdgeInsets.fromLTRB(5.0, 0, 0, 14.0),
+        hintText: 'Search by Student Name',
+        border: InputBorder.none,
+        prefixIcon: Icon(Icons.search, color: Colors.black),
+        suffixIcon: _searchController.text.isNotEmpty
+            ? IconButton(
+          padding: EdgeInsets.zero,
+          icon: Icon(Icons.clear, color: Colors.black),
+
+          onPressed: () {
+            print("hello i am here");
+            setState(() {
+              _searchController.clear();
+              searchQuery = '';
+              filterTickets('');
+            });
+          },
+        )
+            : null,
+        hintStyle: GoogleFonts.lato(
+          color: Colors.black87,
+          fontSize: 16.0,
+          fontWeight: FontWeight.normal,
+        ),
+      ),
+    );
+  }
 
   Widget acceptedRejectedStudentList(List<ResultObj2> mytickets) {
     print(mytickets);
@@ -292,9 +321,9 @@ class _AuthorityTicketTableState extends State<AuthorityTicketTable> {
                           borderRadius: BorderRadius.circular(
                               15), // Adjust the radius as needed
                         ),
-                        child: Column(
-                          children: <Widget>[
-                            ListTile(
+                        child: ExpansionTile(
+                          // children: <Widget>[
+                          //   ListTile(
                               title: Text(
                                 mytickets[index].student_name,
                                 style: GoogleFonts.lato(
@@ -303,112 +332,121 @@ class _AuthorityTicketTableState extends State<AuthorityTicketTable> {
                                   fontSize: 18,
                                 ),
                               ),
+                              trailing: Icon(
+                                Icons.expand_more, // or Icons.expand_less for upward arrow
+                                color: Colors.black, // Change the color to your desired color
+                              ),
                               // subtitle: Text(mytickets[index]
                               // .date_time_guard
                               // .toString()),
-                              onTap: () => toggleExpansion(index),
+                            //   onTap: () => toggleExpansion(index),
+                            // ),
+
+                            // if (isExpanded)
+                          children: <Widget>[
+                            Center(
+                              child: Container(
+                                width: MediaQuery.of(context).size.width * 0.8,
+                                  child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                            "Student :${tickets[index].student_name}",
+                                            style: GoogleFonts.lato(
+                                              fontWeight: FontWeight.w600,
+                                              color: Colors.black,
+                                              fontSize: 15,
+                                            )),
+                                        Text("Location :${tickets[index].location}",
+                                            style: GoogleFonts.lato(
+                                              fontWeight: FontWeight.w600,
+                                              color: Colors.black,
+                                              fontSize: 15,
+                                            )),
+                                        Text(
+                                            "Time :${((tickets[index].date_time.split("T").last).split(".")[0].split(":").sublist(0, 2)).join(":")}",
+                                            style: GoogleFonts.lato(
+                                              fontWeight: FontWeight.w600,
+                                              color: Colors.black,
+                                              fontSize: 15,
+                                            )),
+                                        Text(
+                                            "Ticket_type :${tickets[index].ticket_type}",
+                                            style: GoogleFonts.lato(
+                                              fontWeight: FontWeight.w600,
+                                              color: Colors.black,
+                                              fontSize: 15,
+                                            )),
+                                        Text(
+                                            "Authority_message :${tickets[index].authority_message}",
+                                            style: GoogleFonts.lato(
+                                              fontWeight: FontWeight.w600,
+                                              color: Colors.black,
+                                              fontSize: 15,
+                                            )),
+                                        SizedBox(
+                                            height: 5
+                                        ),
+                                        Container(
+                                          width: MediaQuery.of(context).size.width * 0.8, // 80% of screen width
+                                          height: 1, // Height of the divider
+                                          color: Colors.black12, // Color of the divider
+                                        ),
+                                        SizedBox(
+                                            height: 5
+                                        ),
+                                        Row(
+                                          mainAxisAlignment: MainAxisAlignment.center,
+                                          children: [
+                                            Visibility(
+                                              visible: widget.is_approved == "Rejected",
+                                              child: ElevatedButton(
+                                                onPressed: () async{
+                                                  selectedTickets_action.add(tickets[index]);
+                                                  await accept_action_tickets_authorities();
+                                                },
+                                                style: ElevatedButton.styleFrom(
+                                                  shape: RoundedRectangleBorder(
+                                                    borderRadius: BorderRadius.circular(5),
+                                                  ),
+                                                ),
+                                                child: Text(
+                                                  "Accept",
+                                                  style: GoogleFonts.mPlusRounded1c(
+                                                    color: Colors.white,
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
+                                            Visibility(
+                                              visible: widget.is_approved == "Approved",
+                                              child: ElevatedButton(
+                                                onPressed: () async{
+                                                  selectedTickets_action.add(tickets[index]);
+                                                  await reject_action_tickets_authorities();
+                                                },
+                                                style: ElevatedButton.styleFrom(
+                                                  shape: RoundedRectangleBorder(
+                                                    borderRadius: BorderRadius.circular(5),
+                                                  ),
+                                                ),
+                                                child: Text(
+                                                  "Reject",
+                                                  style: GoogleFonts.mPlusRounded1c(
+                                                    color: Colors.white,
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ]),
+
+                                ),
                             ),
-
-                            if (isExpanded)
-                              Container(
-                                child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.center,
-                                    children: [
-                                      Text(
-                                          "Student :${tickets[index].student_name}",
-                                          style: GoogleFonts.lato(
-                                            fontWeight: FontWeight.w600,
-                                            color: Colors.black,
-                                            fontSize: 15,
-                                          )),
-                                      Text("Location :${tickets[index].location}",
-                                          style: GoogleFonts.lato(
-                                            fontWeight: FontWeight.w600,
-                                            color: Colors.black,
-                                            fontSize: 15,
-                                          )),
-                                      Text(
-                                          "Time :${((tickets[index].date_time.split("T").last).split(".")[0].split(":").sublist(0, 2)).join(":")}",
-                                          style: GoogleFonts.lato(
-                                            fontWeight: FontWeight.w600,
-                                            color: Colors.black,
-                                            fontSize: 15,
-                                          )),
-                                      Text(
-                                          "Ticket_type :${tickets[index].ticket_type}",
-                                          style: GoogleFonts.lato(
-                                            fontWeight: FontWeight.w600,
-                                            color: Colors.black,
-                                            fontSize: 15,
-                                          )),
-                                      Text(
-                                          "Authority_message :${tickets[index].authority_message}",
-                                          style: GoogleFonts.lato(
-                                            fontWeight: FontWeight.w600,
-                                            color: Colors.black,
-                                            fontSize: 15,
-                                          )),
-                                      SizedBox(
-                                          height: 5
-                                      ),
-                                      Container(
-                                        width: MediaQuery.of(context).size.width * 0.8, // 80% of screen width
-                                        height: 1, // Height of the divider
-                                        color: Colors.black12, // Color of the divider
-                                      ),
-                                      SizedBox(
-                                          height: 5
-                                      ),
-                                      Row(
-                                        mainAxisAlignment: MainAxisAlignment.center,
-                                        children: [
-                                          Visibility(
-                                            visible: tickets[index].is_approved == "Rejected",
-                                            child: ElevatedButton(
-                                              onPressed: () async{
-                                                selectedTickets_action.add(tickets[index]);
-                                                await accept_action_tickets_authorities();
-                                              },
-                                              style: ElevatedButton.styleFrom(
-                                                shape: RoundedRectangleBorder(
-                                                  borderRadius: BorderRadius.circular(5),
-                                                ),
-                                              ),
-                                              child: Text(
-                                                "Accept",
-                                                style: GoogleFonts.mPlusRounded1c(
-                                                  color: Colors.white,
-                                                ),
-                                              ),
-                                            ),
-                                          ),
-                                          Visibility(
-                                            visible: tickets[index].is_approved == "Approved",
-                                            child: ElevatedButton(
-                                              onPressed: () async{
-                                                selectedTickets_action.add(tickets[index]);
-                                                await reject_action_tickets_authorities();
-                                              },
-                                              style: ElevatedButton.styleFrom(
-                                                shape: RoundedRectangleBorder(
-                                                  borderRadius: BorderRadius.circular(5),
-                                                ),
-                                              ),
-                                              child: Text(
-                                                "Reject",
-                                                style: GoogleFonts.mPlusRounded1c(
-                                                  color: Colors.white,
-                                                ),
-                                              ),
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ]),
-
-                              ),
-
                           ],
+
+                          // ],
                         ),
                       ),
                       SizedBox(
@@ -426,143 +464,143 @@ class _AuthorityTicketTableState extends State<AuthorityTicketTable> {
       );
   }
 
-  Widget buildDataTable() {
-    // Fields returned from backend [is_approved, ticket_type, date_time, location, email, student_name, authority_message]
-
-    final columns = [
-      'S.No.',
-      'Name',
-      'Location',
-      'Time',
-      'Entry/Exit',
-      'Authority Message'
-    ];
-
-    return DataTable(
-      border: TableBorder.all(width: 1, color: Color.fromARGB(255, 0, 0, 0)),
-      headingRowColor: MaterialStateProperty.all(Colors.orangeAccent),
-      columns: getColumns(columns),
-      rows: getRows(ticketsFiltered),
-    );
-
-    // return Scaffold(
-    //   body: LayoutBuilder(
-    //     builder: (context, constraints) => SingleChildScrollView(
-    //       child: Column(
-    //         children: [
-    //           const Text('My Text'),
-    //           Container(
-    //             alignment: Alignment.topLeft,
-    //             child: ConstrainedBox(
-    //               constraints: BoxConstraints(maxWidth: constraints.maxWidth),
-    //               child: DataTable(
-    //                 headingRowColor: MaterialStateProperty.all(Colors.red[200]),
-    //                 columns: getColumns(columns),
-    //                 rows: getRows(widget.tickets),
-    //               ),
-    //             ),
-    //           ),
-    //         ],
-    //       ),
-    //     ),
-    //   ),
-    // );
-
-    // return DataTable(
-    //   headingRowColor: MaterialStateProperty.all(Colors.red[200]),
-    //   columns: getColumns(columns),
-    //   rows: getRows(widget.tickets),
-    // );
-  }
-
-  List<DataColumn> getColumns(List<String> columns) => columns
-      .map((String column) => DataColumn(
-            // label:  Flexible(
-            //   child:Text(column,style: TextStyle(color: Colors.blue, fontWeight: FontWeight.bold),),
-            // )
-
-            // label: ConstrainedBox(
-            //   constraints: BoxConstraints(
-            //     maxWidth: 20,
-            //     minWidth: 20,
-            //   ),
-            //   child: Flexible(
-            //       child:Text(column,style: TextStyle(color: Colors.blue, fontWeight: FontWeight.bold),)),
-            // ),
-            label: Text(
-              column,
-              style:
-                  TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
-            ),
-          ))
-      .toList();
-
-  List<DataRow> getRows(List<ResultObj2> tickets) {
-    List<DataRow> row_list = [];
-    for (int index = 0; index < tickets.length; index++) {
-      var ticket = tickets[index];
-      row_list.add(DataRow(
-        color: MaterialStateProperty.resolveWith<Color?>(
-            (Set<MaterialState> states) {
-          // All rows will have the same selected color.
-          if (states.contains(MaterialState.selected)) {
-            return Theme.of(context).colorScheme.primary.withOpacity(0.08);
-          }
-          // Even rows will have a grey color.
-          if (index.isEven) {
-            return Colors.grey.withOpacity(0.3);
-          }
-          return null; // Use default value for other states and odd rows.
-        }),
-        // final columns = ['S.No.', 'Student Name', 'Time Generated', 'Entry/Exit', 'Authority Status'];
-
-        // final columns = ['S.No.', 'Student Name', 'Location', 'Time Generated', 'Entry/Exit', 'Authority Message'];
-        cells: [
-          DataCell(
-            Text(
-              (index + 1).toString(),
-              style: TextStyle(color: Color.fromARGB(255, 0, 0, 0)),
-            ),
-          ),
-          DataCell(
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).push(
-                  MaterialPageRoute(
-                      builder: (context) =>
-                          ProfilePage(email: ticket.email, isEditable: false)),
-                );
-              },
-              child: Text(
-                ticket.student_name.toString(),
-                style: TextStyle(color: Colors.lightBlueAccent),
-              ),
-            ),
-          ),
-          // DataCell(Text(ticket.student_name.toString())),
-          DataCell(Text(
-            ticket.location.toString(),
-            style: TextStyle(color: Color.fromARGB(255, 0, 0, 0)),
-          )),
-          DataCell(Text(
-            "    ${((ticket.date_time.split("T").last)
-                        .split(".")[0]
-                        .split(":")
-                        .sublist(0, 2))
-                    .join(":")}\n${ticket.date_time.split("T")[0]}",
-            style: TextStyle(color: Color.fromARGB(255, 0, 0, 0)),
-          )),
-          DataCell(Text(
-            ticket.ticket_type.toString(),
-            style: TextStyle(color: Color.fromARGB(255, 0, 0, 0)),
-          )),
-          DataCell(Text(
-            ticket.authority_message.toString(),
-            style: TextStyle(color: Color.fromARGB(255, 0, 0, 0)),
-          )),
-        ],
-      ));
-    }
-    return row_list;
-  }
+//   Widget buildDataTable() {
+//     // Fields returned from backend [is_approved, ticket_type, date_time, location, email, student_name, authority_message]
+//
+//     final columns = [
+//       'S.No.',
+//       'Name',
+//       'Location',
+//       'Time',
+//       'Entry/Exit',
+//       'Authority Message'
+//     ];
+//
+//     return DataTable(
+//       border: TableBorder.all(width: 1, color: Color.fromARGB(255, 0, 0, 0)),
+//       headingRowColor: MaterialStateProperty.all(Colors.orangeAccent),
+//       columns: getColumns(columns),
+//       rows: getRows(ticketsFiltered),
+//     );
+//
+//     // return Scaffold(
+//     //   body: LayoutBuilder(
+//     //     builder: (context, constraints) => SingleChildScrollView(
+//     //       child: Column(
+//     //         children: [
+//     //           const Text('My Text'),
+//     //           Container(
+//     //             alignment: Alignment.topLeft,
+//     //             child: ConstrainedBox(
+//     //               constraints: BoxConstraints(maxWidth: constraints.maxWidth),
+//     //               child: DataTable(
+//     //                 headingRowColor: MaterialStateProperty.all(Colors.red[200]),
+//     //                 columns: getColumns(columns),
+//     //                 rows: getRows(widget.tickets),
+//     //               ),
+//     //             ),
+//     //           ),
+//     //         ],
+//     //       ),
+//     //     ),
+//     //   ),
+//     // );
+//
+//     // return DataTable(
+//     //   headingRowColor: MaterialStateProperty.all(Colors.red[200]),
+//     //   columns: getColumns(columns),
+//     //   rows: getRows(widget.tickets),
+//     // );
+//   }
+//
+//   List<DataColumn> getColumns(List<String> columns) => columns
+//       .map((String column) => DataColumn(
+//             // label:  Flexible(
+//             //   child:Text(column,style: TextStyle(color: Colors.blue, fontWeight: FontWeight.bold),),
+//             // )
+//
+//             // label: ConstrainedBox(
+//             //   constraints: BoxConstraints(
+//             //     maxWidth: 20,
+//             //     minWidth: 20,
+//             //   ),
+//             //   child: Flexible(
+//             //       child:Text(column,style: TextStyle(color: Colors.blue, fontWeight: FontWeight.bold),)),
+//             // ),
+//             label: Text(
+//               column,
+//               style:
+//                   TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+//             ),
+//           ))
+//       .toList();
+//
+//   List<DataRow> getRows(List<ResultObj2> tickets) {
+//     List<DataRow> row_list = [];
+//     for (int index = 0; index < tickets.length; index++) {
+//       var ticket = tickets[index];
+//       row_list.add(DataRow(
+//         color: MaterialStateProperty.resolveWith<Color?>(
+//             (Set<MaterialState> states) {
+//           // All rows will have the same selected color.
+//           if (states.contains(MaterialState.selected)) {
+//             return Theme.of(context).colorScheme.primary.withOpacity(0.08);
+//           }
+//           // Even rows will have a grey color.
+//           if (index.isEven) {
+//             return Colors.grey.withOpacity(0.3);
+//           }
+//           return null; // Use default value for other states and odd rows.
+//         }),
+//         // final columns = ['S.No.', 'Student Name', 'Time Generated', 'Entry/Exit', 'Authority Status'];
+//
+//         // final columns = ['S.No.', 'Student Name', 'Location', 'Time Generated', 'Entry/Exit', 'Authority Message'];
+//         cells: [
+//           DataCell(
+//             Text(
+//               (index + 1).toString(),
+//               style: TextStyle(color: Color.fromARGB(255, 0, 0, 0)),
+//             ),
+//           ),
+//           DataCell(
+//             TextButton(
+//               onPressed: () {
+//                 Navigator.of(context).push(
+//                   MaterialPageRoute(
+//                       builder: (context) =>
+//                           ProfilePage(email: ticket.email, isEditable: false)),
+//                 );
+//               },
+//               child: Text(
+//                 ticket.student_name.toString(),
+//                 style: TextStyle(color: Colors.lightBlueAccent),
+//               ),
+//             ),
+//           ),
+//           // DataCell(Text(ticket.student_name.toString())),
+//           DataCell(Text(
+//             ticket.location.toString(),
+//             style: TextStyle(color: Color.fromARGB(255, 0, 0, 0)),
+//           )),
+//           DataCell(Text(
+//             "    ${((ticket.date_time.split("T").last)
+//                         .split(".")[0]
+//                         .split(":")
+//                         .sublist(0, 2))
+//                     .join(":")}\n${ticket.date_time.split("T")[0]}",
+//             style: TextStyle(color: Color.fromARGB(255, 0, 0, 0)),
+//           )),
+//           DataCell(Text(
+//             ticket.ticket_type.toString(),
+//             style: TextStyle(color: Color.fromARGB(255, 0, 0, 0)),
+//           )),
+//           DataCell(Text(
+//             ticket.authority_message.toString(),
+//             style: TextStyle(color: Color.fromARGB(255, 0, 0, 0)),
+//           )),
+//         ],
+//       ));
+//     }
+//     return row_list;
+//   }
 }

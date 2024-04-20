@@ -206,7 +206,7 @@ class _AuthorityMainState extends State<AuthorityMain> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
                 SizedBox(
-                  height: 20,
+                  height: 60,
                 ),
                 Text(
                   "Let's Get Going: \n Today's Tickets Await Approval!",

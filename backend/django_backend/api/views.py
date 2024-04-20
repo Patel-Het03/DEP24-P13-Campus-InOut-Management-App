@@ -53,6 +53,10 @@ from .models import *
 from .serializers import *
 from .thread import *
 
+from django.contrib.auth.tokens import default_token_generator
+from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
+from django.utils.encoding import force_bytes
+from django.contrib.auth.models import update_last_login
 
 # Password storing work
 # encrypted = make_password("Vasu")
@@ -500,7 +504,7 @@ def forgot_password(request):
 
         if op == 1:
 
-            is_not_present = len(Person.objects.filter(email=email)) == 0
+            is_not_present = len(User.objects.filter(email=email)) == 0
 
             if is_not_present:
                 response_str = "User email not found in database"
@@ -508,18 +512,18 @@ def forgot_password(request):
                     "message": response_str,
                 }
                 print(response_str)
-                return Response(res, status=status.HTTP_200_OK)
+                return Response(res, status=status.HTTP_400_BAD_REQUEST)
 
             subject = "Your Account verification OTP for MyGateApp is ..."
 
-            # otp = random.randint(100000, 999999)
             otp = 111111
+            otp = random.randint(100000, 999999)
 
             message = f"Your OTP is {otp}"
 
             email_from = settings.EMAIL_HOST
 
-            # send_mail(subject, message, email_from, [email])
+            send_mail(subject, message, email_from, [email])
 
             print("email sent")
 
@@ -539,6 +543,7 @@ def forgot_password(request):
             return Response(res, status=status.HTTP_200_OK)
 
         elif op == 2:
+
             queryset_otp = OTP.objects.get(email=email)
 
             serializer_otp = OTPSerializer(queryset_otp, many=False)
@@ -549,11 +554,26 @@ def forgot_password(request):
 
             # print("entered_otp")
             # print(entered_otp)
+            is_not_present = len(User.objects.filter(email=email)) == 0
+
+            if is_not_present:
+                response_str = "User email not found in database"
+                res = {
+                    "message": response_str,
+                }
+                print(response_str)
+                return Response(res, status=status.HTTP_400_BAD_REQUEST)
+            user=User.objects.get(email=email)
+            
 
             if entered_otp == db_otp:
+                token = default_token_generator.make_token(user)
+                uidb64 = urlsafe_base64_encode(force_bytes(user.pk))
                 response_str = "OTP Matched"
                 res = {
                     "message": response_str,
+                    "uidb64": uidb64,
+                    "token": token
                 }
                 print(response_str)
                 OTP.objects.filter(email=email).update(otp=-1)
@@ -564,7 +584,7 @@ def forgot_password(request):
                     "message": response_str,
                 }
                 print(response_str)
-                return Response(res, status=status.HTTP_200_OK)
+                return Response(res, status=status.HTTP_400_BAD_REQUEST)
 
     except Exception as e:
         print(e)
@@ -579,21 +599,30 @@ def forgot_password(request):
 @api_view(["POST"])
 def reset_password(request):
     try:
-        data = request.data
+        
+        password = request.data.get("password")
+        uidb64 = request.data.get('uidb64')
+        token = request.data.get('token')
 
-        email = data["email"]
+        if not (uidb64 and token and password):
+            raise Exception("Please provide UID, token, password, and confirm_password.")
 
-        password = data["password"]
+        
+        uid = str(urlsafe_base64_decode(uidb64),'utf-8')
+        user = User.objects.get(pk=uid)
 
-        Password.objects.filter(email=email).update(password=make_password(password))
+        if user is not None and default_token_generator.check_token(user, token): 
+            # Set the new password
+            user.set_password(password)
+            user.save()
+            response_str = "Password RESET Successful"
 
-        response_str = "Password RESET Successful"
-
-        res = {
-            "message": response_str,
-        }
-
-        return Response(res, status=status.HTTP_200_OK)
+            res = {
+                "message": response_str,
+            }
+            return Response(res, status=status.HTTP_200_OK)
+        else:
+            raise Exception("No valid user found")
 
     except Exception as e:
         response_str = "Password RESET Failed"
@@ -5420,6 +5449,7 @@ class GetStudentRelativeTicketsAPIView(APIView):
 
         # Serialize the ticket data
         serializer = InviteRequestSerializer(tickets, many=True)
+        print(serializer.data)
 
         return Response(serializer.data, status=status.HTTP_200_OK)
 
@@ -5438,6 +5468,12 @@ class AdminTicketStatusAPIView(APIView):
 
         # Serialize the ticket data
         serializer = InviteRequestSerializer(tickets, many=True)
+
+        for data in serializer.data:
+            student_id = data['student']
+            print(student_id)
+            student = Student.objects.get(entry_no=student_id)
+            data['studentName'] = student.st_name
 
         return Response(serializer.data, status=status.HTTP_200_OK)
 
@@ -5476,14 +5512,14 @@ class RejectTicketAPIView(APIView):
             return Response({"message": "Ticket not found."}, status=status.HTTP_404_NOT_FOUND)
         
         # Check if the ticket status is pending or rejected
-        if ticket.status in ['Pending']:
+        if ticket.status in ['Pending','Accepted']:
             ticket.status = 'Rejected'
             ticket.save()
             return Response({"message": "Ticket rejected successfully."}, status=status.HTTP_200_OK)
         else:
             return Response({"message": "Ticket cannot be rejected as it is already approved."}, status=status.HTTP_400_BAD_REQUEST)
         
-class GuardApproveInviteeEntryRequest(APIView):
+class GuardCreateInviteeRecord(APIView):
     # permission_classes = (IsAuthenticated,IsGuard)  # Assuming only admins can access this API
     def post(self,request):
         try:
@@ -5502,28 +5538,43 @@ class GuardApproveInviteeEntryRequest(APIView):
             except InviteRequest.DoesNotExist:
                 jsonresponse={
                     "ok":False,
-                    "error":"Ticket not found",
+                    "error":"Ticket not found, or has expired",
                 }
                 return Response(jsonresponse,status=status.HTTP_400_BAD_REQUEST)
+            # add a check for the ticket to be expired
             if invite_request.status!="Accepted":
                 jsonresponse={
                     "ok":False,
-                    "error":f"Ticket Status By Authority : {invite_request.status}",
+                    "error":f"Ticket Status By Authority : {invite_request.status}. Wait for it to be Accepted",
                 }
                 return Response(jsonresponse,status=status.HTTP_400_BAD_REQUEST)
             if enter_exit=="enter":
-                invite_request.vehicle_number=vehicle_number
-                invite_request.enter_time=timezone.now()
+                InviteeTicketRecord.objects.create(
+                    invite_request=invite_request,
+                    vehicle_number=vehicle_number,
+                    type=enter_exit,
+                    status='Accepted'
+                )
+                invite_request.cached_vehicle_number=vehicle_number
                 invite_request.save()
+                # invite_request.vehicle_number=vehicle_number
+                # invite_request.enter_time=timezone.now()
+                # invite_request.save()
                 jsonresponse={
                     "ok":True,
                     "message":"Entry succesfull",
                 }
-                return Response(jsonresponse,status=status.HTTP_200_OK)
-                
+                return Response(jsonresponse,status=status.HTTP_200_OK)                
             elif enter_exit=='exit' :
-                invite_request.exit_time=timezone.now()
+                InviteeTicketRecord.objects.create(
+                    invite_request=invite_request,
+                    vehicle_number=vehicle_number,
+                    type=enter_exit,
+                    status='Accepted'
+                )
+                invite_request.cached_vehicle_number=vehicle_number
                 invite_request.save()
+
                 jsonresponse={
                     "ok":True,
                     "message":"Exit succesfull",
@@ -5575,6 +5626,7 @@ class GetInviteRequestByTicketID(APIView):
                 "invitee_name":invite_request.invitee_name,
                 "student_name":student.st_name,
                 "relationship_with_student":invite_request.invitee_relationship,
+                "vehicle_number":invite_request.cached_vehicle_number,
             }
             return Response(jsonresponse,status.HTTP_200_OK)       
         except Exception as e:
@@ -5583,3 +5635,72 @@ class GetInviteRequestByTicketID(APIView):
                 "error":str(e),
             }
             return Response(jsonresponse,status.HTTP_400_BAD_REQUEST)
+class InviteeRecords(APIView):
+    ENTRY_CHOICES = {
+        'enter': 'Enter',
+        'exit': 'Exit'
+    }
+
+    STATUS_CHOICES = {
+        'Accepted': 'Accepted',
+        'Rejected': 'Rejected'
+    }
+
+    def get(self, request):
+        entry_choice = request.GET.get('entry_choice', None)
+        status_type = request.GET.get('status_type', None)
+
+        if entry_choice not in self.ENTRY_CHOICES:
+            return Response({'error': 'Invalid entry choice'}, status=status.HTTP_400_BAD_REQUEST)
+
+        if status_type not in self.STATUS_CHOICES:
+            return Response({'error': 'Invalid status type'}, status=status.HTTP_400_BAD_REQUEST)
+
+        records = InviteeTicketRecord.objects.filter(type=entry_choice, status=status_type)
+        data = []
+
+        for record in records:
+            invite_request = record.invite_request
+            student = invite_request.student
+
+            record_data = {
+                'record_id': record.record_id,
+                'student_name': student.st_name,
+                'student_entry_no': student.entry_no,
+                'invitee_name': invite_request.invitee_name,
+                'invitee_relationship': invite_request.invitee_relationship,
+                'invitee_contact': invite_request.invitee_contact,
+                'invitee_purpose': invite_request.purpose,
+                'vehicle_number': record.vehicle_number,
+                'time': record.time,
+                'type': record.type,
+                'status': record.status
+            }
+
+            data.append(record_data)
+        data.reverse()
+
+        return Response(data, status=status.HTTP_200_OK)
+
+class UpdateInviteeRecordStatus(APIView):
+    def post(self, request):
+        try:
+            record_id = request.data.get('record_id')
+            new_status = request.data.get('status')
+            # print(record_id)
+            if not record_id:
+                return Response({'error': 'Record ID is required'}, status=status.HTTP_400_BAD_REQUEST)
+            if new_status not in ['Accepted', 'Rejected']:
+                return Response({'error': 'Invalid status'}, status=status.HTTP_400_BAD_REQUEST)
+            try:
+                record = InviteeTicketRecord.objects.get(record_id=record_id)
+                record.status = new_status
+                record.save()
+                print(record_id)
+                print(new_status)
+                print("sucess")
+                return Response({'message': 'Status updated successfully'}, status=status.HTTP_200_OK)
+            except InviteeTicketRecord.DoesNotExist:
+                return Response({'error': 'Record not found'}, status=status.HTTP_404_NOT_FOUND)
+        except Exception as e:
+            return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)

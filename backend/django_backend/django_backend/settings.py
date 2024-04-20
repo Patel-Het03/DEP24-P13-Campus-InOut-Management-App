@@ -38,6 +38,7 @@ ALLOWED_HOSTS = [
     "172.23.6.189",
     "0.0.0.0",
     "172.26.12.178",
+    "192.168.73.245",
 ]
 
 # Application definition
@@ -146,7 +147,7 @@ DATABASES = {
         "ENGINE": "django.db.backends.postgresql_psycopg2",
         "NAME": "MyGateAppDB",
         "USER": "postgres",
-        "PASSWORD": "1234",
+        "PASSWORD": "123@123",
         "HOST": "localhost",
         "PORT": "5432",
     }

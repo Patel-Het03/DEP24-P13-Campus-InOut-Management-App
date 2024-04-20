@@ -148,7 +148,7 @@ class _AuthorityVisitorState extends State<AuthorityVisitor>
                               "Pending",
 
                               style:GoogleFonts.mPlusRounded1c(
-                                  fontSize: 16,
+                                  fontSize: 14,
                                   fontWeight: FontWeight.w800,
                                   color: Colors.white
                               )
@@ -176,7 +176,7 @@ class _AuthorityVisitorState extends State<AuthorityVisitor>
                             "Past",
 
                             style:GoogleFonts.mPlusRounded1c(
-                                fontSize: 16,
+                                fontSize: 14,
                                 fontWeight: FontWeight.w800,
                                 color: Colors.white),
                           ),

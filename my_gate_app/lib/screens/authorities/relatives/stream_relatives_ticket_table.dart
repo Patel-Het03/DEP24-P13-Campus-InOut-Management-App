@@ -27,8 +27,7 @@ class _StreamRelativesTicketTableState
   @override
   Widget build(BuildContext context) {
     return StreamBuilder(
-      stream: databaseInterface.get_tickets_for_authorities_stream(
-          LoggedInDetails.getEmail(), widget.is_approved),
+      stream: databaseInterface.get_relative_tickets_for_authorities_stream(),
       builder: (context, snapshot) {
         switch (snapshot.connectionState) {
           case ConnectionState.waiting:
@@ -39,13 +38,8 @@ class _StreamRelativesTicketTableState
                   style: TextStyle(fontSize: 24, color: Colors.red));
             } else {
               // String in_or_out = snapshot.data.toString();
-              List<StuRelTicket> tickets = [];
-              if (snapshot.hasData) {
-                tickets = snapshot.data as List<StuRelTicket>;
-              }
               return RelativesTicketTable(
                   is_approved: widget.is_approved,
-                  tickets: tickets,
                   image_path: widget.image_path
               );
             }
