@@ -76,64 +76,74 @@ class _PendingRelativeTicketTable extends State<PendingRelativeTicketTable> {
     }
   }
 
-  // void filterTickets(String query) {
-  //   if (enableDateFilter) {
-  //     if (query.isEmpty) {
-  //       ticketsFiltered = tickets
-  //           .where((ticket) => DateTime.parse(ticket.date_time).isBefore(
-  //           DateTime.parse(chosen_end_date).add(Duration(days: 1))))
-  //           .toList();
-  //     } else {
-  //       ticketsFiltered = tickets
-  //           .where((ticket) =>
-  //       ticket.student_name
-  //           .toLowerCase()
-  //           .contains(query.toLowerCase()) &&
-  //           DateTime.parse(ticket.date_time)
-  //               .isAfter(DateTime.parse(chosen_start_date)) &&
-  //           DateTime.parse(ticket.date_time).isBefore(
-  //               DateTime.parse(chosen_end_date).add(Duration(days: 1))))
-  //           .toList();
-  //       print(chosen_end_date);
-  //     }
-  //   } else {
-  //     if (query.isEmpty) {
-  //       ticketsFiltered = tickets;
-  //     } else {
-  //       ticketsFiltered = tickets
-  //           .where((ticket) =>
-  //           ticket.student_name.toLowerCase().contains(query.toLowerCase()))
-  //           .toList();
-  //     }
-  //   }
-  // }
+  void filterTickets(String query) {
+    if (enableDateFilter) {
+      if (query.isEmpty) {
+        ticketsFiltered = tickets
+            .where((ticket) =>
+        DateTime.parse(ticket.visit_date).isBefore(
+            DateTime.parse(chosen_end_date).add(Duration(days: 1))) &&
+            DateTime.parse(ticket.visit_date)
+                .isAfter(DateTime.parse(chosen_start_date)))
+            .toList();
+      } else {
+        ticketsFiltered = tickets
+            .where((ticket) =>
+        ticket.inviteeName
+            .toLowerCase()
+            .contains(query.toLowerCase()) &&
+            DateTime.parse(ticket.visit_date)
+                .isAfter(DateTime.parse(chosen_start_date)) &&
+            DateTime.parse(ticket.visit_date).isBefore(
+                DateTime.parse(chosen_end_date).add(Duration(days: 1))))
+            .toList();
+        print(chosen_end_date);
+      }
+    } else {
+      if (query.isEmpty) {
+        ticketsFiltered =tickets;
+      } else {
+        ticketsFiltered =tickets
+            .where((ticket) =>
+            ticket.inviteeName.toLowerCase().contains(query.toLowerCase()))
+            .toList();
+      }
+    }
+  }
   //
-  // void onSearchQueryChanged(String query) {
-  //   setState(() {
-  //     searchQuery = query;
-  //     filterTickets(searchQuery);
-  //   });
-  // }
+  void onSearchQueryChanged(String query) {
+    setState(() {
+      searchQuery = query;
+      filterTickets(searchQuery);
+    });
+  }
+
+  void resetFilter(String query) {
+    chosen_start_date = DateTime.now().subtract(Duration(days: 1)).toString();
+    chosen_end_date = DateTime.now().toString();
+    filterTickets(query);
+  }
+
   //
-  // Future<void> _selectDateRange(BuildContext context) async {
-  //   final initialDateRange = DateTimeRange(
-  //     start: DateTime.now(),
-  //     end: DateTime.now().add(Duration(days: 7)),
-  //   );
-  //   DateTimeRange? selectedDateRange = await showDateRangePicker(
-  //     context: context,
-  //     firstDate: DateTime.now().subtract(Duration(days: 365)),
-  //     lastDate: DateTime.now().add(Duration(days: 365)),
-  //     initialDateRange: initialDateRange,
-  //   );
-  //   if (selectedDateRange != null) {
-  //     setState(() {
-  //       chosen_start_date = selectedDateRange.start.toString();
-  //       chosen_end_date = selectedDateRange.end.toString();
-  //       filterTickets(searchQuery);
-  //     });
-  //   }
-  // }
+  Future<void> _selectDateRange(BuildContext context) async {
+    final initialDateRange = DateTimeRange(
+      start: DateTime.now(),
+      end: DateTime.now().add(Duration(days: 7)),
+    );
+    DateTimeRange? selectedDateRange = await showDateRangePicker(
+      context: context,
+      firstDate: DateTime.now().subtract(Duration(days: 365)),
+      lastDate: DateTime.now().add(Duration(days: 365)),
+      initialDateRange: initialDateRange,
+    );
+    if (selectedDateRange != null) {
+      setState(() {
+        chosen_start_date = selectedDateRange.start.toString();
+        chosen_end_date = selectedDateRange.end.toString();
+        filterTickets(searchQuery);
+      });
+    }
+  }
 
   @override
   void initState() {
@@ -154,17 +164,8 @@ class _PendingRelativeTicketTable extends State<PendingRelativeTicketTable> {
       // selectedTickets = [];
       // selectedTickets_action = [];
     });
-    // filterTickets(searchQuery);
+    filterTickets(searchQuery);
   }
-  // Future init() async {
-  //   final tickets_local = await Get_relatives_ticket_for_authority();
-  //   setState(() {
-  //     tickets = tickets_local;
-  //     // selectedTickets = [];
-  //     // selectedTickets_action = [];
-  //   });
-  //   // filterTickets(searchQuery);
-  // }
 
   @override
   Widget build(BuildContext context) {
@@ -187,35 +188,7 @@ class _PendingRelativeTicketTable extends State<PendingRelativeTicketTable> {
                 border:
                     Border(bottom: BorderSide(color: Colors.black, width: 2.0)),
               ),
-              child: TextField(
-                style: GoogleFonts.lato(
-                  color: Colors.black,
-                  fontSize: 20,
-                ),
-                onChanged: (text) {
-                  // isFieldEmpty = text.isEmpty;
-                  //
-                  // onSearchQueryChanged(text);
-                },
-                decoration: InputDecoration(
-                  contentPadding: EdgeInsets.fromLTRB(5.0, 0, 0, 14.0),
-                  hintText: 'Search by Name',
-                  border: InputBorder.none,
-                  prefixIcon: Icon(Icons.search, color: Colors.black),
-                  suffixIcon: IconButton(
-                    padding: EdgeInsets.zero,
-                    icon: Icon(Icons.clear, color: Colors.black),
-                    onPressed: () {
-                      // Clear search field
-                    },
-                  ),
-                  hintStyle: GoogleFonts.lato(
-                    color: Colors.black87,
-                    fontSize: 16.0,
-                    fontWeight: FontWeight.normal,
-                  ),
-                ),
-              ),
+              child: buildSearchTextField(),
             ),
             SizedBox(
               width: MediaQuery.of(context).size.width * 0.02,
@@ -232,8 +205,8 @@ class _PendingRelativeTicketTable extends State<PendingRelativeTicketTable> {
                 icon: Icon(Icons.filter_alt,
                     color: Colors.black87), // Filter icon
                 onPressed: () {
-                  // enableDateFilter=true;
-                  // _selectDateRange(context);
+                  enableDateFilter=true;
+                  _selectDateRange(context);
                 },
               ),
             ),
@@ -252,11 +225,10 @@ class _PendingRelativeTicketTable extends State<PendingRelativeTicketTable> {
                 icon: Icon(Icons.filter_alt_off,
                     color: Colors.black87), // Filter icon
                 onPressed: () {
-                  // setState(() {
-                  //   enableDateFilter = !enableDateFilter;
-                  //   resetFilter(searchQuery);
-                  //   // filterTickets(searchQuery);
-                  // });
+                  setState(() {
+                    enableDateFilter = !enableDateFilter;
+                    resetFilter(searchQuery);
+                  });
                 },
               ),
             ),
@@ -265,12 +237,60 @@ class _PendingRelativeTicketTable extends State<PendingRelativeTicketTable> {
             height: MediaQuery.of(context).size.height * 0.03,
           ),
 
-          pendingRelativeList(tickets),
+          pendingRelativeList(ticketsFiltered),
           // buildSubmit(),
         ],
       ),
     );
   }
+
+  TextField buildSearchTextField() {
+    TextEditingController _searchController = TextEditingController();
+
+    // Initialize controller value only if searchQuery is not empty
+    if (searchQuery.isNotEmpty) {
+      _searchController.text = searchQuery;
+      _searchController.selection = TextSelection.fromPosition(
+          TextPosition(offset: _searchController.text.length));
+    }
+    return TextField(
+      controller: _searchController,
+      style: GoogleFonts.lato(
+        color: Colors.black,
+        fontSize: 20,
+      ),
+      onChanged: (text) {
+
+        onSearchQueryChanged(text);
+
+      },
+      decoration: InputDecoration(
+        contentPadding: EdgeInsets.fromLTRB(5.0, 0, 0, 14.0),
+        hintText: 'Search by Student Name',
+        border: InputBorder.none,
+        prefixIcon: Icon(Icons.search, color: Colors.black),
+        suffixIcon: _searchController.text.isNotEmpty
+            ? IconButton(
+          padding: EdgeInsets.zero,
+          icon: Icon(Icons.clear, color: Colors.black),
+          onPressed: () {
+            setState(() {
+              _searchController.clear();
+              searchQuery = '';
+              filterTickets('');
+            });
+          },
+        )
+            : null,
+        hintStyle: GoogleFonts.lato(
+          color: Colors.black87,
+          fontSize: 16.0,
+          fontWeight: FontWeight.normal,
+        ),
+      ),
+    );
+  }
+
 
   Widget pendingRelativeList(List<StuRelTicket> mytickets) {
     return Expanded(

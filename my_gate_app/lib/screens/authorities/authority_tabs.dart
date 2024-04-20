@@ -5,7 +5,8 @@ import 'package:my_gate_app/database/database_objects.dart';
 import 'package:my_gate_app/screens/authorities/pending_authority_ticket_table.dart';
 import 'package:my_gate_app/screens/authorities/stream_authority_ticket_table.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:my_gate_app/screens/authorities/authority_ticket_table.dart';
+import 'package:my_gate_app/screens/authorities/authority_rejected_ticket_table.dart';
+import 'package:my_gate_app/screens/authorities/authority_accepted_ticket_table.dart';
 class AuthorityTabs extends StatefulWidget {
   const AuthorityTabs({super.key});
 
@@ -205,8 +206,8 @@ class _AuthorityTabsState extends State<AuthorityTabs>
                               ? PendingAuthorityTicketTable()
                               : _ticket == Status.accepted
                               ?
-                          AuthorityTicketTable(
-                              key:UniqueKey(),
+                          AuthorityAcceptedTicketTable(
+
                               is_approved: "Approved" ,
                               image_path: 'assets/images/approved.jpg',
                           )
@@ -215,8 +216,8 @@ class _AuthorityTabsState extends State<AuthorityTabs>
                         //     image_path: 'assets/images/approved.jpg',
                         //   )
                               :
-                          AuthorityTicketTable(
-                            key:UniqueKey(),
+                          AuthorityRejectedTicketTable(
+
                             is_approved: "Rejected" ,
                             image_path: 'assets/images/rejected.jpg',
                           ),

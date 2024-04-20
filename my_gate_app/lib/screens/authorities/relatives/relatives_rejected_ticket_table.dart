@@ -10,8 +10,8 @@ import 'package:my_gate_app/screens/utils/custom_snack_bar.dart';
 
 // We pass to this class the value of "is_approved" which takes the value "Accepted"|"Rejected"
 
-class RelativesTicketTable extends StatefulWidget {
-  RelativesTicketTable({
+class RelativesRejectedTicketTable extends StatefulWidget {
+  RelativesRejectedTicketTable({
     super.key,
     required this.is_approved,
     required this.image_path,
@@ -20,10 +20,10 @@ class RelativesTicketTable extends StatefulWidget {
   final String image_path;
 
   @override
-  _RelativesTicketTableState createState() => _RelativesTicketTableState();
+  _RelativesRejectedTicketTableState createState() => _RelativesRejectedTicketTableState();
 }
 
-class _RelativesTicketTableState extends State<RelativesTicketTable> {
+class _RelativesRejectedTicketTableState extends State<RelativesRejectedTicketTable> {
   List<StuRelTicket> tickets = [];
   List<StuRelTicket> ticketsFiltered = [];
 
@@ -55,7 +55,7 @@ class _RelativesTicketTableState extends State<RelativesTicketTable> {
     setState(() {
       tickets = Bactickets;
     });
-    // filterTickets(searchQuery);
+    filterTickets(searchQuery);
   }
 
   Future<void> accept_action_relatives_tickets_authorities(
@@ -234,8 +234,8 @@ class _RelativesTicketTableState extends State<RelativesTicketTable> {
                       icon: Icon(Icons.filter_alt,
                           color: Colors.black87), // Filter icon
                       onPressed: () {
-                        // enableDateFilter=true;
-                        // _selectDateRange(context);
+                        enableDateFilter=true;
+                        _selectDateRange(context);
                       },
                     ),
                   ),
@@ -254,11 +254,11 @@ class _RelativesTicketTableState extends State<RelativesTicketTable> {
                       icon: Icon(Icons.filter_alt_off,
                           color: Colors.black87), // Filter icon
                       onPressed: () {
-                        // setState(() {
-                        //   enableDateFilter = !enableDateFilter;
-                        //   resetFilter(searchQuery);
-                        //   // filterTickets(searchQuery);
-                        // });
+                        setState(() {
+                          enableDateFilter = !enableDateFilter;
+                          resetFilter(searchQuery);
+
+                        });
                       },
                     ),
                   ),
@@ -268,7 +268,7 @@ class _RelativesTicketTableState extends State<RelativesTicketTable> {
                 ),
 
                 // Expanded(child: ScrollableWidget(child: buildDataTable())),
-                acceptedRejectedRelativeList(tickets),
+                acceptedRejectedRelativeList(ticketsFiltered),
               ],
             ),
           ),
