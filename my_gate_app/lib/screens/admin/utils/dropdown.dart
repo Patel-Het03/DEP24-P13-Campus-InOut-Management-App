@@ -28,13 +28,7 @@ Widget dropdown(BuildContext context, List<String> parentLocations,
               floatingLabelStyle: TextStyle(color: Colors.black),
               prefixStyle: TextStyle(color: Colors.black),
               fillColor: Colors.deepOrange,
-              // enabledBorder: OutlineInputBorder(
-              //   borderRadius: BorderRadius.all(Radius.circular(border_radius)),
-              //   borderSide: BorderSide(
-              //     color: Colors.black,
-              //     width: 2,
-              //   ),
-              // ),
+             
               focusedBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.all(Radius.circular(border_radius)),
                 borderSide: BorderSide(
@@ -45,41 +39,10 @@ Widget dropdown(BuildContext context, List<String> parentLocations,
               prefixIcon: icon
           ),
         ),
-        // dropdownSearchDecoration: InputDecoration (
-        //     labelStyle: TextStyle(color: Colors.black),
-        //     floatingLabelStyle: TextStyle(color: Colors.black),
-        //     prefixStyle: TextStyle(color: Colors.black),
-        //     fillColor: Colors.deepOrange,
-        //     enabledBorder: OutlineInputBorder(
-        //       borderRadius: BorderRadius.all(Radius.circular(border_radius)),
-        //       borderSide: BorderSide(
-        //         color: Colors.blue,
-        //         width: 2,
-        //       ),
-        //     ),
-        //     focusedBorder: OutlineInputBorder(
-        //       borderRadius: BorderRadius.all(Radius.circular(border_radius)),
-        //       borderSide: BorderSide(
-        //         color: Colors.red,
-        //         width: 2,
-        //       ),
-        //     ),
-        //     prefixIcon: icon
-        // ),
-        // showAsSuffixIcons: true,
-        // showClearButton: true,
-        // showSelectedItems: true,
         items: parentLocations,
-        // items: [
-        //   "Brazil",
-        //   "Italia (Disabled)",
-        //   "Tunisia",
-        //   "Canada"
-        // ],
-        // label: label,
-        // popupItemDisabled: (String s) => s.startsWith('I'),
+       
         onChanged: onChangedFunction,
-        // selectedItem: "Brazil"
+       
       ),
     ),
   );

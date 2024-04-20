@@ -579,7 +579,7 @@ class _TicketScreenState extends State<TicketScreen> {
   Widget StudentDetails(ResultObj ticket) {
     return Container(
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-        Text("email :${ticket.email}",
+        Text("Email :${ticket.email}",
             style: GoogleFonts.lato(
               fontWeight: FontWeight.w600,
               color: Colors.black,
@@ -591,7 +591,7 @@ class _TicketScreenState extends State<TicketScreen> {
               color: Colors.black,
               fontSize: 15,
             )),
-        Text("Additonal Visitors :${ticket}",
+        Text("Time :${ticket}",
             style: GoogleFonts.lato(
               fontWeight: FontWeight.w600,
               color: Colors.black,
