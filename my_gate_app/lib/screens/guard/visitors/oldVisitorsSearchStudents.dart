@@ -34,7 +34,7 @@ class _oldVisitorSeacrchStateStudent extends State<oldVisitorSeacrchStudent> {
   List<String> students = [];
   String purpose = "";
   String num_additional = "";
-
+  final _formKey = GlobalKey<FormState>();
   List<String> duration = ["30 min", "1 hour", "2 hours", "> 2 hours"];
 
   String student_name = "None";
@@ -111,7 +111,9 @@ class _oldVisitorSeacrchStateStudent extends State<oldVisitorSeacrchStudent> {
             //       ]),
             // ),
             
-            child: Column(children: [
+           child: Form( // Wrap your form with Form widget
+              key: _formKey,
+              child: Column(children: [
               SizedBox(
                 height: 15,
               ),
@@ -219,6 +221,12 @@ class _oldVisitorSeacrchStateStudent extends State<oldVisitorSeacrchStudent> {
                   Icons.add,
                   color: Colors.black,
                 ),
+                validatorFunction: (value) { 
+                      if (value == null || value.isEmpty) {
+                        return 'this field is required!';
+                      }
+                      return null;
+                    },
               ),
               SizedBox(
                 height: 25,
@@ -264,22 +272,25 @@ class _oldVisitorSeacrchStateStudent extends State<oldVisitorSeacrchStudent> {
                       submit_function: () async {
                         // print("purpose=${purpose},number=${num_additional}");
                         // Used to display the snackbar
-                        int statusCode = await databaseInterface
-                            .insert_in_visitors_ticket_table(
-                                visitor_name,
-                                mobile_number,
-                                car_number,
-                                "XXXYYYZZZ",
-                                "xxxyyyzzz@gmail.com",
-                                /*dummny, don't touch it,
-                                                        to get around foreign key constraint*/
-                                "Warden Main Gate",
-                                purpose,
-                                "enter",
-                                duration_of_stay,
-                                num_additional,
-                                student_email);
-                        display_further_status(statusCode);
+                        if (_formKey.currentState!.validate()) {
+                          print(_formKey.currentState!.validate());
+                          int statusCode = await databaseInterface
+                              .insert_in_visitors_ticket_table(
+                                  visitor_name,
+                                  mobile_number,
+                                  car_number,
+                                  "XXXYYYZZZ",
+                                  "xxxyyyzzz@gmail.com",
+                                  /*dummny, don't touch it,
+                                                          to get around foreign key constraint*/
+                                  "Warden Main Gate",
+                                  purpose,
+                                  "enter",
+                                  duration_of_stay,
+                                  num_additional,
+                                  student_email);
+                          display_further_status(statusCode);
+                        }
                       },
                     ),
                  
@@ -289,6 +300,7 @@ class _oldVisitorSeacrchStateStudent extends State<oldVisitorSeacrchStudent> {
                 height: 25,
               ),
             ]),
+           )
           ),
         ),
       ),

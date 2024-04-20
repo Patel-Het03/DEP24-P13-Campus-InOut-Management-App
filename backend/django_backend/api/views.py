@@ -396,6 +396,7 @@ def clear_db(request):
     Password.objects.all().delete()
     Admin.objects.all().delete()
     OTP.objects.all().delete()
+    User.objects.all().delete()
     return Response(status=status.HTTP_200_OK)
 
 

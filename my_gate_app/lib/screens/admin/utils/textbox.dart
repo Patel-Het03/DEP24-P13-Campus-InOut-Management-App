@@ -2,6 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+
 class TextBoxCustom extends StatelessWidget {
   TextBoxCustom({
     super.key,
@@ -10,9 +11,11 @@ class TextBoxCustom extends StatelessWidget {
     required this.icon,
     this.form_key,
     this.onChangedFunction,
+    this.validatorFunction,
   });
   void Function(String?)? onSavedFunction;
   void Function(String?)? onChangedFunction;
+  String? Function(String?)? validatorFunction;
   String labelText;
   Icon icon;
   Key? form_key;
@@ -36,25 +39,24 @@ class TextBoxCustom extends StatelessWidget {
             keyboardType: TextInputType.emailAddress,
             key: const ValueKey('username'),
             // how does this work?
-            validator: (value) {
-              if (value!.isEmpty) {
-                return '$labelText is empty';
-              }
-              return null;
-            },
+            validator: validatorFunction ??
+                (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'this field is required';
+                  }
+                  return null;
+                },
             onSaved: onSavedFunction,
             onChanged: onChangedFunction,
             decoration: InputDecoration(
-                prefixStyle: TextStyle(color: Colors.black),
-
-                contentPadding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 10.0),
-                      border: InputBorder.none,
-                      hintText: labelText,
-                      hintStyle: GoogleFonts.lato(color: Colors.grey),
-                prefixIcon: icon,
-                
-               
-                ),
+              prefixStyle: TextStyle(color: Colors.black),
+              contentPadding:
+                  EdgeInsets.symmetric(horizontal: 16.0, vertical: 10.0),
+              border: InputBorder.none,
+              hintText: labelText,
+              hintStyle: GoogleFonts.lato(color: Colors.grey),
+              prefixIcon: icon,
+            ),
           ),
         ),
       ),

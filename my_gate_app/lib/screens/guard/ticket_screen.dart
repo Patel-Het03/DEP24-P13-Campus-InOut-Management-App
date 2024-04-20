@@ -496,44 +496,7 @@ class _TicketScreenState extends State<TicketScreen> {
 
   Widget studentList(List<ResultObj> mytickets) {
     return
-        // mytickets.isEmpty
-        //     ? Center(child: CircularProgressIndicator())
-        //     :
-        //  Expanded(
-        //     child: ListView.builder(
-        //       itemCount: mytickets.length,
-        //       itemBuilder: (BuildContext context, int index) {
-        //         final bool isExpanded = index == selectedIndex;
-        //         return Column(
-        //           children: <Widget>[
-        //             ListTile(
-        //               title: Text(mytickets[index].student_name,
-        //                   style: GoogleFonts.lato(
-        //                     fontWeight: FontWeight.w600,
-        //                     color: Colors.black,
-        //                   )),
-        //               subtitle: Text(mytickets[index].date_time.toString()),
-        //               onTap: () => toggleExpansion(index),
-        //             ),
-        //             if (isExpanded)
-        //               Padding(
-        //                 padding: EdgeInsets.symmetric(horizontal: 16.0),
-        //                 child: Column(
-        //                     mainAxisAlignment: MainAxisAlignment.start,
-        //                     children: [
-        //                       Text("Email : ${mytickets[index].email}"),
-        //                       Text(
-        //                           "Destination Address : ${mytickets[index].destination_address}"),
-        //                       Text(
-        //                           "Vehicle Number : ${mytickets[index].vehicle_number}"),
-        //                     ]),
-        //               ),
-        //             Divider(), // Add divider between list items
-        //           ],
-        //         );
-        //       },
-        //     ),
-        //   );
+       
         Expanded(
       child: SizedBox(
         width: MediaQuery.of(context).size.width * 0.95,
@@ -579,7 +542,7 @@ class _TicketScreenState extends State<TicketScreen> {
   Widget StudentDetails(ResultObj ticket) {
     return Container(
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-        Text("email :${ticket.email}",
+        Text("Email :${ticket.email}",
             style: GoogleFonts.lato(
               fontWeight: FontWeight.w600,
               color: Colors.black,
@@ -591,7 +554,7 @@ class _TicketScreenState extends State<TicketScreen> {
               color: Colors.black,
               fontSize: 15,
             )),
-        Text("Additonal Visitors :${ticket}",
+        Text("Time :${ticket}",
             style: GoogleFonts.lato(
               fontWeight: FontWeight.w600,
               color: Colors.black,
