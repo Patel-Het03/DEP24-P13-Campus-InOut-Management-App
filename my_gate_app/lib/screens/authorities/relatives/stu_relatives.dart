@@ -5,7 +5,8 @@ import 'package:my_gate_app/database/database_objects.dart';
 import 'package:my_gate_app/screens/authorities/relatives/pending_relatives_ticket_table.dart';
 import 'package:my_gate_app/screens/authorities/relatives/stream_relatives_ticket_table.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:my_gate_app/screens/authorities/relatives/relatives_ticket_table.dart';
+import 'package:my_gate_app/screens/authorities/relatives/relatives_accepted_ticket_table.dart';
+import 'package:my_gate_app/screens/authorities/relatives/relatives_rejected_ticket_table.dart';
 
 class Stu_Relatives extends StatefulWidget {
   const Stu_Relatives({super.key});
@@ -188,13 +189,13 @@ class _StuRelativesState extends State<Stu_Relatives>
                       child: _ticket == Status.pending
                           ? PendingRelativeTicketTable()
                           : _ticket == Status.accepted
-                          ? RelativesTicketTable(
-                        key:UniqueKey(),
+                          ? RelativesAcceptedTicketTable(
+
                         is_approved: "Accepted",
                         image_path: 'assets/images/approved.jpg',
                       )
-                          : RelativesTicketTable(
-                        key:UniqueKey(),
+                          : RelativesRejectedTicketTable(
+
                         is_approved: "Rejected",
                         image_path: 'assets/images/rejected.jpg',
                       ),

@@ -10,21 +10,20 @@ import 'package:my_gate_app/screens/utils/custom_snack_bar.dart';
 
 // We pass to this class the value of "is_approved" which takes the value "Accepted"|"Rejected"
 
-class AuthorityTicketTable extends StatefulWidget {
-  AuthorityTicketTable({
+class AuthorityAcceptedTicketTable extends StatefulWidget {
+  AuthorityAcceptedTicketTable({
     super.key,
     required this.is_approved,
-
     required this.image_path,
   });
   final String is_approved;
   final String image_path;
 
   @override
-  _AuthorityTicketTableState createState() => _AuthorityTicketTableState();
+  _AuthorityAcceptedTicketTableState createState() => _AuthorityAcceptedTicketTableState();
 }
 
-class _AuthorityTicketTableState extends State<AuthorityTicketTable> {
+class _AuthorityAcceptedTicketTableState extends State<AuthorityAcceptedTicketTable> {
   List<ResultObj2> tickets = [];
   List<ResultObj2> ticketsFiltered = [];
 
@@ -43,7 +42,7 @@ class _AuthorityTicketTableState extends State<AuthorityTicketTable> {
   @override
   void initState() {
     super.initState();
-      init();
+    init();
   }
 
   Future<List<ResultObj2>> get_tickets_for_authority() async {
@@ -91,8 +90,6 @@ class _AuthorityTicketTableState extends State<AuthorityTicketTable> {
 
   Future init() async {
     final Bactickets = await get_tickets_for_authority();
-    print("akjdcbkjsd${widget.is_approved}");
-    print('iiiiinittttt');
     setState(() {
       tickets = Bactickets;
     });
@@ -105,20 +102,20 @@ class _AuthorityTicketTableState extends State<AuthorityTicketTable> {
       if (query.isEmpty) {
         ticketsFiltered = tickets
             .where((ticket) => DateTime.parse(ticket.date_time).isBefore(
-                DateTime.parse(chosen_end_date).add(Duration(days: 1)))&&
+            DateTime.parse(chosen_end_date).add(Duration(days: 1)))&&
             DateTime.parse(ticket.date_time)
                 .isAfter(DateTime.parse(chosen_start_date)))
             .toList();
       } else {
         ticketsFiltered = tickets
             .where((ticket) =>
-                ticket.student_name
-                    .toLowerCase()
-                    .contains(query.toLowerCase()) &&
-                DateTime.parse(ticket.date_time)
-                    .isAfter(DateTime.parse(chosen_start_date)) &&
-                DateTime.parse(ticket.date_time).isBefore(
-                    DateTime.parse(chosen_end_date).add(Duration(days: 1))))
+        ticket.student_name
+            .toLowerCase()
+            .contains(query.toLowerCase()) &&
+            DateTime.parse(ticket.date_time)
+                .isAfter(DateTime.parse(chosen_start_date)) &&
+            DateTime.parse(ticket.date_time).isBefore(
+                DateTime.parse(chosen_end_date).add(Duration(days: 1))))
             .toList();
         print(chosen_end_date);
       }
@@ -128,7 +125,7 @@ class _AuthorityTicketTableState extends State<AuthorityTicketTable> {
       } else {
         ticketsFiltered = tickets
             .where((ticket) =>
-                ticket.student_name.toLowerCase().contains(query.toLowerCase()))
+            ticket.student_name.toLowerCase().contains(query.toLowerCase()))
             .toList();
       }
     }
@@ -168,85 +165,85 @@ class _AuthorityTicketTableState extends State<AuthorityTicketTable> {
 
   @override
   Widget build(BuildContext context) => Scaffold(
-        backgroundColor: Color(0xffFFF0D2),
-        body: SingleChildScrollView(
-          child: SizedBox(
-            height: MediaQuery.of(context).size.height,
-            child: Column(
-              children: [
-                Row(children: [
-                  SizedBox(
-                    width: MediaQuery.of(context).size.width * 0.03,
-                  ),
-                  Container(
-                    // margin: EdgeInsets.all(16.0),
-                    width: MediaQuery.of(context).size.width * 0.73,
-                    height: 35,
-                    decoration: BoxDecoration(
-                      color: Colors.transparent,
-                      borderRadius: BorderRadius.circular(5.0),
-                      border:
-                      Border(bottom: BorderSide(color: Colors.black, width: 2.0)),
-                    ),
-
-                    child: buildSearchTextField(),
-                  ),
-                  SizedBox(
-                    width: MediaQuery.of(context).size.width * 0.02,
-                  ),
-                  Container(
-                    height: 30,
-                    width: MediaQuery.of(context).size.width * 0.08,
-                    decoration: BoxDecoration(
-                      color: Colors.transparent,
-                      borderRadius: BorderRadius.circular(3.0),
-                    ),
-                    child: IconButton(
-                      padding: EdgeInsets.zero,
-                      icon: Icon(Icons.filter_alt,
-                          color: Colors.black87), // Filter icon
-                      onPressed: () {
-                        enableDateFilter=true;
-                        _selectDateRange(context);
-                      },
-                    ),
-                  ),
-                  SizedBox(
-                    width: MediaQuery.of(context).size.width * 0.02,
-                  ),
-                  Container(
-                    height: 30,
-                    width: MediaQuery.of(context).size.width * 0.08,
-                    decoration: BoxDecoration(
-                      color: Colors.transparent,
-                      borderRadius: BorderRadius.circular(8.0),
-                    ),
-                    child: IconButton(
-                      padding: EdgeInsets.zero,
-                      icon: Icon(Icons.filter_alt_off,
-                          color: Colors.black87), // Filter icon
-                      onPressed: () {
-                        setState(() {
-                          enableDateFilter = !enableDateFilter;
-                          resetFilter(searchQuery);
-
-                        });
-                      },
-                    ),
-                  ),
-                ]),
-                SizedBox(
-                  height: MediaQuery.of(context).size.height * 0.03,
+    backgroundColor: Color(0xffFFF0D2),
+    body: SingleChildScrollView(
+      child: SizedBox(
+        height: MediaQuery.of(context).size.height,
+        child: Column(
+          children: [
+            Row(children: [
+              SizedBox(
+                width: MediaQuery.of(context).size.width * 0.03,
+              ),
+              Container(
+                // margin: EdgeInsets.all(16.0),
+                width: MediaQuery.of(context).size.width * 0.73,
+                height: 35,
+                decoration: BoxDecoration(
+                  color: Colors.transparent,
+                  borderRadius: BorderRadius.circular(5.0),
+                  border:
+                  Border(bottom: BorderSide(color: Colors.black, width: 2.0)),
                 ),
 
+                child: buildSearchTextField(),
+              ),
+              SizedBox(
+                width: MediaQuery.of(context).size.width * 0.02,
+              ),
+              Container(
+                height: 30,
+                width: MediaQuery.of(context).size.width * 0.08,
+                decoration: BoxDecoration(
+                  color: Colors.transparent,
+                  borderRadius: BorderRadius.circular(3.0),
+                ),
+                child: IconButton(
+                  padding: EdgeInsets.zero,
+                  icon: Icon(Icons.filter_alt,
+                      color: Colors.black87), // Filter icon
+                  onPressed: () {
+                    enableDateFilter=true;
+                    _selectDateRange(context);
+                  },
+                ),
+              ),
+              SizedBox(
+                width: MediaQuery.of(context).size.width * 0.02,
+              ),
+              Container(
+                height: 30,
+                width: MediaQuery.of(context).size.width * 0.08,
+                decoration: BoxDecoration(
+                  color: Colors.transparent,
+                  borderRadius: BorderRadius.circular(8.0),
+                ),
+                child: IconButton(
+                  padding: EdgeInsets.zero,
+                  icon: Icon(Icons.filter_alt_off,
+                      color: Colors.black87), // Filter icon
+                  onPressed: () {
+                    setState(() {
+                      enableDateFilter = !enableDateFilter;
+                      resetFilter(searchQuery);
 
-                // Expanded(child: ScrollableWidget(child: buildDataTable())),
-                acceptedRejectedStudentList(ticketsFiltered),
-              ],
+                    });
+                  },
+                ),
+              ),
+            ]),
+            SizedBox(
+              height: MediaQuery.of(context).size.height * 0.03,
             ),
-          ),
+
+
+            // Expanded(child: ScrollableWidget(child: buildDataTable())),
+            acceptedRejectedStudentList(ticketsFiltered),
+          ],
         ),
-      );
+      ),
+    ),
+  );
   TextField buildSearchTextField() {
     TextEditingController _searchController = TextEditingController();
 
@@ -276,9 +273,7 @@ class _AuthorityTicketTableState extends State<AuthorityTicketTable> {
             ? IconButton(
           padding: EdgeInsets.zero,
           icon: Icon(Icons.clear, color: Colors.black),
-
           onPressed: () {
-            print("hello i am here");
             setState(() {
               _searchController.clear();
               searchQuery = '';
@@ -324,125 +319,125 @@ class _AuthorityTicketTableState extends State<AuthorityTicketTable> {
                         child: ExpansionTile(
                           // children: <Widget>[
                           //   ListTile(
-                              title: Text(
-                                mytickets[index].student_name,
-                                style: GoogleFonts.lato(
-                                  fontWeight: FontWeight.w800,
-                                  color: Colors.white,
-                                  fontSize: 18,
-                                ),
-                              ),
-                              trailing: Icon(
-                                Icons.expand_more, // or Icons.expand_less for upward arrow
-                                color: Colors.black, // Change the color to your desired color
-                              ),
-                              // subtitle: Text(mytickets[index]
-                              // .date_time_guard
-                              // .toString()),
-                            //   onTap: () => toggleExpansion(index),
-                            // ),
+                          title: Text(
+                            mytickets[index].student_name,
+                            style: GoogleFonts.lato(
+                              fontWeight: FontWeight.w800,
+                              color: Colors.white,
+                              fontSize: 18,
+                            ),
+                          ),
+                          trailing: Icon(
+                            Icons.expand_more, // or Icons.expand_less for upward arrow
+                            color: Colors.black, // Change the color to your desired color
+                          ),
+                          // subtitle: Text(mytickets[index]
+                          // .date_time_guard
+                          // .toString()),
+                          //   onTap: () => toggleExpansion(index),
+                          // ),
 
-                            // if (isExpanded)
+                          // if (isExpanded)
                           children: <Widget>[
                             Center(
                               child: Container(
                                 width: MediaQuery.of(context).size.width * 0.8,
-                                  child: Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      children: [
-                                        Text(
-                                            "Student :${tickets[index].student_name}",
-                                            style: GoogleFonts.lato(
-                                              fontWeight: FontWeight.w600,
-                                              color: Colors.black,
-                                              fontSize: 15,
-                                            )),
-                                        Text("Location :${tickets[index].location}",
-                                            style: GoogleFonts.lato(
-                                              fontWeight: FontWeight.w600,
-                                              color: Colors.black,
-                                              fontSize: 15,
-                                            )),
-                                        Text(
-                                            "Time :${((tickets[index].date_time.split("T").last).split(".")[0].split(":").sublist(0, 2)).join(":")}",
-                                            style: GoogleFonts.lato(
-                                              fontWeight: FontWeight.w600,
-                                              color: Colors.black,
-                                              fontSize: 15,
-                                            )),
-                                        Text(
-                                            "Ticket_type :${tickets[index].ticket_type}",
-                                            style: GoogleFonts.lato(
-                                              fontWeight: FontWeight.w600,
-                                              color: Colors.black,
-                                              fontSize: 15,
-                                            )),
-                                        Text(
-                                            "Authority_message :${tickets[index].authority_message}",
-                                            style: GoogleFonts.lato(
-                                              fontWeight: FontWeight.w600,
-                                              color: Colors.black,
-                                              fontSize: 15,
-                                            )),
-                                        SizedBox(
-                                            height: 5
-                                        ),
-                                        Container(
-                                          width: MediaQuery.of(context).size.width * 0.8, // 80% of screen width
-                                          height: 1, // Height of the divider
-                                          color: Colors.black12, // Color of the divider
-                                        ),
-                                        SizedBox(
-                                            height: 5
-                                        ),
-                                        Row(
-                                          mainAxisAlignment: MainAxisAlignment.center,
-                                          children: [
-                                            Visibility(
-                                              visible: widget.is_approved == "Rejected",
-                                              child: ElevatedButton(
-                                                onPressed: () async{
-                                                  selectedTickets_action.add(tickets[index]);
-                                                  await accept_action_tickets_authorities();
-                                                },
-                                                style: ElevatedButton.styleFrom(
-                                                  shape: RoundedRectangleBorder(
-                                                    borderRadius: BorderRadius.circular(5),
-                                                  ),
+                                child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                          "Student :${tickets[index].student_name}",
+                                          style: GoogleFonts.lato(
+                                            fontWeight: FontWeight.w600,
+                                            color: Colors.black,
+                                            fontSize: 15,
+                                          )),
+                                      Text("Location :${tickets[index].location}",
+                                          style: GoogleFonts.lato(
+                                            fontWeight: FontWeight.w600,
+                                            color: Colors.black,
+                                            fontSize: 15,
+                                          )),
+                                      Text(
+                                          "Time :${((tickets[index].date_time.split("T").last).split(".")[0].split(":").sublist(0, 2)).join(":")}",
+                                          style: GoogleFonts.lato(
+                                            fontWeight: FontWeight.w600,
+                                            color: Colors.black,
+                                            fontSize: 15,
+                                          )),
+                                      Text(
+                                          "Ticket_type :${tickets[index].ticket_type}",
+                                          style: GoogleFonts.lato(
+                                            fontWeight: FontWeight.w600,
+                                            color: Colors.black,
+                                            fontSize: 15,
+                                          )),
+                                      Text(
+                                          "Authority_message :${tickets[index].authority_message}",
+                                          style: GoogleFonts.lato(
+                                            fontWeight: FontWeight.w600,
+                                            color: Colors.black,
+                                            fontSize: 15,
+                                          )),
+                                      SizedBox(
+                                          height: 5
+                                      ),
+                                      Container(
+                                        width: MediaQuery.of(context).size.width * 0.8, // 80% of screen width
+                                        height: 1, // Height of the divider
+                                        color: Colors.black12, // Color of the divider
+                                      ),
+                                      SizedBox(
+                                          height: 5
+                                      ),
+                                      Row(
+                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        children: [
+                                          Visibility(
+                                            visible: widget.is_approved == "Rejected",
+                                            child: ElevatedButton(
+                                              onPressed: () async{
+                                                selectedTickets_action.add(tickets[index]);
+                                                await accept_action_tickets_authorities();
+                                              },
+                                              style: ElevatedButton.styleFrom(
+                                                shape: RoundedRectangleBorder(
+                                                  borderRadius: BorderRadius.circular(5),
                                                 ),
-                                                child: Text(
-                                                  "Accept",
-                                                  style: GoogleFonts.mPlusRounded1c(
-                                                    color: Colors.white,
-                                                  ),
+                                              ),
+                                              child: Text(
+                                                "Accept",
+                                                style: GoogleFonts.mPlusRounded1c(
+                                                  color: Colors.white,
                                                 ),
                                               ),
                                             ),
-                                            Visibility(
-                                              visible: widget.is_approved == "Approved",
-                                              child: ElevatedButton(
-                                                onPressed: () async{
-                                                  selectedTickets_action.add(tickets[index]);
-                                                  await reject_action_tickets_authorities();
-                                                },
-                                                style: ElevatedButton.styleFrom(
-                                                  shape: RoundedRectangleBorder(
-                                                    borderRadius: BorderRadius.circular(5),
-                                                  ),
+                                          ),
+                                          Visibility(
+                                            visible: widget.is_approved == "Approved",
+                                            child: ElevatedButton(
+                                              onPressed: () async{
+                                                selectedTickets_action.add(tickets[index]);
+                                                await reject_action_tickets_authorities();
+                                              },
+                                              style: ElevatedButton.styleFrom(
+                                                shape: RoundedRectangleBorder(
+                                                  borderRadius: BorderRadius.circular(5),
                                                 ),
-                                                child: Text(
-                                                  "Reject",
-                                                  style: GoogleFonts.mPlusRounded1c(
-                                                    color: Colors.white,
-                                                  ),
+                                              ),
+                                              child: Text(
+                                                "Reject",
+                                                style: GoogleFonts.mPlusRounded1c(
+                                                  color: Colors.white,
                                                 ),
                                               ),
                                             ),
-                                          ],
-                                        ),
-                                      ]),
+                                          ),
+                                        ],
+                                      ),
+                                    ]),
 
-                                ),
+                              ),
                             ),
                           ],
 
