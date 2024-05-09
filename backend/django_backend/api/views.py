@@ -2196,6 +2196,7 @@ def get_tickets_for_student(request):
         ResultObj["is_approved"] = ticket["is_approved"].value
         ResultObj["ticket_type"] = ticket["ticket_type"].value
         ResultObj["date_time"] = ticket["date_time"].value
+        ResultObj["vehicle_number"] = ticket["vehicle_reg_num"].value
         location_id_ = ticket["location_id"].value
         queryset_location_table = Location.objects.get(location_id=location_id_)
         serializer_location_table = LocationSerializer(

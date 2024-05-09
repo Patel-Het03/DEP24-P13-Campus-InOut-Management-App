@@ -521,7 +521,6 @@ class _InviteeStatusState extends State<InviteeStatus> {
         children: [
           SizedBox(height: MediaQuery.of(context).size.height * 0.02),
           SizedBox(height: MediaQuery.of(context).size.height * 0.02),
-          // Implement UI for displaying tickets here
           Expanded(
             child: SizedBox(
               width: MediaQuery.of(context).size.width * 0.95,

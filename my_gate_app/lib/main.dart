@@ -41,7 +41,8 @@ class MyApp extends StatelessWidget {
               backgroundColor: Colors.blueAccent, //use your hex code here
             ),
           ),
-          home: AuthWrapper()
+          home: AuthWrapper(),
+          debugShowCheckedModeBanner: false
           ),
     );
   }

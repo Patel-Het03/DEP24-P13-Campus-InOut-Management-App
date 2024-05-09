@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:my_gate_app/database/database_objects.dart';
 import 'package:my_gate_app/screens/utils/scrollable_widget.dart';
+import 'package:intl/intl.dart';
 
 class StudentTicketTable extends StatefulWidget {
   StudentTicketTable({
@@ -28,50 +29,141 @@ class _StudentTicketTableState extends State<StudentTicketTable> {
     // init();
   }
 
-  // Future<List<TicketResultObj>> getData(String email) async {
-  //   databaseInterface db = new databaseInterface();
-  //   return await db.get_tickets_for_student(email);
-  // }
+  Color getColorForType(String status) {
+    switch (status) {
+      // case "enter":
+      //   return Color(0xff3E3E3E); // Change to your desired color
+      case "enter":
+        return Color(0xff3E5D5D); // Change to your desired color
+      case "exit":
+        return Color(0xff3E1313); // Change to your desired color
+      default:
+        return Colors.grey; // Default color
+    }
+  }
 
-  // Future init() async {
-  //   final tickets = await getData('test@gmail.com');
-  //   setState(() {
-  //     int len = tickets.length;
-  //     if(len == 0){
-  //       TicketResultObj obj = new TicketResultObj.constructor1();
-  //       obj.empty_table_entry(obj);
-  //       this.tickets = [];
-  //       this.tickets.add(obj);
-  //     }else{
-  //       this.tickets = tickets;
-  //     }
-  //   } );
-  // }
 
   @override
   Widget build(BuildContext context) => Scaffold(
-        backgroundColor: Colors.orange.shade100, // added now
+        backgroundColor: Colors.white, // added now
         body: Column(
           children: [
-            Center(
-              child: Container(
-                color: Colors.orange.shade100,
-                padding: EdgeInsets.all(1),
-                child: Text(
-                  // "Ticket Table",
-                  "",
-                  style: GoogleFonts.roboto(
-                      fontSize: 20, fontWeight: FontWeight.bold),
+            SizedBox(height: MediaQuery.of(context).size.height * 0.02),
+            SizedBox(height: MediaQuery.of(context).size.height * 0.02),
+            Expanded(
+              child: Center(
+                child: SizedBox(
+                  width: MediaQuery.of(context).size.width * 0.95,
+                  child: ListView.builder(
+                    itemCount: widget.tickets.length,
+                    itemBuilder: (BuildContext context, int index) {
+                      // final bool isExpanded = index == selectedIndex;
+                      return Container(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Container(
+                                decoration: BoxDecoration(
+                                  color: getColorForType(
+                                      widget.tickets[index].ticket_type),
+                                  borderRadius: BorderRadius.circular(15),
+                                ),
+                                child: ExpansionTile(
+                                  // tilePadding: EdgeInsets.zero, // Remove padding
+                                  // backgroundColor: Colors.transparent, // Optional: Set background color to transparent if needed
+                                  // collapsedBackgroundColor: Colors.transparent,
+                                  title: Row(
+                                    children: [
+                                      Text(
+                                        (widget.tickets[index].ticket_type ==
+                                                'enter')
+                                            ? "Enter"
+                                            : (widget.tickets[index]
+                                                        .ticket_type ==
+                                                    'exit')
+                                                ? 'Exit'
+                                                : widget
+                                                    .tickets[index].ticket_type,
+                                        style: TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 16,
+                                        ),
+                                      ),
+                                      SizedBox( width:10),
+                                      Text(DateFormat('hh:mm a - MMM dd, yyyy').format(DateTime.parse(widget.tickets[index].date_time))),
+                                    ],
+                                  ),
+                                  children: <Widget>[
+                                    Details(widget.tickets[index]),
+                                  ],
+                                )),
+                            SizedBox(height: 8),
+                          ],
+                        ),
+                      );
+                    },
+                  ),
                 ),
               ),
             ),
-            SizedBox(
-              height: 2,
-            ),
-            Expanded(child: ScrollableWidget(child: buildDataTable())),
           ],
         ),
+
+        // Column(
+        //   children: [
+        //     Center(
+        //       child: Container(
+        //         color: Colors.orange.shade100,
+        //         padding: EdgeInsets.all(1),
+        //         child: Text(
+        //           // "Ticket Table",
+        //           "",
+        //           style: GoogleFonts.roboto(
+        //               fontSize: 20, fontWeight: FontWeight.bold),
+        //         ),
+        //       ),
+        //     ),
+        //     SizedBox(
+        //       height: 2,
+        //     ),
+        //     Expanded(child: ScrollableWidget(child: buildDataTable())),
+        //   ],
+        // ),
       );
+
+  Widget Details(ResultObj ticket) {
+    // Parse the time string to DateTime object
+    DateTime time = DateTime.parse(ticket.date_time);
+    print(ticket.date_time);
+    print("datetime: ${time}");
+    // Format the date and time
+    String formattedTime = DateFormat('MMM dd, yyyy - hh:mm a').format(time);
+    return Container(
+      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+        Text("Destination :${ticket.destination_address}",
+            style: GoogleFonts.lato(
+              fontWeight: FontWeight.w600,
+              color: Colors.black,
+              fontSize: 15,
+            )),
+        Text("Vehicle Number :${ticket.vehicle_number}",
+            style: GoogleFonts.lato(
+              fontWeight: FontWeight.w600,
+              color: Colors.black,
+              fontSize: 15,
+            )),
+        Text("IsApproved :${ticket.is_approved}",
+            style: GoogleFonts.lato(
+              fontWeight: FontWeight.w600,
+              color: Colors.black,
+              fontSize: 15,
+            )),
+        SizedBox(
+          height: 10,
+        )
+      ]),
+    );
+  }
 
   Widget buildDataTable() {
     List<String> columns_ = [];
@@ -145,11 +237,7 @@ class _StudentTicketTableState extends State<StudentTicketTable> {
             DataCell(Text((index + 1).toString(),
                 style: TextStyle(color: Colors.black))),
             DataCell(Text(
-                "    ${((ticket.date_time.split("T").last)
-                            .split(".")[0]
-                            .split(":")
-                            .sublist(0, 2))
-                        .join(":")}\n${ticket.date_time.split("T")[0]}",
+                "    ${((ticket.date_time.split("T").last).split(".")[0].split(":").sublist(0, 2)).join(":")}\n${ticket.date_time.split("T")[0]}",
                 style: TextStyle(color: Colors.black))),
             DataCell(Text(ticket.ticket_type.toString(),
                 style: TextStyle(color: Colors.black))),
@@ -183,11 +271,7 @@ class _StudentTicketTableState extends State<StudentTicketTable> {
             DataCell(Text((index + 1).toString(),
                 style: TextStyle(color: Colors.black))),
             DataCell(Text(
-                "    ${((ticket.date_time.split("T").last)
-                            .split(".")[0]
-                            .split(":")
-                            .sublist(0, 2))
-                        .join(":")}\n${ticket.date_time.split("T")[0]}",
+                "    ${((ticket.date_time.split("T").last).split(".")[0].split(":").sublist(0, 2)).join(":")}\n${ticket.date_time.split("T")[0]}",
                 style: TextStyle(color: Colors.black))),
             DataCell(Text(ticket.ticket_type.toString(),
                 style: TextStyle(color: Colors.black))),

@@ -30,8 +30,8 @@ class databaseInterface {
   static String complete_base_url_static =
       // "http://localhost:$PORT_NO_static";
       // "http://31.220.57.173:" + PORT_NO_static.toString();
-      "http://10.0.2.2:" + PORT_NO_static.toString();
-
+      // "http://172.30.8.213:" + PORT_NO_static.toString();
+  "http://10.0.2.2:" + PORT_NO_static.toString();
     // "http://192.168.73.245:"+PORT_NO_static.toString();
   static Map<String, dynamic> retry={
     "try":1,
@@ -616,12 +616,17 @@ class databaseInterface {
       String email, String location) async {
     var uri = "$complete_base_url_static/students/get_tickets_for_student";
     try {
+      print('testing student history');
       var response = await http
           .post(Uri.parse(uri), body: {'email': email, 'location': location});
+      print(json.decode(response.body));
+      print('testing student history 1');
       List<ResultObj> tickets_list = (json.decode(response.body) as List)
           .map((i) => ResultObj.fromJson1(i))
           .toList();
-      // print("Ticket list:${tickets_list}");
+
+      print("Ticket list:${tickets_list}");
+      print("comp");
 
       if (response.statusCode == 200) {
         return tickets_list;
@@ -631,6 +636,7 @@ class databaseInterface {
         return tickets_list;
       }
     } catch (e) {
+
       List<ResultObj> tickets_list = [];
       return tickets_list;
     }

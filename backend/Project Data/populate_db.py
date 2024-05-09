@@ -1,6 +1,6 @@
 import requests
 
-base_url = 'http://localhost:'
+base_url = 'http://172.30.8.213:'
 port_num = '8000/'
 start_url = base_url + port_num
 
