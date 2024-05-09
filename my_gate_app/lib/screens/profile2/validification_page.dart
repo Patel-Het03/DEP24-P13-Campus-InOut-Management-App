@@ -1,9 +1,180 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:my_gate_app/database/database_interface.dart';
 import 'package:my_gate_app/screens/profile2/model/user.dart';
 import 'package:my_gate_app/screens/profile2/utils/user_preferences.dart';
 import 'package:my_gate_app/screens/utils/custom_snack_bar.dart';
+
+// ignore_for_file: prefer_const_literals_to_create_immutables, prefer_const_constructors, unnecessary_new, deprecated_member_use, non_constant_identifier_names
+import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:my_gate_app/database/database_objects.dart';
+import 'package:my_gate_app/screens/utils/scrollable_widget.dart';
+import 'package:intl/intl.dart';
+
+class StudentTicketTable extends StatefulWidget {
+  StudentTicketTable({
+    super.key,
+    required this.tickets,
+  });
+  List<ResultObj> tickets;
+
+  @override
+  _StudentTicketTableState createState() => _StudentTicketTableState();
+}
+
+class _StudentTicketTableState extends State<StudentTicketTable> {
+  // List<TicketResultObj> tickets = [];
+
+  @override
+  void initState() {
+    super.initState();
+    // init();
+  }
+
+  Color getColorForType(String status) {
+    switch (status) {
+    // case "enter":
+    //   return Color(0xff3E3E3E); // Change to your desired color
+      case "enter":
+        return Color(0xff3E5D5D); // Change to your desired color
+      case "exit":
+        return Color(0xff3E1313); // Change to your desired color
+      default:
+        return Colors.grey; // Default color
+    }
+  }
+
+
+  @override
+  Widget build(BuildContext context) =>
+      Scaffold(
+        // backgroundColor: Colors.white, // added now
+
+        body: Container(
+          decoration: const BoxDecoration(
+            gradient: LinearGradient(
+              colors: [
+                Color.fromARGB(255, 232, 232, 234),
+                Color.fromARGB(255, 255, 255, 255)
+              ],
+              begin: Alignment.bottomLeft,
+              end: Alignment.topRight,
+            ),
+          ),
+          child: Column(
+            children: [
+
+              Expanded(
+                child: Center(
+                  child: SizedBox(
+                    width: MediaQuery
+                        .of(context)
+                        .size
+                        .width * 0.95,
+                    child: ListView.builder(
+                      itemCount: widget.tickets.length,
+                      itemBuilder: (BuildContext context, int index) {
+                        // final bool isExpanded = index == selectedIndex;
+                        return Container(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Container(
+                                  decoration: BoxDecoration(
+                                    color: getColorForType(
+                                        widget.tickets[index].ticket_type),
+                                    borderRadius: BorderRadius.circular(15),
+                                  ),
+                                  child: ExpansionTile(
+                                    // tilePadding: EdgeInsets.zero, // Remove padding
+                                    // backgroundColor: Colors.transparent, // Optional: Set background color to transparent if needed
+                                    // collapsedBackgroundColor: Colors.transparent,
+                                    title: Row(
+                                      children: [
+                                        Text(
+                                          (widget.tickets[index].ticket_type ==
+                                              'enter')
+                                              ? "Enter"
+                                              : (widget.tickets[index]
+                                              .ticket_type ==
+                                              'exit')
+                                              ? 'Exit'
+                                              : widget
+                                              .tickets[index].ticket_type,
+                                          style: TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 16,
+                                          ),
+                                        ),
+                                        SizedBox(width: 10),
+                                        // Text(DateFormat('hh:mm a - MMM dd, yyyy')
+                                        //     .format(DateTime.parse(
+                                        //     widget.tickets[index].date_time))),
+                                        Text(
+                                          DateFormat('hh:mm a - MMM dd, yyyy').format(
+                                            DateTime.parse(widget.tickets[index].date_time).toLocal(),
+                                          ),
+                                        )
+                                      ],
+                                    ),
+                                    children: <Widget>[
+                                      Details(widget.tickets[index]),
+                                    ],
+                                  )),
+                              SizedBox(height: 8),
+                            ],
+                          ),
+                        );
+                      },
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      );
+
+  Widget Details(ResultObj ticket) {
+    // Parse the time string to DateTime object
+    DateTime time = DateTime.parse(ticket.date_time);
+    print(ticket.date_time);
+    print("datetime: ${time}");
+    // Format the date and time
+    String formattedTime = DateFormat('MMM dd, yyyy - hh:mm a').format(time);
+    return Container(
+      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+        Text("Destination :${ticket.destination_address}",
+            style: GoogleFonts.lato(
+              fontWeight: FontWeight.w600,
+              color: Colors.black,
+              fontSize: 15,
+            )),
+        Text("Vehicle Number :${ticket.vehicle_number}",
+            style: GoogleFonts.lato(
+              fontWeight: FontWeight.w600,
+              color: Colors.black,
+              fontSize: 15,
+            )),
+        Text("IsApproved :${ticket.is_approved}",
+            style: GoogleFonts.lato(
+              fontWeight: FontWeight.w600,
+              color: Colors.black,
+              fontSize: 15,
+            )),
+        SizedBox(
+          height: 10,
+        )
+      ]),
+    );
+  }
+
+}
+
+
+
 
 class Validification_page extends StatefulWidget {
   final String email;
@@ -45,6 +216,58 @@ class _Validification_pageState extends State<Validification_page> {
   late final TextEditingController controller_vehicle_reg_num;
   late final TextEditingController controller_location_of_guard;
   late final TextEditingController controller_ticket_type;
+  List<ResultObj> dummyList = [
+    ResultObj.constructor1(
+        "Location 1",
+        "2024-05-09 10:00:00",
+        "Approved",
+        "Type 1",
+        "email1@example.com",
+        "Student 1",
+        "Authority Status 1",
+        "Address 1",
+        "Vehicle 1"),
+    ResultObj.constructor1(
+        "Location 2",
+        "2024-05-10 11:00:00",
+        "Pending",
+        "Type 2",
+        "email2@example.com",
+        "Student 2",
+        "Authority Status 2",
+        "Address 2",
+        "Vehicle 2"),
+    ResultObj.constructor1(
+        "Location 3",
+        "2024-05-11 12:00:00",
+        "Approved",
+        "Type 1",
+        "email3@example.com",
+        "Student 3",
+        "Authority Status 1",
+        "Address 3",
+        "Vehicle 3"),
+    ResultObj.constructor1(
+        "Location 4",
+        "2024-05-12 13:00:00",
+        "Pending",
+        "Type 2",
+        "email4@example.com",
+        "Student 4",
+        "Authority Status 2",
+        "Address 4",
+        "Vehicle 4"),
+    ResultObj.constructor1(
+        "Location 5",
+        "2024-05-13 14:00:00",
+        "Approved",
+        "Type 1",
+        "email5@example.com",
+        "Student 5",
+        "Authority Status 1",
+        "Address 5",
+        "Vehicle 5"),
+  ];
 
   var imagePicker;
   var pic;
@@ -141,30 +364,128 @@ class _Validification_pageState extends State<Validification_page> {
             padding: const EdgeInsets.symmetric(horizontal: 32),
             physics: const BouncingScrollPhysics(),
             children: [
-              const SizedBox(height: 24),
-              ImageWidget(),
-              const SizedBox(height: 24),
-              buildName(user),
-              const SizedBox(height: 24),
-              builText_phone(controller_phone, "Phone", widget.isEditable, 1),
-              const SizedBox(height: 24),
-              builText(controller_department, "Department", false, 1),
-              const SizedBox(height: 24),
-              builText(controller_degree, "Degree", false, 1),
-              const SizedBox(height: 24),
-              builText(controller_year_of_entry, "Year of Entry", false, 1),
-              const SizedBox(height: 24),
-              builText(controller_gender, "Gender", false, 1),
-              const SizedBox(height: 24),
+              const SizedBox(height: 10),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  ImageWidget(),
+                  Container(
+                      width: MediaQuery.of(context).size.width * 0.5,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          // buildName(user),
+
+                          Text(
+                            user.name,
+                            style: const TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 24,
+                                color: Colors.black),
+                          ),
+
+                          // Text(
+                          //   user.name,
+                          //   style: const TextStyle(
+                          //       fontWeight: FontWeight.bold, fontSize: 24, color: Colors.black),
+                          // ),
+                          // const SizedBox(height: 4),
+
+                          Text(
+                            user.email,
+                            style: TextStyle(color: Colors.black),
+                          ),
+
+                          // Text(
+                          //   user.email,
+                          //   style: TextStyle(color: Colors.black.withOpacity(0.7)),
+                          // ),
+                          // const SizedBox(height: 10),
+                          // Text(
+                          //   "Phone",
+                          //   style: const TextStyle(
+                          //     fontWeight: FontWeight.bold,
+                          //     fontSize: 16,
+                          //     color: Colors.black,
+                          //   ),
+                          // ),
+                          TextField(
+                            style: const TextStyle(color: Colors.black),
+                            textAlign: TextAlign.center,
+                            enabled: false, // Use the 'enabled' parameter here
+                            controller: controller_phone,
+                            // decoration: InputDecoration(
+                            //   hintText: 'Enter your phone number',
+                            //   hintStyle: TextStyle(
+                            //       color: Colors.grey), // Adjust hint style
+                            //   disabledBorder: OutlineInputBorder(
+                            //     borderSide: const BorderSide(
+                            //         color: Colors.black, width: 1.0),
+                            //     borderRadius: BorderRadius.circular(12),
+                            //   ),
+                            //   labelStyle: TextStyle(
+                            //       color: Color(int.parse("0xFF344953"))),
+                            // ),
+                            maxLines: 1,
+                          ),
+                        ],
+                      ))
+                ],
+              ),
+              // builText_phone(controller_phone, "Phone", widget.isEditable, 1),
+              // const SizedBox(height: 24),
+              // builText(controller_department, "Department", false, 1),
+              // const SizedBox(height: 24),
+              // builText(controller_degree, "Degree", false, 1),
+              // const SizedBox(height: 24),
+              // builText(controller_year_of_entry, "Year of Entry", false, 1),
+              // const SizedBox(height: 24),
+              // builText(controller_gender, "Gender", false, 1),
+              const SizedBox(height: 20),
               builText(controller_destination_address, "Destination Address",
-                  false, 1),
-              const SizedBox(height: 24),
+                  true, 1),
+              const SizedBox(height: 20),
               builText(controller_vehicle_reg_num,
-                  "Vehicle Registeration Number", false, 1),
-              const SizedBox(height: 24),
-              builText(controller_ticket_type,
-                  "Ticket Type", false, 1),
-                  const SizedBox(height: 24),
+                  "Vehicle Registeration Number", true, 1),
+              const SizedBox(height: 20),
+              builText(controller_ticket_type, "Ticket Type", false, 1),
+              const SizedBox(height: 20),
+              Container(
+                height: MediaQuery.of(context).size.height * 290 / 925,
+                // child: SingleChildScrollView(
+                  // scrollDirection: Axis.vertical, // Set scroll direction to vertical
+                  child:
+                  // Column(
+                  //   children: [
+                  //
+                  //   ],
+                  // ),
+                  StreamBuilder(
+                    stream: databaseInterface.get_tickets_for_student(user.email, widget.student_location),
+                    builder: (context, snapshot) {
+                      switch (snapshot.connectionState) {
+                        case ConnectionState.waiting:
+                          return const Center(child: CircularProgressIndicator());
+                        default:
+                          if (snapshot.hasError) {
+                            return const Text("Error", style: TextStyle(fontSize:24, color:Colors.red));
+                          } else {
+                            // String in_or_out = snapshot.data.toString();
+                            List<ResultObj> tickets = [];
+                            if(snapshot.hasData) {
+                              tickets = snapshot.data as List<ResultObj>;
+                            }
+                            print(tickets[0].date_time+"**");
+                            return StudentTicketTable(tickets: tickets.take(5).toList());
+                          }
+                      }
+                    },
+                  ),
+                  // StudentTicketTable(tickets: dummyList),
+                // ),
+              ),
+              const SizedBox(height: 20),
+
               Center(
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -332,7 +653,7 @@ class _Validification_pageState extends State<Validification_page> {
             style: const TextStyle(
                 fontWeight: FontWeight.bold, fontSize: 16, color: Colors.black),
           ),
-          const SizedBox(height: 8),
+          const SizedBox(height: 4),
           TextField(
             style: const TextStyle(color: Colors.black),
             enabled: enabled,
@@ -362,64 +683,57 @@ class _Validification_pageState extends State<Validification_page> {
                 fontWeight: FontWeight.bold, fontSize: 16, color: Colors.black),
           ),
           const SizedBox(height: 8),
-          Row(
+          Stack(
             children: [
-              Expanded(
-                child: Stack(
-                  children: [
-                    TextField(
-                      style: const TextStyle(color: Colors.black),
-                      enabled: enabled, // Use the 'enabled' parameter here
-                      controller: controller,
-                      decoration: InputDecoration(
-                        disabledBorder: OutlineInputBorder(
-                          borderSide:
-                              const BorderSide(color: Colors.black, width: 1.0),
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        labelStyle: TextStyle(
-                          color: Color(int.parse("0xFF344953")),
-                        ),
-                      ),
-                      maxLines: maxLines,
-                    ),
-                    if (enabled) // Only show the edit button if enabled is true
-                      Positioned(
-                        right: 0,
-                        top: 10,
-                        child: TextButton(
-                          onPressed: () async {
-                            // Handle button press here
-                            await databaseInterface
-                                .update_number(controller.text, user.email)
-                                .then((res) => {
-                                      if (res == true)
-                                        {
-                                          ScaffoldMessenger.of(context)
-                                              .showSnackBar(get_snack_bar(
-                                                  "Phone number updated",
-                                                  Colors.green))
-                                        }
-                                      else
-                                        {
-                                          ScaffoldMessenger.of(context)
-                                              .showSnackBar(get_snack_bar(
-                                                  "Failed to Update Phone Number",
-                                                  Colors.red))
-                                        }
-                                    });
-                          },
-                          child: const Text(
-                            'Edit',
-                            style: TextStyle(fontWeight: FontWeight.bold),
-                          ),
-                        ),
-                      ),
-                  ],
+              TextField(
+                style: const TextStyle(color: Colors.black),
+                enabled: enabled, // Use the 'enabled' parameter here
+                controller: controller,
+                decoration: InputDecoration(
+                  disabledBorder: OutlineInputBorder(
+                    borderSide:
+                        const BorderSide(color: Colors.black, width: 1.0),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  labelStyle: TextStyle(
+                    color: Color(int.parse("0xFF344953")),
+                  ),
                 ),
+                maxLines: maxLines,
               ),
+              if (enabled) // Only show the edit button if enabled is true
+                Positioned(
+                  right: 0,
+                  top: 10,
+                  child: TextButton(
+                    onPressed: () async {
+                      // Handle button press here
+                      await databaseInterface
+                          .update_number(controller.text, user.email)
+                          .then((res) => {
+                                if (res == true)
+                                  {
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                        get_snack_bar("Phone number updated",
+                                            Colors.green))
+                                  }
+                                else
+                                  {
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                        get_snack_bar(
+                                            "Failed to Update Phone Number",
+                                            Colors.red))
+                                  }
+                              });
+                    },
+                    child: const Text(
+                      'Edit',
+                      style: TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                  ),
+                ),
             ],
-          )
+          ),
         ],
       );
 
@@ -433,7 +747,7 @@ class _Validification_pageState extends State<Validification_page> {
     print(image.path);
     await databaseInterface.send_image(
         image, "/students/change_profile_picture_of_student", widgetEmail);
-  
+
     databaseInterface db = databaseInterface();
     User result = await db.get_student_by_email(widget.email);
 
@@ -452,7 +766,7 @@ class _Validification_pageState extends State<Validification_page> {
     var widgetEmail = widget.email;
     await databaseInterface.send_image(
         image, "/students/change_profile_picture_of_student", widgetEmail);
-  
+
     databaseInterface db = databaseInterface();
     User result = await db.get_student_by_email(widget.email);
 
@@ -526,31 +840,29 @@ class _Validification_pageState extends State<Validification_page> {
   }
 
   Widget ViewValidification_page() {
-    return Center(
-      child: Stack(
-        children: [
-          ClipOval(
-            child: Material(
-              color: Colors.transparent,
-              // color: Colors.blue,
-              child: Ink.image(
-                // image: AssetImage(image),
-                // image: NetworkImage(widget.imagePath),
-                image: pic,
-                fit: BoxFit.cover,
-                width: 180,
-                height: 180,
-              ),
+    return Stack(
+      children: [
+        ClipOval(
+          child: Material(
+            color: Colors.transparent,
+            // color: Colors.blue,
+            child: Ink.image(
+              // image: AssetImage(image),
+              // image: NetworkImage(widget.imagePath),
+              image: pic,
+              fit: BoxFit.cover,
+              width: 90,
+              height: 90,
             ),
           ),
-          Positioned(
-            bottom: 0,
-            right: 4,
-            // child: buildEditIcon(Theme.of(context).colorScheme.primary),
-            child: buildEditIcon(Color(int.parse("0xFF344953"))),
-          ),
-        ],
-      ),
+        ),
+        // Positioned(
+        //   bottom: 0,
+        //   right: 4,
+        //   // child: buildEditIcon(Theme.of(context).colorScheme.primary),
+        //   child: buildEditIcon(Color(int.parse("0xFF344953"))),
+        // ),
+      ],
     );
   }
 

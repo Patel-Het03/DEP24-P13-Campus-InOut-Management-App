@@ -15,4 +15,4 @@ backend/venv/
 backend/django_backend/myauth/__pycache__/
 my_gate_app/.flutter-plugins
 my_gate_app/.flutter-plugins-dependencies
-
+venv/
