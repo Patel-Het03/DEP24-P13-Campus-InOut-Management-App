@@ -50,7 +50,6 @@ class _HomeStudentState extends State<HomeStudent> {
   var imagePicker;
   final ValueNotifier<bool> updateColor = ValueNotifier(false);
   final ValueNotifier<bool> isLoading = ValueNotifier(false);
-
   var pic;
 
   Future<void> init() async {
@@ -178,7 +177,6 @@ class _HomeStudentState extends State<HomeStudent> {
     }
     return 'assets/images/spiral.jpg';
   }
-
 
   @override
   Widget build(BuildContext context) {

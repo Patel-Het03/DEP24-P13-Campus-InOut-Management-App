@@ -14,17 +14,18 @@ class AuthorityRejectedTicketTable extends StatefulWidget {
   AuthorityRejectedTicketTable({
     super.key,
     required this.is_approved,
-
     required this.image_path,
   });
   final String is_approved;
   final String image_path;
 
   @override
-  _AuthorityRejectedTicketTableState createState() => _AuthorityRejectedTicketTableState();
+  _AuthorityRejectedTicketTableState createState() =>
+      _AuthorityRejectedTicketTableState();
 }
 
-class _AuthorityRejectedTicketTableState extends State<AuthorityRejectedTicketTable> {
+class _AuthorityRejectedTicketTableState
+    extends State<AuthorityRejectedTicketTable> {
   List<ResultObj2> tickets = [];
   List<ResultObj2> ticketsFiltered = [];
 
@@ -39,11 +40,10 @@ class _AuthorityRejectedTicketTableState extends State<AuthorityRejectedTicketTa
   int selectedIndex = -1;
   List<ResultObj2> selectedTickets_action = [];
 
-
   @override
   void initState() {
     super.initState();
-      init();
+    init();
   }
 
   Future<List<ResultObj2>> get_tickets_for_authority() async {
@@ -52,10 +52,11 @@ class _AuthorityRejectedTicketTableState extends State<AuthorityRejectedTicketTa
     return await databaseInterface.get_tickets_for_authorities(
         authority_email, widget.is_approved);
   }
+
   Future<void> reject_action_tickets_authorities() async {
     databaseInterface db = new databaseInterface();
     int status_code =
-    await db.reject_selected_tickets_authorities(selectedTickets_action);
+        await db.reject_selected_tickets_authorities(selectedTickets_action);
     print("The status code is $status_code");
     if (status_code == 200) {
       await init();
@@ -66,10 +67,11 @@ class _AuthorityRejectedTicketTableState extends State<AuthorityRejectedTicketTa
       ScaffoldMessenger.of(context).showSnackBar(snackBar);
     }
   }
+
   Future<void> accept_action_tickets_authorities() async {
     databaseInterface db = new databaseInterface();
     int status_code =
-    await db.accept_selected_tickets_authorities(selectedTickets_action);
+        await db.accept_selected_tickets_authorities(selectedTickets_action);
     if (status_code == 200) {
       await init();
       final snackBar = get_snack_bar("Ticket accepted", Colors.green);
@@ -79,6 +81,7 @@ class _AuthorityRejectedTicketTableState extends State<AuthorityRejectedTicketTa
       ScaffoldMessenger.of(context).showSnackBar(snackBar);
     }
   }
+
   void toggleExpansion(int index) {
     setState(() {
       if (selectedIndex == index) {
@@ -97,17 +100,17 @@ class _AuthorityRejectedTicketTableState extends State<AuthorityRejectedTicketTa
       tickets = Bactickets;
     });
     filterTickets(searchQuery);
-
   }
 
   void filterTickets(String query) {
     if (enableDateFilter) {
       if (query.isEmpty) {
         ticketsFiltered = tickets
-            .where((ticket) => DateTime.parse(ticket.date_time).isBefore(
-                DateTime.parse(chosen_end_date).add(Duration(days: 1)))&&
-            DateTime.parse(ticket.date_time)
-                .isAfter(DateTime.parse(chosen_start_date)))
+            .where((ticket) =>
+                DateTime.parse(ticket.date_time).isBefore(
+                    DateTime.parse(chosen_end_date).add(Duration(days: 1))) &&
+                DateTime.parse(ticket.date_time)
+                    .isAfter(DateTime.parse(chosen_start_date)))
             .toList();
       } else {
         ticketsFiltered = tickets
@@ -140,6 +143,7 @@ class _AuthorityRejectedTicketTableState extends State<AuthorityRejectedTicketTa
       filterTickets(searchQuery);
     });
   }
+
   void resetFilter(String query) {
     chosen_start_date = DateTime.now().subtract(Duration(days: 1)).toString();
     chosen_end_date = DateTime.now().toString();
@@ -185,8 +189,8 @@ class _AuthorityRejectedTicketTableState extends State<AuthorityRejectedTicketTa
                     decoration: BoxDecoration(
                       color: Colors.transparent,
                       borderRadius: BorderRadius.circular(5.0),
-                      border:
-                      Border(bottom: BorderSide(color: Colors.black, width: 2.0)),
+                      border: Border(
+                          bottom: BorderSide(color: Colors.black, width: 2.0)),
                     ),
 
                     child: buildSearchTextField(),
@@ -206,7 +210,7 @@ class _AuthorityRejectedTicketTableState extends State<AuthorityRejectedTicketTa
                       icon: Icon(Icons.filter_alt,
                           color: Colors.black87), // Filter icon
                       onPressed: () {
-                        enableDateFilter=true;
+                        enableDateFilter = true;
                         _selectDateRange(context);
                       },
                     ),
@@ -229,7 +233,6 @@ class _AuthorityRejectedTicketTableState extends State<AuthorityRejectedTicketTa
                         setState(() {
                           enableDateFilter = !enableDateFilter;
                           resetFilter(searchQuery);
-
                         });
                       },
                     ),
@@ -238,7 +241,6 @@ class _AuthorityRejectedTicketTableState extends State<AuthorityRejectedTicketTa
                 SizedBox(
                   height: MediaQuery.of(context).size.height * 0.03,
                 ),
-
 
                 // Expanded(child: ScrollableWidget(child: buildDataTable())),
                 acceptedRejectedStudentList(ticketsFiltered),
@@ -263,9 +265,7 @@ class _AuthorityRejectedTicketTableState extends State<AuthorityRejectedTicketTa
         fontSize: 20,
       ),
       onChanged: (text) {
-
         onSearchQueryChanged(text);
-
       },
       decoration: InputDecoration(
         contentPadding: EdgeInsets.fromLTRB(5.0, 0, 0, 14.0),
@@ -274,18 +274,17 @@ class _AuthorityRejectedTicketTableState extends State<AuthorityRejectedTicketTa
         prefixIcon: Icon(Icons.search, color: Colors.black),
         suffixIcon: _searchController.text.isNotEmpty
             ? IconButton(
-          padding: EdgeInsets.zero,
-          icon: Icon(Icons.clear, color: Colors.black),
-
-          onPressed: () {
-            print("hello i am here");
-            setState(() {
-              _searchController.clear();
-              searchQuery = '';
-              filterTickets('');
-            });
-          },
-        )
+                padding: EdgeInsets.zero,
+                icon: Icon(Icons.clear, color: Colors.black),
+                onPressed: () {
+                  print("hello i am here");
+                  setState(() {
+                    _searchController.clear();
+                    searchQuery = '';
+                    filterTickets('');
+                  });
+                },
+              )
             : null,
         hintStyle: GoogleFonts.lato(
           color: Colors.black87,
@@ -297,171 +296,167 @@ class _AuthorityRejectedTicketTableState extends State<AuthorityRejectedTicketTa
   }
 
   Widget acceptedRejectedStudentList(List<ResultObj2> mytickets) {
-    print(mytickets);
-    return
-      // mytickets.isEmpty
-      //     ? Center(child: CircularProgressIndicator())
-      //     :
-
-      Expanded(
-        child: SizedBox(
-          width: MediaQuery.of(context).size.width * 0.95,
-          // height:MediaQuery.of(context).size.height*0.67,
-          child: ListView.builder(
-            itemCount: mytickets.length,
-            itemBuilder: (BuildContext context, int index) {
-              final bool isExpanded = index == selectedIndex;
-              return Container(
-                child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Container(
-                        decoration: BoxDecoration(
-                          color: Color(0xffEDC882),
-                          borderRadius: BorderRadius.circular(
-                              15), // Adjust the radius as needed
+    return SingleChildScrollView(
+      child: SizedBox(
+        width: MediaQuery.of(context).size.width * 0.95,
+        height: MediaQuery.of(context).size.height * 0.67,
+        child: ListView.builder(
+          itemCount: mytickets.length,
+          itemBuilder: (BuildContext context, int index) {
+            final bool isExpanded = index == selectedIndex;
+            return Container(
+              child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Container(
+                      decoration: BoxDecoration(
+                        color: Color(0xffEDC882),
+                        borderRadius: BorderRadius.circular(
+                            15), // Adjust the radius as needed
+                      ),
+                      child: ExpansionTile(
+                        // children: <Widget>[
+                        //   ListTile(
+                        title: Text(
+                          mytickets[index].student_name,
+                          style: GoogleFonts.lato(
+                            fontWeight: FontWeight.w800,
+                            color: Colors.white,
+                            fontSize: 18,
+                          ),
                         ),
-                        child: ExpansionTile(
-                          // children: <Widget>[
-                          //   ListTile(
-                              title: Text(
-                                mytickets[index].student_name,
-                                style: GoogleFonts.lato(
-                                  fontWeight: FontWeight.w800,
-                                  color: Colors.white,
-                                  fontSize: 18,
-                                ),
-                              ),
-                              trailing: Icon(
-                                Icons.expand_more, // or Icons.expand_less for upward arrow
-                                color: Colors.black, // Change the color to your desired color
-                              ),
-                              // subtitle: Text(mytickets[index]
-                              // .date_time_guard
-                              // .toString()),
-                            //   onTap: () => toggleExpansion(index),
-                            // ),
+                        trailing: Icon(
+                          Icons
+                              .expand_more, // or Icons.expand_less for upward arrow
+                          color: Colors
+                              .black, // Change the color to your desired color
+                        ),
+                        // subtitle: Text(mytickets[index]
+                        // .date_time_guard
+                        // .toString()),
+                        //   onTap: () => toggleExpansion(index),
+                        // ),
 
-                            // if (isExpanded)
-                          children: <Widget>[
-                            Center(
-                              child: Container(
-                                width: MediaQuery.of(context).size.width * 0.8,
-                                  child: Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
+                        // if (isExpanded)
+                        children: <Widget>[
+                          Center(
+                            child: Container(
+                              width: MediaQuery.of(context).size.width * 0.8,
+                              child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                        "Student :${tickets[index].student_name}",
+                                        style: GoogleFonts.lato(
+                                          fontWeight: FontWeight.w600,
+                                          color: Colors.black,
+                                          fontSize: 15,
+                                        )),
+                                    Text("Location :${tickets[index].location}",
+                                        style: GoogleFonts.lato(
+                                          fontWeight: FontWeight.w600,
+                                          color: Colors.black,
+                                          fontSize: 15,
+                                        )),
+                                    Text(
+                                        "Time :${((tickets[index].date_time.split("T").last).split(".")[0].split(":").sublist(0, 2)).join(":")}",
+                                        style: GoogleFonts.lato(
+                                          fontWeight: FontWeight.w600,
+                                          color: Colors.black,
+                                          fontSize: 15,
+                                        )),
+                                    Text(
+                                        "Ticket_type :${tickets[index].ticket_type}",
+                                        style: GoogleFonts.lato(
+                                          fontWeight: FontWeight.w600,
+                                          color: Colors.black,
+                                          fontSize: 15,
+                                        )),
+                                    Text(
+                                        "Authority_message :${tickets[index].authority_message}",
+                                        style: GoogleFonts.lato(
+                                          fontWeight: FontWeight.w600,
+                                          color: Colors.black,
+                                          fontSize: 15,
+                                        )),
+                                    SizedBox(height: 5),
+                                    Container(
+                                      width: MediaQuery.of(context).size.width *
+                                          0.8, // 80% of screen width
+                                      height: 1, // Height of the divider
+                                      color: Colors
+                                          .black12, // Color of the divider
+                                    ),
+                                    SizedBox(height: 5),
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
                                       children: [
-                                        Text(
-                                            "Student :${tickets[index].student_name}",
-                                            style: GoogleFonts.lato(
-                                              fontWeight: FontWeight.w600,
-                                              color: Colors.black,
-                                              fontSize: 15,
-                                            )),
-                                        Text("Location :${tickets[index].location}",
-                                            style: GoogleFonts.lato(
-                                              fontWeight: FontWeight.w600,
-                                              color: Colors.black,
-                                              fontSize: 15,
-                                            )),
-                                        Text(
-                                            "Time :${((tickets[index].date_time.split("T").last).split(".")[0].split(":").sublist(0, 2)).join(":")}",
-                                            style: GoogleFonts.lato(
-                                              fontWeight: FontWeight.w600,
-                                              color: Colors.black,
-                                              fontSize: 15,
-                                            )),
-                                        Text(
-                                            "Ticket_type :${tickets[index].ticket_type}",
-                                            style: GoogleFonts.lato(
-                                              fontWeight: FontWeight.w600,
-                                              color: Colors.black,
-                                              fontSize: 15,
-                                            )),
-                                        Text(
-                                            "Authority_message :${tickets[index].authority_message}",
-                                            style: GoogleFonts.lato(
-                                              fontWeight: FontWeight.w600,
-                                              color: Colors.black,
-                                              fontSize: 15,
-                                            )),
-                                        SizedBox(
-                                            height: 5
-                                        ),
-                                        Container(
-                                          width: MediaQuery.of(context).size.width * 0.8, // 80% of screen width
-                                          height: 1, // Height of the divider
-                                          color: Colors.black12, // Color of the divider
-                                        ),
-                                        SizedBox(
-                                            height: 5
-                                        ),
-                                        Row(
-                                          mainAxisAlignment: MainAxisAlignment.center,
-                                          children: [
-                                            Visibility(
-                                              visible: widget.is_approved == "Rejected",
-                                              child: ElevatedButton(
-                                                onPressed: () async{
-                                                  selectedTickets_action.add(tickets[index]);
-                                                  await accept_action_tickets_authorities();
-                                                },
-                                                style: ElevatedButton.styleFrom(
-                                                  shape: RoundedRectangleBorder(
-                                                    borderRadius: BorderRadius.circular(5),
-                                                  ),
-                                                ),
-                                                child: Text(
-                                                  "Accept",
-                                                  style: GoogleFonts.mPlusRounded1c(
-                                                    color: Colors.white,
-                                                  ),
-                                                ),
+                                        Visibility(
+                                          visible:
+                                              widget.is_approved == "Rejected",
+                                          child: ElevatedButton(
+                                            onPressed: () async {
+                                              selectedTickets_action
+                                                  .add(tickets[index]);
+                                              await accept_action_tickets_authorities();
+                                            },
+                                            style: ElevatedButton.styleFrom(
+                                              shape: RoundedRectangleBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(5),
                                               ),
                                             ),
-                                            Visibility(
-                                              visible: widget.is_approved == "Approved",
-                                              child: ElevatedButton(
-                                                onPressed: () async{
-                                                  selectedTickets_action.add(tickets[index]);
-                                                  await reject_action_tickets_authorities();
-                                                },
-                                                style: ElevatedButton.styleFrom(
-                                                  shape: RoundedRectangleBorder(
-                                                    borderRadius: BorderRadius.circular(5),
-                                                  ),
-                                                ),
-                                                child: Text(
-                                                  "Reject",
-                                                  style: GoogleFonts.mPlusRounded1c(
-                                                    color: Colors.white,
-                                                  ),
-                                                ),
+                                            child: Text(
+                                              "Accept",
+                                              style: GoogleFonts.mPlusRounded1c(
+                                                color: Colors.white,
                                               ),
                                             ),
-                                          ],
+                                          ),
                                         ),
-                                      ]),
-
-                                ),
+                                        Visibility(
+                                          visible:
+                                              widget.is_approved == "Approved",
+                                          child: ElevatedButton(
+                                            onPressed: () async {
+                                              selectedTickets_action
+                                                  .add(tickets[index]);
+                                              await reject_action_tickets_authorities();
+                                            },
+                                            style: ElevatedButton.styleFrom(
+                                              shape: RoundedRectangleBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(5),
+                                              ),
+                                            ),
+                                            child: Text(
+                                              "Reject",
+                                              style: GoogleFonts.mPlusRounded1c(
+                                                color: Colors.white,
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ]),
                             ),
-                          ],
+                          ),
+                        ],
 
-                          // ],
-                        ),
+                        // ],
                       ),
-                      SizedBox(
-                        height: 5,
-                      ),
-                    ]
-
-                ),
-
-              );
-
-            },
-          ),
+                    ),
+                    SizedBox(
+                      height: 5,
+                    ),
+                  ]),
+            );
+          },
         ),
-      );
+      ),
+    );
   }
 
 //   Widget buildDataTable() {

@@ -7,6 +7,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:my_gate_app/database/database_interface.dart';
 import 'package:my_gate_app/get_email.dart';
 import 'package:my_gate_app/screens/utils/custom_snack_bar.dart';
+import 'package:my_gate_app/screens/profile2/utils/user_preferences.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 
 class StudentStatus extends StatefulWidget {
@@ -36,6 +37,7 @@ class _StudentStatusState extends State<StudentStatus> {
   String choosen_authority_ticket = "None";
   List<String> enter_authorities_tickets = [];
   List<String> exit_authorities_tickets = [];
+  var user = UserPreferences.myUser;
   final TextEditingController _destinationAddressController =
       TextEditingController();
   final TextEditingController _vehicleRegisterationController =
@@ -96,12 +98,39 @@ class _StudentStatusState extends State<StudentStatus> {
                 topRight: const Radius.circular(10),
               ),
             ),
-            child: Center(
-              child: QrImageView(
-                data: qrData,
-                backgroundColor: Colors.white,
-                size: 200,
-              ),
+            // child: Center(
+            //   child: QrImageView(
+            //     data: qrData,
+            //     backgroundColor: Colors.white,
+            //     size: 200,
+            //   ),
+            // ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Text('Show QR code to the guard',style: TextStyle(
+                  fontSize: 15,
+                  color: Colors.black,
+                  fontWeight: FontWeight.bold,
+                ),),
+                Text('Email: ${email}',style: TextStyle(
+                  fontSize: 15,
+                  color: Colors.black,
+                ),),
+                Text('Ticket Type: ${ticket_type}',style: TextStyle(
+                  fontSize: 15,
+                  color: Colors.black,
+                ),),
+                SizedBox(height: 16), // Add some spacing
+                Center(
+                  child: QrImageView(
+                    data: qrData,
+                    backgroundColor: Colors.white,
+                    size: 200,
+                  ),
+                ),
+              ],
             ),
           ),
         );
@@ -114,6 +143,7 @@ class _StudentStatusState extends State<StudentStatus> {
     super.initState();
     get_parent_location_name();
     get_authority_tickets_with_status_accepted();
+
   }
 
   @override

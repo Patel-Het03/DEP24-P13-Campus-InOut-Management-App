@@ -89,8 +89,7 @@ class _PendingRelativeTicketTable extends State<PendingRelativeTicketTable> {
       } else {
         ticketsFiltered = tickets
             .where((ticket) =>
-        ticket.inviteeName
-            .toLowerCase()
+        (ticket.studentName?.toLowerCase() ?? '')
             .contains(query.toLowerCase()) &&
             DateTime.parse(ticket.visit_date)
                 .isAfter(DateTime.parse(chosen_start_date)) &&
@@ -103,10 +102,10 @@ class _PendingRelativeTicketTable extends State<PendingRelativeTicketTable> {
       if (query.isEmpty) {
         ticketsFiltered =tickets;
       } else {
-        ticketsFiltered =tickets
-            .where((ticket) =>
-            ticket.inviteeName.toLowerCase().contains(query.toLowerCase()))
-            .toList();
+        ticketsFiltered = tickets.where((ticket) =>
+            (ticket.studentName?.toLowerCase() ?? '').contains(query.toLowerCase())
+        ).toList();
+
       }
     }
   }
@@ -293,158 +292,158 @@ class _PendingRelativeTicketTable extends State<PendingRelativeTicketTable> {
 
 
   Widget pendingRelativeList(List<StuRelTicket> mytickets) {
-    return Expanded(
-      child: SizedBox(
-        width: MediaQuery.of(context).size.width * 0.95,
-        // height:MediaQuery.of(context).size.height*0.67,
-        child: ListView.builder(
-          itemCount: mytickets.length,
-          itemBuilder: (BuildContext context, int index) {
-            final bool isExpanded = index == selectedIndex;
-            return Container(
-              child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Container(
-                      decoration: BoxDecoration(
-                        color: Color(0xffEDC882),
-                        borderRadius: BorderRadius.circular(
-                            15), // Adjust the radius as needed
-                      ),
-                      child: ExpansionTile(
-                        title: Text(
-                          mytickets[index].studentId,
-                          style: GoogleFonts.lato(
-                            fontWeight: FontWeight.w800,
-                            color: Colors.white,
-                            fontSize: 18,
-                          ),
+    return SingleChildScrollView(
+        child: SizedBox(
+          width: MediaQuery.of(context).size.width * 0.95,
+          height:MediaQuery.of(context).size.height*0.67,
+          child: ListView.builder(
+            itemCount: mytickets.length,
+            itemBuilder: (BuildContext context, int index) {
+              final bool isExpanded = index == selectedIndex;
+              return Container(
+                child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Container(
+                        decoration: BoxDecoration(
+                          color: Color(0xffEDC882),
+                          borderRadius: BorderRadius.circular(
+                              15), // Adjust the radius as needed
                         ),
-                        subtitle: Text(
-                          '${mytickets[index].studentName}',
-                          style: GoogleFonts.lato(
-                            color: Colors.white,
-                            fontSize: 16,
-                          ),
-                        ),
-
-                        // subtitle: Text(mytickets[index]
-                        // .date_time_guard
-                        // .toString()),
-
-                        children: <Widget>[
-                          Center(
-                            child: Container(
-                              width: MediaQuery.of(context).size.width * 0.8,
-                              child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Text(
-                                        "InviteeName : ${tickets[index].inviteeName}",
-                                        style: GoogleFonts.lato(
-                                          fontWeight: FontWeight.w600,
-                                          color: Colors.black,
-                                          fontSize: 15,
-                                        )),
-                                    SizedBox(height: 2),
-                                    Text(
-                                        "InviteeRelationship : ${tickets[index].inviteeRelationship}",
-                                        style: GoogleFonts.lato(
-                                          fontWeight: FontWeight.w600,
-                                          color: Colors.black,
-                                          fontSize: 15,
-                                        )),
-                                    SizedBox(height: 2),
-                                    Text(
-                                        "Contact : ${tickets[index].inviteeContact}",
-                                        style: GoogleFonts.lato(
-                                          fontWeight: FontWeight.w600,
-                                          color: Colors.black,
-                                          fontSize: 15,
-                                        )),
-                                    SizedBox(height: 2),
-                                    Text(
-                                        "Visit_Date : ${tickets[index].visit_date}",
-                                        style: GoogleFonts.lato(
-                                          fontWeight: FontWeight.w600,
-                                          color: Colors.black,
-                                          fontSize: 15,
-                                        )),
-                                    SizedBox(height: 2),
-                                    Text(
-                                        "Durations(In-Days) : ${tickets[index].duration}",
-                                        style: GoogleFonts.lato(
-                                          fontWeight: FontWeight.w600,
-                                          color: Colors.black,
-                                          fontSize: 15,
-                                        )),
-                                    SizedBox(height: 2),
-                                    Text("Purpose : ${tickets[index].purpose}",
-                                        style: GoogleFonts.lato(
-                                          fontWeight: FontWeight.w600,
-                                          color: Colors.black,
-                                          fontSize: 15,
-                                        )),
-                                    SizedBox(height: 5),
-                                    Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceEvenly,
-                                      children: [
-                                        ElevatedButton(
-                                          onPressed: () async {
-                                            // selectedTickets_action.add(tickets[index]);
-                                            await accept_action_relatives_tickets_authorities(
-                                                tickets[index].ticketId);
-                                          },
-                                          style: ElevatedButton.styleFrom(
-                                            shape: RoundedRectangleBorder(
-                                              borderRadius: BorderRadius.circular(
-                                                  5), // Adjust the radius as needed
-                                            ),
-                                          ),
-                                          child: Text(
-                                            "Accept",
-                                            style: GoogleFonts.mPlusRounded1c(
-                                              color: Colors.white,
-                                            ),
-                                          ),
-                                        ),
-                                        ElevatedButton(
-                                          onPressed: () async {
-                                            // selectedTickets_action.add(tickets[index]);
-                                            await reject_action_relatives_tickets_authorities(
-                                                tickets[index].ticketId);
-                                          },
-                                          style: ElevatedButton.styleFrom(
-                                            shape: RoundedRectangleBorder(
-                                              borderRadius: BorderRadius.circular(
-                                                  5), // Adjust the radius as needed
-                                            ),
-                                          ),
-                                          child: Text(
-                                            "Reject",
-                                            style: GoogleFonts.mPlusRounded1c(
-                                              color: Colors.white,
-                                            ),
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ]),
+                        child: ExpansionTile(
+                          title: Text(
+                            mytickets[index].studentId,
+                            style: GoogleFonts.lato(
+                              fontWeight: FontWeight.w800,
+                              color: Colors.white,
+                              fontSize: 18,
                             ),
                           ),
-                        ],
+                          subtitle: Text(
+                            '${mytickets[index].studentName}',
+                            style: GoogleFonts.lato(
+                              color: Colors.white,
+                              fontSize: 16,
+                            ),
+                          ),
+      
+                          // subtitle: Text(mytickets[index]
+                          // .date_time_guard
+                          // .toString()),
+      
+                          children: <Widget>[
+                            Center(
+                              child: Container(
+                                width: MediaQuery.of(context).size.width * 0.8,
+                                child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Text(
+                                          "InviteeName : ${tickets[index].inviteeName}",
+                                          style: GoogleFonts.lato(
+                                            fontWeight: FontWeight.w600,
+                                            color: Colors.black,
+                                            fontSize: 15,
+                                          )),
+                                      SizedBox(height: 2),
+                                      Text(
+                                          "InviteeRelationship : ${tickets[index].inviteeRelationship}",
+                                          style: GoogleFonts.lato(
+                                            fontWeight: FontWeight.w600,
+                                            color: Colors.black,
+                                            fontSize: 15,
+                                          )),
+                                      SizedBox(height: 2),
+                                      Text(
+                                          "Contact : ${tickets[index].inviteeContact}",
+                                          style: GoogleFonts.lato(
+                                            fontWeight: FontWeight.w600,
+                                            color: Colors.black,
+                                            fontSize: 15,
+                                          )),
+                                      SizedBox(height: 2),
+                                      Text(
+                                          "Visit_Date : ${tickets[index].visit_date}",
+                                          style: GoogleFonts.lato(
+                                            fontWeight: FontWeight.w600,
+                                            color: Colors.black,
+                                            fontSize: 15,
+                                          )),
+                                      SizedBox(height: 2),
+                                      Text(
+                                          "Durations(In-Days) : ${tickets[index].duration}",
+                                          style: GoogleFonts.lato(
+                                            fontWeight: FontWeight.w600,
+                                            color: Colors.black,
+                                            fontSize: 15,
+                                          )),
+                                      SizedBox(height: 2),
+                                      Text("Purpose : ${tickets[index].purpose}",
+                                          style: GoogleFonts.lato(
+                                            fontWeight: FontWeight.w600,
+                                            color: Colors.black,
+                                            fontSize: 15,
+                                          )),
+                                      SizedBox(height: 5),
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceEvenly,
+                                        children: [
+                                          ElevatedButton(
+                                            onPressed: () async {
+                                              // selectedTickets_action.add(tickets[index]);
+                                              await accept_action_relatives_tickets_authorities(
+                                                  tickets[index].ticketId);
+                                            },
+                                            style: ElevatedButton.styleFrom(
+                                              shape: RoundedRectangleBorder(
+                                                borderRadius: BorderRadius.circular(
+                                                    5), // Adjust the radius as needed
+                                              ),
+                                            ),
+                                            child: Text(
+                                              "Accept",
+                                              style: GoogleFonts.mPlusRounded1c(
+                                                color: Colors.white,
+                                              ),
+                                            ),
+                                          ),
+                                          ElevatedButton(
+                                            onPressed: () async {
+                                              // selectedTickets_action.add(tickets[index]);
+                                              await reject_action_relatives_tickets_authorities(
+                                                  tickets[index].ticketId);
+                                            },
+                                            style: ElevatedButton.styleFrom(
+                                              shape: RoundedRectangleBorder(
+                                                borderRadius: BorderRadius.circular(
+                                                    5), // Adjust the radius as needed
+                                              ),
+                                            ),
+                                            child: Text(
+                                              "Reject",
+                                              style: GoogleFonts.mPlusRounded1c(
+                                                color: Colors.white,
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ]),
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
-                    ),
-                    SizedBox(
-                      height: 5,
-                    ),
-                  ]),
-            );
-          },
+                      SizedBox(
+                        height: 5,
+                      ),
+                    ]),
+              );
+            },
+          ),
         ),
-      ),
     );
   }
 }

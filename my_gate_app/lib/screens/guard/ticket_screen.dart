@@ -31,6 +31,7 @@ enum User { student, visitor, invitee }
 class _TicketScreenState extends State<TicketScreen> {
   String searchQuery = '';
 
+
   List<ResultObj> tickets = [];
   List<ResultObj> ticketsFiltered = [];
   List<ResultObj4> tickets_visitors = [];
@@ -553,13 +554,25 @@ class _TicketScreenState extends State<TicketScreen> {
                               15), // Adjust the radius as needed
                         ),
                         child: ExpansionTile(
-                          title: Text(
-                            mytickets[index].student_name,
-                            style: GoogleFonts.lato(
-                              fontWeight: FontWeight.w800,
-                              color: Colors.white,
-                              fontSize: 18,
-                            ),
+                          title: Row(
+                            children: [
+                              Text(
+                                mytickets[index].student_name,
+                                style: GoogleFonts.lato(
+                                  fontWeight: FontWeight.w800,
+                                  color: Colors.white,
+                                  fontSize: 18,
+                                ),
+                              ),
+                              SizedBox(width: 5), // Add some space between the main text and the additional text
+                              Text(
+                                '(${mytickets[index].email.split('@').first})',
+                                style: TextStyle(
+                                  color: Colors.black,
+                                  fontSize: 12, // Adjust the font size as needed
+                                ),
+                              ),
+                            ],
                           ),
                           children: <Widget>[
                             StudentDetails(mytickets[index]),

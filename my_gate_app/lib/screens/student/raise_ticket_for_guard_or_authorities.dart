@@ -63,13 +63,16 @@ class _RaiseTicketForGuardOrAuthoritiesState
               // }, child: Text('Raise Ticket for Guard'),
               // ), // your button beneath text
               // Image.asset('assets/images/security-guard.png'),
-              Text(
-                'Welcome to the Ticket Page!',
-                textAlign: TextAlign.center,
-                style: GoogleFonts.mPlusRounded1c(
-                  fontSize: 24,
-                  color: Colors.grey[800],
-                  fontWeight: FontWeight.bold,
+              Padding(
+                padding: const EdgeInsets.all(2.2),
+                child: Text(
+                  'Welcome to the Ticket Page!',
+                  textAlign: TextAlign.center,
+                  style: GoogleFonts.mPlusRounded1c(
+                    fontSize: 23,
+                    color: Colors.grey[800],
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
               ),
               SizedBox(height: 20),

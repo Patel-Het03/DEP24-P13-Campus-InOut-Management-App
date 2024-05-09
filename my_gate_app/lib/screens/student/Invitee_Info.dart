@@ -578,6 +578,9 @@ class _InviteeStatusState extends State<InviteeStatus> {
                                                   Text(
                                                     'Share this QR code with your guest.',
                                                     textAlign: TextAlign.center,
+                                                    style: TextStyle(color: Colors.black),
+
+
                                                   ),
                                                   SizedBox(height: 16), // Added some space
                                                   ElevatedButton.icon(
