@@ -149,19 +149,19 @@ class _StudentTicketTableState extends State<StudentTicketTable> {
         Text("Destination :${ticket.destination_address}",
             style: GoogleFonts.lato(
               fontWeight: FontWeight.w600,
-              color: Colors.black,
+              color: Colors.white,
               fontSize: 15,
             )),
         Text("Vehicle Number :${ticket.vehicle_number}",
             style: GoogleFonts.lato(
               fontWeight: FontWeight.w600,
-              color: Colors.black,
+              color: Colors.white,
               fontSize: 15,
             )),
         Text("IsApproved :${ticket.is_approved}",
             style: GoogleFonts.lato(
               fontWeight: FontWeight.w600,
-              color: Colors.black,
+              color: Colors.white,
               fontSize: 15,
             )),
         SizedBox(
@@ -500,10 +500,10 @@ class _Validification_pageState extends State<Validification_page> {
                           await databaseInterface.insert_qr_ticket(
                               widget.email,
                               'Approved',
-                              widget.vehicle_reg,
+                              controller_vehicle_reg_num.text,
                               widget.ticket_type,
                               time,
-                              widget.destination_addr,
+                              controller_destination_address.text,
                               widget.guard_location,
                               widget.guard_email);
                           await databaseInterface.accept_generated_QR(
@@ -553,10 +553,10 @@ class _Validification_pageState extends State<Validification_page> {
                           await databaseInterface.insert_qr_ticket(
                               widget.email,
                               'Rejected',
-                              widget.vehicle_reg,
+                              controller_vehicle_reg_num.text,
                               widget.ticket_type,
                               time,
-                              widget.destination_addr,
+                              controller_destination_address.text,
                               widget.guard_location,
                               widget.guard_email);
                           await databaseInterface.accept_generated_QR(

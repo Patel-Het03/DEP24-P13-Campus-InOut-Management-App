@@ -134,19 +134,19 @@ class _StudentTicketTableState extends State<StudentTicketTable> {
         Text("Destination :${ticket.destination_address}",
             style: GoogleFonts.lato(
               fontWeight: FontWeight.w600,
-              color: Colors.black,
+              color: Colors.white70,
               fontSize: 15,
             )),
         Text("Vehicle Number :${ticket.vehicle_number}",
             style: GoogleFonts.lato(
               fontWeight: FontWeight.w600,
-              color: Colors.black,
+              color: Colors.white70,
               fontSize: 15,
             )),
         Text("IsApproved :${ticket.is_approved}",
             style: GoogleFonts.lato(
               fontWeight: FontWeight.w600,
-              color: Colors.black,
+              color: Colors.white70,
               fontSize: 15,
             )),
         SizedBox(
