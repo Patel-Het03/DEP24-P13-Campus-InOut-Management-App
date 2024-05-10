@@ -102,7 +102,7 @@ class _StudentTicketTableState extends State<StudentTicketTable> {
                                       SizedBox(width: 10),
                                       Text(DateFormat('hh:mm a - MMM dd, yyyy')
                                           .format(DateTime.parse(
-                                          widget.tickets[index].date_time))),
+                                          widget.tickets[index].date_time).toLocal())),
                                     ],
                                   ),
                                   children: <Widget>[
@@ -124,7 +124,7 @@ class _StudentTicketTableState extends State<StudentTicketTable> {
 
   Widget Details(ResultObj ticket) {
     // Parse the time string to DateTime object
-    DateTime time = DateTime.parse(ticket.date_time);
+    DateTime time = DateTime.parse(ticket.date_time).toLocal();
     print(ticket.date_time);
     print("datetime: ${time}");
     // Format the date and time

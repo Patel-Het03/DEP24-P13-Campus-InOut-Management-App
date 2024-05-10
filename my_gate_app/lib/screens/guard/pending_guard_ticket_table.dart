@@ -140,7 +140,7 @@ class _SelectablePageState extends State<SelectablePage> {
     if (enableDateFilter) {
       if (query.isEmpty) {
         filtered_tickets_visitors = tickets_visitors
-            .where((ticket) => DateTime.parse(ticket.date_time_of_ticket_raised)
+            .where((ticket) => DateTime.parse(ticket.date_time_of_ticket_raised).toLocal()
                 .isBefore(
                     DateTime.parse(chosen_end_date).add(Duration(days: 1))))
             .toList();
@@ -150,9 +150,9 @@ class _SelectablePageState extends State<SelectablePage> {
                 ticket.visitor_name
                     .toLowerCase()
                     .contains(query.toLowerCase()) &&
-                DateTime.parse(ticket.date_time_of_ticket_raised)
+                DateTime.parse(ticket.date_time_of_ticket_raised).toLocal()
                     .isAfter(DateTime.parse(chosen_start_date)) &&
-                DateTime.parse(ticket.date_time_of_ticket_raised).isBefore(
+                DateTime.parse(ticket.date_time_of_ticket_raised).toLocal().isBefore(
                     DateTime.parse(chosen_end_date).add(Duration(days: 1))))
             .toList();
         print(chosen_end_date);

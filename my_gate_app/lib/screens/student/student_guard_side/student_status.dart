@@ -197,7 +197,7 @@ class _StudentStatusState extends State<StudentStatus> {
                   ),
                   image: DecorationImage(
                     image:
-                        AssetImage('assets/images/spiral.jpg'), // Your image path
+                        AssetImage(databaseInterface.getImagePath(widget.location)), // Your image path
                     fit: BoxFit.cover,
                   ),
                 ),
@@ -206,30 +206,30 @@ class _StudentStatusState extends State<StudentStatus> {
                 child: Wrap(
                   children: [
                     getStatusSection(),
-                    Row(
-                      children:  [
-                        SizedBox(
-                          width:MediaQuery.of(context).size.width*1,
-                          child: Center(
-                            child: ListTile(
-                              leading: Icon(
-                                Icons.location_on,
-                                color: Colors.black,
-                              ),
-                              title: Text(
-                                'Floor 202,Room 302 Ramanujan Block', // Update with your address text
-                                style: TextStyle(
-                                  fontSize: 15,
-                                  color: Colors.black,
-                                ),
-
-                              ),
-                            ),
-                          ),
-                        ),
-          
-                      ],
-                    ),
+                    // Row(
+                    //   children:  [
+                    //     SizedBox(
+                    //       width:MediaQuery.of(context).size.width*1,
+                    //       child: Center(
+                    //         child: ListTile(
+                    //           leading: Icon(
+                    //             Icons.location_on,
+                    //             color: Colors.black,
+                    //           ),
+                    //           title: Text(
+                    //             'Floor 202,Room 302 Ramanujan Block', // Update with your address text
+                    //             style: TextStyle(
+                    //               fontSize: 15,
+                    //               color: Colors.black,
+                    //             ),
+                    //
+                    //           ),
+                    //         ),
+                    //       ),
+                    //     ),
+                    //
+                    //   ],
+                    // ),
                     // ListTile(
                     //   title: Text(
                     //     '8:00 AM - 9:00 PM', // Time text

@@ -105,9 +105,9 @@ class _AuthorityAcceptedTicketTableState
       if (query.isEmpty) {
         ticketsFiltered = tickets
             .where((ticket) =>
-                DateTime.parse(ticket.date_time).isBefore(
+                DateTime.parse(ticket.date_time).toLocal().isBefore(
                     DateTime.parse(chosen_end_date).add(Duration(days: 1))) &&
-                DateTime.parse(ticket.date_time)
+                DateTime.parse(ticket.date_time).toLocal()
                     .isAfter(DateTime.parse(chosen_start_date)))
             .toList();
       } else {
@@ -116,7 +116,7 @@ class _AuthorityAcceptedTicketTableState
                 ticket.student_name
                     .toLowerCase()
                     .contains(query.toLowerCase()) &&
-                DateTime.parse(ticket.date_time)
+                DateTime.parse(ticket.date_time).toLocal()
                     .isAfter(DateTime.parse(chosen_start_date)) &&
                 DateTime.parse(ticket.date_time).isBefore(
                     DateTime.parse(chosen_end_date).add(Duration(days: 1))))

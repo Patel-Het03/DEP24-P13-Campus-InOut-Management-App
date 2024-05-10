@@ -97,9 +97,9 @@ class _TicketScreenState extends State<TicketScreen> {
       if (query.isEmpty) {
         ticketsFiltered = tickets
             .where((ticket) =>
-                DateTime.parse(ticket.date_time).isBefore(
+                DateTime.parse(ticket.date_time).toLocal().isBefore(
                     DateTime.parse(chosen_end_date).add(Duration(days: 1))) &&
-                DateTime.parse(ticket.date_time)
+                DateTime.parse(ticket.date_time).toLocal()
                     .isAfter(DateTime.parse(chosen_start_date)))
             .toList();
       } else {
@@ -108,9 +108,9 @@ class _TicketScreenState extends State<TicketScreen> {
                 ticket.student_name
                     .toLowerCase()
                     .contains(query.toLowerCase()) &&
-                DateTime.parse(ticket.date_time)
+                DateTime.parse(ticket.date_time).toLocal()
                     .isAfter(DateTime.parse(chosen_start_date)) &&
-                DateTime.parse(ticket.date_time).isBefore(
+                DateTime.parse(ticket.date_time).toLocal().isBefore(
                     DateTime.parse(chosen_end_date).add(Duration(days: 1))))
             .toList();
         print(chosen_end_date);
@@ -132,9 +132,9 @@ class _TicketScreenState extends State<TicketScreen> {
       if (query.isEmpty) {
         invitee_recordsFiltered = invitee_records
             .where((record) =>
-                DateTime.parse(record.time).isBefore(
+                DateTime.parse(record.time).toLocal().isBefore(
                     DateTime.parse(chosen_end_date).add(Duration(days: 1))) &&
-                DateTime.parse(record.time)
+                DateTime.parse(record.time).toLocal()
                     .isAfter(DateTime.parse(chosen_start_date)))
             .toList();
       } else {
@@ -143,9 +143,9 @@ class _TicketScreenState extends State<TicketScreen> {
                 record.inviteeName
                     .toLowerCase()
                     .contains(query.toLowerCase()) &&
-                DateTime.parse(record.time)
+                DateTime.parse(record.time).toLocal()
                     .isAfter(DateTime.parse(chosen_start_date)) &&
-                DateTime.parse(record.time).isBefore(
+                DateTime.parse(record.time).toLocal().isBefore(
                     DateTime.parse(chosen_end_date).add(Duration(days: 1))))
             .toList();
       }
@@ -166,10 +166,10 @@ class _TicketScreenState extends State<TicketScreen> {
       if (query.isEmpty) {
         tickets_visitorsFiltered = tickets_visitors
             .where((ticket) =>
-                DateTime.parse(ticket.date_time_of_ticket_raised).isBefore(
+                DateTime.parse(ticket.date_time_of_ticket_raised).toLocal().isBefore(
                     DateTime.parse(chosen_end_date)
                         .add(const Duration(days: 1))) &&
-                DateTime.parse(ticket.date_time_of_ticket_raised)
+                DateTime.parse(ticket.date_time_of_ticket_raised).toLocal()
                     .isAfter(DateTime.parse(chosen_start_date)))
             .toList();
       } else {
@@ -178,9 +178,9 @@ class _TicketScreenState extends State<TicketScreen> {
                 ticket.visitor_name
                     .toLowerCase()
                     .contains(query.toLowerCase()) &&
-                DateTime.parse(ticket.date_time_of_ticket_raised)
+                DateTime.parse(ticket.date_time_of_ticket_raised).toLocal()
                     .isAfter(DateTime.parse(chosen_start_date)) &&
-                DateTime.parse(ticket.date_time_of_ticket_raised).isBefore(
+                DateTime.parse(ticket.date_time_of_ticket_raised).toLocal().isBefore(
                     DateTime.parse(chosen_end_date)
                         .add(const Duration(days: 1))))
             .toList();
@@ -567,9 +567,10 @@ class _TicketScreenState extends State<TicketScreen> {
                               SizedBox(width: 5), // Add some space between the main text and the additional text
                               Text(
                                 '(${mytickets[index].email.split('@').first})',
-                                style: TextStyle(
-                                  color: Colors.black,
-                                  fontSize: 12, // Adjust the font size as needed
+                                style: GoogleFonts.lato(
+                                  fontWeight: FontWeight.w800,
+                                  color: Colors.white,
+                                  fontSize: 18,
                                 ),
                               ),
                             ],
@@ -591,7 +592,7 @@ class _TicketScreenState extends State<TicketScreen> {
 
   Widget StudentDetails(ResultObj ticket) {
     // Parse the time string to DateTime object
-    DateTime time = DateTime.parse(ticket.date_time);
+    DateTime time = DateTime.parse(ticket.date_time).toLocal();
     print(ticket.date_time);
   print("datetime: ${time}");
     // Format the date and time
@@ -611,6 +612,18 @@ class _TicketScreenState extends State<TicketScreen> {
               fontSize: 15,
             )),
         Text("Time :${formattedTime}",
+            style: GoogleFonts.lato(
+              fontWeight: FontWeight.w600,
+              color: Colors.black,
+              fontSize: 15,
+            )),
+        Text("Destination :${ticket.destination_address}",
+            style: GoogleFonts.lato(
+              fontWeight: FontWeight.w600,
+              color: Colors.black,
+              fontSize: 15,
+            )),
+        Text("Vehicle Number :${ticket.vehicle_number}",
             style: GoogleFonts.lato(
               fontWeight: FontWeight.w600,
               color: Colors.black,
@@ -645,13 +658,21 @@ class _TicketScreenState extends State<TicketScreen> {
                             15), // Adjust the radius as needed
                       ),
                       child: ExpansionTile(
-                        title: Text(
-                          mytickets[index].visitor_name,
-                          style: GoogleFonts.lato(
-                            fontWeight: FontWeight.w800,
-                            color: Colors.white,
-                            fontSize: 18,
-                          ),
+                        title: Row(
+                          children: [
+                            Text(
+                              mytickets[index].visitor_name,
+                              style: GoogleFonts.lato(
+                                fontWeight: FontWeight.w800,
+                                color: Colors.white,
+                                fontSize: 18,
+                              ),
+                            ),
+                            SizedBox(width:MediaQuery.of(context).size.width*0.06),
+                            Text(DateFormat('hh:mm a - MMM dd, yyyy')
+                                .format(DateTime.parse(
+                                mytickets[index].date_time_of_ticket_raised).toLocal())),
+                          ],
                         ),
                         children: <Widget>[
                           VisitorDetails(mytickets[index]),
@@ -668,7 +689,7 @@ class _TicketScreenState extends State<TicketScreen> {
   }
 
   Widget VisitorDetails(ResultObj4 ticket) {
-     DateTime time = DateTime.parse(ticket.date_time_of_ticket_raised);
+     DateTime time = DateTime.parse(ticket.date_time_of_ticket_raised).toLocal();
 
     // Format the date and time
     String formattedTime = DateFormat('MMM dd, yyyy - hh:mm a').format(time);
@@ -700,11 +721,11 @@ class _TicketScreenState extends State<TicketScreen> {
             )),
           Text(
             "Time Ticket Raised: $formattedTime",
-            style: GoogleFonts.lato(
-              fontWeight: FontWeight.w500,
-              color: Colors.black,
-              fontSize: 16,
-            ),
+              style: GoogleFonts.lato(
+                fontWeight: FontWeight.w600,
+                color: Colors.black,
+                fontSize: 15,
+              ),
           ),
         
         SizedBox(height: MediaQuery.of(context).size.height * 0.01)
@@ -731,13 +752,22 @@ class _TicketScreenState extends State<TicketScreen> {
                               15), // Adjust the radius as needed
                         ),
                         child: ExpansionTile(
-                          title: Text(
-                            mytickets[index].inviteeName,
-                            style: GoogleFonts.lato(
-                              fontWeight: FontWeight.w800,
-                              color: Colors.white,
-                              fontSize: 18,
-                            ),
+                          title: Row(
+                            children: [
+                              Text(
+                                mytickets[index].inviteeName,
+                                style: GoogleFonts.lato(
+                                  fontWeight: FontWeight.w800,
+                                  color: Colors.white,
+                                  fontSize: 18,
+                                ),
+                              ),
+                              SizedBox(width:MediaQuery.of(context).size.width*0.05),
+                              Text("${mytickets[index].inviteeRelationship} of Student ${mytickets[index].studentName}"
+
+                              )
+
+                            ],
                           ),
                           children: <Widget>[
                             InviteeDetails(mytickets[index]),
@@ -756,7 +786,7 @@ class _TicketScreenState extends State<TicketScreen> {
 
   Widget InviteeDetails(InviteeRecord ticket) {
     // Parse the time string to DateTime object
-    DateTime time = DateTime.parse(ticket.time);
+    DateTime time = DateTime.parse(ticket.time).toLocal();
 
     // Format the date and time
     String formattedTime = DateFormat('MMM dd, yyyy - hh:mm a').format(time);

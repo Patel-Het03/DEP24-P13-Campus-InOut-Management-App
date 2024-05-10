@@ -640,12 +640,8 @@ class _AuthFormState extends State<AuthForm> {
                                     builder: (context) => HomeAdmin()),
                               );
                             } else {
-                              // print("Login failed .... display snackbar");
-                              // final snackBar =
-                              //     get_snack_bar("Login failed", Colors.red);
-                              // ScaffoldMessenger.of(context)
-                              //     .showSnackBar(snackBar);
-                              // print(is_authenticated.message);
+                              print("Login failed .... display snackbar");
+                              LoginScaffold("Login Failed");
                             }
                           },
                           child: Text(

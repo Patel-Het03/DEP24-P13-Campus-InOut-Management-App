@@ -320,13 +320,33 @@ class databaseInterface {
   static List<String> getLocationImagesPaths() {
     final List<String> entries = [
       'assets/images/spiral.jpg',
-      'assets/images/spiral.jpg',
-      'assets/images/spiral.jpg',
-      'assets/images/spiral.jpg',
-      'assets/images/spiral.jpg',
-      'assets/images/spiral.jpg',
+      'assets/new_images/cse_block1.jpeg',
+      'assets/new_images/mess.jpg',
+      'assets/new_images/library.jpeg',
+      'assets/new_images/hostel.jpeg',
+      'assets/new_images/cs_lab.jpg',
     ];
     return entries;
+  }
+
+  static String getImagePath(String location){
+    switch(location){
+      case "Main Gate":
+          return 'assets/images/spiral.jpg';
+      case "CS Department":
+        return 'assets/new_images/cse_block1.jpeg';
+      case "Mess":
+          return 'assets/new_images/mess.jpg';
+      case "Library":
+          return 'assets/new_images/library.jpeg';
+      case"Hostel":
+          return 'assets/new_images/hostel.jpeg';
+      case "CSLab":
+          return 'assets/new_images/cs_lab.jpg';
+      default:
+        return 'assets/images/spiral.jpg';
+
+    }
   }
 
   static List<String> getUserTypes() {
@@ -2279,6 +2299,7 @@ class databaseInterface {
         return("Login Successful");
       } else {
         // Handle error
+
         print("Error in login");
         final Map<String, dynamic> data = json.decode(response.body);
         print("Error at backend: ${data['error']}");

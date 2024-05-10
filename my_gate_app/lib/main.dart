@@ -41,30 +41,13 @@ class MyApp extends StatelessWidget {
               backgroundColor: Colors.blueAccent, //use your hex code here
             ),
           ),
-          home: AuthWrapper(),
+          home: Home(),
           debugShowCheckedModeBanner: false
           ),
     );
   }
 }
 
-class AuthWrapper extends StatelessWidget {
-  const AuthWrapper({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Consumer<AuthState>(
-      builder: (context, authStatus, _) {
-        if (!authStatus.loggedIn) {
-          return AuthScreen();
-        }
-        else{
-          return Home();
-        }
-      },
-    );
-  }
-}
 
 class Home extends StatelessWidget {
   const Home({super.key});

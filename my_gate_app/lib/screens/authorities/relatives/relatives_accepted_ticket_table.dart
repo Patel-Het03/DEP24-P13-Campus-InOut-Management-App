@@ -103,9 +103,9 @@ class _RelativesAcceptedTicketTableState extends State<RelativesAcceptedTicketTa
       if (query.isEmpty) {
         ticketsFiltered = tickets
             .where((ticket) =>
-        DateTime.parse(ticket.visit_date).isBefore(
+        DateTime.parse(ticket.visit_date).toLocal().isBefore(
             DateTime.parse(chosen_end_date).add(Duration(days: 1))) &&
-            DateTime.parse(ticket.visit_date)
+            DateTime.parse(ticket.visit_date).toLocal()
                 .isAfter(DateTime.parse(chosen_start_date)))
             .toList();
       } else {
@@ -113,9 +113,9 @@ class _RelativesAcceptedTicketTableState extends State<RelativesAcceptedTicketTa
             .where((ticket) =>
         (ticket.studentName?.toLowerCase() ?? '')
             .contains(query.toLowerCase()) &&
-            DateTime.parse(ticket.visit_date)
+            DateTime.parse(ticket.visit_date).toLocal()
                 .isAfter(DateTime.parse(chosen_start_date)) &&
-            DateTime.parse(ticket.visit_date).isBefore(
+            DateTime.parse(ticket.visit_date).toLocal().isBefore(
                 DateTime.parse(chosen_end_date).add(Duration(days: 1))))
             .toList();
         print(chosen_end_date);

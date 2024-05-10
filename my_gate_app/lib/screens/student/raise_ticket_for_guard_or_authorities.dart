@@ -51,18 +51,7 @@ class _RaiseTicketForGuardOrAuthoritiesState
             mainAxisAlignment: MainAxisAlignment.center,
             // crossAxisAlignment: CrossAxisAlignment.stretch,
             children: <Widget>[
-              // Text('Welcome', style: TextStyle( // your text
-              //     fontSize: 50.0,
-              //     fontWeight: FontWeight.bold,
-              //     color: Colors.white)
-              // ),
-              // RaisedButton(onPressed: () {Navigator.push(
-              //   context,
-              //   MaterialPageRoute(builder: (context) => StudentTicketTable(location: widget.location))
-              // );
-              // }, child: Text('Raise Ticket for Guard'),
-              // ), // your button beneath text
-              // Image.asset('assets/images/security-guard.png'),
+
               Padding(
                 padding: const EdgeInsets.all(2.2),
                 child: Text(
