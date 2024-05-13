@@ -53,9 +53,9 @@ Follow these steps to install and set up the project:
 Clone the repository from GitHub to your local machine:
 
 
-```
+
 git clone [Link](https://github.com/Patel-Het03/DEP24-P13-Campus-InOut-Management-App).
-```
+
 - Step 2: Backend Setup
 Navigate to the backend directory and run the Django server:
 
