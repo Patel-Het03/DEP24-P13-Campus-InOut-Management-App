@@ -341,7 +341,7 @@ class databaseInterface {
           return 'assets/new_images/library.jpeg';
       case"Hostel":
           return 'assets/new_images/hostel.jpeg';
-      case "CSLab":
+      case "CS Lab":
           return 'assets/new_images/cs_lab.jpg';
       default:
         return 'assets/images/spiral.jpg';
